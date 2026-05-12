@@ -1354,7 +1354,47 @@
           "detail": "Basic Info",
           "versions": "Versions",
           "runs": "Run History",
-          "changes": "Change History"
+          "changes": "Change History",
+          "effort": "Effort"
+        },
+        "effort": {
+          "unit": "MD",
+          "estimateLabel": "Estimated Effort",
+          "estimatePlaceholder": "Enter estimated effort (man-days)",
+          "actualLabel": "Actual Effort",
+          "notSet": "Not set",
+          "noEntries": "No entries yet",
+          "estimateSaved": "Estimate saved",
+          "overTimeTag": "Over +{{delta}} MD",
+          "overTimeTip": "Actual effort exceeds estimate by {{delta}} MD",
+          "lastUpdated": "Last updated at {{time}}",
+          "entriesTitle": "Effort Entries",
+          "addEntry": "Add Entry",
+          "table": {
+            "workDate": "Work Date",
+            "delta": "Delta",
+            "note": "Note",
+            "creator": "Logged By",
+            "createdAt": "Logged At"
+          },
+          "modal": {
+            "title": "Log Effort",
+            "deltaLabel": "Delta (MD)",
+            "deltaPlaceholder": "Positive or negative, e.g. 0.5 / -0.5",
+            "dateLabel": "Work Date",
+            "datePlaceholder": "Pick a date",
+            "noteLabel": "Note",
+            "notePlaceholder": "Optional, up to 200 characters",
+            "successMessage": "Effort entry added"
+          },
+          "errors": {
+            "forbidden": "Only the process creator can edit effort",
+            "invalid_estimate": "Estimate must be 0–9999 with at most 1 decimal",
+            "invalid_delta": "Delta cannot be empty or 0; range -999~999, 1 decimal",
+            "invalid_date": "Work date is required and cannot be later than today",
+            "invalid_note": "Note must be at most 200 characters",
+            "not_found": "Record not found"
+          }
         },
         "versionList": {
           "title": "Versions",
