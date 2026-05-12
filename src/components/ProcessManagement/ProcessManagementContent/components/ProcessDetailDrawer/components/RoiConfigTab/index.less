@@ -1,99 +1,92 @@
-.process-roi-tab {
+.roi-tab {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 4px 2px;
-
-  &-section {
-    background: var(--semi-color-bg-2);
-    border: 1px solid var(--semi-color-border);
-    border-radius: 8px;
-    padding: 16px 20px;
-  }
-
-  &-section-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--semi-color-text-0);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  gap: 20px;
+  padding: 16px 24px;
 
   &-version-bar {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    color: var(--semi-color-text-2);
+    gap: 6px;
     font-size: 12px;
-    margin-bottom: 8px;
+    color: var(--semi-color-text-2);
   }
 
-  &-rate-card {
+  &-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--semi-color-border);
+
+    &:last-of-type {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    &-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--semi-color-text-0);
+    }
+  }
+
+  &-field {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    &-label {
+      flex-shrink: 0;
+      width: 120px;
+      font-size: 13px;
+      color: var(--semi-color-text-2);
+      line-height: 32px;
+    }
+
+    &-value {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+  }
+
+  &-rate-ref {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 12px;
     background: var(--semi-color-fill-0);
     border-radius: 6px;
-    padding: 12px 16px;
-    margin-bottom: 12px;
+    padding: 10px 14px;
 
     &-info {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
+      font-size: 13px;
     }
-    &-actions {
-      display: flex;
-      gap: 8px;
-    }
-  }
-
-  &-rate-current {
-    font-size: 12px;
-    color: var(--semi-color-text-2);
-    margin-top: 8px;
-  }
-
-  &-mode-row {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  &-field-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  &-field-label {
-    min-width: 130px;
-    color: var(--semi-color-text-1);
-    font-size: 13px;
   }
 
   &-warning {
-    color: var(--semi-color-warning);
-    font-size: 12px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    color: var(--semi-color-warning);
+    font-size: 12px;
   }
 
-  &-empty-tip {
-    color: var(--semi-color-text-2);
+  &-hint {
     font-size: 12px;
-    margin-top: 4px;
+    color: var(--semi-color-text-2);
   }
 
   &-footer {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
-    padding-top: 8px;
+    padding-top: 4px;
   }
 }
