@@ -86,6 +86,24 @@ const RequirementsWorkbench = () => {
   
   const [pickerRecord, setPickerRecord] = useState<RequirementItem | null>(null);
 
+  // 可选列（持久化到 localStorage）
+  const OPTIONAL_COLUMNS_KEY = 'requirements.list.optionalColumns';
+  type OptionalColumnKey = 'effort_estimate' | 'effort_actual' | 'completion_rate';
+  const [optionalColumns, setOptionalColumns] = useState<OptionalColumnKey[]>(() => {
+    try {
+      const raw = localStorage.getItem(OPTIONAL_COLUMNS_KEY);
+      if (raw) return JSON.parse(raw) as OptionalColumnKey[];
+    } catch { /* ignore */ }
+    return [];
+  });
+  const toggleOptionalColumn = (key: OptionalColumnKey) => {
+    setOptionalColumns((prev) => {
+      const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
+      try { localStorage.setItem(OPTIONAL_COLUMNS_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  };
+
   // 列表数据
   const [listResponse, setListResponse] = useState<{
     range: { offset: number; size: number; total: number };
