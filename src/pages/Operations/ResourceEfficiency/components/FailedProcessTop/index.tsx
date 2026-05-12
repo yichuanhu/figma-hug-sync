@@ -5,9 +5,10 @@ import './index.less';
 
 interface Props {
   data: ResourceEfficiencyData['failedProcessTop'];
+  topN?: number;
 }
 
-const FailedProcessTop = ({ data }: Props) => {
+const FailedProcessTop = ({ data, topN = 5 }: Props) => {
   const { t } = useTranslation();
   const max = Math.max(...data.map(d => d.failedCount), 1);
 
@@ -16,7 +17,7 @@ const FailedProcessTop = ({ data }: Props) => {
       <div className="dashboard-card-header">
         <span className="dashboard-card-title">
           <AlertTriangle size={16} strokeWidth={2} style={{ marginRight: 6, color: '#EF4444', verticalAlign: -3 }} />
-          {t('operations.resourceEfficiency.failedProcessTopTitle')}
+          {t('operations.resourceEfficiency.failedProcessTopTitleN', { n: topN })}
         </span>
       </div>
       <div className="failed-process-list">
