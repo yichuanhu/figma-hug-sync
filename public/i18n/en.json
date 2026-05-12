@@ -665,14 +665,6 @@
       "viewTable": "Table",
       "viewBoard": "Board"
     },
-    "list": {
-      "columns": {
-        "optionalLabel": "Optional Columns",
-        "effortEstimate": "Total Estimate",
-        "effortActual": "Total Actual",
-        "completionRate": "Completion"
-      }
-    },
     "fields": {
       "title": "Title",
       "department": "Department",
