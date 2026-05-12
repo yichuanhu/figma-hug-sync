@@ -1368,9 +1368,13 @@ export const getActiveScheme = getEffectiveScheme;
 
 import type {
   RequirementChangeLog,
+  RequirementChangeType,
   RequirementDraft,
+  RequirementDevSchemeDoc,
+  DevSchemeDocFileType,
 } from './types';
 import { isPostProjectStatus } from './utils/fieldEditability';
+import { fetchWorkspaceMembers } from '../RequirementsProjects/mockData';
 
 const draftStore = new Map<string, RequirementDraft>();
 const draftKey = (rid: string, uid: string) => `${rid}::${uid}`;
