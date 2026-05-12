@@ -603,7 +603,7 @@ const RequirementDetailDrawer = ({
             </>
           )}
           {canEdit && (
-            <Tooltip content={t('common.edit')}>
+            <Tooltip content={isPostProjectStatus(effectiveData.status) ? '变更需求' : t('common.edit')}>
               <Button
                 icon={<Pencil size={16} strokeWidth={2} />}
                 theme="borderless"

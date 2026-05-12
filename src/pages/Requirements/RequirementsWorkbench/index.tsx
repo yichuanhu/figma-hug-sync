@@ -27,6 +27,7 @@ import TableSkeleton from '@/components/TableSkeleton';
 
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, RequirementQueryParams, RequirementStatus } from './types';
+import { isPostProjectStatus } from './utils/fieldEditability';
 import {
   fetchRequirementList,
   deleteRequirement,
@@ -463,7 +464,7 @@ const RequirementsWorkbench = () => {
                     navigate(`/requirements/list/edit/${record.id}`);
                   }}
                 >
-                  {t('common.edit')}
+                  {isPostProjectStatus(record.status) ? '变更需求' : t('common.edit')}
                 </Dropdown.Item>
               )}
               {(() => {
