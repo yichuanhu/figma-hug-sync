@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Modal, Form, Switch, Upload, Toast, Typography, Button,
+  Modal, Form, Upload, Toast, Typography, Button,
 } from '@douyinfe/semi-ui';
 import { Inbox, X, Image as ImageIcon } from 'lucide-react';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
@@ -154,16 +154,11 @@ const AnnouncementFormModal = ({ visible, editing, onClose }: Props) => {
             { label: t('operations.platformOperations.announcements.form.priorityOptions.normal'), value: 'normal' },
           ]}
         />
-        <Form.Slot label={t('operations.platformOperations.announcements.form.isBanner')}>
-          <Switch
-            checked={isBanner}
-            onChange={(v) => {
-              setIsBanner(v);
-              formApi?.setValue('isBanner', v);
-            }}
-          />
-        </Form.Slot>
-        <Form.Input field="isBanner" noLabel style={{ display: 'none' }} />
+        <Form.Switch
+          field="isBanner"
+          label={t('operations.platformOperations.announcements.form.isBanner')}
+          onChange={(v) => setIsBanner(!!v)}
+        />
 
         {isBanner && (
           <>
