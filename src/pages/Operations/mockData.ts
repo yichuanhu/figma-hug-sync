@@ -514,9 +514,16 @@ export interface RoiAnalysisDerived {
 export function getRoiAnalysis(filter: RoiAnalysisFilter, seed = 0): RoiAnalysisDerived {
   const rng = seededRng((seed || 1) ^ hashStr(JSON.stringify(filter)));
   const timeScale = TIME_RANGE_SCALE[filter.timeRange] ?? 1;
-  const deptScale = filter.department !== 'all' ? 0.3 : 1;
-  const projScale = filter.project !== 'all' ? 0.4 : 1;
-  const clsScale = filter.classification !== 'all' ? 0.5 : 1;
+  const multiScale = (selectedCount: number, total: number, base: number) => {
+    if (selectedCount <= 0 || selectedCount >= total) return 1;
+    return base + (1 - base) * (selectedCount / total);
+  };
+  const deptTotal = mockDepartments.filter(d => d.value !== 'all').length;
+  const projTotal = mockProjects.filter(p => p.value !== 'all').length;
+  const clsTotal = mockClassifications.filter(c => c.value !== 'all').length;
+  const deptScale = multiScale(filter.departments.length, deptTotal, 0.3);
+  const projScale = multiScale(filter.projects.length, projTotal, 0.4);
+  const clsScale = multiScale(filter.classifications.length, clsTotal, 0.5);
   const totalScale = timeScale * deptScale * projScale * clsScale;
 
   const metrics = scaleDeep(clone(mockRoiMetrics), totalScale, rng);
@@ -525,23 +532,29 @@ export function getRoiAnalysis(filter: RoiAnalysisFilter, seed = 0): RoiAnalysis
   let departments = clone(mockDepartmentRoiDetails);
   let projects = clone(mockProjectRoiDetails);
 
-  if (filter.department !== 'all') {
-    const deptLabel = mockDepartments.find(d => d.value === filter.department)?.label?.toLowerCase();
-    if (deptLabel) {
-      requirements = requirements.filter(r => r.department.toLowerCase().includes(deptLabel));
-      departments = departments.filter(d => d.department.toLowerCase().includes(deptLabel));
+  if (filter.departments.length > 0) {
+    const deptLabels = filter.departments
+      .map(v => mockDepartments.find(d => d.value === v)?.label?.toLowerCase())
+      .filter(Boolean) as string[];
+    if (deptLabels.length > 0) {
+      requirements = requirements.filter(r => deptLabels.some(l => r.department.toLowerCase().includes(l)));
+      departments = departments.filter(d => deptLabels.some(l => d.department.toLowerCase().includes(l)));
     }
   }
-  if (filter.project !== 'all') {
-    const projLabel = mockProjects.find(p => p.value === filter.project)?.label?.toLowerCase();
-    if (projLabel) {
-      projects = projects.filter(p => p.projectName.toLowerCase().includes(projLabel));
+  if (filter.projects.length > 0) {
+    const projLabels = filter.projects
+      .map(v => mockProjects.find(p => p.value === v)?.label?.toLowerCase())
+      .filter(Boolean) as string[];
+    if (projLabels.length > 0) {
+      projects = projects.filter(p => projLabels.some(l => p.projectName.toLowerCase().includes(l)));
     }
   }
-  if (filter.classification !== 'all') {
-    const clsLabel = mockClassifications.find(c => c.value === filter.classification)?.label?.toLowerCase();
-    if (clsLabel) {
-      requirements = requirements.filter(r => r.department.toLowerCase().includes(clsLabel));
+  if (filter.classifications.length > 0) {
+    const clsLabels = filter.classifications
+      .map(v => mockClassifications.find(c => c.value === v)?.label?.toLowerCase())
+      .filter(Boolean) as string[];
+    if (clsLabels.length > 0) {
+      requirements = requirements.filter(r => clsLabels.some(l => r.department.toLowerCase().includes(l)));
     }
   }
 
