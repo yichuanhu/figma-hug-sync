@@ -171,7 +171,7 @@ const emit = () => listeners.forEach((l) => l());
 
 export const subscribe = (l: Listener) => {
   listeners.add(l);
-  return () => listeners.delete(l);
+  return () => { listeners.delete(l); };
 };
 
 // ------------- 公告 CRUD -------------
