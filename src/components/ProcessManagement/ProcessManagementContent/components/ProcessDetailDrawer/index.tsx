@@ -28,6 +28,7 @@ import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 import DependencyTab from './components/DependencyTab';
+import EffortTab from './components/EffortTab';
 import {
   fetchAllLinkableRequirements,
   type LinkableRequirementBrief,
@@ -633,6 +634,10 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             readOnly={isSchedulingContext}
             context={context}
           />
+        </TabPane>
+
+        <TabPane tab={t('development.processDevelopment.detail.tabs.effort')} itemKey="effort">
+          <EffortTab processId={processData.id} creatorId={processData.creator_id} />
         </TabPane>
       </Tabs>
 
