@@ -4086,7 +4086,7 @@
       "hoursSavedAxis": "Hours Saved (h)",
       "growthRateSeries": "Volume Growth Rate",
       "hoursSavedSeries": "Hours Saved",
-      "capacityKpiTitle": "Development Capacity KPI (FEAT-023)",
+      "capacityKpiTitle": "Development Capacity",
       "completionRatePct": "Completion Rate",
       "unregisteredProcess": "Unregistered Processes",
       "accuracyScatterTitle": "Estimation Accuracy (Est vs Actual)",

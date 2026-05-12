@@ -3456,7 +3456,7 @@
       "hoursSavedAxis": "工时节省(h)",
       "growthRateSeries": "业务量增长率",
       "hoursSavedSeries": "工时节省",
-      "capacityKpiTitle": "开发产能 KPI (FEAT-023)",
+      "capacityKpiTitle": "开发产能",
       "completionRatePct": "完成率",
       "unregisteredProcess": "未登记预估工时流程数",
       "accuracyScatterTitle": "预估准确率(预估 vs 实际)",
