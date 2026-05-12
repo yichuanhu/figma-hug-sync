@@ -85,28 +85,36 @@ const BusinessOutcomes = () => {
   );
 
   // ============ Funnel: 标注转化率 ============
-  const funnelOption = useMemo(() => ({
-    tooltip: { ...TOOLTIP, trigger: 'item', formatter: (p: any) =>
-      `<div style="font-weight:600">${p.name}</div>` +
-      `<div>${t('operations.dashboard.count')}: <b>${p.value}</b></div>` +
-      (p.data.conversionRate != null ? `<div>${t('operations.businessOutcomes.conversion')}: <b>${p.data.conversionRate}%</b></div>` : '')
-    },
-    series: [{
-      type: 'funnel',
-      left: '5%', right: '5%', top: 16, bottom: 8, width: '90%',
-      min: 0, sort: 'descending', gap: 4,
-      label: {
-        show: true, position: 'inside', color: '#fff', fontWeight: 600, fontSize: 12,
-        formatter: (p: any) => p.data.conversionRate != null
-          ? `${p.name}  ${p.value}  (${p.data.conversionRate}%)`
-          : `${p.name}  ${p.value}`,
+  const funnelOption = useMemo(() => {
+    const sorted = [...data.funnel].sort((a, b) => b.value - a.value);
+    const lastValue = sorted[sorted.length - 1]?.value ?? 0;
+    return {
+      tooltip: { ...TOOLTIP, trigger: 'item', formatter: (p: any) =>
+        `<div style="font-weight:600">${p.name}</div>` +
+        `<div>${t('operations.dashboard.count')}: <b>${p.value}</b></div>` +
+        (p.data.conversionRate != null ? `<div>${t('operations.businessOutcomes.conversion')}: <b>${p.data.conversionRate}%</b></div>` : '')
       },
-      labelLine: { length: 12, lineStyle: { width: 1, type: 'solid' } },
-      itemStyle: { borderColor: '#fff', borderWidth: 2 },
-      emphasis: { label: { fontSize: 13 } },
-      data: data.funnel.map((s, i) => ({ ...s, itemStyle: { color: COLORS.funnel[i % COLORS.funnel.length] } })),
-    }],
-  }), [data.funnel, t]);
+      series: [{
+        type: 'funnel',
+        left: '5%', right: '5%', top: 16, bottom: 8, width: '90%',
+        min: lastValue, sort: 'descending', gap: 0,
+        funnelAlign: 'center',
+        label: {
+          show: true, position: 'inside', color: '#fff', fontWeight: 600, fontSize: 12,
+          formatter: (p: any) => p.data.conversionRate != null
+            ? `${p.name}  ${p.value}  (${p.data.conversionRate}%)`
+            : `${p.name}  ${p.value}`,
+        },
+        labelLine: { show: false },
+        itemStyle: { borderWidth: 0 },
+        emphasis: { label: { fontSize: 13 } },
+        data: data.funnel.map((s, i) => ({
+          ...s,
+          itemStyle: { color: COLORS.funnel[i % COLORS.funnel.length] },
+        })),
+      }],
+    };
+  }, [data.funnel, t]);
 
   // ============ Type share pie ============
   const pieOption = useMemo(() => ({
