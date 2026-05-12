@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
 import { Button, Modal, Spin, Table, Tag, Toast, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { Download, FileText, Plus, Trash2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import RelativeTime from '../RelativeTime';
 import type { RequirementItem } from '../../types';
 import type { RequirementDevSchemeDoc } from '../../types';
 import { listDevSchemeDocs, deleteDevSchemeDoc, mockCreators } from '../../mockData';
