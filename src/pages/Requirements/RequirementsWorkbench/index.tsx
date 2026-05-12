@@ -677,15 +677,12 @@ const RequirementsWorkbench = () => {
                         key={k}
                         onClick={() => toggleOptionalColumn(k)}
                       >
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                          <input
-                            type="checkbox"
+                          <Checkbox
                             checked={optionalColumns.includes(k)}
-                            readOnly
-                            style={{ pointerEvents: 'none' }}
-                          />
-                          {t(`requirements.list.columns.${k === 'effort_estimate' ? 'effortEstimate' : k === 'effort_actual' ? 'effortActual' : 'completionRate'}`)}
-                        </span>
+                            onChange={() => toggleOptionalColumn(k)}
+                          >
+                            {t(`requirements.list.columns.${k === 'effort_estimate' ? 'effortEstimate' : k === 'effort_actual' ? 'effortActual' : 'completionRate'}`)}
+                          </Checkbox>
                       </Dropdown.Item>
                     ))}
                   </Dropdown.Menu>
