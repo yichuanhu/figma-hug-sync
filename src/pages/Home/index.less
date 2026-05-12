@@ -98,21 +98,12 @@
     gap: 24px;
     min-width: 0;
     height: 100%;
+    overflow-y: auto;
+    padding-right: 4px;
 
-    // 子模块自适应填充，避免单模块时出现底部空白错位
+    // 子模块自然高度，不再强制单模块填满
     > * {
       flex-shrink: 0;
-      min-height: 0;
-    }
-
-    // 核心指标卡片填充左列剩余空间，与右列底部对齐
-    > .metrics-section {
-      flex: 1 1 auto;
-    }
-
-    // 通知卡片占满右栏剩余高度，内部独立滚动
-    > .notification-section {
-      flex: 1 1 auto;
       min-height: 0;
     }
 
