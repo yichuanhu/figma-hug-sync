@@ -474,13 +474,6 @@ const RequirementCreatePage = () => {
         </Steps>
       </div>
 
-      {isPostProjectEdit && !isPublishStep && (
-        <div style={{ padding: '0 24px 8px' }}>
-          <Text type="warning" size="small">
-            立项后部门、归属人等系统字段已锁定；保存将以「发布变更」形式提交，需要填写变更说明。
-          </Text>
-        </div>
-      )}
 
       <div className="requirement-create-page-content">
         <div className="form-card">
