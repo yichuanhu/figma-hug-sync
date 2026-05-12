@@ -510,10 +510,10 @@ const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): Li
   return MOCK_PROCESS_POOL.slice(0, (idx % 3) + 1);
 };
 
-// 给关联流程注入工时/版本/退役元数据（确定性，便于 demo）
+// 给关联流程注入工时/版本元数据（确定性，便于 demo）
 const enrichLinkedProcesses = (
   list: LinkedProcess[] | undefined,
-  status: RequirementStatus,
+  _status: RequirementStatus,
   idx: number,
 ): LinkedProcess[] | undefined => {
   if (!list || list.length === 0) return list;
@@ -533,9 +533,7 @@ const enrichLinkedProcesses = (
       actual = null;
     }
     const has_published_version = p.status === 'ONLINE';
-    // OFFLINE 状态下，第二个流程标记为退役
-    const is_retired = status === 'OFFLINE' && i === 1;
-    return { ...p, effort_estimate_days: estimate, effort_actual_days: actual, has_published_version, is_retired };
+    return { ...p, effort_estimate_days: estimate, effort_actual_days: actual, has_published_version };
   });
 };
 
@@ -543,11 +541,9 @@ const enrichLinkedProcesses = (
 export const getRequirementEffortSummary = (item: RequirementItem) => {
   const processes = (item.linkedProcesses ?? []) as LinkedProcess[];
   const total_process_count = processes.length;
-  const retired_process_count = processes.filter((p) => p.is_retired).length;
-  const active = processes.filter((p) => !p.is_retired);
-  const published_process_count = active.filter((p) => p.has_published_version).length;
-  const active_process_count = active.length - published_process_count;
-  const unestimated_process_count = active.filter(
+  const published_process_count = processes.filter((p) => p.has_published_version).length;
+  const active_process_count = total_process_count - published_process_count;
+  const unestimated_process_count = processes.filter(
     (p) => p.effort_estimate_days === null || p.effort_estimate_days === undefined,
   ).length;
   const sum = (key: 'effort_estimate_days' | 'effort_actual_days') =>
@@ -556,11 +552,9 @@ export const getRequirementEffortSummary = (item: RequirementItem) => {
     ) / 10;
   const effort_estimate_total = sum('effort_estimate_days');
   const effort_actual_total = sum('effort_actual_days');
-  const denom = active.length;
-  const completion_rate = denom > 0 ? published_process_count / denom : 0;
+  const completion_rate = total_process_count > 0 ? published_process_count / total_process_count : 0;
   return {
     total_process_count,
-    retired_process_count,
     published_process_count,
     active_process_count,
     unestimated_process_count,
@@ -570,6 +564,7 @@ export const getRequirementEffortSummary = (item: RequirementItem) => {
     processes,
   };
 };
+
 
 // 与 RequirementsProjects/mockData.ts 中的 projects 数组一一对应（id/name），用于列表筛选下拉。
 export const MOCK_PROJECT_POOL = [
