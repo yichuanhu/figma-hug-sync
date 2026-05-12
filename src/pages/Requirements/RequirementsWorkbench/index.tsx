@@ -21,7 +21,7 @@ import {
 import DepartmentSelect from '@/components/DepartmentSelect';
 import FilterPopover from '@/components/FilterPopover';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Pencil, Plus, Send, Trash2, RotateCcw, PowerOff, Undo2, Link2, FolderPlus, Columns3 } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Send, Trash2, RotateCcw, Undo2, Link2, FolderPlus, Columns3 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 
@@ -279,21 +279,6 @@ const RequirementsWorkbench = () => {
     });
   };
 
-  // 下线（LAUNCHED）
-  const handleOffline = (record: RequirementItem) => {
-    Modal.confirm({
-      title: t('requirements.detail.offlineConfirmTitle', '确认下线？'),
-      content: t('requirements.detail.offlineConfirmContent', '下线后该需求将停止运行，关联流程不会自动停用，请知悉。'),
-      okText: t('requirements.detail.offline', '下线'),
-      cancelText: t('common.cancel'),
-      okType: 'warning',
-      onOk: async () => {
-        await updateRequirementStatus(record.id, 'OFFLINE', 'Taken offline.');
-        loadData();
-        Toast.success(t('requirements.detail.offlineSuccess', '已下线'));
-      },
-    });
-  };
 
   // 分页信息
   const { range, list } = listResponse;
@@ -567,17 +552,6 @@ const RequirementsWorkbench = () => {
                   </Dropdown.Item>
                 </>
               )}
-              {record.status === 'LAUNCHED' && (
-                <Dropdown.Item
-                  icon={<PowerOff size={16} strokeWidth={2} />}
-                  onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    handleOffline(record);
-                  }}
-                >
-                  {t('requirements.detail.offline', '下线')}
-                </Dropdown.Item>
-              )}
               {canDelete(record.status) && (
                 <Dropdown.Item
                   icon={<Trash2 size={16} strokeWidth={2} />}
@@ -793,7 +767,7 @@ const RequirementsWorkbench = () => {
         }}
         onDelete={(record) => handleDelete(record)}
         onResubmit={(record) => handleResubmit(record)}
-        onOffline={(record) => handleOffline(record)}
+        
         onStatusChange={async (id, newStatus, comment) => {
           await updateRequirementStatus(id, newStatus, comment);
           loadData();

@@ -21,7 +21,7 @@ import DevSchemeDocsTab from '../DevSchemeDocsTab';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
-import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X } from 'lucide-react';
+import { Lightbulb, Pencil, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import WorkspacePickerModal from './WorkspacePickerModal';
 
@@ -315,7 +315,7 @@ interface RequirementDetailDrawerProps {
   onDelete: (record: RequirementItem) => void;
   onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
   onResubmit?: (record: RequirementItem) => void;
-  onOffline?: (record: RequirementItem) => void;
+  
   onRefresh?: () => void;
   pagination: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
@@ -340,7 +340,6 @@ const RequirementDetailDrawer = ({
   onDelete,
   onStatusChange,
   onResubmit,
-  onOffline,
   onRefresh,
   pagination,
   onPageChange,
@@ -469,7 +468,7 @@ const RequirementDetailDrawer = ({
   );
   const canDelete = !isHistoryMode && (effectiveData.status === 'DRAFT' || effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN');
   const canResubmit = !isHistoryMode && (effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN') && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
-  const canOffline = !isHistoryMode && effectiveData.status === 'LAUNCHED';
+  
   const canWithdraw =
     !isHistoryMode &&
     (effectiveData.status === 'PENDING_APPROVAL' || effectiveData.status === 'PENDING_ASSESSMENT') &&
@@ -570,17 +569,6 @@ const RequirementDetailDrawer = ({
                 size="small"
                 type="tertiary"
                 onClick={() => onResubmit(data)}
-              />
-            </Tooltip>
-          )}
-          {canOffline && onOffline && (
-            <Tooltip content={t('requirements.detail.offline', '下线')}>
-              <Button
-                icon={<PowerOff size={16} strokeWidth={2} />}
-                theme="borderless"
-                size="small"
-                type="tertiary"
-                onClick={() => onOffline(data)}
               />
             </Tooltip>
           )}
