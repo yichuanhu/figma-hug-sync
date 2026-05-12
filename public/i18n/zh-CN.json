@@ -964,8 +964,7 @@
         "fileTooLarge": "文件超过 50MB 上限",
         "notMember": "您不是该需求所属工作空间的成员，无法管理开发方案"
       }
-    }
-  },
+    },
     "approvalFlow": {
       "title": "审批流程",
       "currentLevel": "第 {{current}}/{{total}} 级 · {{name}}",
