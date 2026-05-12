@@ -11,7 +11,6 @@ import {
 } from '@/pages/Operations/mockData';
 import type { BusinessOutcomesFilter } from '@/pages/Operations/types';
 import MetricLabel from './components/MetricLabel';
-import RectFunnel from './components/RectFunnel';
 import './index.less';
 
 const { Title } = Typography;
@@ -85,8 +84,29 @@ const BusinessOutcomes = () => {
     [],
   );
 
-  // 矩形转化漏斗使用独立 SVG 组件渲染（见 RectFunnel）
-
+  // ============ Funnel: 标注转化率 ============
+  const funnelOption = useMemo(() => ({
+    tooltip: { ...TOOLTIP, trigger: 'item', formatter: (p: any) =>
+      `<div style="font-weight:600">${p.name}</div>` +
+      `<div>${t('operations.dashboard.count')}: <b>${p.value}</b></div>` +
+      (p.data.conversionRate != null ? `<div>${t('operations.businessOutcomes.conversion')}: <b>${p.data.conversionRate}%</b></div>` : '')
+    },
+    series: [{
+      type: 'funnel',
+      left: '5%', right: '5%', top: 16, bottom: 8, width: '90%',
+      min: 0, sort: 'descending', gap: 4,
+      label: {
+        show: true, position: 'inside', color: '#fff', fontWeight: 600, fontSize: 12,
+        formatter: (p: any) => p.data.conversionRate != null
+          ? `${p.name}  ${p.value}  (${p.data.conversionRate}%)`
+          : `${p.name}  ${p.value}`,
+      },
+      labelLine: { length: 12, lineStyle: { width: 1, type: 'solid' } },
+      itemStyle: { borderColor: '#fff', borderWidth: 2 },
+      emphasis: { label: { fontSize: 13 } },
+      data: data.funnel.map((s, i) => ({ ...s, itemStyle: { color: COLORS.funnel[i % COLORS.funnel.length] } })),
+    }],
+  }), [data.funnel, t]);
 
   // ============ Type share pie ============
   const pieOption = useMemo(() => ({
@@ -402,7 +422,7 @@ const BusinessOutcomes = () => {
             <MetricLabel label={t('operations.businessOutcomes.funnelTitle')} tip={t('operations.businessOutcomes.tips.funnel')} size="medium" />
           </span>
         </div>
-        <RectFunnel data={data.funnel} height={340} />
+        <ReactECharts option={funnelOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
       </div>
 
       {/* 2. 需求开发进度: 3 段卡 + 完成率进度条 + 工时块 */}
