@@ -340,7 +340,6 @@ const RequirementDetailDrawer = ({
   onDelete,
   onStatusChange,
   onResubmit,
-  onOffline,
   onRefresh,
   pagination,
   onPageChange,
