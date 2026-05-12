@@ -101,9 +101,9 @@ const EffortTab = ({ processId, creatorId }: Props) => {
         dataIndex: 'delta_days',
         width: 110,
         render: (v: number) => (
-          <Text strong style={{ color: v < 0 ? 'var(--semi-color-warning)' : 'var(--semi-color-text-0)' }}>
+          <span style={{ color: v < 0 ? 'var(--semi-color-warning)' : 'var(--semi-color-text-0)' }}>
             {v > 0 ? `+${formatNumber(v)}` : formatNumber(v)} {t('development.processDevelopment.detail.effort.unit')}
-          </Text>
+          </span>
         ),
       },
       {
