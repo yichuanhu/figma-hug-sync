@@ -202,6 +202,18 @@ const VariableCard = ({
             {variable.name}
           </Text>
         </div>
+        {showBusinessVolume && (
+          <Tooltip content="标记为业务量变量后，可在 ROI 配置 PARAM 模式中作为单位业务量来源">
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <Text size="small" type="tertiary">业务量变量</Text>
+              <Switch
+                size="small"
+                checked={!!isBusinessVolume}
+                onChange={(checked) => onBusinessVolumeChange?.(index, checked)}
+              />
+            </div>
+          </Tooltip>
+        )}
       </div>
       <div className="process-detail-drawer-variable-card-body">
         <div className="process-detail-drawer-variable-card-row">
@@ -264,13 +276,30 @@ const VariableCard = ({
 interface VariableCardListProps {
   data: ProcessVariable[];
   onDescriptionChange: (index: number, description: string) => void;
+  showBusinessVolume?: boolean;
+  flags?: OutputVariableFlags;
+  onBusinessVolumeChange?: (index: number, checked: boolean) => void;
 }
 
-const VariableCardList = ({ data, onDescriptionChange }: VariableCardListProps) => {
+const VariableCardList = ({
+  data,
+  onDescriptionChange,
+  showBusinessVolume,
+  flags,
+  onBusinessVolumeChange,
+}: VariableCardListProps) => {
   return (
     <div className="process-detail-drawer-variable-card-list">
       {data.map((variable, index) => (
-        <VariableCard key={index} variable={variable} index={index} onDescriptionChange={onDescriptionChange} />
+        <VariableCard
+          key={index}
+          variable={variable}
+          index={index}
+          onDescriptionChange={onDescriptionChange}
+          showBusinessVolume={showBusinessVolume}
+          isBusinessVolume={flags ? !!flags[variable.name] : false}
+          onBusinessVolumeChange={onBusinessVolumeChange}
+        />
       ))}
     </div>
   );
