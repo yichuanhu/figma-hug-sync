@@ -165,6 +165,20 @@ const RequirementsWorkbench = () => {
     }
   }, [location.search, listResponse.list]);
 
+  // URL 直达：?reqNo=REQ-2026-xxxx&tab=xxx（来自通知中心跳转）
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const reqNo = params.get('reqNo');
+    if (!reqNo) return;
+    const hit = listResponse.list.find((r) => r.req_no === reqNo);
+    if (hit) {
+      setSelectedRecord(hit);
+      setInitialDrawerTab(params.get('tab') || undefined);
+      setDetailDrawerVisible(true);
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.search, location.pathname, listResponse.list, navigate]);
+
   // 搜索防抖
   const debouncedSearch = useMemo(
     () =>
