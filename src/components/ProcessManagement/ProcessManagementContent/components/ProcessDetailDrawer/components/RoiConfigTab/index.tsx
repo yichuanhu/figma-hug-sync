@@ -102,9 +102,6 @@ const RoiConfigTab = ({
           <Info size={12} strokeWidth={2} />
           业务量变量取自当前版本
           <Tag size="small" type="light" color="blue">{versionLabel}</Tag>
-          <Tooltip content="切换版本可在『版本列表』Tab 中进行；ROI 字段保存在流程级别。">
-            <span style={{ cursor: 'help', textDecoration: 'underline dotted' }}>说明</span>
-          </Tooltip>
         </div>
       )}
 
