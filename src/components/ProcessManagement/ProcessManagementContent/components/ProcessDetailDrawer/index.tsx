@@ -31,7 +31,7 @@ import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } fr
 import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
-import { getOutputFlags, setOutputFlag, type OutputVariableFlags } from './roiStorage';
+
 import {
   fetchAllLinkableRequirements,
   type LinkableRequirementBrief,
@@ -47,6 +47,7 @@ interface ProcessVariable {
   type: '文本' | '布尔' | '数值';
   value?: string;
   description?: string;
+  isBusinessVolume?: boolean;
 }
 
 interface VersionDetailData extends LYProcessVersionResponse {
@@ -107,7 +108,8 @@ const generateMockVersionData = (): VersionDetailData[] => {
     ],
     outputs: [
       { name: 'outputResult', type: '文本' as const, value: '', description: '输出结果' },
-      { name: 'outputStatus', type: '数值' as const, value: '0', description: '执行状态码' },
+      { name: 'outputStatus', type: '数值' as const, value: '0', description: '执行状态码', isBusinessVolume: true },
+      { name: 'processedCount', type: '数值' as const, value: '0', description: '本次处理的业务条数', isBusinessVolume: true },
     ],
   }));
 };
@@ -202,16 +204,9 @@ const VariableCard = ({
             {variable.name}
           </Text>
         </div>
-        {showBusinessVolume && (
-          <Tooltip content="标记为业务量变量后，可在 ROI 配置 PARAM 模式中作为单位业务量来源">
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              <Text size="small" type="tertiary">业务量变量</Text>
-              <Switch
-                size="small"
-                checked={!!isBusinessVolume}
-                onChange={(checked) => onBusinessVolumeChange?.(index, checked)}
-              />
-            </div>
+        {showBusinessVolume && isBusinessVolume && (
+          <Tooltip content="该变量已在客户端开发流程时声明为业务量变量，可在 ROI 配置 PARAM 模式中作为单位业务量来源">
+            <Tag color="blue" type="light" size="small">业务量</Tag>
           </Tooltip>
         )}
       </div>
