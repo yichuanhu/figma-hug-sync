@@ -13,7 +13,6 @@ import { AlertTriangle, Info } from 'lucide-react';
 import {
   getRoiConfig,
   saveRoiConfig,
-  getOutputFlags,
   type ProcessRoiConfig,
   type BusinessVolumeConfig,
 } from '../../roiStorage';
@@ -23,6 +22,7 @@ export interface RoiOutputVariable {
   name: string;
   displayName?: string;
   type?: string;
+  isBusinessVolume?: boolean;
 }
 
 interface RoiConfigTabProps {
@@ -46,9 +46,8 @@ const RoiConfigTab = ({
 
   const businessVolumeOptions = useMemo(() => {
     if (!versionId) return [] as RoiOutputVariable[];
-    const flags = getOutputFlags(processId, versionId);
-    return outputs.filter((o) => flags[o.name]);
-  }, [processId, versionId, outputs]);
+    return outputs.filter((o) => o.isBusinessVolume);
+  }, [versionId, outputs]);
 
   const hasBusinessVolume = businessVolumeOptions.length > 0;
   const mode: BusinessVolumeConfig = config.businessVolumeConfig ?? 'FIXED';
