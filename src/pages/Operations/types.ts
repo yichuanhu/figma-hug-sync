@@ -272,8 +272,8 @@ export interface BusinessOutcomesData {
 }
 export interface BusinessOutcomesFilter {
   timeRange: string;
-  department: string;
-  businessType: string;
-  classification: string;       // 分类筛选
+  departments: string[];        // 部门多选(空数组=全部)
+  businessTypes: string[];      // 业务类型多选
+  classifications: string[];    // 分类多选
   timeDimension: string;        // cumulative/today
 }
