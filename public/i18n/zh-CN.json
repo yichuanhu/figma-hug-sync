@@ -3312,6 +3312,7 @@
       "timeDimToday": "今日",
       "refreshed": "已刷新",
       "conversion": "转化率",
+      "overallConversion": "全链路转化率",
       "progressBucketPending": "待开发",
       "progressBucketDeveloping": "开发中",
       "progressBucketLive": "已完成 + 运行中",
