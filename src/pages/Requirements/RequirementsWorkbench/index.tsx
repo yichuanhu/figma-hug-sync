@@ -386,6 +386,71 @@ const RequirementsWorkbench = () => {
       render: (value: string | null) => <RelativeTime value={value} />,
     },
     {
+      title: t('common.createTime', '创建时间'),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 130,
+      sorter: true,
+      onHeaderCell: () => ({ onClick: () => handleSort('created_at') }),
+      render: (value: string | null) => <RelativeTime value={value} />,
+    },
+    ...(optionalColumns.includes('effort_estimate')
+      ? [{
+          title: t('requirements.list.columns.effortEstimate'),
+          dataIndex: '_effort_estimate',
+          key: '_effort_estimate',
+          width: 110,
+          align: 'right' as const,
+          render: (_: unknown, record: RequirementItem) => {
+            const s = getRequirementEffortSummary(record);
+            return s.total_process_count === 0 ? (
+              <Text type="tertiary">-</Text>
+            ) : (
+              <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+                {s.effort_estimate_total.toFixed(1).replace(/\.0$/, '')} {t('requirements.detail.effort.unit')}
+              </span>
+            );
+          },
+        }]
+      : []),
+    ...(optionalColumns.includes('effort_actual')
+      ? [{
+          title: t('requirements.list.columns.effortActual'),
+          dataIndex: '_effort_actual',
+          key: '_effort_actual',
+          width: 110,
+          align: 'right' as const,
+          render: (_: unknown, record: RequirementItem) => {
+            const s = getRequirementEffortSummary(record);
+            if (s.total_process_count === 0) return <Text type="tertiary">-</Text>;
+            const over = s.effort_actual_total > s.effort_estimate_total && s.effort_estimate_total > 0;
+            return (
+              <span style={{ fontVariantNumeric: 'tabular-nums', color: over ? 'var(--semi-color-danger)' : undefined }}>
+                {s.effort_actual_total.toFixed(1).replace(/\.0$/, '')} {t('requirements.detail.effort.unit')}
+              </span>
+            );
+          },
+        }]
+      : []),
+    ...(optionalColumns.includes('completion_rate')
+      ? [{
+          title: t('requirements.list.columns.completionRate'),
+          dataIndex: '_completion_rate',
+          key: '_completion_rate',
+          width: 110,
+          align: 'right' as const,
+          render: (_: unknown, record: RequirementItem) => {
+            const s = getRequirementEffortSummary(record);
+            if (s.total_process_count - s.retired_process_count === 0) return <Text type="tertiary">-</Text>;
+            return (
+              <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+                {Math.round(s.completion_rate * 100)}%
+              </span>
+            );
+          },
+        }]
+      : []),
+    {
       title: t('common.actions'),
       dataIndex: 'action',
       key: 'action',
