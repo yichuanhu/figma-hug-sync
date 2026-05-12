@@ -84,29 +84,14 @@ const BusinessOutcomes = () => {
     [],
   );
 
-  // ============ Funnel: 标注转化率 ============
-  const funnelOption = useMemo(() => ({
-    tooltip: { ...TOOLTIP, trigger: 'item', formatter: (p: any) =>
-      `<div style="font-weight:600">${p.name}</div>` +
-      `<div>${t('operations.dashboard.count')}: <b>${p.value}</b></div>` +
-      (p.data.conversionRate != null ? `<div>${t('operations.businessOutcomes.conversion')}: <b>${p.data.conversionRate}%</b></div>` : '')
-    },
-    series: [{
-      type: 'funnel',
-      left: '5%', right: '5%', top: 16, bottom: 8, width: '90%',
-      min: 0, sort: 'descending', gap: 4,
-      label: {
-        show: true, position: 'inside', color: '#fff', fontWeight: 600, fontSize: 12,
-        formatter: (p: any) => p.data.conversionRate != null
-          ? `${p.name}  ${p.value}  (${p.data.conversionRate}%)`
-          : `${p.name}  ${p.value}`,
-      },
-      labelLine: { length: 12, lineStyle: { width: 1, type: 'solid' } },
-      itemStyle: { borderColor: '#fff', borderWidth: 2 },
-      emphasis: { label: { fontSize: 13 } },
-      data: data.funnel.map((s, i) => ({ ...s, itemStyle: { color: COLORS.funnel[i % COLORS.funnel.length] } })),
-    }],
-  }), [data.funnel, t]);
+  // ============ Funnel: 全链路转化率 ============
+  const overallConversion = useMemo(() => {
+    const f = data.funnel;
+    if (!f.length) return 0;
+    const first = f[0].value || 1;
+    const last = f[f.length - 1].value;
+    return Math.round((last / first) * 1000) / 10;
+  }, [data.funnel]);
 
   // ============ Type share pie ============
   const pieOption = useMemo(() => ({
