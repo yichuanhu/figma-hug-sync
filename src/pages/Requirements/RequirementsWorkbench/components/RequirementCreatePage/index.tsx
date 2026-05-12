@@ -430,7 +430,7 @@ const RequirementCreatePage = () => {
     : '';
 
   const titleText = isEdit
-    ? (isPostProjectEdit ? '编辑需求(立项后)' : t('requirements.form.editTitle'))
+    ? (isPostProjectEdit ? '变更需求' : t('requirements.form.editTitle'))
     : t('requirements.form.createTitle');
 
   if (editLoading) {
