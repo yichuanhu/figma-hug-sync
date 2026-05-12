@@ -391,24 +391,14 @@ const BusinessOutcomes = () => {
       </div>
 
       <Spin spinning={loading}>
-      {/* 1. 漏斗图 + 业务条线分布 */}
-      <div className="bo-row cols-2" style={{ marginBottom: 20 }}>
-        <div className="dashboard-card" style={{ marginBottom: 0 }}>
-          <div className="dashboard-card-header">
-            <span className="dashboard-card-title">
-              <MetricLabel label={t('operations.businessOutcomes.funnelTitle')} tip={t('operations.businessOutcomes.tips.funnel')} size="medium" />
-            </span>
-          </div>
-          <ReactECharts option={funnelOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
+      {/* 1. 漏斗图 */}
+      <div className="dashboard-card">
+        <div className="dashboard-card-header">
+          <span className="dashboard-card-title">
+            <MetricLabel label={t('operations.businessOutcomes.funnelTitle')} tip={t('operations.businessOutcomes.tips.funnel')} size="medium" />
+          </span>
         </div>
-        <div className="dashboard-card" style={{ marginBottom: 0 }}>
-          <div className="dashboard-card-header">
-            <span className="dashboard-card-title">
-              <MetricLabel label={t('operations.businessOutcomes.typeShareTitle')} tip={t('operations.businessOutcomes.tips.typeShare')} size="medium" />
-            </span>
-          </div>
-          <ReactECharts option={pieOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
-        </div>
+        <ReactECharts option={funnelOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
       </div>
 
       {/* 2. 需求开发进度: 3 段卡 + 完成率进度条 + 工时块 */}
@@ -495,10 +485,16 @@ const BusinessOutcomes = () => {
           </div>
         </div>
 
-        <div className="bo-row cols-2" style={{ marginTop: 16 }}>
+        <div className="bo-row cols-3" style={{ marginTop: 16 }}>
           <div>
             <div className="chart-subtitle">{t('operations.businessOutcomes.volumeTrendTitle')}</div>
-            <ReactECharts option={volumeOption} style={{ height: 260 }} opts={{ renderer: 'svg' }} />
+            <ReactECharts option={volumeOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
+          </div>
+          <div>
+            <div className="chart-subtitle">
+              <MetricLabel label={t('operations.businessOutcomes.typeShareTitle')} tip={t('operations.businessOutcomes.tips.typeShare')} />
+            </div>
+            <ReactECharts option={pieOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
           </div>
           <div>
             <div className="chart-subtitle">
