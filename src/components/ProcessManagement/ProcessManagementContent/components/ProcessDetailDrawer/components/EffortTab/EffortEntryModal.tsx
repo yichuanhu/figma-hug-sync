@@ -65,7 +65,7 @@ const EffortEntryModal = ({ visible, processId, creatorId, onCancel, onSuccess }
         <Form
           getFormApi={(api) => (formApiRef.current = api)}
           labelPosition="top"
-          initialValues={{ work_date: new Date(), delta_days: undefined, note: '' }}
+          initValues={{ work_date: new Date(), delta_days: undefined, note: '' }}
         >
           <Form.InputNumber
             field="delta_days"
