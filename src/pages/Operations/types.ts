@@ -213,12 +213,14 @@ export interface CapacityTrendPoint {
   requirement: number;          // 当月需求交付数
   process: number;              // 当月流程发布数
 }
-// FEAT-023 开发产能 KPI
+// FEAT-023 开发产能 KPI (6 卡)
 export interface DevCapacityKpi {
-  totalEstimatedHours: number;  // 总预估工时
-  totalActualHours: number;     // 总实际工时
-  completionRate: number;       // 完成率 %
-  unregisteredProcessCount: number; // 未登记预估工时的流程数
+  totalEstimatedHours: number;       // 总预估工时
+  totalActualHours: number;          // 总实际工时
+  completionRate: number;            // 完成率 %
+  unregisteredProcessCount: number;  // 未登记预估工时的流程数
+  activeDeveloperCount: number;      // 活跃开发者
+  timeoutProcessCount: number;       // 超时流程数
 }
 // 预估准确率散点
 export interface AccuracyScatterPoint {
