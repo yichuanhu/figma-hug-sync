@@ -96,14 +96,14 @@ const EffortEntryModal = ({ visible, processId, creatorId, editingEntry, onCance
             placeholder={t('development.processDevelopment.detail.effort.modal.deltaPlaceholder')}
             precision={1}
             step={0.5}
-            min={-999}
+            min={0}
             max={999}
             style={{ width: '100%' }}
             suffix={t('development.processDevelopment.detail.effort.unit')}
             rules={[
               { required: true, message: t('development.processDevelopment.detail.effort.errors.invalid_delta') },
               {
-                validator: (_r, value) => value !== 0 && value !== undefined && value !== null,
+                validator: (_r, value) => value !== undefined && value !== null && value > 0,
                 message: t('development.processDevelopment.detail.effort.errors.invalid_delta'),
               },
             ]}
