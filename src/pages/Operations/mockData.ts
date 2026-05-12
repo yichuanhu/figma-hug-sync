@@ -22,6 +22,8 @@ export const mockRoiMetrics: RoiMetrics = {
   utilizationTrend: -2.8,
   requirementsTrend: 8,
   automationHoursTrend: 1240,
+  // 回本周期 = 总投入 / 月均节约; 这里模拟 6.5 个月; null 表示无法计算
+  paybackMonths: 6.5,
 };
 
 export const mockResourceOverview: ResourceOverviewData = {
@@ -203,11 +205,11 @@ export const mockRobotStatuses = [
 // ============ 业务成果看板 mock ============
 export const mockBusinessOutcomes: BusinessOutcomesData = {
   funnel: [
-    { name: '需求提报', value: 263 },
-    { name: '需求评审通过', value: 198 },
-    { name: '完成开发', value: 145 },
-    { name: '上线运行', value: 98 },
-    { name: '验收完成', value: 76 },
+    { name: '需求提报', value: 263, conversionRate: 100 },
+    { name: '需求评审通过', value: 198, conversionRate: 75.3 },
+    { name: '完成开发', value: 145, conversionRate: 73.2 },
+    { name: '上线运行', value: 98, conversionRate: 67.6 },
+    { name: '验收完成', value: 76, conversionRate: 77.6 },
   ],
   requirementProgress: {
     total: 263,
@@ -216,11 +218,15 @@ export const mockBusinessOutcomes: BusinessOutcomesData = {
     developing: 23,
     running: 98,
     completed: 100,
+    estimatedHours: 2500,
+    actualHours: 2800,
   },
   todayVolume: 1258,
   totalVolume: 98432,
+  volumeGrowthMoM: 15.2,
   todayHoursSaved: 562,
   totalHoursSaved: 42180,
+  hoursPerYearFactor: 2000,
   volumeTrend: [
     { month: '2025-10', volume: 12450 },
     { month: '2025-11', volume: 14820 },
@@ -229,13 +235,20 @@ export const mockBusinessOutcomes: BusinessOutcomesData = {
     { month: '2026-02', volume: 18540 },
     { month: '2026-03', volume: 17872 },
   ],
+  volumeRanking: [
+    { name: '订单自动处理', volume: 18420 },
+    { name: '发票识别录入', volume: 15280 },
+    { name: '报销自动审批', volume: 12150 },
+    { name: '薪资计算', volume: 8420 },
+    { name: '合同条款审核', volume: 6240 },
+  ],
   timeSavedTrend: [
-    { month: '2025-10', hours: 5240 },
-    { month: '2025-11', hours: 6180 },
-    { month: '2025-12', hours: 7320 },
-    { month: '2026-01', hours: 7820 },
-    { month: '2026-02', hours: 8120 },
-    { month: '2026-03', hours: 7500 },
+    { month: '2025-10', hours: 5240, cumulative: 5240 },
+    { month: '2025-11', hours: 6180, cumulative: 11420 },
+    { month: '2025-12', hours: 7320, cumulative: 18740 },
+    { month: '2026-01', hours: 7820, cumulative: 26560 },
+    { month: '2026-02', hours: 8120, cumulative: 34680 },
+    { month: '2026-03', hours: 7500, cumulative: 42180 },
   ],
   businessTypeShare: [
     { name: 'Finance', value: 32 },
@@ -270,8 +283,52 @@ export const mockBusinessOutcomes: BusinessOutcomesData = {
       { month: '2026-02', requirement: 25, process: 58 },
       { month: '2026-03', requirement: 24, process: 56 },
     ],
+    // FEAT-023 严格规格补充
+    kpi: {
+      totalEstimatedHours: 2500,
+      totalActualHours: 2800,
+      completionRate: 65,
+      unregisteredProcessCount: 8,
+    },
+    accuracyScatter: [
+      { processName: '发票识别录入', estimatedHours: 80, actualHours: 92 },
+      { processName: '订单自动处理', estimatedHours: 120, actualHours: 138 },
+      { processName: '报销自动审批', estimatedHours: 60, actualHours: 55 },
+      { processName: '薪资计算', estimatedHours: 95, actualHours: 110 },
+      { processName: '合同条款审核', estimatedHours: 140, actualHours: 175 },
+      { processName: '客户数据同步', estimatedHours: 50, actualHours: 48 },
+      { processName: '库存自动补货', estimatedHours: 75, actualHours: 88 },
+      { processName: '员工入职自动化', estimatedHours: 65, actualHours: 70 },
+      { processName: '税务申报', estimatedHours: 110, actualHours: 145 },
+      { processName: '合规文档生成', estimatedHours: 85, actualHours: 78 },
+    ],
+    capacityTimeline: [
+      { period: '2025-10', delivered: 14, planned: 16 },
+      { period: '2025-11', delivered: 18, planned: 18 },
+      { period: '2025-12', delivered: 21, planned: 22 },
+      { period: '2026-01', delivered: 22, planned: 24 },
+      { period: '2026-02', delivered: 25, planned: 24 },
+      { period: '2026-03', delivered: 24, planned: 26 },
+    ],
   },
+  growthVsHours: [
+    { month: '2025-10', growthRate: 0,    hoursSaved: 5240 },
+    { month: '2025-11', growthRate: 19.0, hoursSaved: 6180 },
+    { month: '2025-12', growthRate: 14.2, hoursSaved: 7320 },
+    { month: '2026-01', growthRate: 5.3,  hoursSaved: 7820 },
+    { month: '2026-02', growthRate: 4.0,  hoursSaved: 8120 },
+    { month: '2026-03', growthRate: -3.6, hoursSaved: 7500 },
+  ],
 };
+
+export const mockClassifications = [
+  { value: 'all', label: '' },
+  { value: 'cls-finance', label: 'Finance' },
+  { value: 'cls-operations', label: 'Operations' },
+  { value: 'cls-hr', label: 'Human Resources' },
+  { value: 'cls-legal', label: 'Legal' },
+  { value: 'cls-it', label: 'IT' },
+];
 
 export const mockBusinessTypes = [
   { value: 'all', label: '' },
