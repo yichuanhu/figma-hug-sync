@@ -171,6 +171,7 @@ const App = () => {
           <Route path="/requirements" element={<Navigate to="/requirements/list" replace />} />
           <Route path="/requirements/list" element={<RequirementsWorkbench />} />
           <Route path="/requirements/list/create" element={<RequirementCreatePage />} />
+          <Route path="/requirements/list/edit/:id" element={<RequirementCreatePage />} />
           <Route path="/requirements/review" element={<RequirementsReview />} />
           <Route path="/requirements/assessment" element={<RequirementsAssessment />} />
           

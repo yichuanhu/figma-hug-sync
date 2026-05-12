@@ -461,8 +461,7 @@ const RequirementsWorkbench = () => {
                   icon={<Pencil size={16} strokeWidth={2} />}
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
-                    setEditingRecord(record);
-                    setEditModalVisible(true);
+                    navigate(`/requirements/list/edit/${record.id}`);
                   }}
                 >
                   {t('common.edit')}
@@ -764,29 +763,7 @@ const RequirementsWorkbench = () => {
         )}
       </div>
 
-      {/* 新建需求改用独立页面 /requirements/list/create */}
-
-      {/* 编辑需求弹窗 */}
-      <RequirementFormModal
-        visible={editModalVisible}
-        onCancel={() => {
-          setEditModalVisible(false);
-          setEditingRecord(null);
-        }}
-        editData={editingRecord}
-        onSuccess={async (values) => {
-          if (editingRecord) {
-            await updateRequirement(editingRecord.id, values);
-            loadData();
-          }
-          setEditingRecord(null);
-        }}
-        onPublished={() => {
-          loadData();
-          setEditingRecord(null);
-        }}
-      />
-
+      {/* 新建/编辑需求均使用独立页面 /requirements/list/create | /requirements/list/edit/:id */}
       {/* 需求详情抽屉 */}
       <RequirementDetailDrawer
         visible={detailDrawerVisible}
@@ -795,8 +772,8 @@ const RequirementsWorkbench = () => {
         dataList={list}
         onNavigate={(item) => setSelectedRecord(item)}
         onEdit={(record) => {
-          setEditingRecord(record);
-          setEditModalVisible(true);
+          setDetailDrawerVisible(false);
+          navigate(`/requirements/list/edit/${record.id}`);
         }}
         onDelete={(record) => handleDelete(record)}
         onResubmit={(record) => handleResubmit(record)}
