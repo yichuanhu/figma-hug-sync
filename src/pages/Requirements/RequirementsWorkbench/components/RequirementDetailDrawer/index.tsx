@@ -9,7 +9,7 @@ import type { RequirementItem, ActivityRecord, DetailedAssessment, RequirementCh
 import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, withdrawRequirement, MOCK_CURRENT_USER_ID, useSchemeFlags, listChangeLogs } from '../../mockData';
 import { PRESET_SCHEMES } from '../../schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
-import { isPostProjectStatus } from '../../utils/fieldEditability';
+import { isPostProjectStatus, isDevelopmentOrAfterStatus } from '../../utils/fieldEditability';
 import ApprovalSection from './ApprovalSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
@@ -696,7 +696,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {!isHistoryMode && context !== 'approval' && context !== 'assessment' && (
+            {!isHistoryMode && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(effectiveData.status) && (
               <TabPane
                 tab={t('requirements.detail.tab.effort')}
                 itemKey="effort"
@@ -707,7 +707,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {!isHistoryMode && isPostProjectStatus(effectiveData.status) && (
+            {!isHistoryMode && isDevelopmentOrAfterStatus(effectiveData.status) && (
               <TabPane
                 tab={t('requirements.detail.tab.devScheme')}
                 itemKey="devScheme"
