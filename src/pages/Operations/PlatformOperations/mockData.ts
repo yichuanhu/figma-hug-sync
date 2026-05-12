@@ -247,5 +247,8 @@ export const deleteResource = (id: string) => {
 // ------------- React 订阅 hook -------------
 export const usePlatformOpsData = () => {
   const [, force] = useState(0);
-  useEffect(() => subscribe(() => force((n) => n + 1)), []);
+  useEffect(() => {
+    const unsub = subscribe(() => force((n) => n + 1));
+    return () => { unsub; };
+  }, []);
 };
