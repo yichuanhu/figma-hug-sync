@@ -92,6 +92,7 @@ const RoiConfigTab = ({
     }
     saveRoiConfig(processId, config);
     Toast.success('ROI 配置已保存');
+    setIsEditing(false);
   };
 
   return (
