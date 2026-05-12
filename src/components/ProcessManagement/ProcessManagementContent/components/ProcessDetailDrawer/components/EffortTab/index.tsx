@@ -65,6 +65,23 @@ const EffortTab = ({ processId, creatorId }: Props) => {
     return Math.round((snapshot.actual - snapshot.estimate) * 10) / 10;
   }, [snapshot.estimate, snapshot.actual]);
 
+  const handleEdit = useCallback((entry: LYProcessEffortEntry) => {
+    setEditingEntry(entry);
+    setModalVisible(true);
+  }, []);
+
+  const handleDelete = useCallback((entry: LYProcessEffortEntry) => {
+    try {
+      const next = deleteEntry(processId, creatorId, entry.id);
+      setSnapshot(next);
+      Toast.success(t('development.processDevelopment.detail.effort.deleteSuccess'));
+    } catch (e) {
+      if (e instanceof EffortError) {
+        Toast.error(t(`development.processDevelopment.detail.effort.errors.${e.code}`));
+      }
+    }
+  }, [processId, creatorId, t]);
+
   const columns = useMemo(
     () => [
       {
@@ -95,7 +112,7 @@ const EffortTab = ({ processId, creatorId }: Props) => {
         title: t('development.processDevelopment.detail.effort.table.creator'),
         dataIndex: 'created_by_name',
         width: 130,
-        render: (name: string | null, row: typeof snapshot.entries[number]) =>
+        render: (name: string | null, row: LYProcessEffortEntry) =>
           name ? <UserNameWithCard name={name} userId={row.created_by} /> : '-',
       },
       {
@@ -104,8 +121,44 @@ const EffortTab = ({ processId, creatorId }: Props) => {
         width: 150,
         render: (v: string) => <Text type="tertiary">{formatDateTime(v)}</Text>,
       },
+      ...(isCreator
+        ? [{
+            title: t('common.action'),
+            dataIndex: '_action',
+            width: 100,
+            fixed: 'right' as const,
+            render: (_: unknown, row: LYProcessEffortEntry) => (
+              <div style={{ display: 'inline-flex', gap: 4 }}>
+                <Tooltip content={t('common.edit')}>
+                  <Button
+                    icon={<Pencil size={14} strokeWidth={2} />}
+                    theme="borderless"
+                    type="tertiary"
+                    size="small"
+                    onClick={() => handleEdit(row)}
+                  />
+                </Tooltip>
+                <Popconfirm
+                  title={t('development.processDevelopment.detail.effort.deleteConfirmTitle')}
+                  content={t('development.processDevelopment.detail.effort.deleteConfirmContent')}
+                  okType="danger"
+                  okText={t('common.confirm')}
+                  cancelText={t('common.cancel')}
+                  onConfirm={() => handleDelete(row)}
+                >
+                  <Button
+                    icon={<Trash2 size={14} strokeWidth={2} />}
+                    theme="borderless"
+                    type="danger"
+                    size="small"
+                  />
+                </Popconfirm>
+              </div>
+            ),
+          }]
+        : []),
     ],
-    [t],
+    [t, isCreator, handleEdit, handleDelete],
   );
 
   return (
