@@ -377,6 +377,37 @@ export interface LYProcessResponse {
   owner_name?: string | null;
   /** 资源依赖列表（流程级别） */
   dependencies?: LYProcessDependency[];
+  /** 预估总工时（人天），允许小数1位 */
+  effort_estimate_days?: number | null;
+  /** 实际总工时（人天），由登记记录SUM得出 */
+  effort_actual_days?: number | null;
+  /** 工时最近更新者ID */
+  effort_updated_by?: string | null;
+  /** 工时最近更新时间 */
+  effort_updated_at?: string | null;
+}
+
+/**
+ * LYProcessEffortEntry
+ * 流程工时登记记录
+ */
+export interface LYProcessEffortEntry {
+  /** 记录ID */
+  id: string;
+  /** 流程ID */
+  process_id: string;
+  /** 增量工时（人天），可正可负，1位小数 */
+  delta_days: number;
+  /** 工作日期 YYYY-MM-DD */
+  work_date: string;
+  /** 备注 */
+  note?: string | null;
+  /** 登记人ID */
+  created_by: string;
+  /** 登记人姓名 */
+  created_by_name?: string | null;
+  /** 登记时间 ISO */
+  created_at: string;
 }
 
 /**
