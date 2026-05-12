@@ -1,4 +1,4 @@
-export type NotificationCategory = 'task' | 'robot' | 'trigger' | 'license';
+export type NotificationCategory = 'task' | 'robot' | 'trigger' | 'license' | 'requirement';
 export type NotificationSeverity = 'HIGH' | 'MEDIUM' | 'LOW';
 
 export type NotificationTemplateId =
@@ -14,7 +14,8 @@ export type NotificationTemplateId =
   | 'trigger.time_failed'
   | 'trigger.queue_invalid'
   | 'license.expiring'
-  | 'license.expired';
+  | 'license.expired'
+  | 'APA_REQUIREMENT_DEV_SCHEME_DOC_UPLOADED';
 
 export interface Notification {
   id: string;
