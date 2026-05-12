@@ -734,6 +734,21 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
         <TabPane tab={t('development.processDevelopment.detail.tabs.effort')} itemKey="effort">
           <EffortTab processId={processData.id} creatorId={processData.creator_id} />
         </TabPane>
+
+        <TabPane tab="ROI 配置" itemKey="roi">
+          <RoiConfigTab
+            processId={processData.id}
+            versionId={selectedVersionIdResolved}
+            versionLabel={selectedVersion?.version}
+            outputs={(selectedVersion?.outputs ?? []).map((o) => ({ name: o.name, displayName: o.name, type: o.type }))}
+            requirement={
+              linkedRequirement
+                ? { id: linkedRequirement.id, reqNo: linkedRequirement.req_no, title: linkedRequirement.title }
+                : null
+            }
+            referenceHourlyRate={referenceHourlyRate}
+          />
+        </TabPane>
       </Tabs>
 
       <UploadVersionModal
