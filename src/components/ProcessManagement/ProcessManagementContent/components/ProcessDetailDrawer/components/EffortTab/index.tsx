@@ -187,7 +187,6 @@ const EffortTab = ({ processId, creatorId }: Props) => {
                 step={0.5}
                 min={0}
                 max={9999}
-                size="small"
                 style={{ width: 160 }}
                 suffix={t('development.processDevelopment.detail.effort.unit')}
                 placeholder={t('development.processDevelopment.detail.effort.estimatePlaceholder')}
