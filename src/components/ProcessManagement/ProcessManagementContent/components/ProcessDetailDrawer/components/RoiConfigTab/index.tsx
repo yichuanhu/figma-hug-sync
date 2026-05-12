@@ -275,7 +275,7 @@ const RoiConfigTab = ({
       <div className="process-roi-tab-footer">
         <Tooltip
           content={saveDisabled ? '当前没有可用的业务量变量，无法保存 PARAM 模式配置' : ''}
-          trigger={saveDisabled ? 'mouseenter' : 'custom'}
+          trigger={saveDisabled ? 'hover' : 'custom'}
         >
           <Button theme="solid" type="primary" onClick={handleSave} disabled={saveDisabled}>
             保存
