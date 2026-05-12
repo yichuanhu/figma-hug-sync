@@ -11,6 +11,7 @@ export interface RoiMetrics {
   utilizationTrend: number;      // 利用率环比 (%)
   requirementsTrend: number;     // 需求环比变化
   automationHoursTrend: number;  // 自动化时数环比变化
+  paybackMonths: number | null;  // 回本周期(月);为 null 表示「N/A」
 }
 
 // 资源概览
