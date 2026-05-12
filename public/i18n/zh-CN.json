@@ -1234,7 +1234,47 @@
       "detail": {
         "tabs": {
           "detail": "基本信息",
-          "versions": "版本列表"
+          "versions": "版本列表",
+          "effort": "工时"
+        },
+        "effort": {
+          "unit": "人天",
+          "estimateLabel": "预估总工时",
+          "estimatePlaceholder": "请输入预估工时（人天）",
+          "actualLabel": "实际总工时",
+          "notSet": "未设置",
+          "noEntries": "暂无登记记录",
+          "estimateSaved": "预估工时已保存",
+          "overTimeTag": "超时 +{{delta}} 人天",
+          "overTimeTip": "实际工时已超出预估 {{delta}} 人天",
+          "lastUpdated": "最近更新于 {{time}}",
+          "entriesTitle": "工时登记",
+          "addEntry": "登记一笔",
+          "table": {
+            "workDate": "工作日期",
+            "delta": "增量工时",
+            "note": "备注",
+            "creator": "登记人",
+            "createdAt": "登记时间"
+          },
+          "modal": {
+            "title": "登记工时",
+            "deltaLabel": "增量工时",
+            "deltaPlaceholder": "可正可负，例如 0.5 / -0.5",
+            "dateLabel": "工作日期",
+            "datePlaceholder": "请选择工作日期",
+            "noteLabel": "备注",
+            "notePlaceholder": "可填写本次工作内容（≤200字）",
+            "successMessage": "已登记一笔工时"
+          },
+          "errors": {
+            "forbidden": "仅流程创建者可编辑工时",
+            "invalid_estimate": "预估工时需为 0~9999 之间，最多 1 位小数",
+            "invalid_delta": "增量工时不能为空或 0，需在 -999~999 之间，最多 1 位小数",
+            "invalid_date": "工作日期不能为空且不可晚于今天",
+            "invalid_note": "备注最多 200 个字符",
+            "not_found": "记录不存在"
+          }
         },
         "versionList": {
           "title": "版本列表",
