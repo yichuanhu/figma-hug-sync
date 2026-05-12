@@ -552,17 +552,6 @@ const RequirementsWorkbench = () => {
                   </Dropdown.Item>
                 </>
               )}
-              {record.status === 'LAUNCHED' && (
-                <Dropdown.Item
-                  icon={<PowerOff size={16} strokeWidth={2} />}
-                  onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    handleOffline(record);
-                  }}
-                >
-                  {t('requirements.detail.offline', '下线')}
-                </Dropdown.Item>
-              )}
               {canDelete(record.status) && (
                 <Dropdown.Item
                   icon={<Trash2 size={16} strokeWidth={2} />}
