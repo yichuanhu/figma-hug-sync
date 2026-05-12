@@ -683,7 +683,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             processId={processData.id}
             versionId={selectedVersionIdResolved}
             versionLabel={selectedVersion?.version}
-            outputs={(selectedVersion?.outputs ?? []).map((o) => ({ name: o.name, displayName: o.name, type: o.type }))}
+            outputs={(selectedVersion?.outputs ?? []).map((o) => ({ name: o.name, displayName: o.name, type: o.type, isBusinessVolume: o.isBusinessVolume }))}
           />
         </TabPane>
       </Tabs>
