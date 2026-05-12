@@ -24,10 +24,8 @@ const RoiAnalysisFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
   ];
 
   const timeDimensionOptions = [
-    { value: 'all', label: t('operations.roiAnalysis.dimAll') },
-    { value: 'daily', label: t('operations.roiAnalysis.dimDaily') },
-    { value: 'weekly', label: t('operations.roiAnalysis.dimWeekly') },
-    { value: 'monthly', label: t('operations.roiAnalysis.dimMonthly') },
+    { value: 'cumulative', label: t('operations.businessOutcomes.timeDimCumulative') },
+    { value: 'today', label: t('operations.businessOutcomes.timeDimToday') },
   ];
 
   const localizedDepartments = useMemo(() =>
