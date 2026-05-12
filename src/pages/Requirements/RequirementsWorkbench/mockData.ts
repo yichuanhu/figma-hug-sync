@@ -1522,6 +1522,7 @@ export const firstPendingChangeByWorkspace = (
 export const countUnackedByWorkspaces = (_workspaceIds: string[]): number => 0;
 export const firstPendingChangeByWorkspaces = (
   _workspaceIds: string[],
+): { requirementId: string; changeLogId: string } | null => null;
 
 // ============= STORY-015 开发方案文档 =============
 
