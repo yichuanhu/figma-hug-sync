@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Select, Button, Spin, Toast, Progress } from '@douyinfe/semi-ui';
+import { Typography, Select, Button, Spin, Toast, Progress, Tooltip } from '@douyinfe/semi-ui';
 import ReactECharts from 'echarts-for-react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, ArrowDownWideNarrow, ArrowUpNarrowWide } from 'lucide-react';
 import {
   getBusinessOutcomes,
   mockDepartments,
@@ -46,6 +46,8 @@ const BusinessOutcomes = () => {
   });
   const [seed, setSeed] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [rankSortDesc, setRankSortDesc] = useState(true);
+  const [rankFilterTypes, setRankFilterTypes] = useState<string[]>([]);
 
   const data = useMemo(() => getBusinessOutcomes(filter, seed), [filter, seed]);
 
@@ -335,8 +337,18 @@ const BusinessOutcomes = () => {
     ? Math.round(((rp.actualHours - rp.estimatedHours) / rp.estimatedHours) * 100)
     : 0;
 
-  // 业务量排行 max
-  const rankMax = Math.max(...data.volumeRanking.map(r => r.volume));
+  // 业务量排行 - 保留全量 max 用于 bar 宽度参考(切换时视觉一致)
+  const rankMax = Math.max(...data.volumeRanking.map(r => r.volume), 1);
+  const rankTypeOptions = useMemo(
+    () => data.volumeRanking.map(r => ({ value: r.name, label: r.name })),
+    [data.volumeRanking],
+  );
+  const displayedRanking = useMemo(() => {
+    const filtered = rankFilterTypes.length === 0
+      ? data.volumeRanking
+      : data.volumeRanking.filter(r => rankFilterTypes.includes(r.name));
+    return [...filtered].sort((a, b) => rankSortDesc ? b.volume - a.volume : a.volume - b.volume);
+  }, [data.volumeRanking, rankFilterTypes, rankSortDesc]);
 
   // 人年换算
   const personYears = (data.totalHoursSaved / data.hoursPerYearFactor).toFixed(1);
@@ -499,11 +511,34 @@ const BusinessOutcomes = () => {
         </div>
 
         <div style={{ marginTop: 16 }}>
-          <div className="chart-subtitle">
-            <MetricLabel label={t('operations.businessOutcomes.volumeRankingTitle')} tip={t('operations.businessOutcomes.tips.volumeRanking')} />
+          <div className="bo-ranking-header">
+            <div className="chart-subtitle" style={{ marginBottom: 0 }}>
+              <MetricLabel label={t('operations.businessOutcomes.volumeRankingTitle')} tip={t('operations.businessOutcomes.tips.volumeRanking')} />
+            </div>
+            <div className="bo-ranking-controls">
+              <Select
+                multiple
+                maxTagCount={1}
+                value={rankFilterTypes}
+                optionList={rankTypeOptions}
+                placeholder={t('operations.businessOutcomes.rankFilterPlaceholder')}
+                onChange={(v) => setRankFilterTypes((v as string[]) || [])}
+                style={{ width: 200 }}
+              />
+              <Tooltip content={rankSortDesc ? t('operations.businessOutcomes.rankSortDesc') : t('operations.businessOutcomes.rankSortAsc')}>
+                <Button
+                  icon={rankSortDesc
+                    ? <ArrowDownWideNarrow size={16} strokeWidth={2} />
+                    : <ArrowUpNarrowWide size={16} strokeWidth={2} />}
+                  onClick={() => setRankSortDesc(v => !v)}
+                />
+              </Tooltip>
+            </div>
           </div>
           <div className="bo-ranking-list">
-            {data.volumeRanking.map((r, i) => (
+            {displayedRanking.length === 0 ? (
+              <div className="bo-ranking-empty">{t('operations.businessOutcomes.rankEmpty')}</div>
+            ) : displayedRanking.map((r, i) => (
               <div key={r.name} className="bo-ranking-item">
                 <span className={`rank rank-${i + 1}`}>{i + 1}</span>
                 <div className="info">
