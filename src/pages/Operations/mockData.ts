@@ -425,43 +425,66 @@ export function getBusinessOutcomes(
 ): BusinessOutcomesData {
   const rng = seededRng((seed || 1) ^ hashStr(JSON.stringify(filter)));
   const timeScale = TIME_RANGE_SCALE[filter.timeRange] ?? 1;
-  const deptScale = filter.department !== 'all' ? 0.28 : 1;
-  const bizScale = filter.businessType !== 'all' ? 0.4 : 1;
-  const clsScale = filter.classification !== 'all' ? 0.4 : 1;
+  // 多选维度缩放：选中数量越多越接近 1
+  const multiScale = (selected: number, total: number, minScale: number) => {
+    if (selected <= 0 || selected >= total) return 1;
+    return minScale + (1 - minScale) * (selected / total);
+  };
+  const deptTotal = mockDepartments.filter(d => d.value !== 'all').length;
+  const bizTotal = mockBusinessTypes.filter(b => b.value !== 'all').length;
+  const clsTotal = mockClassifications.filter(c => c.value !== 'all').length;
+  const deptScale = multiScale(filter.departments.length, deptTotal, 0.28);
+  const bizScale = multiScale(filter.businessTypes.length, bizTotal, 0.4);
+  const clsScale = multiScale(filter.classifications.length, clsTotal, 0.4);
   const totalScale = timeScale * deptScale * bizScale * clsScale;
 
   let data = scaleDeep(clone(mockBusinessOutcomes), totalScale, rng);
 
   // 部门切片
-  if (filter.department !== 'all') {
-    const deptLabel = mockDepartments.find(d => d.value === filter.department)?.label;
-    if (deptLabel) {
+  if (filter.departments.length > 0) {
+    const deptLabels = filter.departments
+      .map(v => mockDepartments.find(d => d.value === v)?.label)
+      .filter((l): l is string => !!l);
+    if (deptLabels.length > 0) {
+      const lower = deptLabels.map(l => l.toLowerCase());
       data.departmentOutcomes = data.departmentOutcomes.filter(d =>
-        d.department.toLowerCase().includes(deptLabel.toLowerCase()),
+        lower.some(l => d.department.toLowerCase().includes(l)),
       );
       if (data.departmentOutcomes.length === 0) {
-        data.departmentOutcomes = [{
+        data.departmentOutcomes = deptLabels.map(deptLabel => ({
           department: deptLabel,
           requirementCount: Math.max(1, Math.round(20 * deptScale)),
           runningCount: Math.max(1, Math.round(12 * deptScale)),
           hoursSaved: Math.round(8000 * timeScale * deptScale),
           costSaved: Math.round(300000 * timeScale * deptScale),
-        }];
+        }));
       }
     }
   }
 
-  // 业务类型 / 分类聚焦：饼图只保留命中分片
-  const focusName = filter.businessType !== 'all'
-    ? mockBusinessTypes.find(b => b.value === filter.businessType)?.label
-    : filter.classification !== 'all'
-      ? mockClassifications.find(c => c.value === filter.classification)?.label
-      : null;
-  if (focusName) {
-    const hit = data.businessTypeShare.find(s => s.name.toLowerCase() === focusName.toLowerCase());
-    data.businessTypeShare = hit
-      ? [{ name: hit.name, value: 100 }]
-      : [{ name: focusName, value: 100 }];
+  // 业务类型 / 分类聚焦：饼图保留命中分片
+  const focusNames: string[] = [];
+  if (filter.businessTypes.length > 0) {
+    filter.businessTypes.forEach(v => {
+      const label = mockBusinessTypes.find(b => b.value === v)?.label;
+      if (label) focusNames.push(label);
+    });
+  } else if (filter.classifications.length > 0) {
+    filter.classifications.forEach(v => {
+      const label = mockClassifications.find(c => c.value === v)?.label;
+      if (label) focusNames.push(label);
+    });
+  }
+  if (focusNames.length > 0) {
+    const lower = focusNames.map(n => n.toLowerCase());
+    const hits = data.businessTypeShare.filter(s => lower.some(n => s.name.toLowerCase() === n));
+    if (hits.length > 0) {
+      const sum = hits.reduce((acc, h) => acc + h.value, 0) || 1;
+      data.businessTypeShare = hits.map(h => ({ name: h.name, value: Math.round((h.value / sum) * 100) }));
+    } else {
+      const each = Math.round(100 / focusNames.length);
+      data.businessTypeShare = focusNames.map(n => ({ name: n, value: each }));
+    }
   }
 
   // 今日维度：累计型砍到 1/30，趋势仅保留最后一个点
