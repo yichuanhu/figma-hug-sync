@@ -1275,7 +1275,7 @@
           "errors": {
             "forbidden": "仅流程创建者可编辑工时",
             "invalid_estimate": "预估工时需为 0~9999 之间，最多 1 位小数",
-            "invalid_delta": "工作时长不能为空或 0，需在 -999~999 之间，最多 1 位小数",
+            "invalid_delta": "工作时长必须大于 0，且不超过 999，最多 1 位小数",
             "invalid_date": "工作日期不能为空且不可晚于今天",
             "invalid_note": "备注最多 200 个字符",
             "not_found": "记录不存在"
