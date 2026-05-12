@@ -1144,7 +1144,13 @@
       "rejectReasonPlaceholder": "请输入拒绝理由"
     },
     "list": {
-      "subtitle": "{{department}} · {{creator}}"
+      "subtitle": "{{department}} · {{creator}}",
+      "columns": {
+        "optionalLabel": "可选列",
+        "effortEstimate": "预估工时合计",
+        "effortActual": "实际工时合计",
+        "completionRate": "完成率"
+      }
     },
     "projects": {
       "pageTitle": "项目与工作空间",
