@@ -434,7 +434,7 @@ const RequirementsWorkbench = () => {
           align: 'right' as const,
           render: (_: unknown, record: RequirementItem) => {
             const s = getRequirementEffortSummary(record);
-            if (s.total_process_count - s.retired_process_count === 0) return <Text type="tertiary">-</Text>;
+            if (s.total_process_count === 0) return <Text type="tertiary">-</Text>;
             return (
               <span style={{ fontVariantNumeric: 'tabular-nums' }}>
                 {Math.round(s.completion_rate * 100)}%

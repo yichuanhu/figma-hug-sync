@@ -41,14 +41,9 @@ const EffortTab = ({ data }: Props) => {
       title: t('requirements.detail.effort.table.process'),
       dataIndex: 'name',
       key: 'name',
-      render: (name: string, row: LinkedProcess) => (
+      render: (name: string) => (
         <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 280 }}>
           {name}
-          {row.is_retired && (
-            <Tag size="small" color="grey" type="light" style={{ marginLeft: 8 }}>
-              {t('requirements.detail.effort.retired')}
-            </Tag>
-          )}
         </Text>
       ),
     },
@@ -150,10 +145,8 @@ const EffortTab = ({ data }: Props) => {
           <Text className="req-effort-tab-kpi-cell-meta">
             {t('requirements.detail.effort.kpi.completionMeta', {
               published: summary.published_process_count,
-              denom: summary.total_process_count - summary.retired_process_count,
+              denom: summary.total_process_count,
             })}
-            {summary.retired_process_count > 0 &&
-              ` · ${t('requirements.detail.effort.kpi.retiredExcluded', { count: summary.retired_process_count })}`}
           </Text>
         </div>
       </div>
