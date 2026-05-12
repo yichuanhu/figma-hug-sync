@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Select, Button, Spin, Toast, Progress, Tooltip } from '@douyinfe/semi-ui';
 import ReactECharts from 'echarts-for-react';
-import { RefreshCw, ArrowDownWideNarrow, ArrowUpNarrowWide } from 'lucide-react';
+import { RefreshCw, ArrowDownWideNarrow, ArrowUpNarrowWide, ChevronDown } from 'lucide-react';
 import {
   getBusinessOutcomes,
   mockDepartments,
@@ -84,29 +84,14 @@ const BusinessOutcomes = () => {
     [],
   );
 
-  // ============ Funnel: 标注转化率 ============
-  const funnelOption = useMemo(() => ({
-    tooltip: { ...TOOLTIP, trigger: 'item', formatter: (p: any) =>
-      `<div style="font-weight:600">${p.name}</div>` +
-      `<div>${t('operations.dashboard.count')}: <b>${p.value}</b></div>` +
-      (p.data.conversionRate != null ? `<div>${t('operations.businessOutcomes.conversion')}: <b>${p.data.conversionRate}%</b></div>` : '')
-    },
-    series: [{
-      type: 'funnel',
-      left: '5%', right: '5%', top: 16, bottom: 8, width: '90%',
-      min: 0, sort: 'descending', gap: 4,
-      label: {
-        show: true, position: 'inside', color: '#fff', fontWeight: 600, fontSize: 12,
-        formatter: (p: any) => p.data.conversionRate != null
-          ? `${p.name}  ${p.value}  (${p.data.conversionRate}%)`
-          : `${p.name}  ${p.value}`,
-      },
-      labelLine: { length: 12, lineStyle: { width: 1, type: 'solid' } },
-      itemStyle: { borderColor: '#fff', borderWidth: 2 },
-      emphasis: { label: { fontSize: 13 } },
-      data: data.funnel.map((s, i) => ({ ...s, itemStyle: { color: COLORS.funnel[i % COLORS.funnel.length] } })),
-    }],
-  }), [data.funnel, t]);
+  // ============ Funnel: 全链路转化率 ============
+  const overallConversion = useMemo(() => {
+    const f = data.funnel;
+    if (!f.length) return 0;
+    const first = f[0].value || 1;
+    const last = f[f.length - 1].value;
+    return Math.round((last / first) * 1000) / 10;
+  }, [data.funnel]);
 
   // ============ Type share pie ============
   const pieOption = useMemo(() => ({
@@ -415,14 +400,56 @@ const BusinessOutcomes = () => {
       </div>
 
       <Spin spinning={loading}>
-      {/* 1. 漏斗图 */}
+      {/* 1. 需求转化漏斗：纵向条形堆叠 */}
       <div className="dashboard-card">
         <div className="dashboard-card-header">
           <span className="dashboard-card-title">
             <MetricLabel label={t('operations.businessOutcomes.funnelTitle')} tip={t('operations.businessOutcomes.tips.funnel')} size="medium" />
           </span>
+          <div className="bo-funnel-overall">
+            <span className="val">{overallConversion}%</span>
+            <span className="lbl">{t('operations.businessOutcomes.overallConversion')}</span>
+          </div>
         </div>
-        <ReactECharts option={funnelOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
+        <div className="bo-funnel">
+          {data.funnel.map((stage, i) => {
+            const base = data.funnel[0]?.value || 1;
+            const widthPct = Math.max(6, (stage.value / base) * 100);
+            const color = COLORS.funnel[i % COLORS.funnel.length];
+            return (
+              <div className="bo-funnel-stage" key={stage.name}>
+                <div className="bo-funnel-row">
+                  <span className="name">{stage.name}</span>
+                  <span className="value">{stage.value.toLocaleString()}</span>
+                </div>
+                <div className="bo-funnel-bar">
+                  <div
+                    className="bar-fill"
+                    style={{
+                      width: `${widthPct}%`,
+                      background: `linear-gradient(90deg, ${color}CC, ${color})`,
+                    }}
+                  />
+                </div>
+                {i < data.funnel.length - 1 && stage.conversionRate != null && (
+                  <div className="bo-funnel-conv-row">
+                    <span
+                      className="bo-funnel-conv"
+                      style={{
+                        color,
+                        background: `${color}14`,
+                        borderColor: `${color}33`,
+                      }}
+                    >
+                      <ChevronDown size={12} strokeWidth={2.5} />
+                      {data.funnel[i + 1].conversionRate}%
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* 2. 需求开发进度: 3 段卡 + 完成率进度条 + 工时块 */}
