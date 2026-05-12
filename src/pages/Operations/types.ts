@@ -97,10 +97,10 @@ export interface ProjectRoiDetail {
 // ROI Analysis 筛选条件
 export interface RoiAnalysisFilter {
   timeRange: string;
-  department: string;
-  project: string;
+  departments: string[];       // 部门多选(空数组=全部)
+  projects: string[];          // 项目多选(空数组=全部)
   timeDimension: string;       // cumulative/today/week/month/custom
-  classification: string;      // 分类筛选 ('all' or classification id)
+  classifications: string[];   // 分类多选(空数组=全部)
 }
 
 // 筛选条件
