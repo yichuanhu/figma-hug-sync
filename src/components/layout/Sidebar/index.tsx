@@ -291,7 +291,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'resourceEfficiency', labelKey: 'sidebar.resourceEfficiency', icon: <Activity size={18} strokeWidth={2} />, path: '/operations/resource-efficiency' },
     // 运营管理 - 分组标题
     { key: 'operationsManagement', labelKey: 'sidebar.operationsManagement', isGroupLabel: true },
-    { key: 'costManagement', labelKey: 'sidebar.costManagement', icon: <FileText size={18} strokeWidth={2} />, path: '/operations/cost-management' },
     { key: 'platformOperations', labelKey: 'sidebar.platformOperations', icon: <Settings size={18} strokeWidth={2} />, path: '/operations/platform-operations' },
   ];
 
