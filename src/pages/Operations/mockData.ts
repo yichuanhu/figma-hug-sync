@@ -340,3 +340,233 @@ export const mockBusinessTypes = [
   { value: 'legal', label: 'Legal' },
   { value: 'it', label: 'IT' },
 ];
+
+// ============================================================
+// 派生函数：让筛选 + 刷新真正影响数据
+// ============================================================
+
+import type {
+  BusinessOutcomesFilter,
+  RoiAnalysisFilter,
+  ResourceEfficiencyFilter,
+} from './types';
+
+// 时间范围 → 缩放系数（thisMonth 为基线 1.0）
+const TIME_RANGE_SCALE: Record<string, number> = {
+  thisMonth: 1.0,
+  lastMonth: 0.85,
+  thisQuarter: 2.6,
+  thisYear: 10,
+  all: 14,
+};
+
+// 简易 seeded RNG（mulberry32）
+function seededRng(seed: number) {
+  let s = seed >>> 0;
+  return () => {
+    s = (s + 0x6D2B79F5) >>> 0;
+    let t = s;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// 数值 ±3% 抖动（保整数语义）
+const jitter = (v: number, rng: () => number) => {
+  if (typeof v !== 'number' || !isFinite(v) || v === 0) return v;
+  const delta = (rng() - 0.5) * 0.06; // ±3%
+  const next = v * (1 + delta);
+  return Number.isInteger(v) ? Math.round(next) : Number(next.toFixed(2));
+};
+
+// 缩放 + 抖动
+const scaleNum = (v: number, scale: number, rng: () => number) => {
+  if (typeof v !== 'number' || !isFinite(v)) return v;
+  const next = v * scale;
+  return jitter(Number.isInteger(v) ? Math.round(next) : Number(next.toFixed(2)), rng);
+};
+
+// 深度遍历对象按 key 黑名单跳过（保留固定字段如 rank/id/month/period/name 等）
+const SKIP_KEYS = new Set([
+  'id', 'rank', 'name', 'month', 'period', 'department', 'group', 'status',
+  'type', 'projectName', 'requirementName', 'processName', 'hoursPerYearFactor',
+  'paybackMonths', 'savedCostTrend', 'utilizationTrend', 'requirementsTrend',
+  'automationHoursTrend', 'avgExecutionTrend', 'volumeGrowthMoM',
+  'completionRate', 'conversionRate', 'ratio', 'roi', 'growthRate',
+]);
+
+function scaleDeep<T>(obj: T, scale: number, rng: () => number): T {
+  if (Array.isArray(obj)) return obj.map(v => scaleDeep(v, scale, rng)) as any;
+  if (obj && typeof obj === 'object') {
+    const out: any = {};
+    for (const [k, v] of Object.entries(obj as any)) {
+      if (SKIP_KEYS.has(k)) {
+        // 仅做轻微抖动，不缩放（百分比/排名/标识保持稳定语义）
+        out[k] = typeof v === 'number' ? jitter(v, rng) : scaleDeep(v, 1, rng);
+      } else if (typeof v === 'number') {
+        out[k] = scaleNum(v, scale, rng);
+      } else {
+        out[k] = scaleDeep(v, scale, rng);
+      }
+    }
+    return out;
+  }
+  return obj;
+}
+
+const clone = <T>(x: T): T =>
+  typeof structuredClone === 'function' ? structuredClone(x) : JSON.parse(JSON.stringify(x));
+
+// =============== 业务成果看板 ===============
+export function getBusinessOutcomes(
+  filter: BusinessOutcomesFilter,
+  seed = 0,
+): BusinessOutcomesData {
+  const rng = seededRng((seed || 1) ^ hashStr(JSON.stringify(filter)));
+  const timeScale = TIME_RANGE_SCALE[filter.timeRange] ?? 1;
+  const deptScale = filter.department !== 'all' ? 0.28 : 1;
+  const bizScale = filter.businessType !== 'all' ? 0.4 : 1;
+  const clsScale = filter.classification !== 'all' ? 0.4 : 1;
+  const totalScale = timeScale * deptScale * bizScale * clsScale;
+
+  let data = scaleDeep(clone(mockBusinessOutcomes), totalScale, rng);
+
+  // 部门切片
+  if (filter.department !== 'all') {
+    const deptLabel = mockDepartments.find(d => d.value === filter.department)?.label;
+    if (deptLabel) {
+      data.departmentOutcomes = data.departmentOutcomes.filter(d =>
+        d.department.toLowerCase().includes(deptLabel.toLowerCase()),
+      );
+      if (data.departmentOutcomes.length === 0) {
+        data.departmentOutcomes = [{
+          department: deptLabel,
+          requirementCount: Math.max(1, Math.round(20 * deptScale)),
+          runningCount: Math.max(1, Math.round(12 * deptScale)),
+          hoursSaved: Math.round(8000 * timeScale * deptScale),
+          costSaved: Math.round(300000 * timeScale * deptScale),
+        }];
+      }
+    }
+  }
+
+  // 业务条线 / 分类聚焦：饼图只保留命中分片
+  const focusName = filter.businessType !== 'all'
+    ? mockBusinessTypes.find(b => b.value === filter.businessType)?.label
+    : filter.classification !== 'all'
+      ? mockClassifications.find(c => c.value === filter.classification)?.label
+      : null;
+  if (focusName) {
+    const hit = data.businessTypeShare.find(s => s.name.toLowerCase() === focusName.toLowerCase());
+    data.businessTypeShare = hit
+      ? [{ name: hit.name, value: 100 }]
+      : [{ name: focusName, value: 100 }];
+  }
+
+  // 今日维度：累计型砍到 1/30，趋势仅保留最后一个点
+  if (filter.timeDimension === 'today') {
+    const trim = (v: number) => Math.max(0, Math.round(v / 30));
+    data.totalVolume = trim(data.totalVolume);
+    data.totalHoursSaved = trim(data.totalHoursSaved);
+    data.requirementProgress.estimatedHours = trim(data.requirementProgress.estimatedHours);
+    data.requirementProgress.actualHours = trim(data.requirementProgress.actualHours);
+    data.volumeTrend = data.volumeTrend.slice(-1);
+    data.timeSavedTrend = data.timeSavedTrend.slice(-1);
+    data.growthVsHours = data.growthVsHours.slice(-1);
+    data.devCapacity.capacityTimeline = data.devCapacity.capacityTimeline.slice(-1);
+  }
+
+  return data;
+}
+
+// =============== ROI 分析 ===============
+export interface RoiAnalysisDerived {
+  metrics: RoiMetrics;
+  requirements: RequirementRoiDetail[];
+  departments: DepartmentRoiDetail[];
+  projects: ProjectRoiDetail[];
+}
+
+export function getRoiAnalysis(filter: RoiAnalysisFilter, seed = 0): RoiAnalysisDerived {
+  const rng = seededRng((seed || 1) ^ hashStr(JSON.stringify(filter)));
+  const timeScale = TIME_RANGE_SCALE[filter.timeRange] ?? 1;
+  const deptScale = filter.department !== 'all' ? 0.3 : 1;
+  const projScale = filter.project !== 'all' ? 0.4 : 1;
+  const clsScale = filter.classification !== 'all' ? 0.5 : 1;
+  const totalScale = timeScale * deptScale * projScale * clsScale;
+
+  const metrics = scaleDeep(clone(mockRoiMetrics), totalScale, rng);
+
+  let requirements = clone(mockRequirementRoiDetails);
+  let departments = clone(mockDepartmentRoiDetails);
+  let projects = clone(mockProjectRoiDetails);
+
+  if (filter.department !== 'all') {
+    const deptLabel = mockDepartments.find(d => d.value === filter.department)?.label?.toLowerCase();
+    if (deptLabel) {
+      requirements = requirements.filter(r => r.department.toLowerCase().includes(deptLabel));
+      departments = departments.filter(d => d.department.toLowerCase().includes(deptLabel));
+    }
+  }
+  if (filter.project !== 'all') {
+    const projLabel = mockProjects.find(p => p.value === filter.project)?.label?.toLowerCase();
+    if (projLabel) {
+      projects = projects.filter(p => p.projectName.toLowerCase().includes(projLabel));
+    }
+  }
+  if (filter.classification !== 'all') {
+    const clsLabel = mockClassifications.find(c => c.value === filter.classification)?.label?.toLowerCase();
+    if (clsLabel) {
+      requirements = requirements.filter(r => r.department.toLowerCase().includes(clsLabel));
+    }
+  }
+
+  requirements = scaleDeep(requirements, totalScale, rng);
+  departments = scaleDeep(departments, totalScale, rng);
+  projects = scaleDeep(projects, totalScale, rng);
+
+  return { metrics, requirements, departments, projects };
+}
+
+// =============== 资源效能 ===============
+export function getResourceEfficiency(
+  filter: ResourceEfficiencyFilter,
+  seed = 0,
+): ResourceEfficiencyData {
+  const rng = seededRng((seed || 1) ^ hashStr(JSON.stringify(filter)));
+  const timeScale = TIME_RANGE_SCALE[filter.timeRange] ?? 1;
+  const groupScale = filter.group !== 'all' ? 0.35 : 1;
+  const totalScale = timeScale * groupScale;
+
+  let data = clone(mockResourceEfficiency);
+
+  if (filter.group !== 'all') {
+    const groupLabel = mockRobotGroups.find(g => g.value === filter.group)?.label?.toLowerCase();
+    if (groupLabel) {
+      data.robotDetails = data.robotDetails.filter(r => r.group.toLowerCase().includes(groupLabel));
+      data.groupUtilization = data.groupUtilization.filter(g => g.group.toLowerCase().includes(groupLabel));
+    }
+  }
+  if (filter.status !== 'all') {
+    data.robotDetails = data.robotDetails.filter(r => r.status === filter.status);
+  }
+
+  data = scaleDeep(data, totalScale, rng);
+
+  if (filter.timeDimension === 'today') {
+    data.totalTasks = Math.round(data.totalTasks / 30);
+    data.totalRunMinutes = Math.round(data.totalRunMinutes / 30);
+    data.taskVolumeTrend = data.taskVolumeTrend.slice(-1);
+    data.utilizationTrend = data.utilizationTrend.slice(-1);
+    data.successRateTrend = data.successRateTrend.slice(-1);
+  }
+
+  return data;
+}
+
+function hashStr(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (Math.imul(h, 31) + s.charCodeAt(i)) | 0;
+  return h >>> 0;
+}
