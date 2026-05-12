@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
-  Typography,
   Button,
   RadioGroup,
   Radio,
@@ -20,8 +19,6 @@ import {
 } from '../../roiStorage';
 import './index.less';
 
-const { Text } = Typography;
-
 export interface RoiOutputVariable {
   name: string;
   displayName?: string;
@@ -33,23 +30,13 @@ interface RoiConfigTabProps {
   versionId: string | null;
   versionLabel?: string;
   outputs: RoiOutputVariable[];
-  requirement?: {
-    id: string;
-    reqNo?: string;
-    title: string;
-  } | null;
-  referenceHourlyRate: number | null;
 }
-
-const fmtRate = (n: number) => `¥${n.toFixed(2)}/小时`;
 
 const RoiConfigTab = ({
   processId,
   versionId,
   versionLabel,
   outputs,
-  requirement,
-  referenceHourlyRate,
 }: RoiConfigTabProps) => {
   const [config, setConfig] = useState<ProcessRoiConfig>(() => getRoiConfig(processId));
 
@@ -69,16 +56,8 @@ const RoiConfigTab = ({
   const update = (patch: Partial<ProcessRoiConfig>) =>
     setConfig((prev) => ({ ...prev, ...patch }));
 
-  const useReferenceRate = () => {
-    if (referenceHourlyRate == null) return;
-    update({ baseHourlyRate: Number(referenceHourlyRate.toFixed(2)) });
-  };
-
   const validate = useCallback((): string | null => {
-    const { baseHourlyRate, businessVolumeConfig, baseTimeSavedMinutes, selectedBusinessVolumeVariable } = config;
-    if (baseHourlyRate != null && baseHourlyRate <= 0) {
-      return '基础时薪必须大于 0';
-    }
+    const { businessVolumeConfig, baseTimeSavedMinutes, selectedBusinessVolumeVariable } = config;
     if (businessVolumeConfig === 'FIXED') {
       if (baseTimeSavedMinutes == null || baseTimeSavedMinutes <= 0) {
         return 'FIXED 模式必须设置基准节省时间，且必须大于 0';
@@ -110,19 +89,6 @@ const RoiConfigTab = ({
     Toast.success('ROI 配置已保存');
   };
 
-  const rateInput = (
-    <InputNumber
-      min={0}
-      precision={2}
-      step={1}
-      suffix={<span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)' }}>元/小时</span>}
-      value={config.baseHourlyRate}
-      onChange={(v) => update({ baseHourlyRate: typeof v === 'number' ? v : undefined })}
-      placeholder="请输入基础时薪"
-      style={{ width: 260 }}
-    />
-  );
-
   return (
     <div className="roi-tab">
       {versionLabel && (
@@ -130,55 +96,11 @@ const RoiConfigTab = ({
           <Info size={12} strokeWidth={2} />
           业务量变量取自当前版本
           <Tag size="small" type="light" color="blue">{versionLabel}</Tag>
-          <Tooltip content="切换版本可在『版本列表』Tab 中进行；ROI 字段保存在流程级别。">
+          <Tooltip content="切换版本可在『版本列表』Tab 中进行；ROI 字段保存在流程级别。基础时薪由关联需求自动派生，无需在此配置。">
             <span style={{ cursor: 'help', textDecoration: 'underline dotted' }}>说明</span>
           </Tooltip>
         </div>
       )}
-
-      <div className="roi-tab-section">
-        <div className="roi-tab-section-title">基础时薪</div>
-
-        {referenceHourlyRate != null && requirement ? (
-          <>
-            <div className="roi-tab-rate-ref">
-              <div className="roi-tab-rate-ref-info">
-                <Text>
-                  关联需求：
-                  <Text strong>
-                    {requirement.reqNo ? `[${requirement.reqNo}] ${requirement.title}` : requirement.title}
-                  </Text>
-                </Text>
-                <Text type="tertiary" size="small">岗位成本（参考）：{fmtRate(referenceHourlyRate)}</Text>
-              </div>
-              <Button size="small" theme="solid" type="primary" onClick={useReferenceRate}>
-                使用该值
-              </Button>
-            </div>
-            <div className="roi-tab-field">
-              <div className="roi-tab-field-label">自定义基础时薪</div>
-              <div className="roi-tab-field-value">{rateInput}</div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="roi-tab-warning">
-              <AlertTriangle size={14} strokeWidth={2} />
-              当前流程未关联需求或需求未配置岗位成本，请手动输入基础时薪
-            </div>
-            <div className="roi-tab-field">
-              <div className="roi-tab-field-label">基础时薪</div>
-              <div className="roi-tab-field-value">{rateInput}</div>
-            </div>
-          </>
-        )}
-
-        {config.baseHourlyRate != null && (
-          <div className="roi-tab-hint">
-            当前生效基础时薪：<Text strong>{fmtRate(config.baseHourlyRate)}</Text>
-          </div>
-        )}
-      </div>
 
       <div className="roi-tab-section">
         <div className="roi-tab-section-title">业务量模式</div>

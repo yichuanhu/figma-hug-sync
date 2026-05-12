@@ -1,6 +1,6 @@
 /**
  * ROI 配置与"业务量变量"标记的本地持久化（mock 阶段）
- * - ROI 配置：以 processId 为键
+ * - ROI 配置：以 processId 为键（不含基础时薪，时薪由需求侧 costEstimate 派生）
  * - 业务量变量标记：以 processId + versionId 为键，按变量名映射布尔值
  */
 
@@ -10,7 +10,6 @@ const FLAGS_KEY_PREFIX = 'apa.outputFlags.';
 export type BusinessVolumeConfig = 'FIXED' | 'PARAM';
 
 export interface ProcessRoiConfig {
-  baseHourlyRate?: number;
   businessVolumeConfig?: BusinessVolumeConfig;
   baseTimeSavedMinutes?: number;
   selectedBusinessVolumeVariable?: string;
@@ -38,7 +37,10 @@ export const getRoiConfig = (processId: string): ProcessRoiConfig => {
   const raw = safeGet(`${ROI_KEY_PREFIX}${processId}`);
   if (!raw) return {};
   try {
-    return JSON.parse(raw) as ProcessRoiConfig;
+    const parsed = JSON.parse(raw) as ProcessRoiConfig & { baseHourlyRate?: number };
+    // 兼容旧数据：忽略 baseHourlyRate 字段
+    const { businessVolumeConfig, baseTimeSavedMinutes, selectedBusinessVolumeVariable } = parsed;
+    return { businessVolumeConfig, baseTimeSavedMinutes, selectedBusinessVolumeVariable };
   } catch {
     return {};
   }

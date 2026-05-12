@@ -398,11 +398,9 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
 
   // 加载关联需求信息（用于回显项目/工作空间）
   const [linkedRequirement, setLinkedRequirement] = useState<LinkableRequirementBrief | null>(null);
-  const [referenceHourlyRate, setReferenceHourlyRate] = useState<number | null>(null);
   useEffect(() => {
     if (!visible || !processData?.requirement_id) {
       setLinkedRequirement(null);
-      setReferenceHourlyRate(null);
       return;
     }
     let cancelled = false;
@@ -413,28 +411,6 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       })
       .catch(() => {
         if (!cancelled) setLinkedRequirement(null);
-      });
-    // 拉取需求列表，从 costEstimate 中推导参考时薪
-    import('@/pages/Requirements/RequirementsWorkbench/mockData')
-      .then(async ({ fetchRequirementList }) => {
-        const res = await fetchRequirementList({
-          offset: 0,
-          size: 1000,
-          keyword: '',
-          sort_by: 'created_at',
-          sort_order: 'desc',
-        });
-        if (cancelled) return;
-        const req = res.list.find((r) => r.id === processData.requirement_id);
-        const cost = req?.costEstimate;
-        if (cost && cost.dailyRate > 0 && cost.workingHoursPerDay > 0) {
-          setReferenceHourlyRate(cost.dailyRate / cost.workingHoursPerDay);
-        } else {
-          setReferenceHourlyRate(null);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setReferenceHourlyRate(null);
       });
     return () => {
       cancelled = true;
@@ -741,12 +717,6 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             versionId={selectedVersionIdResolved}
             versionLabel={selectedVersion?.version}
             outputs={(selectedVersion?.outputs ?? []).map((o) => ({ name: o.name, displayName: o.name, type: o.type }))}
-            requirement={
-              linkedRequirement
-                ? { id: linkedRequirement.id, reqNo: linkedRequirement.req_no, title: linkedRequirement.title }
-                : null
-            }
-            referenceHourlyRate={referenceHourlyRate}
           />
         </TabPane>
       </Tabs>
