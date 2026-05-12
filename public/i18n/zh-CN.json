@@ -1264,7 +1264,7 @@
             "title": "登记工时",
             "editTitle": "编辑工时",
             "deltaLabel": "工作时长",
-            "deltaPlaceholder": "可正可负，例如 0.5 / -0.5",
+            "deltaPlaceholder": "请输入工作时长，例如 0.5 / 1",
             "dateLabel": "工作日期",
             "datePlaceholder": "请选择工作日期",
             "noteLabel": "备注",
