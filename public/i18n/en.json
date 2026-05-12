@@ -3942,7 +3942,6 @@
       "timeDimToday": "Today",
       "refreshed": "Refreshed",
       "conversion": "Conversion",
-      "overallConversion": "Overall conversion",
       "progressBucketPending": "Pending",
       "progressBucketDeveloping": "Developing",
       "progressBucketLive": "Done + Running",
