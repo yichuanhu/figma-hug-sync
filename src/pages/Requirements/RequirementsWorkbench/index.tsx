@@ -391,7 +391,7 @@ const RequirementsWorkbench = () => {
           title: t('requirements.list.columns.effortEstimate'),
           dataIndex: '_effort_estimate',
           key: '_effort_estimate',
-          width: 110,
+          width: 130,
           align: 'right' as const,
           render: (_: unknown, record: RequirementItem) => {
             const s = getRequirementEffortSummary(record);
@@ -410,7 +410,7 @@ const RequirementsWorkbench = () => {
           title: t('requirements.list.columns.effortActual'),
           dataIndex: '_effort_actual',
           key: '_effort_actual',
-          width: 110,
+          width: 130,
           align: 'right' as const,
           render: (_: unknown, record: RequirementItem) => {
             const s = getRequirementEffortSummary(record);
@@ -429,7 +429,7 @@ const RequirementsWorkbench = () => {
           title: t('requirements.list.columns.completionRate'),
           dataIndex: '_completion_rate',
           key: '_completion_rate',
-          width: 110,
+          width: 130,
           align: 'right' as const,
           render: (_: unknown, record: RequirementItem) => {
             const s = getRequirementEffortSummary(record);
