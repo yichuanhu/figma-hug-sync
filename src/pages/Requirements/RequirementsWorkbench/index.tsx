@@ -691,7 +691,9 @@ const RequirementsWorkbench = () => {
                   </Dropdown.Menu>
                 }
               >
-                <Button icon={<Columns3 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" />
+                <Tooltip content={t('requirements.list.columns.tooltip')} position="top">
+                  <Button icon={<Columns3 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" />
+                </Tooltip>
               </Dropdown>
               <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => navigate('/requirements/list/create')}>
                 {t('requirements.workbench.newRequirement')}
