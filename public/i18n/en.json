@@ -1251,7 +1251,13 @@
       "rejectReasonPlaceholder": "Enter rejection reason"
     },
     "list": {
-      "subtitle": "{{department}} · {{creator}}"
+      "subtitle": "{{department}} · {{creator}}",
+      "columns": {
+        "optionalLabel": "Optional Columns",
+        "effortEstimate": "Total Estimate",
+        "effortActual": "Total Actual",
+        "completionRate": "Completion"
+      }
     },
     "projects": {
       "pageTitle": "Projects & Workspaces",
