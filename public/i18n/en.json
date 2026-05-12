@@ -985,7 +985,6 @@
       "effort": {
         "unit": "person-days",
         "empty": "No linked processes yet. Effort data will aggregate here once processes are created.",
-        "retired": "Retired",
         "processListTitle": "Process Detail",
         "overTip": "Actual effort exceeds estimate by {{delta}} person-days",
         "unestimatedWarning": "{{count}} process(es) have no estimate yet — please complete them.",
@@ -993,8 +992,7 @@
           "estimateTotal": "Total Estimate",
           "actualTotal": "Total Actual",
           "completionRate": "Completion",
-          "completionMeta": "{{published}} / {{denom}} processes published",
-          "retiredExcluded": "{{count}} retired excluded"
+          "completionMeta": "{{published}} / {{denom}} processes published"
         },
         "table": {
           "process": "Process",
