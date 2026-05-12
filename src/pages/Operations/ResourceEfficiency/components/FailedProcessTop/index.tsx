@@ -1,27 +1,34 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlertTriangle } from 'lucide-react';
+import { Select } from '@douyinfe/semi-ui';
 import type { ResourceEfficiencyData } from '@/pages/Operations/types';
 import './index.less';
 
 interface Props {
   data: ResourceEfficiencyData['failedProcessTop'];
-  topN?: number;
+  defaultTopN?: number;
 }
 
-const FailedProcessTop = ({ data, topN = 5 }: Props) => {
+const TOP_OPTIONS = [5, 10, 15, 20].map(n => ({ value: n, label: `Top ${n}` }));
+
+const FailedProcessTop = ({ data, defaultTopN = 5 }: Props) => {
   const { t } = useTranslation();
-  const max = Math.max(...data.map(d => d.failedCount), 1);
+  const [topN, setTopN] = useState<number>(defaultTopN);
+  const list = data.slice(0, topN);
+  const max = Math.max(...list.map(d => d.failedCount), 1);
 
   return (
     <div className="failed-process-top dashboard-card" style={{ marginBottom: 0 }}>
-      <div className="dashboard-card-header">
+      <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span className="dashboard-card-title">
           <AlertTriangle size={16} strokeWidth={2} style={{ marginRight: 6, color: '#EF4444', verticalAlign: -3 }} />
           {t('operations.resourceEfficiency.failedProcessTopTitleN', { n: topN })}
         </span>
+        <Select size="small" value={topN} optionList={TOP_OPTIONS} onChange={(v) => setTopN(v as number)} style={{ width: 96 }} />
       </div>
       <div className="failed-process-list">
-        {data.map((item, i) => (
+        {list.map((item, i) => (
           <div key={item.processName} className="failed-process-item">
             <div className="row">
               <span className={`rank rank-${i + 1}`}>{i + 1}</span>
