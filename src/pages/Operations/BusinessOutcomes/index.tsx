@@ -401,7 +401,7 @@ const BusinessOutcomes = () => {
             <MetricLabel label={t('operations.businessOutcomes.funnelTitle')} tip={t('operations.businessOutcomes.tips.funnel')} size="medium" />
           </span>
         </div>
-        <ReactECharts option={funnelOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
+        <RectFunnel data={data.funnel} height={340} />
       </div>
 
       {/* 2. 需求开发进度: 3 段卡 + 完成率进度条 + 工时块 */}
