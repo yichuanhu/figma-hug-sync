@@ -140,7 +140,7 @@ const TaskExecutionSection = ({ data, topN = 5 }: Props) => {
         ))}
       </div>
 
-      {/* Today/Cumulative + Avg execution time */}
+      {/* 今日/累计 4 卡: 任务量 + 运行时长 × 2 (按 STORY-003 规格) */}
       <div className="chart-subtitle">{t('operations.resourceEfficiency.todayCumulative')}</div>
       <div className="task-today-stats">
         <div className="today-stat-item">
@@ -158,25 +158,6 @@ const TaskExecutionSection = ({ data, topN = 5 }: Props) => {
         <div className="today-stat-item">
           <div className="today-label">{t('operations.dashboard.totalRuntime')}</div>
           <div className="today-value">{formatMinutes(data.totalRunMinutes)}</div>
-        </div>
-        <div className="today-stat-item">
-          <div className="today-label">{t('operations.resourceEfficiency.successRateToday')}</div>
-          <div className="today-value" style={{ color: COLORS.success }}>{data.successRateToday}%</div>
-        </div>
-        <div className="today-stat-item">
-          <div className="today-label">
-            <Clock size={12} strokeWidth={2} style={{ verticalAlign: -2, marginRight: 4 }} />
-            {t('operations.resourceEfficiency.avgExecutionTime')}
-          </div>
-          <div className="today-value" style={{ color: COLORS.primary }}>
-            {data.avgExecutionMinutes} {t('operations.resourceEfficiency.minutesUnit')}
-            <span className={`avg-trend ${data.avgExecutionTrend <= 0 ? 'down' : 'up'}`}>
-              {data.avgExecutionTrend <= 0
-                ? <ArrowDown size={11} strokeWidth={2.5} />
-                : <ArrowUp size={11} strokeWidth={2.5} />}
-              {Math.abs(data.avgExecutionTrend)}%
-            </span>
-          </div>
         </div>
       </div>
 
