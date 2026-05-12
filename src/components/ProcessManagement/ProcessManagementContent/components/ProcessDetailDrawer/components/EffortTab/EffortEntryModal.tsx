@@ -103,7 +103,7 @@ const EffortEntryModal = ({ visible, processId, creatorId, editingEntry, onCance
             rules={[
               { required: true, message: t('development.processDevelopment.detail.effort.errors.invalid_delta') },
               {
-                validator: (_r, value) => value !== 0 && value !== undefined && value !== null,
+                validator: (_r, value) => value !== undefined && value !== null && value > 0,
                 message: t('development.processDevelopment.detail.effort.errors.invalid_delta'),
               },
             ]}
