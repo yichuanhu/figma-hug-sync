@@ -256,7 +256,7 @@ const generateMockRequirements = (): RequirementItem[] => {
       baselineFormData,
       costEstimate,
       historyVersions: generateMockVersions(tpl.status, index, tpl.title, tpl.description, tpl.priority),
-      linkedProcesses: generateMockLinkedProcesses(tpl.status, index),
+      linkedProcesses: enrichLinkedProcesses(generateMockLinkedProcesses(tpl.status, index), tpl.status, index),
       linkedProject: generateMockLinkedProject(tpl.status, index),
       linkedWorkspace: generateMockLinkedWorkspace(tpl.status, index),
       unboundProcessCount: generateMockUnboundCount(tpl.status, index),
