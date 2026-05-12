@@ -623,6 +623,35 @@ export interface LinkedProcess {
   name: string;
   status: LinkedProcessStatus;
   ownerName?: string;
+  /** 流程预估工时（人天）。null/undefined 表示未填写 */
+  effort_estimate_days?: number | null;
+  /** 流程实际工时（人天）。null/undefined 表示未填写 */
+  effort_actual_days?: number | null;
+  /** 是否存在已发布版本 */
+  has_published_version?: boolean;
+  /** 是否已退役（不计入完成率分母） */
+  is_retired?: boolean;
+}
+
+// ============= STORY-002 需求级开发工时聚合 =============
+export interface RequirementEffortSummary {
+  /** 关联流程总数（含退役） */
+  total_process_count: number;
+  /** 退役流程数 */
+  retired_process_count: number;
+  /** 已完成（有已发布版本且未退役） */
+  published_process_count: number;
+  /** 进行中（未退役且未发布） */
+  active_process_count: number;
+  /** 未估算工时的流程数（未退役） */
+  unestimated_process_count: number;
+  /** 预估工时合计（人天） */
+  effort_estimate_total: number;
+  /** 实际工时合计（人天） */
+  effort_actual_total: number;
+  /** 完成率 0~1，分母排除退役 */
+  completion_rate: number;
+  processes: LinkedProcess[];
 }
 
 // ============= 活动记录（兼容旧组件） =============
