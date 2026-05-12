@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, InputNumber, Tag, Table, Toast, Tooltip, Typography, Modal, Popconfirm } from '@douyinfe/semi-ui';
-import { Plus, AlertTriangle, Clock, Pencil, Trash2 } from 'lucide-react';
+import { Button, InputNumber, Tag, Table, Toast, Tooltip, Typography, Modal, Dropdown } from '@douyinfe/semi-ui';
+import { Plus, AlertTriangle, Clock, Pencil, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import EffortEntryModal from './EffortEntryModal';
@@ -78,15 +78,24 @@ const EffortTab = ({ processId, creatorId }: Props) => {
   }, []);
 
   const handleDelete = useCallback((entry: LYProcessEffortEntry) => {
-    try {
-      const next = deleteEntry(processId, creatorId, entry.id);
-      setSnapshot(next);
-      Toast.success(t('development.processDevelopment.detail.effort.deleteSuccess'));
-    } catch (e) {
-      if (e instanceof EffortError) {
-        Toast.error(t(`development.processDevelopment.detail.effort.errors.${e.code}`));
-      }
-    }
+    Modal.confirm({
+      title: t('development.processDevelopment.detail.effort.deleteConfirmTitle'),
+      content: t('development.processDevelopment.detail.effort.deleteConfirmContent'),
+      okType: 'danger',
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      onOk: () => {
+        try {
+          const next = deleteEntry(processId, creatorId, entry.id);
+          setSnapshot(next);
+          Toast.success(t('development.processDevelopment.detail.effort.deleteSuccess'));
+        } catch (e) {
+          if (e instanceof EffortError) {
+            Toast.error(t(`development.processDevelopment.detail.effort.errors.${e.code}`));
+          }
+        }
+      },
+    });
   }, [processId, creatorId, t]);
 
   const columns = useMemo(
@@ -101,9 +110,9 @@ const EffortTab = ({ processId, creatorId }: Props) => {
         dataIndex: 'delta_days',
         width: 110,
         render: (v: number) => (
-          <Text strong style={{ color: v < 0 ? 'var(--semi-color-warning)' : 'var(--semi-color-text-0)' }}>
+          <span style={{ color: v < 0 ? 'var(--semi-color-warning)' : 'var(--semi-color-text-0)' }}>
             {v > 0 ? `+${formatNumber(v)}` : formatNumber(v)} {t('development.processDevelopment.detail.effort.unit')}
-          </Text>
+          </span>
         ),
       },
       {
@@ -130,37 +139,40 @@ const EffortTab = ({ processId, creatorId }: Props) => {
       },
       ...(isCreator
         ? [{
-            title: t('common.action'),
+            title: t('common.actions'),
             dataIndex: '_action',
-            width: 100,
+            width: 80,
             fixed: 'right' as const,
             render: (_: unknown, row: LYProcessEffortEntry) => (
-              <div style={{ display: 'inline-flex', gap: 4 }}>
-                <Tooltip content={t('common.edit')}>
-                  <Button
-                    icon={<Pencil size={14} strokeWidth={2} />}
-                    theme="borderless"
-                    type="tertiary"
-                    size="small"
-                    onClick={() => handleEdit(row)}
-                  />
-                </Tooltip>
-                <Popconfirm
-                  title={t('development.processDevelopment.detail.effort.deleteConfirmTitle')}
-                  content={t('development.processDevelopment.detail.effort.deleteConfirmContent')}
-                  okType="danger"
-                  okText={t('common.confirm')}
-                  cancelText={t('common.cancel')}
-                  onConfirm={() => handleDelete(row)}
-                >
-                  <Button
-                    icon={<Trash2 size={14} strokeWidth={2} />}
-                    theme="borderless"
-                    type="danger"
-                    size="small"
-                  />
-                </Popconfirm>
-              </div>
+              <Dropdown
+                trigger="click"
+                position="bottomRight"
+                clickToHide
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      icon={<Pencil size={16} strokeWidth={2} />}
+                      onClick={(e) => { e.stopPropagation(); handleEdit(row); }}
+                    >
+                      {t('common.edit')}
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      icon={<Trash2 size={16} strokeWidth={2} />}
+                      type="danger"
+                      onClick={(e) => { e.stopPropagation(); handleDelete(row); }}
+                    >
+                      {t('common.delete')}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                }
+              >
+                <Button
+                  icon={<Ellipsis size={16} strokeWidth={2} />}
+                  theme="borderless"
+                  type="tertiary"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </Dropdown>
             ),
           }]
         : []),
