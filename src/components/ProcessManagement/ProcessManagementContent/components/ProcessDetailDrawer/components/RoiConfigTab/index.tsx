@@ -38,10 +38,16 @@ const RoiConfigTab = ({
   versionLabel,
   outputs,
 }: RoiConfigTabProps) => {
+  const hasSavedConfig = (c: ProcessRoiConfig) =>
+    c.baseTimeSavedMinutes != null || !!c.selectedBusinessVolumeVariable;
+
   const [config, setConfig] = useState<ProcessRoiConfig>(() => getRoiConfig(processId));
+  const [isEditing, setIsEditing] = useState<boolean>(() => !hasSavedConfig(getRoiConfig(processId)));
 
   useEffect(() => {
-    setConfig(getRoiConfig(processId));
+    const next = getRoiConfig(processId);
+    setConfig(next);
+    setIsEditing(!hasSavedConfig(next));
   }, [processId]);
 
   const businessVolumeOptions = useMemo(() => {
