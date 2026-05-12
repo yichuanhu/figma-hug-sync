@@ -193,14 +193,20 @@ const RoiConfigTab = ({
       </div>
 
       <div className="roi-tab-footer">
-        <Tooltip
-          content={saveDisabled ? '当前没有可用的业务量变量，无法保存 PARAM 模式配置' : ''}
-          trigger={saveDisabled ? 'hover' : 'custom'}
-        >
-          <Button theme="solid" type="primary" onClick={handleSave} disabled={saveDisabled}>
-            保存
+        {isEditing ? (
+          <Tooltip
+            content={saveDisabled ? '当前没有可用的业务量变量，无法保存 PARAM 模式配置' : ''}
+            trigger={saveDisabled ? 'hover' : 'custom'}
+          >
+            <Button theme="solid" type="primary" onClick={handleSave} disabled={saveDisabled}>
+              保存
+            </Button>
+          </Tooltip>
+        ) : (
+          <Button theme="solid" type="primary" onClick={() => setIsEditing(true)}>
+            编辑
           </Button>
-        </Tooltip>
+        )}
       </div>
     </div>
   );
