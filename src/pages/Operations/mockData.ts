@@ -451,7 +451,7 @@ export function getBusinessOutcomes(
     }
   }
 
-  // 业务条线 / 分类聚焦：饼图只保留命中分片
+  // 业务类型 / 分类聚焦：饼图只保留命中分片
   const focusName = filter.businessType !== 'all'
     ? mockBusinessTypes.find(b => b.value === filter.businessType)?.label
     : filter.classification !== 'all'
