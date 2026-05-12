@@ -400,14 +400,56 @@ const BusinessOutcomes = () => {
       </div>
 
       <Spin spinning={loading}>
-      {/* 1. 漏斗图 */}
+      {/* 1. 需求转化漏斗：纵向条形堆叠 */}
       <div className="dashboard-card">
         <div className="dashboard-card-header">
           <span className="dashboard-card-title">
             <MetricLabel label={t('operations.businessOutcomes.funnelTitle')} tip={t('operations.businessOutcomes.tips.funnel')} size="medium" />
           </span>
+          <div className="bo-funnel-overall">
+            <span className="val">{overallConversion}%</span>
+            <span className="lbl">{t('operations.businessOutcomes.overallConversion')}</span>
+          </div>
         </div>
-        <ReactECharts option={funnelOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
+        <div className="bo-funnel">
+          {data.funnel.map((stage, i) => {
+            const base = data.funnel[0]?.value || 1;
+            const widthPct = Math.max(6, (stage.value / base) * 100);
+            const color = COLORS.funnel[i % COLORS.funnel.length];
+            return (
+              <div className="bo-funnel-stage" key={stage.name}>
+                <div className="bo-funnel-row">
+                  <span className="name">{stage.name}</span>
+                  <span className="value">{stage.value.toLocaleString()}</span>
+                </div>
+                <div className="bo-funnel-bar">
+                  <div
+                    className="bar-fill"
+                    style={{
+                      width: `${widthPct}%`,
+                      background: `linear-gradient(90deg, ${color}CC, ${color})`,
+                    }}
+                  />
+                </div>
+                {i < data.funnel.length - 1 && stage.conversionRate != null && (
+                  <div className="bo-funnel-conv-row">
+                    <span
+                      className="bo-funnel-conv"
+                      style={{
+                        color,
+                        background: `${color}14`,
+                        borderColor: `${color}33`,
+                      }}
+                    >
+                      <ChevronDown size={12} strokeWidth={2.5} />
+                      {data.funnel[i + 1].conversionRate}%
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* 2. 需求开发进度: 3 段卡 + 完成率进度条 + 工时块 */}
