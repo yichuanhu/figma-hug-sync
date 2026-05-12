@@ -178,7 +178,7 @@ const RoiConfigTab = ({
                   value={config.baseTimeSavedMinutes}
                   onChange={(v) => update({ baseTimeSavedMinutes: typeof v === 'number' ? v : undefined })}
                   placeholder="请输入"
-                  disabled={!hasBusinessVolume}
+                  disabled={!hasBusinessVolume || !isEditing}
                   style={{ width: 260 }}
                 />
                 {hasBusinessVolume && config.selectedBusinessVolumeVariable && config.baseTimeSavedMinutes ? (
