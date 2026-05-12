@@ -522,15 +522,6 @@ const BusinessOutcomes = () => {
               <MetricLabel label={t('operations.businessOutcomes.volumeRankingTitle')} tip={t('operations.businessOutcomes.tips.volumeRanking')} />
             </div>
             <div className="bo-ranking-controls">
-              <Select
-                multiple
-                maxTagCount={1}
-                value={rankFilterTypes}
-                optionList={rankTypeOptions}
-                placeholder={t('operations.businessOutcomes.rankFilterPlaceholder')}
-                onChange={(v) => setRankFilterTypes((v as string[]) || [])}
-                style={{ width: 200 }}
-              />
               <Tooltip content={rankSortDesc ? t('operations.businessOutcomes.rankSortDesc') : t('operations.businessOutcomes.rankSortAsc')}>
                 <Button
                   icon={rankSortDesc
