@@ -38,10 +38,16 @@ const RoiConfigTab = ({
   versionLabel,
   outputs,
 }: RoiConfigTabProps) => {
+  const hasSavedConfig = (c: ProcessRoiConfig) =>
+    c.baseTimeSavedMinutes != null || !!c.selectedBusinessVolumeVariable;
+
   const [config, setConfig] = useState<ProcessRoiConfig>(() => getRoiConfig(processId));
+  const [isEditing, setIsEditing] = useState<boolean>(() => !hasSavedConfig(getRoiConfig(processId)));
 
   useEffect(() => {
-    setConfig(getRoiConfig(processId));
+    const next = getRoiConfig(processId);
+    setConfig(next);
+    setIsEditing(!hasSavedConfig(next));
   }, [processId]);
 
   const businessVolumeOptions = useMemo(() => {
@@ -86,6 +92,7 @@ const RoiConfigTab = ({
     }
     saveRoiConfig(processId, config);
     Toast.success('ROI 配置已保存');
+    setIsEditing(false);
   };
 
   return (
@@ -107,6 +114,7 @@ const RoiConfigTab = ({
           value={mode}
           onChange={(e) => update({ businessVolumeConfig: e.target.value as BusinessVolumeConfig })}
           className="roi-tab-mode-switch"
+          disabled={!isEditing}
         >
           <Radio value="FIXED">FIXED 固定值</Radio>
           <Radio value="PARAM">PARAM 参数模式</Radio>
@@ -125,6 +133,7 @@ const RoiConfigTab = ({
                 onChange={(v) => update({ baseTimeSavedMinutes: typeof v === 'number' ? v : undefined })}
                 placeholder="请输入"
                 style={{ width: 260 }}
+                disabled={!isEditing}
               />
             </div>
           </div>
@@ -140,7 +149,7 @@ const RoiConfigTab = ({
                   onChange={(v) => update({ selectedBusinessVolumeVariable: v as string })}
                   placeholder={hasBusinessVolume ? '请选择' : '当前版本无业务量变量'}
                   style={{ width: 320 }}
-                  disabled={!hasBusinessVolume}
+                  disabled={!hasBusinessVolume || !isEditing}
                   emptyContent="当前版本无业务量变量"
                 >
                   {businessVolumeOptions.map((o) => (
@@ -169,7 +178,7 @@ const RoiConfigTab = ({
                   value={config.baseTimeSavedMinutes}
                   onChange={(v) => update({ baseTimeSavedMinutes: typeof v === 'number' ? v : undefined })}
                   placeholder="请输入"
-                  disabled={!hasBusinessVolume}
+                  disabled={!hasBusinessVolume || !isEditing}
                   style={{ width: 260 }}
                 />
                 {hasBusinessVolume && config.selectedBusinessVolumeVariable && config.baseTimeSavedMinutes ? (
@@ -184,14 +193,20 @@ const RoiConfigTab = ({
       </div>
 
       <div className="roi-tab-footer">
-        <Tooltip
-          content={saveDisabled ? '当前没有可用的业务量变量，无法保存 PARAM 模式配置' : ''}
-          trigger={saveDisabled ? 'hover' : 'custom'}
-        >
-          <Button theme="solid" type="primary" onClick={handleSave} disabled={saveDisabled}>
-            保存
+        {isEditing ? (
+          <Tooltip
+            content={saveDisabled ? '当前没有可用的业务量变量，无法保存 PARAM 模式配置' : ''}
+            trigger={saveDisabled ? 'hover' : 'custom'}
+          >
+            <Button theme="solid" type="primary" onClick={handleSave} disabled={saveDisabled}>
+              保存
+            </Button>
+          </Tooltip>
+        ) : (
+          <Button theme="solid" type="primary" onClick={() => setIsEditing(true)}>
+            编辑
           </Button>
-        </Tooltip>
+        )}
       </div>
     </div>
   );
