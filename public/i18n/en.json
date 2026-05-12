@@ -25,6 +25,7 @@
     "filter": "Filter",
     "import": "Import",
     "export": "Export",
+    "download": "Download",
     "run": "Run",
     "open": "Open",
     "close": "Close",
