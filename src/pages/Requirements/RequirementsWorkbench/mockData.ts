@@ -1676,10 +1676,11 @@ export const uploadDevSchemeDoc = async (
     changedFields: { version: newDoc.version, fileName: newDoc.fileName, note: newDoc.note },
   });
 
-  // 触发 FEAT-022 通知（mock — 写入通知中心 store）
+  // 触发 FEAT-022 通知（mock — 通知工作空间所有成员）
   try {
     const mod = await import('@/mocks/apaNotificationDispatch');
-    const recipients = Array.from(new Set([req.owner_id, req.creatorId].filter(Boolean) as string[]));
+    const wsMembers = await fetchWorkspaceMembers(wsId);
+    const recipients = Array.from(new Set(wsMembers.map((m) => m.userId).filter(Boolean)));
     mod.dispatchApaNotification({
       templateId: 'APA_REQUIREMENT_DEV_SCHEME_DOC_UPLOADED',
       recipients,
