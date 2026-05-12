@@ -187,7 +187,6 @@ const EffortTab = ({ processId, creatorId }: Props) => {
                 step={0.5}
                 min={0}
                 max={9999}
-                size="small"
                 style={{ width: 160 }}
                 suffix={t('development.processDevelopment.detail.effort.unit')}
                 placeholder={t('development.processDevelopment.detail.effort.estimatePlaceholder')}
@@ -219,7 +218,7 @@ const EffortTab = ({ processId, creatorId }: Props) => {
                 )}
               </span>
             ) : (
-              <Text type="tertiary">{t('development.processDevelopment.detail.effort.noEntries')}</Text>
+              <span className="effort-tab-field-text">-</span>
             )}
 
             {(snapshot.estimate !== null && snapshot.estimate > 0 && snapshot.actual !== null) || snapshot.updated_at ? (
@@ -259,14 +258,13 @@ const EffortTab = ({ processId, creatorId }: Props) => {
             <Button
               icon={<Plus size={14} strokeWidth={2} />}
               theme="solid"
-              size="small"
               onClick={() => { setEditingEntry(null); setModalVisible(true); }}
             >
               {t('development.processDevelopment.detail.effort.addEntry')}
             </Button>
           ) : (
             <Tooltip content={t('development.processDevelopment.detail.effort.errors.forbidden')}>
-              <Button icon={<Plus size={14} strokeWidth={2} />} theme="solid" size="small" disabled>
+              <Button icon={<Plus size={14} strokeWidth={2} />} theme="solid" disabled>
                 {t('development.processDevelopment.detail.effort.addEntry')}
               </Button>
             </Tooltip>
