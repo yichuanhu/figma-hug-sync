@@ -573,17 +573,6 @@ const RequirementDetailDrawer = ({
               />
             </Tooltip>
           )}
-          {canOffline && onOffline && (
-            <Tooltip content={t('requirements.detail.offline', '下线')}>
-              <Button
-                icon={<PowerOff size={16} strokeWidth={2} />}
-                theme="borderless"
-                size="small"
-                type="tertiary"
-                onClick={() => onOffline(data)}
-              />
-            </Tooltip>
-          )}
           {canLinkProject && (
             <>
               <Tooltip content={t('requirements.detail.pendingProject.linkExisting')}>
