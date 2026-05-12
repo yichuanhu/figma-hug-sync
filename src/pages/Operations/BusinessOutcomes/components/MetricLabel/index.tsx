@@ -14,11 +14,7 @@ const MetricLabel = ({ label, tip, size = 'small', className }: Props) => {
     <span className={`metric-label metric-label-${size} ${className || ''}`}>
       <span className="metric-label-text">{label}</span>
       {tip && (
-        <Tooltip
-          content={<div className="metric-label-tip-content">{tip}</div>}
-          position="top"
-          showArrow
-        >
+        <Tooltip content={tip} position="top">
           <Info size={size === 'medium' ? 14 : 13} strokeWidth={2} className="metric-label-icon" />
         </Tooltip>
       )}
