@@ -39,9 +39,9 @@ const BusinessOutcomes = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<BusinessOutcomesFilter>({
     timeRange: 'thisMonth',
-    department: 'all',
-    businessType: 'all',
-    classification: 'all',
+    departments: [],
+    businessTypes: [],
+    classifications: [],
     timeDimension: 'cumulative',
   });
   const [seed, setSeed] = useState(1);
@@ -72,16 +72,16 @@ const BusinessOutcomes = () => {
     { value: 'today', label: t('operations.businessOutcomes.timeDimToday') },
   ];
   const deptOptions = useMemo(
-    () => mockDepartments.map(d => d.value === 'all' ? { ...d, label: t('operations.dashboard.selectAll') } : d),
-    [t],
+    () => mockDepartments.filter(d => d.value !== 'all').map(d => ({ value: d.value, label: d.label })),
+    [],
   );
   const bizOptions = useMemo(
-    () => mockBusinessTypes.map(d => d.value === 'all' ? { ...d, label: t('operations.dashboard.selectAll') } : d),
-    [t],
+    () => mockBusinessTypes.filter(d => d.value !== 'all').map(d => ({ value: d.value, label: d.label })),
+    [],
   );
   const classificationOptions = useMemo(
-    () => mockClassifications.map(c => c.value === 'all' ? { ...c, label: t('operations.dashboard.selectAll') } : c),
-    [t],
+    () => mockClassifications.filter(c => c.value !== 'all').map(c => ({ value: c.value, label: c.label })),
+    [],
   );
 
   // ============ Funnel: 标注转化率 ============
@@ -378,18 +378,30 @@ const BusinessOutcomes = () => {
           </div>
           <div className="bo-filter-item">
             <span className="bo-filter-label">{t('operations.dashboard.department')}</span>
-            <Select value={filter.department} optionList={deptOptions}
-              onChange={(v) => setFilter({ ...filter, department: v as string })} style={{ width: 140 }} />
+            <Select
+              multiple maxTagCount={2}
+              value={filter.departments} optionList={deptOptions}
+              placeholder={t('operations.dashboard.selectAll')}
+              onChange={(v) => setFilter({ ...filter, departments: (v as string[]) || [] })}
+              style={{ minWidth: 180, maxWidth: 320 }} />
           </div>
           <div className="bo-filter-item">
             <span className="bo-filter-label">{t('operations.businessOutcomes.businessType')}</span>
-            <Select value={filter.businessType} optionList={bizOptions}
-              onChange={(v) => setFilter({ ...filter, businessType: v as string })} style={{ width: 140 }} />
+            <Select
+              multiple maxTagCount={2}
+              value={filter.businessTypes} optionList={bizOptions}
+              placeholder={t('operations.dashboard.selectAll')}
+              onChange={(v) => setFilter({ ...filter, businessTypes: (v as string[]) || [] })}
+              style={{ minWidth: 180, maxWidth: 320 }} />
           </div>
           <div className="bo-filter-item">
             <span className="bo-filter-label">{t('operations.businessOutcomes.classification')}</span>
-            <Select value={filter.classification} optionList={classificationOptions}
-              onChange={(v) => setFilter({ ...filter, classification: v as string })} style={{ width: 140 }} />
+            <Select
+              multiple maxTagCount={2}
+              value={filter.classifications} optionList={classificationOptions}
+              placeholder={t('operations.dashboard.selectAll')}
+              onChange={(v) => setFilter({ ...filter, classifications: (v as string[]) || [] })}
+              style={{ minWidth: 180, maxWidth: 320 }} />
           </div>
           <div className="bo-filter-item">
             <span className="bo-filter-label">{t('operations.businessOutcomes.timeDimension')}</span>
