@@ -485,7 +485,7 @@ const BusinessOutcomes = () => {
           </div>
         </div>
 
-        <div className="bo-row cols-3" style={{ marginTop: 16 }}>
+        <div className="bo-row cols-2" style={{ marginTop: 16 }}>
           <div>
             <div className="chart-subtitle">{t('operations.businessOutcomes.volumeTrendTitle')}</div>
             <ReactECharts option={volumeOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
@@ -496,24 +496,25 @@ const BusinessOutcomes = () => {
             </div>
             <ReactECharts option={pieOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
           </div>
-          <div>
-            <div className="chart-subtitle">
-              <MetricLabel label={t('operations.businessOutcomes.volumeRankingTitle')} tip={t('operations.businessOutcomes.tips.volumeRanking')} />
-            </div>
-            <div className="bo-ranking-list">
-              {data.volumeRanking.map((r, i) => (
-                <div key={r.name} className="bo-ranking-item">
-                  <span className={`rank rank-${i + 1}`}>{i + 1}</span>
-                  <div className="info">
-                    <div className="name">{r.name}</div>
-                    <div className="bar-track">
-                      <div className="bar-fill" style={{ width: `${(r.volume / rankMax) * 100}%` }} />
-                    </div>
+        </div>
+
+        <div style={{ marginTop: 16 }}>
+          <div className="chart-subtitle">
+            <MetricLabel label={t('operations.businessOutcomes.volumeRankingTitle')} tip={t('operations.businessOutcomes.tips.volumeRanking')} />
+          </div>
+          <div className="bo-ranking-list">
+            {data.volumeRanking.map((r, i) => (
+              <div key={r.name} className="bo-ranking-item">
+                <span className={`rank rank-${i + 1}`}>{i + 1}</span>
+                <div className="info">
+                  <div className="name">{r.name}</div>
+                  <div className="bar-track">
+                    <div className="bar-fill" style={{ width: `${(r.volume / rankMax) * 100}%` }} />
                   </div>
-                  <div className="value">{r.volume.toLocaleString()}</div>
                 </div>
-              ))}
-            </div>
+                <div className="value">{r.volume.toLocaleString()}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
