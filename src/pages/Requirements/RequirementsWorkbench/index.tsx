@@ -767,7 +767,7 @@ const RequirementsWorkbench = () => {
         }}
         onDelete={(record) => handleDelete(record)}
         onResubmit={(record) => handleResubmit(record)}
-        onOffline={(record) => handleOffline(record)}
+        
         onStatusChange={async (id, newStatus, comment) => {
           await updateRequirementStatus(id, newStatus, comment);
           loadData();
