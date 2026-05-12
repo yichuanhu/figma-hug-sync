@@ -184,10 +184,9 @@ export interface ResourceEfficiencyData {
 // 资源效能 - 筛选条件
 export interface ResourceEfficiencyFilter {
   timeRange: string;
-  group: string;
+  departments: string[];       // 部门多选(不含 all)
   status: string;
   timeDimension: string;       // cumulative/today
-  topN: number;                // TopX 数量, 默认 5, 最大 20
 }
 
 // ============ 业务成果看板 ============

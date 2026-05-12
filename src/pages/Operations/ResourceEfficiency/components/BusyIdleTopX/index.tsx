@@ -1,16 +1,21 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Flame, Snowflake } from 'lucide-react';
+import { Select } from '@douyinfe/semi-ui';
 import type { RobotDetail } from '@/pages/Operations/types';
 import './index.less';
 
 interface Props {
   robots: RobotDetail[];
   mode: 'busy' | 'idle';
-  topN?: number;
+  defaultTopN?: number;
 }
 
-const BusyIdleTopX = ({ robots, mode, topN = 5 }: Props) => {
+const TOP_OPTIONS = [5, 10, 15, 20].map(n => ({ value: n, label: `Top ${n}` }));
+
+const BusyIdleTopX = ({ robots, mode, defaultTopN = 5 }: Props) => {
   const { t } = useTranslation();
+  const [topN, setTopN] = useState<number>(defaultTopN);
 
   // R-03: 在线机器人 (working/idle)。idle 模式额外要求 utilization > 0
   const candidates = robots.filter(r =>
@@ -30,11 +35,12 @@ const BusyIdleTopX = ({ robots, mode, topN = 5 }: Props) => {
 
   return (
     <div className="busy-idle-top dashboard-card" style={{ marginBottom: 0 }}>
-      <div className="dashboard-card-header">
+      <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span className="dashboard-card-title">
           <Icon size={16} strokeWidth={2} style={{ marginRight: 6, color: accentColor, verticalAlign: -3 }} />
           {title}
         </span>
+        <Select size="small" value={topN} optionList={TOP_OPTIONS} onChange={(v) => setTopN(v as number)} style={{ width: 96 }} />
       </div>
       <div className="busy-idle-list">
         {list.map((r, i) => (

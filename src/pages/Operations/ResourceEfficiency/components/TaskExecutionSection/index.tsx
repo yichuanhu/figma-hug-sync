@@ -8,8 +8,8 @@ import './index.less';
 
 interface Props {
   data: ResourceEfficiencyData;
-  topN?: number;
 }
+
 
 const COLORS = {
   primary: '#3B82F6',
@@ -28,7 +28,7 @@ const TOOLTIP_STYLE = {
   extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 8px;',
 };
 
-const TaskExecutionSection = ({ data, topN = 5 }: Props) => {
+const TaskExecutionSection = ({ data }: Props) => {
   const { t } = useTranslation();
 
   const formatMinutes = (minutes: number) => {
@@ -175,7 +175,7 @@ const TaskExecutionSection = ({ data, topN = 5 }: Props) => {
 
       {/* Failed process top 5 */}
       <div style={{ marginTop: 16 }}>
-        <FailedProcessTop data={data.failedProcessTop.slice(0, topN)} topN={topN} />
+        <FailedProcessTop data={data.failedProcessTop} />
       </div>
     </div>
   );

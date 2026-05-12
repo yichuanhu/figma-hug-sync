@@ -3178,6 +3178,11 @@
     "resourceEfficiency": {
       "title": "资源效能监控",
       "group": "分组",
+      "totalRobots": "机器人总数",
+      "interactiveOnline": "人机交互在线",
+      "interactiveLicensed": "人机交互授权",
+      "unattendedOnline": "无人值守在线",
+      "unattendedLicensed": "无人值守授权",
       "robotPerformance": "机器人效能",
       "taskExecution": "任务执行统计",
       "overallUtilization": "整体利用率",
