@@ -18,7 +18,7 @@ const ROIAnalysis = () => {
     timeRange: 'thisMonth',
     departments: [],
     projects: [],
-    timeDimension: 'monthly',
+    timeDimension: 'cumulative',
     classifications: [],
   });
   const [seed, setSeed] = useState(1);
