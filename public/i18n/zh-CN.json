@@ -1710,6 +1710,14 @@
       }
     }
   },
+  "about": {
+    "productName": "数字员工平台",
+    "versionNumber": "版本号",
+    "releaseDate": "发布时间",
+    "copy": "复制版本号",
+    "copySuccess": "版本号已复制到剪贴板",
+    "copyError": "复制失败，请重试"
+  },
   "personalCredential": {
     "searchPlaceholder": "搜索个人凭据名称",
     "noData": "暂无个人凭据",
