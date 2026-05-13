@@ -79,6 +79,7 @@ const AnnouncementSection = () => {
                   key={banner.id}
                   className={`banner-slide${img ? ' has-image' : ''}`}
                   style={img ? undefined : { background: banner.bannerGradient ?? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+                  onClick={() => setDetail(banner)}
                 >
                   {img ? (
                     <img src={img} alt={banner.title} className="banner-slide-image" />
