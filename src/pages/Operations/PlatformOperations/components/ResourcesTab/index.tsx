@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Table, Button, Input, Tag, Modal, Toast, Pagination, Typography,
+  Table, Button, Input, Tag, Dropdown, Modal, Toast, Pagination, Typography,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import dayjs from 'dayjs';
-import { Upload as UploadIcon, Download, Trash2 } from 'lucide-react';
+import { Upload as UploadIcon, Download, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   getResources,
