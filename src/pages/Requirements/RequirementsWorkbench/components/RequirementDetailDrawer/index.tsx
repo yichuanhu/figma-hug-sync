@@ -383,6 +383,7 @@ const RequirementDetailDrawer = ({
     if (hasAssessment && context !== 'assessment') availableTabs.push('cost');
     if (!isHistory && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('effort');
     if (!isHistory && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('devScheme');
+    if (!isHistory && isPostProjectStatus(data.status)) availableTabs.push('changeLog');
     if (!availableTabs.includes(activeTab)) {
       setActiveTab('overview');
     }
