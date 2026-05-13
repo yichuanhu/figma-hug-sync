@@ -234,16 +234,6 @@ const loadSchemes = (): ApprovalAssessmentScheme[] => {
   return [buildPresetScheme()];
 };
 
-const loadHistory = (): ConfigHistoryItem[] => {
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    if (raw) return JSON.parse(raw) as ConfigHistoryItem[];
-  } catch {
-    /* noop */
-  }
-  return [];
-};
-
 let schemes: ApprovalAssessmentScheme[] = loadSchemes();
 
 const persist = () => {
