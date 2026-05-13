@@ -198,7 +198,7 @@ const ApprovalAssessmentConfigPage = () => {
       content: `确认删除方案「${draft.name}」？删除后该方案的全部历史快照一并清除。`,
       okText: '删除',
       cancelText: '取消',
-      type: 'warning',
+      okButtonProps: { type: 'danger' },
       onOk: async () => {
         try {
           await deleteScheme(draft.id);
