@@ -80,17 +80,7 @@ export interface ApprovalAssessmentScheme extends SchemeContent {
   updated_by: string;
 }
 
-export interface ConfigHistoryItem {
-  scheme_id: string;
-  version: number;
-  snapshot: SchemeContent;
-  updated_at: string;
-  updated_by: string;
-  remark?: string;
-}
-
 const STORAGE_KEY = 'apa.requirements.approvalSchemes.v2';
-const HISTORY_KEY = 'apa.requirements.approvalSchemesHistory.v2';
 const LEGACY_CONFIG_KEY = 'apa.requirements.approvalAssessmentConfig.v1';
 
 const PRESET_ID = 'scheme-preset';
