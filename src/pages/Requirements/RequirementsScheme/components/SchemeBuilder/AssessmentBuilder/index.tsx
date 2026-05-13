@@ -150,32 +150,6 @@ const AssessmentBuilder = ({ valueModel, complexityModel, fields, onChange, disa
     else onChange(valueModel, m);
   };
 
-  if (disabled) {
-    return (
-      <div className="assessment-builder scheme-builder-pane">
-        <div className="assessment-disabled-empty">
-          <div className="icon-wrap">
-            <PowerOff size={28} strokeWidth={1.5} />
-          </div>
-          <Title heading={6} style={{ margin: 0 }}>评估配置不可用</Title>
-          <Text type="tertiary" style={{ textAlign: 'center', maxWidth: 480 }}>
-            当前模版已关闭审批流，使用此模版提交的需求将跳过审批与评估。
-            如需配置评估模型，请先在「工作流」中开启审批流。
-          </Text>
-          <Button
-            theme="solid"
-            type="primary"
-            icon={<ArrowRight size={14} strokeWidth={2} />}
-            iconPosition="right"
-            onClick={onJumpToWorkflow}
-          >
-            前往工作流配置
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="assessment-builder scheme-builder-pane">
       <div className="scheme-builder-section-title">
