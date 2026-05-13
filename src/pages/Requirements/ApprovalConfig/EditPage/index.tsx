@@ -18,7 +18,7 @@ import {
   Space,
   Banner,
 } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, RotateCcw } from 'lucide-react';
+import { ChevronLeft, Save, RotateCcw, Pencil } from 'lucide-react';
 import {
   fetchSchemes,
   saveScheme,
