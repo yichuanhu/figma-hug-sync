@@ -211,7 +211,6 @@ const RequirementsScheme = () => {
         onNavigate={(s) => setDetailScheme(s)}
         onActivate={handleActivate}
         onDelete={(s) => { setDetailScheme(null); handleDelete(s); }}
-        onEditApprovalFlow={goEdit}
       />
 
       {/* 基于预设创建 */}
