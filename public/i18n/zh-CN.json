@@ -3478,7 +3478,7 @@
       "description": "管理平台公告与可下载资源，统一发布运营内容",
       "tabs": {
         "announcements": "公告管理",
-        "resources": "可下载资源管理"
+        "resources": "资源管理"
       },
       "announcements": {
         "create": "新建公告",
