@@ -10,7 +10,6 @@ import {
   type CostFormPayload,
   type CostRecord,
   type CostType,
-  type RecurrencePattern,
 } from '../../mockData';
 import './index.less';
 
@@ -26,8 +25,6 @@ interface FormValues {
   projectId?: string;
   amount: number;
   occurrenceDate: string | Date;
-  isRecurring: boolean;
-  recurrencePattern?: RecurrencePattern;
   description?: string;
 }
 
@@ -35,11 +32,9 @@ const CostFormModal = ({ visible, costType, editing, onClose }: Props) => {
   const { t } = useTranslation();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [formApi, setFormApi] = useState<any>(null);
-  const [isRecurring, setIsRecurring] = useState(false);
 
   useEffect(() => {
     if (!visible) return;
-    setIsRecurring(editing?.isRecurring ?? false);
   }, [visible, editing]);
 
   const isProject = costType === 'PROJECT';
@@ -50,8 +45,6 @@ const CostFormModal = ({ visible, costType, editing, onClose }: Props) => {
     projectId: editing?.projectId,
     amount: editing?.amount ?? 0,
     occurrenceDate: editing?.occurrenceDate ?? dayjs().format('YYYY-MM-DD'),
-    isRecurring: editing?.isRecurring ?? false,
-    recurrencePattern: editing?.recurrencePattern,
     description: editing?.description ?? '',
   };
 
@@ -72,8 +65,6 @@ const CostFormModal = ({ visible, costType, editing, onClose }: Props) => {
       costName: name,
       amount: Number(values.amount) || 0,
       occurrenceDate,
-      isRecurring: !!values.isRecurring,
-      recurrencePattern: values.isRecurring ? values.recurrencePattern : undefined,
       description: values.description?.trim() || undefined,
       projectId: isProject ? values.projectId : undefined,
     };
@@ -179,30 +170,6 @@ const CostFormModal = ({ visible, costType, editing, onClose }: Props) => {
           trigger={['blur', 'change']}
           rules={[{ required: true, message: t('operations.costManagement.validation.dateRequired') }]}
         />
-
-        <Form.Switch
-          field="isRecurring"
-          label={t('operations.costManagement.form.isRecurring')}
-          onChange={(v) => setIsRecurring(!!v)}
-        />
-
-        {isRecurring && (
-          <Form.Select
-            field="recurrencePattern"
-            label={t('operations.costManagement.form.recurrencePattern')}
-            placeholder={t('operations.costManagement.form.recurrencePlaceholder')}
-            style={{ width: '100%' }}
-            optionList={[
-              { label: t('operations.costManagement.recurrence.DAILY'), value: 'DAILY' },
-              { label: t('operations.costManagement.recurrence.WEEKLY'), value: 'WEEKLY' },
-              { label: t('operations.costManagement.recurrence.MONTHLY'), value: 'MONTHLY' },
-              { label: t('operations.costManagement.recurrence.QUARTERLY'), value: 'QUARTERLY' },
-              { label: t('operations.costManagement.recurrence.YEARLY'), value: 'YEARLY' },
-            ]}
-            trigger={['blur', 'change']}
-            rules={[{ required: true, message: t('operations.costManagement.validation.recurrenceRequired') }]}
-          />
-        )}
 
         <Form.TextArea
           field="description"

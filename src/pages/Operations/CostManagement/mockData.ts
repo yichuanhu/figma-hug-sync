@@ -130,8 +130,6 @@ export interface CostFormPayload {
   costName: string;
   amount: number;
   occurrenceDate: string;
-  isRecurring: boolean;
-  recurrencePattern?: RecurrencePattern;
   description?: string;
 }
 
@@ -151,6 +149,7 @@ export const createCostRecord = (data: CostFormPayload): CostRecord => {
   const item: CostRecord = {
     id: `cost-${Date.now()}`,
     ...data,
+    isRecurring: false,
     projectName: data.costType === 'PROJECT' ? projectName(data.projectId) : undefined,
     createdBy: '管理员',
     createdAt: now(),
