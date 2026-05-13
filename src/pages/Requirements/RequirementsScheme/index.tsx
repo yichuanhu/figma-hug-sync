@@ -191,9 +191,6 @@ const RequirementsScheme = () => {
                 </Text>
                 <div className="scheme-card-footer">
                   <Tag size="small" color="grey" type="light">{s.custom_fields.length} 字段</Tag>
-                  <Tag size="small" color="grey" type="light">{s.approval_flow.levels.length} 级审批</Tag>
-                  {s.value_assessment_model && <Tag size="small" color="cyan" type="light">价值评估</Tag>}
-                  {s.complexity_assessment_model && <Tag size="small" color="purple" type="light">复杂度评估</Tag>}
                 </div>
               </div>
             ))}
