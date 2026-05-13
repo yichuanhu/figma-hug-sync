@@ -188,6 +188,7 @@ const App = () => {
           <Route path="/operations/resource-efficiency" element={<ResourceEfficiency />} />
           <Route path="/operations/business-outcomes" element={<BusinessOutcomes />} />
           <Route path="/operations/platform-operations" element={<PlatformOperations />} />
+          <Route path="/operations/cost-management" element={<CostManagement />} />
           <Route path="/maintenance" element={<Navigate to="/maintenance/config" replace />} />
           <Route path="/maintenance/workbench" element={<MaintenanceWorkbench />} />
           <Route path="/maintenance/config" element={<MaintenanceConfig />} />
