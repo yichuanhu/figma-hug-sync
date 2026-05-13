@@ -286,9 +286,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const operationsCenterMenu: MenuItem[] = [
     // 数据分析 - 分组标题
     { key: 'dataAnalysis', labelKey: 'sidebar.dataAnalysis', isGroupLabel: true },
+    { key: 'resourceEfficiency', labelKey: 'sidebar.resourceEfficiency', icon: <Activity size={18} strokeWidth={2} />, path: '/operations/resource-efficiency' },
     { key: 'businessOutcomes', labelKey: 'sidebar.businessOutcomes', icon: <Target size={18} strokeWidth={2} />, path: '/operations/business-outcomes' },
     { key: 'roiAnalysis', labelKey: 'sidebar.roiAnalysis', icon: <TrendingUp size={18} strokeWidth={2} />, path: '/operations/roi-analysis' },
-    { key: 'resourceEfficiency', labelKey: 'sidebar.resourceEfficiency', icon: <Activity size={18} strokeWidth={2} />, path: '/operations/resource-efficiency' },
     // 运营管理 - 分组标题
     { key: 'operationsManagement', labelKey: 'sidebar.operationsManagement', isGroupLabel: true },
     { key: 'costManagement', labelKey: 'sidebar.costManagement', icon: <Wallet size={18} strokeWidth={2} />, path: '/operations/cost-management' },
