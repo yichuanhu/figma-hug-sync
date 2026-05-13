@@ -1,12 +1,8 @@
 /**
  * 配置历史抽屉（只读）
- *
- * - 列出历史版本（v1 不可回滚，仅查看）
- * - 当前版本不在历史中
  */
 import { useEffect, useState } from 'react';
-import { Empty, Tag, Typography, Spin } from '@douyinfe/semi-ui';
-import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import { Empty, Tag, Typography, Spin, SideSheet } from '@douyinfe/semi-ui';
 import { fetchConfigHistory, type ConfigHistoryItem } from '../../mockData';
 
 const { Text, Title } = Typography;
@@ -33,14 +29,21 @@ const ConfigHistoryDrawer = ({ visible, onClose }: Props) => {
   }, [visible]);
 
   return (
-    <DetailDrawerWrapper visible={visible} onClose={onClose} title="配置历史" width={900}>
+    <SideSheet visible={visible} onCancel={onClose} title="配置历史" width={900} mask={false}>
       {loading ? (
         <Spin />
       ) : list.length === 0 ? (
-        <Empty description="暂无历史版本" />
+        <Empty description="暂无历史版本（首次保存后才会产生历史快照）" />
       ) : (
         <div style={{ display: 'flex', gap: 16, height: '100%' }}>
-          <div style={{ width: 200, borderRight: '1px solid var(--semi-color-border)', paddingRight: 12, overflow: 'auto' }}>
+          <div
+            style={{
+              width: 200,
+              borderRight: '1px solid var(--semi-color-border)',
+              paddingRight: 12,
+              overflow: 'auto',
+            }}
+          >
             {list.map((h) => (
               <div
                 key={h.version}
@@ -55,19 +58,27 @@ const ConfigHistoryDrawer = ({ visible, onClose }: Props) => {
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text strong>v{h.version}</Text>
-                  {h.version === 1 && <Tag size="small" color="blue" type="light">初始</Tag>}
+                  {h.version === 1 && (
+                    <Tag size="small" color="blue" type="light">
+                      初始
+                    </Tag>
+                  )}
                 </div>
                 <Text type="tertiary" size="small" style={{ display: 'block' }}>
                   {new Date(h.updated_at).toLocaleString()}
                 </Text>
-                <Text type="tertiary" size="small">{h.updated_by}</Text>
+                <Text type="tertiary" size="small">
+                  {h.updated_by}
+                </Text>
               </div>
             ))}
           </div>
           <div style={{ flex: 1, overflow: 'auto' }}>
             {active && (
               <>
-                <Title heading={6} style={{ marginTop: 0 }}>v{active.version} 快照（只读）</Title>
+                <Title heading={6} style={{ marginTop: 0 }}>
+                  v{active.version} 快照（只读，不支持回滚）
+                </Title>
                 <Text type="tertiary" size="small">
                   {new Date(active.updated_at).toLocaleString()}　·　{active.updated_by}
                 </Text>
@@ -89,7 +100,7 @@ const ConfigHistoryDrawer = ({ visible, onClose }: Props) => {
           </div>
         </div>
       )}
-    </DetailDrawerWrapper>
+    </SideSheet>
   );
 };
 
