@@ -20,19 +20,12 @@ const { Text } = Typography;
 const APPROVER_TYPE_OPTIONS: Array<{ value: WorkflowApproverType; label: string }> = [
   { value: 'department_leader', label: '部门领导' },
   { value: 'specific_users', label: '指定用户' },
-  { value: 'role', label: '角色' },
 ];
 
 const MODE_OPTIONS: Array<{ value: WorkflowApprovalMode; label: string }> = [
   { value: 'any_one', label: '任一通过' },
   { value: 'all', label: '会签（全部）' },
   { value: 'majority', label: '多数通过' },
-];
-
-const ROLE_OPTIONS = [
-  { value: 'role-line-manager', label: '直属主管' },
-  { value: 'role-dept-head', label: '部门负责人' },
-  { value: 'role-committee', label: '委员会' },
 ];
 
 const makeApprover = (priority: number, defaultName: string): WorkflowApprover => ({
@@ -181,17 +174,6 @@ const ApproverListEditor = ({
                     update(idx, { ...a, target_ids: (Array.isArray(v) ? v : []) as string[] })
                   }
                   placeholder="搜索并选择用户"
-                  disabled={readOnly}
-                />
-              )}
-              {a.type === 'role' && (
-                <Select
-                  multiple
-                  value={a.target_ids ?? []}
-                  onChange={(v) => update(idx, { ...a, target_ids: v as string[] })}
-                  optionList={ROLE_OPTIONS}
-                  size="small"
-                  placeholder="选择角色"
                   disabled={readOnly}
                 />
               )}
