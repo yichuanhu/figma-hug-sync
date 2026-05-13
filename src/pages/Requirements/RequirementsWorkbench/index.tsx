@@ -677,17 +677,13 @@ const RequirementsWorkbench = () => {
                      ))}
                    </div>
                  }
-              >
-                <Tooltip content={t('requirements.list.columns.tooltip')} position="bottom" trigger="hover">
-                  <span style={{ display: 'inline-flex' }}>
-                    <Button
-                      icon={<Columns3 size={16} strokeWidth={2} />}
-                      theme="borderless"
-                      type="tertiary"
-                    />
-                  </span>
-                </Tooltip>
-              </Dropdown>
+               >
+                 <Button
+                   icon={<Columns3 size={16} strokeWidth={2} />}
+                   theme="borderless"
+                   type="tertiary"
+                 />
+               </Dropdown>
               <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => navigate('/requirements/list/create')}>
                 {t('requirements.workbench.newRequirement')}
               </Button>
