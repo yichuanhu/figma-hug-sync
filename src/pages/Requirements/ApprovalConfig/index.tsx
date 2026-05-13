@@ -238,7 +238,7 @@ const ApprovalAssessmentConfigPage = () => {
                       <Dropdown.Menu>
                         <Dropdown.Item
                           icon={<Eye size={14} />}
-                          onClick={(e) => { e.stopPropagation(); goEdit(s); }}
+                          onClick={(e) => { e.stopPropagation(); goView(s); }}
                         >
                           查看详情
                         </Dropdown.Item>
