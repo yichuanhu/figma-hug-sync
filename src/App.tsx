@@ -58,6 +58,7 @@ import ROIAnalysis from "@/pages/Operations/ROIAnalysis";
 import ResourceEfficiency from "@/pages/Operations/ResourceEfficiency";
 import BusinessOutcomes from "@/pages/Operations/BusinessOutcomes";
 import PlatformOperations from "@/pages/Operations/PlatformOperations";
+import CostManagement from "@/pages/Operations/CostManagement";
 // Requirements & Other
 import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
 import RequirementCreatePage from "@/pages/Requirements/RequirementsWorkbench/components/RequirementCreatePage";
@@ -187,6 +188,7 @@ const App = () => {
           <Route path="/operations/resource-efficiency" element={<ResourceEfficiency />} />
           <Route path="/operations/business-outcomes" element={<BusinessOutcomes />} />
           <Route path="/operations/platform-operations" element={<PlatformOperations />} />
+          <Route path="/operations/cost-management" element={<CostManagement />} />
           <Route path="/maintenance" element={<Navigate to="/maintenance/config" replace />} />
           <Route path="/maintenance/workbench" element={<MaintenanceWorkbench />} />
           <Route path="/maintenance/config" element={<MaintenanceConfig />} />
