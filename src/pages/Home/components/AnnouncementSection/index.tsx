@@ -118,7 +118,7 @@ const AnnouncementSection = () => {
           {announcements.slice(0, 3).map((item) => {
             const config = priorityConfig[item.priority];
             return (
-              <div key={item.id} className="announcement-item">
+              <div key={item.id} className="announcement-item" onClick={() => setDetail(item)}>
                 <div className="announcement-item-left">
                   <div className="announcement-item-title-row">
                     <Tag color={config.color} size="small">{config.label}</Tag>
@@ -134,6 +134,38 @@ const AnnouncementSection = () => {
           })}
         </div>
       </div>
+
+      <Modal
+        title={detail?.title}
+        visible={!!detail}
+        onCancel={() => setDetail(null)}
+        footer={null}
+        width={520}
+        centered
+      >
+        {detail && (
+          <div className="announcement-detail">
+            <div className="announcement-detail-meta">
+              <Tag color={priorityConfig[detail.priority].color} size="small">
+                {priorityConfig[detail.priority].label}
+              </Tag>
+              {detail.publishedAt && (
+                <Typography.Text type="tertiary" size="small">
+                  {detail.publishedAt.slice(0, 16).replace('T', ' ')}
+                </Typography.Text>
+              )}
+            </div>
+            {detail.summary && (
+              <Typography.Paragraph className="announcement-detail-summary">
+                {detail.summary}
+              </Typography.Paragraph>
+            )}
+            <Typography.Paragraph className="announcement-detail-content">
+              {detail.content}
+            </Typography.Paragraph>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };
