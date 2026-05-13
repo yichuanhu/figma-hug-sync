@@ -90,6 +90,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
   style,
 }) => {
   const { t } = useTranslation();
+  const [aboutVisible, setAboutVisible] = useState(false);
   // 映射默认图标
   const getIcon = (key: string) => {
     switch (key) {
