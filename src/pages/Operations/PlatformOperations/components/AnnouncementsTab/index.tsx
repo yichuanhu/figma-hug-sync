@@ -20,7 +20,7 @@ import './index.less';
 
 const { Text } = Typography;
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE_DEFAULT = 20;
 
 const AnnouncementsTab = () => {
   const { t } = useTranslation();
