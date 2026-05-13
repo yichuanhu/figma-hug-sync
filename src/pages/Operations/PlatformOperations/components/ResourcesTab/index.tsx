@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Table, Button, Input, Tag, Modal, Toast, Pagination, Typography,
+  Table, Button, Input, Tag, Dropdown, Modal, Toast, Pagination, Typography,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import dayjs from 'dayjs';
-import { Upload as UploadIcon, Download, Trash2 } from 'lucide-react';
+import { Upload as UploadIcon, Download, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   getResources,
@@ -119,26 +119,37 @@ const ResourcesTab = () => {
     },
     {
       title: t('operations.platformOperations.resources.columns.actions'),
-      width: 120,
+      width: 60,
       render: (_: unknown, item: DownloadableResource) => (
-        <div className="row-actions" onClick={(e) => e.stopPropagation()}>
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          stopPropagation
+          clickToHide
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item
+                icon={<Download size={16} strokeWidth={2} />}
+                onClick={() => handleDownload(item)}
+              >
+                {t('operations.platformOperations.resources.actions.download')}
+              </Dropdown.Item>
+              <Dropdown.Item
+                icon={<Trash2 size={16} strokeWidth={2} />}
+                type="danger"
+                onClick={() => handleDelete(item)}
+              >
+                {t('operations.platformOperations.resources.actions.delete', '删除')}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          }
+        >
           <Button
+            icon={<Ellipsis size={16} strokeWidth={2} />}
             theme="borderless"
-            type="primary"
-            size="small"
-            icon={<Download size={14} strokeWidth={2} />}
-            onClick={() => handleDownload(item)}
-          >
-            {t('operations.platformOperations.resources.actions.download')}
-          </Button>
-          <Button
-            theme="borderless"
-            type="danger"
-            size="small"
-            icon={<Trash2 size={14} strokeWidth={2} />}
-            onClick={() => handleDelete(item)}
+            onClick={(e) => e.stopPropagation()}
           />
-        </div>
+        </Dropdown>
       ),
     },
   ];
