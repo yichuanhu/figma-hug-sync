@@ -177,6 +177,12 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             </div>
           </div>
         </Popover>
+        {/* 关于 */}
+        <MenuItemComponent
+          icon={<Info size={20} strokeWidth={2} />}
+          label={t('sidebar.userMenu.about')}
+          onClick={() => setAboutVisible(true)}
+        />
         {/* 退出登录放在最下面 */}
         {actions.filter(a => a.key === 'logout').map((action) => (
           <MenuItemComponent
@@ -187,6 +193,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
           />
         ))}
       </div>
+      <AboutModal visible={aboutVisible} onCancel={() => setAboutVisible(false)} />
     </div>
   );
 };
