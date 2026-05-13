@@ -35,6 +35,7 @@ const AnnouncementSection = () => {
   usePlatformOpsData();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [detail, setDetail] = useState<PlatformAnnouncement | null>(null);
 
   const banners = getBannerAnnouncements();
   const announcements = getPublishedAnnouncements(5);
