@@ -89,13 +89,15 @@ const ModelCard = ({
           <div className="dim-header">
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', flex: 1, flexWrap: 'wrap' }}>
               <Input value={d.label} onChange={(v) => updateDim(idx, { ...d, label: v })} style={{ maxWidth: 200 }} placeholder="维度名称" />
-              <InputNumber value={d.weight} onChange={(v) => updateDim(idx, { ...d, weight: Number(v) || 0 })} step={0.05} min={0} max={1} prefix="权重" style={{ width: 130 }} />
+              <Tooltip content="所有维度权重之和需等于 1.0" position="top">
+                <InputNumber value={d.weight} onChange={(v) => updateDim(idx, { ...d, weight: Number(v) || 0 })} step={0.05} min={0} max={1} prefix="权重" style={{ width: 130 }} />
+              </Tooltip>
               <Select value={d.dimension_type ?? 'manual_score'} onChange={(v) => updateDim(idx, { ...d, dimension_type: v as 'auto_calculated' | 'manual_score' })} style={{ width: 140 }}
                 optionList={[{ label: '手动打分', value: 'manual_score' }, { label: '自动计算', value: 'auto_calculated' }]} />
               {d.dimension_type === 'auto_calculated' ? (
-                <Input value={d.expression} onChange={(v) => updateDim(idx, { ...d, expression: v })} placeholder="表达式 如 {a}*{b}/60" style={{ flex: 1, minWidth: 200 }} />
+                <Input value={d.expression} onChange={(v) => updateDim(idx, { ...d, expression: v })} placeholder="表达式，如 {工时}*{单价}/60" style={{ flex: 1, minWidth: 200 }} />
               ) : (
-                <Select value={d.source_field} onChange={(v) => updateDim(idx, { ...d, source_field: v as string })} placeholder="来源字段" style={{ flex: 1, minWidth: 160 }}
+                <Select value={d.source_field} onChange={(v) => updateDim(idx, { ...d, source_field: v as string })} placeholder="选择来源字段" style={{ flex: 1, minWidth: 160 }}
                   showClear optionList={fields.map((f) => ({ label: f.label, value: f.key }))} />
               )}
             </div>
