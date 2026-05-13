@@ -6,7 +6,7 @@
  * - 顶部带返回 + 取消/保存
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   Typography,
   Switch,
@@ -18,7 +18,7 @@ import {
   Space,
   Banner,
 } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, RotateCcw } from 'lucide-react';
+import { ChevronLeft, Save, RotateCcw, Pencil } from 'lucide-react';
 import {
   fetchSchemes,
   saveScheme,
@@ -36,11 +36,15 @@ const { Title, Text } = Typography;
 const ApprovalConfigEditPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [draft, setDraft] = useState<ApprovalAssessmentScheme | null>(null);
   const [original, setOriginal] = useState<ApprovalAssessmentScheme | null>(null);
+
+  const isViewMode = searchParams.get('mode') === 'view';
+  const readonly = isViewMode;
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -69,7 +73,6 @@ const ApprovalConfigEditPage = () => {
     [draft, original],
   );
   const errors = useMemo(() => (draft ? validateScheme(draft) : []), [draft]);
-  const readonly = false;
 
   const patch = (p: Partial<ApprovalAssessmentScheme>) =>
     setDraft((prev) => (prev ? { ...prev, ...p } : prev));
@@ -146,7 +149,16 @@ const ApprovalConfigEditPage = () => {
           )}
           <Tag color="grey" type="light" size="small">v{draft.version}</Tag>
         </div>
-        {!readonly && (
+        {readonly ? (
+          <Button
+            icon={<Pencil size={14} strokeWidth={2} />}
+            type="primary"
+            theme="solid"
+            onClick={() => setSearchParams({})}
+          >
+            编辑
+          </Button>
+        ) : (
           <Space>
             <Button
               icon={<RotateCcw size={14} strokeWidth={2} />}
@@ -168,15 +180,6 @@ const ApprovalConfigEditPage = () => {
           </Space>
         )}
       </div>
-
-      {readonly && (
-        <Banner
-          type="info"
-          description="系统预设方案不可编辑，可在列表「基于此创建副本」后修改。"
-          closeIcon={null}
-          style={{ marginBottom: 16 }}
-        />
-      )}
 
       {errors.length > 0 && (
         <Banner

@@ -81,6 +81,8 @@ const ApprovalAssessmentConfigPage = () => {
     );
   }, [schemes, keyword]);
 
+  const goView = (s: ApprovalAssessmentScheme) =>
+    navigate(`/requirements/approval-config/${s.id}/edit?mode=view`);
   const goEdit = (s: ApprovalAssessmentScheme) =>
     navigate(`/requirements/approval-config/${s.id}/edit`);
 
@@ -214,7 +216,7 @@ const ApprovalAssessmentConfigPage = () => {
               <div
                 key={s.id}
                 className={`scheme-card ${s.is_active ? 'active' : ''}`}
-                onClick={() => goEdit(s)}
+                onClick={() => goView(s)}
               >
                 <div className="scheme-card-header">
                   <div className="scheme-card-title-row">
@@ -236,7 +238,7 @@ const ApprovalAssessmentConfigPage = () => {
                       <Dropdown.Menu>
                         <Dropdown.Item
                           icon={<Eye size={14} />}
-                          onClick={(e) => { e.stopPropagation(); goEdit(s); }}
+                          onClick={(e) => { e.stopPropagation(); goView(s); }}
                         >
                           查看详情
                         </Dropdown.Item>
