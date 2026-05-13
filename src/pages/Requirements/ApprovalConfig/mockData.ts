@@ -315,26 +315,8 @@ export const saveScheme = async (
   const errs = validateScheme(next);
   if (errs.length > 0) throw new Error(errs.map((e) => `[${e.code}] ${e.message}`).join('\n'));
 
-  // 入历史
-  history = [
-    {
-      scheme_id: target.id,
-      version: target.version,
-      snapshot: {
-        approval_enabled: target.approval_enabled,
-        approval_levels: target.approval_levels,
-        assessment_enabled: target.assessment_enabled,
-        assessor_groups: target.assessor_groups,
-        value_model: target.value_model,
-        complexity_model: target.complexity_model,
-      },
-      updated_at: target.updated_at,
-      updated_by: target.updated_by,
-    },
-    ...history,
-  ];
-
   Object.assign(target, {
+
     name: next.name,
     description: next.description,
     approval_enabled: next.approval_enabled,
