@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Table, Button, Input, Tag, Dropdown, Modal, Toast, Pagination,
+  Table, Button, Input, Tag, Dropdown, Modal, Toast, Pagination, Typography,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import dayjs from 'dayjs';
-import { Plus, MoreHorizontal, Search } from 'lucide-react';
+import { Plus, MoreHorizontal } from 'lucide-react';
+import EmptyState from '@/components/EmptyState';
 import {
   getAnnouncements,
   deleteAnnouncement,
@@ -16,7 +18,9 @@ import {
 import AnnouncementFormModal from '../AnnouncementFormModal';
 import './index.less';
 
-const PAGE_SIZE = 10;
+const { Text } = Typography;
+
+const PAGE_SIZE_DEFAULT = 20;
 
 const AnnouncementsTab = () => {
   const { t } = useTranslation();
@@ -24,6 +28,7 @@ const AnnouncementsTab = () => {
 
   const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_DEFAULT);
   const [modalVisible, setModalVisible] = useState(false);
   const [editing, setEditing] = useState<PlatformAnnouncement | null>(null);
 
@@ -32,7 +37,7 @@ const AnnouncementsTab = () => {
     () => all.filter((a) => !keyword || a.title.toLowerCase().includes(keyword.toLowerCase())),
     [all, keyword],
   );
-  const pageData = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pageData = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   const handleDelete = (item: PlatformAnnouncement) => {
     Modal.confirm({
@@ -157,7 +162,7 @@ const AnnouncementsTab = () => {
           placeholder={t('operations.platformOperations.announcements.searchPlaceholder')}
           value={keyword}
           onChange={(v) => { setKeyword(v); setPage(1); }}
-          prefix={<Search size={14} strokeWidth={2} />}
+          prefix={<IconSearchStroked />}
           showClear
           style={{ width: 320 }}
         />
@@ -171,24 +176,42 @@ const AnnouncementsTab = () => {
         </Button>
       </div>
 
-      <Table
-        size="small"
-        columns={columns}
-        dataSource={pageData}
-        rowKey="id"
-        pagination={false}
-        empty={<div className="table-empty">{t('operations.platformOperations.announcements.empty')}</div>}
-      />
+      <div className="tab-table">
+        <Table
+          size="small"
+          columns={columns}
+          dataSource={pageData}
+          rowKey="id"
+          pagination={false}
+          empty={
+            <EmptyState
+              variant={keyword ? 'noResult' : 'noData'}
+              description={keyword ? t('common.noResult') : t('operations.platformOperations.announcements.empty')}
+            />
+          }
+        />
+      </div>
 
       {filtered.length > 0 && (
         <div className="list-pagination">
-          <Pagination
-            total={filtered.length}
-            currentPage={page}
-            pageSize={PAGE_SIZE}
-            showTotal
-            onChange={setPage}
-          />
+          <Text type="tertiary">
+            {t('common.showingRecords', {
+              start: (page - 1) * pageSize + 1,
+              end: Math.min(page * pageSize, filtered.length),
+              total: filtered.length,
+            })}
+          </Text>
+          <div className="list-pagination-right">
+            <Text type="tertiary">{t('common.totalPages', { total: Math.ceil(filtered.length / pageSize) })}</Text>
+            <Pagination
+              total={filtered.length}
+              currentPage={page}
+              pageSize={pageSize}
+              showSizeChanger
+              onPageChange={setPage}
+              onPageSizeChange={(s: number) => { setPageSize(s); setPage(1); }}
+            />
+          </div>
         </div>
       )}
 

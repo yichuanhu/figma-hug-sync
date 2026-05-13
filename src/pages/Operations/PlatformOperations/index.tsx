@@ -5,7 +5,7 @@ import AnnouncementsTab from './components/AnnouncementsTab';
 import ResourcesTab from './components/ResourcesTab';
 import './index.less';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const PlatformOperations = () => {
   const { t } = useTranslation();
@@ -13,9 +13,12 @@ const PlatformOperations = () => {
 
   return (
     <div className="platform-operations-page">
-      <Title heading={3} className="page-title">
-        {t('operations.platformOperations.title')}
-      </Title>
+      <div className="platform-operations-page-header">
+        <Title heading={3} className="title">
+          {t('operations.platformOperations.title')}
+        </Title>
+        <Text type="tertiary">{t('operations.platformOperations.description')}</Text>
+      </div>
       <Tabs
         activeKey={activeKey}
         onChange={setActiveKey}

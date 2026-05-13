@@ -1,12 +1,15 @@
 .platform-operations-page {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 24px;
-  overflow: hidden;
+  height: 100%;
 
-  .page-title {
-    margin: 0 0 16px !important;
+  &-header {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+
+    .title {
+      margin-bottom: 8px;
+    }
   }
 
   .semi-tabs {
@@ -18,8 +21,17 @@
     .semi-tabs-content {
       flex: 1;
       min-height: 0;
-      overflow: auto;
+      overflow: hidden;
       padding-top: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .semi-tabs-pane-active {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
   }
 }
