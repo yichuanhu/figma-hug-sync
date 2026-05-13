@@ -216,7 +216,7 @@ const ApprovalAssessmentConfigPage = () => {
               <div
                 key={s.id}
                 className={`scheme-card ${s.is_active ? 'active' : ''}`}
-                onClick={() => goEdit(s)}
+                onClick={() => goView(s)}
               >
                 <div className="scheme-card-header">
                   <div className="scheme-card-title-row">
