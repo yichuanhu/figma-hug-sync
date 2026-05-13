@@ -80,7 +80,7 @@ const CostTabContent = ({ costType }: Props) => {
 
   const handleRefresh = () => {
     setRefreshKey((n) => n + 1);
-    Toast.success(t('common.refreshed'));
+    Toast.success(t('operations.costManagement.toast.refreshed'));
   };
 
   const overviewCards = [
