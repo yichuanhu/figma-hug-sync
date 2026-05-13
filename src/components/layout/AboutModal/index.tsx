@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Button, Toast, Tooltip } from '@douyinfe/semi-ui';
 import { Copy } from 'lucide-react';
-import laiyeLogo from '@/assets/laiye-logo.png';
+import laiyeLogo from '@/assets/laiye-logo.svg';
 import { PLATFORM_VERSION } from '@/constants/platformVersion';
 import './index.less';
 
