@@ -2,21 +2,16 @@
  * 审批层级列表编辑器
  *
  * - 串行优先级（拖拽排序）
- * - 类型限制：部门领导 / 指定用户
+ * - 直接选择审批人
  * - 模式：任一通过 / 会签 / 多数通过
  */
 import { useRef, useState } from 'react';
 import { Button, Input, InputNumber, Select, Switch, Tag, Typography, Empty } from '@douyinfe/semi-ui';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
-import type { ApprovalLevel, ApproverType, ApprovalMode } from '../../mockData';
+import type { ApprovalLevel, ApprovalMode } from '../../mockData';
 
 const { Text } = Typography;
-
-const TYPE_OPTIONS: Array<{ value: ApproverType; label: string }> = [
-  { value: 'department_leader', label: '部门领导' },
-  { value: 'specific_users', label: '指定用户' },
-];
 
 const MODE_OPTIONS: Array<{ value: ApprovalMode; label: string }> = [
   { value: 'any_one', label: '任一通过' },
@@ -50,7 +45,7 @@ const ApprovalLevelList = ({ levels, onChange, disabled }: Props) => {
       {
         id: `lv-${Date.now().toString(36)}`,
         name: `审批层级 ${levels.length + 1}`,
-        type: 'department_leader',
+        user_ids: [],
         mode: 'any_one',
         priority: levels.length + 1,
         required: true,
@@ -133,19 +128,6 @@ const ApprovalLevelList = ({ levels, onChange, disabled }: Props) => {
               />
               <div className="level-row-inline">
                 <Select
-                  value={lv.type}
-                  onChange={(v) =>
-                    update(idx, {
-                      type: v as ApproverType,
-                      user_ids: v === 'specific_users' ? lv.user_ids ?? [] : undefined,
-                    })
-                  }
-                  optionList={TYPE_OPTIONS}
-                  size="small"
-                  style={{ width: 120 }}
-                  disabled={disabled}
-                />
-                <Select
                   value={lv.mode}
                   onChange={(v) => update(idx, { mode: v as ApprovalMode })}
                   optionList={MODE_OPTIONS}
@@ -176,18 +158,16 @@ const ApprovalLevelList = ({ levels, onChange, disabled }: Props) => {
                   <Text size="small" type="tertiary">必需</Text>
                 </div>
               </div>
-              {lv.type === 'specific_users' && (
-                <OwnerSearchSelect
-                  multiple
-                  size="small"
-                  value={lv.user_ids ?? []}
-                  onChange={(v: string | string[]) =>
-                    update(idx, { user_ids: Array.isArray(v) ? v : [] })
-                  }
-                  placeholder="搜索并选择用户"
-                  disabled={disabled}
-                />
-              )}
+              <OwnerSearchSelect
+                multiple
+                size="small"
+                value={lv.user_ids ?? []}
+                onChange={(v: string | string[]) =>
+                  update(idx, { user_ids: Array.isArray(v) ? v : [] })
+                }
+                placeholder="搜索并选择审批人"
+                disabled={disabled}
+              />
             </div>
             {!disabled && (
               <Button

@@ -195,6 +195,14 @@ const loadSchemes = (): ApprovalAssessmentScheme[] => {
     if (raw) {
       const parsed = JSON.parse(raw) as ApprovalAssessmentScheme[];
       if (Array.isArray(parsed) && parsed.length > 0) {
+        // 旧数据兼容：剥掉 level.type，补齐 user_ids
+        parsed.forEach((s) => {
+          s.approval_levels?.forEach((lv) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            delete (lv as any).type;
+            if (!Array.isArray(lv.user_ids)) lv.user_ids = [];
+          });
+        });
         // 保证预设始终存在
         const hasPreset = parsed.some((s) => s.id === PRESET_ID);
         if (!hasPreset) parsed.unshift(buildPresetScheme());
