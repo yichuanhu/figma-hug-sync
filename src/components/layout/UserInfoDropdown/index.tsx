@@ -3,10 +3,11 @@
  * 基于 Figma 设计实现
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Popover, Dropdown } from '@douyinfe/semi-ui';
-import { Building2, ChevronRight, ExternalLink, Languages, LogOut, Monitor, User } from 'lucide-react';
+import { Building2, ChevronRight, ExternalLink, Info, Languages, LogOut, Monitor, User } from 'lucide-react';
+import AboutModal from '../AboutModal';
 import './index.less';
 
 export interface UserInfoConfig {
