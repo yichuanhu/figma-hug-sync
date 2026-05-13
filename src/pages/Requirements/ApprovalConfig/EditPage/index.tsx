@@ -36,11 +36,15 @@ const { Title, Text } = Typography;
 const ApprovalConfigEditPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [draft, setDraft] = useState<ApprovalAssessmentScheme | null>(null);
   const [original, setOriginal] = useState<ApprovalAssessmentScheme | null>(null);
+
+  const isViewMode = searchParams.get('mode') === 'view';
+  const readonly = isViewMode;
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -69,7 +73,6 @@ const ApprovalConfigEditPage = () => {
     [draft, original],
   );
   const errors = useMemo(() => (draft ? validateScheme(draft) : []), [draft]);
-  const readonly = false;
 
   const patch = (p: Partial<ApprovalAssessmentScheme>) =>
     setDraft((prev) => (prev ? { ...prev, ...p } : prev));
