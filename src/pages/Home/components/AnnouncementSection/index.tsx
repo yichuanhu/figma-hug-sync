@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { Tag } from '@douyinfe/semi-ui';
+import { Tag, Modal, Typography } from '@douyinfe/semi-ui';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useState, useEffect, useCallback } from 'react';
 import { Palette, Cpu, Megaphone } from 'lucide-react';
+import type { PlatformAnnouncement } from '@/pages/Operations/PlatformOperations/mockData';
 import {
   getBannerAnnouncements,
   getPublishedAnnouncements,
@@ -34,6 +35,7 @@ const AnnouncementSection = () => {
   usePlatformOpsData();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [detail, setDetail] = useState<PlatformAnnouncement | null>(null);
 
   const banners = getBannerAnnouncements();
   const announcements = getPublishedAnnouncements(5);
@@ -77,6 +79,7 @@ const AnnouncementSection = () => {
                   key={banner.id}
                   className={`banner-slide${img ? ' has-image' : ''}`}
                   style={img ? undefined : { background: banner.bannerGradient ?? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+                  onClick={() => setDetail(banner)}
                 >
                   {img ? (
                     <img src={img} alt={banner.title} className="banner-slide-image" />
@@ -115,7 +118,7 @@ const AnnouncementSection = () => {
           {announcements.slice(0, 3).map((item) => {
             const config = priorityConfig[item.priority];
             return (
-              <div key={item.id} className="announcement-item">
+              <div key={item.id} className="announcement-item" onClick={() => setDetail(item)}>
                 <div className="announcement-item-left">
                   <div className="announcement-item-title-row">
                     <Tag color={config.color} size="small">{config.label}</Tag>
@@ -131,6 +134,38 @@ const AnnouncementSection = () => {
           })}
         </div>
       </div>
+
+      <Modal
+        title={detail?.title}
+        visible={!!detail}
+        onCancel={() => setDetail(null)}
+        footer={null}
+        width={520}
+        centered
+      >
+        {detail && (
+          <div className="announcement-detail">
+            <div className="announcement-detail-meta">
+              <Tag color={priorityConfig[detail.priority].color} size="small">
+                {priorityConfig[detail.priority].label}
+              </Tag>
+              {detail.publishedAt && (
+                <Typography.Text type="tertiary" size="small">
+                  {detail.publishedAt.slice(0, 16).replace('T', ' ')}
+                </Typography.Text>
+              )}
+            </div>
+            {detail.summary && (
+              <Typography.Paragraph className="announcement-detail-summary">
+                {detail.summary}
+              </Typography.Paragraph>
+            )}
+            <Typography.Paragraph className="announcement-detail-content">
+              {detail.content}
+            </Typography.Paragraph>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };
