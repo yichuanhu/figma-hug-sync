@@ -45,7 +45,7 @@ const AddFieldPopover = ({ onAdd }: Props) => {
 
   const content = (
     <div className="add-field-popover">
-      <div className="afp-title">添加题目</div>
+      <div className="afp-title">添加字段</div>
       <div className="afp-grid">
         {ITEMS.map(({ type, labelKey, Icon }) => (
           <button
@@ -82,7 +82,7 @@ const AddFieldPopover = ({ onAdd }: Props) => {
         icon={<Plus size={16} strokeWidth={2} />}
         block
       >
-        添加题目
+        添加字段
       </Button>
     </Popover>
   );
