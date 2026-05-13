@@ -1697,7 +1697,16 @@
       "settings": "设置"
     },
     "settings": {
-      "comingSoon": "设置功能即将推出"
+      "comingSoon": "设置功能即将推出",
+      "version": {
+        "title": "关于平台",
+        "platformName": "平台名称",
+        "versionNumber": "版本号",
+        "releaseDate": "发布时间",
+        "copy": "复制版本号",
+        "copySuccess": "版本号已复制到剪贴板",
+        "copyError": "复制失败，请重试"
+      }
     }
   },
   "personalCredential": {

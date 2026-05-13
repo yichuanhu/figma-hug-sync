@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Tabs, Typography } from '@douyinfe/semi-ui';
 import PersonalCredentialManagement from './PersonalCredentialManagement';
+import SettingsContent from './components/SettingsContent';
 
 import './index.less';
 
@@ -44,9 +45,7 @@ const PersonalCenter = () => {
             tab={t('personalCenter.tabs.settings')}
             itemKey="settings"
           >
-            <div className="personal-center-settings-placeholder">
-              {t('personalCenter.settings.comingSoon')}
-            </div>
+            <SettingsContent />
           </Tabs.TabPane>
           <Tabs.TabPane
             tab={t('personalCenter.tabs.personalCredentials')}
