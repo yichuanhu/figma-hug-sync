@@ -534,6 +534,8 @@ export function getRoiAnalysis(filter: RoiAnalysisFilter, seed = 0): RoiAnalysis
   const totalScale = timeScale * deptScale * projScale * clsScale;
 
   const metrics = scaleDeep(clone(mockRoiMetrics), totalScale, rng);
+  // 总投入成本以「成本管理」全部成本之和为准，不随筛选/缩放变化
+  metrics.totalInvestmentCost = getTotalInvestmentFromCostStore();
 
   let requirements = clone(mockRequirementRoiDetails);
   let departments = clone(mockDepartmentRoiDetails);
