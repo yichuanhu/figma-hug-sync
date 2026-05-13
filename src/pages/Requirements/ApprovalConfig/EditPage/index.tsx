@@ -149,7 +149,16 @@ const ApprovalConfigEditPage = () => {
           )}
           <Tag color="grey" type="light" size="small">v{draft.version}</Tag>
         </div>
-        {!readonly && (
+        {readonly ? (
+          <Button
+            icon={<Pencil size={14} strokeWidth={2} />}
+            type="primary"
+            theme="solid"
+            onClick={() => setSearchParams({})}
+          >
+            编辑
+          </Button>
+        ) : (
           <Space>
             <Button
               icon={<RotateCcw size={14} strokeWidth={2} />}
@@ -171,15 +180,6 @@ const ApprovalConfigEditPage = () => {
           </Space>
         )}
       </div>
-
-      {readonly && (
-        <Banner
-          type="info"
-          description="系统预设方案不可编辑，可在列表「基于此创建副本」后修改。"
-          closeIcon={null}
-          style={{ marginBottom: 16 }}
-        />
-      )}
 
       {errors.length > 0 && (
         <Banner
