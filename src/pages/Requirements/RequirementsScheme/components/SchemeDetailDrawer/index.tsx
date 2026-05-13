@@ -1,14 +1,9 @@
 import { useMemo, useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tabs, TabPane, Typography, Tag, Button, Empty, Form } from '@douyinfe/semi-ui';
-import { CheckCircle, Trash2, Pencil } from 'lucide-react';
+import { CheckCircle, Trash2 } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
-import type {
-  RequirementScheme,
-  AssessmentModel,
-  SchemeField,
-  ApprovalLevelConfig,
-} from '@/pages/Requirements/RequirementsWorkbench/types';
+import type { RequirementScheme, SchemeField } from '@/pages/Requirements/RequirementsWorkbench/types';
 import SchemeFieldRenderer from '@/pages/Requirements/RequirementsWorkbench/components/SchemeFieldRenderer';
 import './index.less';
 
