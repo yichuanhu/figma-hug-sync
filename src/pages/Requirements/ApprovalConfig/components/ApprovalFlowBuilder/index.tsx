@@ -90,6 +90,9 @@ const ApprovalFlowBuilderPage = () => {
         code: draft.code,
         description: draft.description,
         approvers: draft.approvers,
+        assessors: draft.assessors,
+        value_model: draft.value_model,
+        complexity_model: draft.complexity_model,
       });
       setDraft(updated);
       setDirty(false);
