@@ -30,12 +30,9 @@ const AboutModal = ({ visible, onCancel }: AboutModalProps) => {
 
   return (
     <Modal
-      title={t('userMenu.about')}
       visible={visible}
       onCancel={onCancel}
-      onOk={onCancel}
-      okText={t('common.close')}
-      cancelButtonProps={{ style: { display: 'none' } }}
+      footer={null}
       width={480}
       centered
       className="about-modal"
