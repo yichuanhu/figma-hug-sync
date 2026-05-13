@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { Tag } from '@douyinfe/semi-ui';
+import { Tag, Modal, Typography } from '@douyinfe/semi-ui';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useState, useEffect, useCallback } from 'react';
 import { Palette, Cpu, Megaphone } from 'lucide-react';
+import type { PlatformAnnouncement } from '@/pages/Operations/PlatformOperations/mockData';
 import {
   getBannerAnnouncements,
   getPublishedAnnouncements,
