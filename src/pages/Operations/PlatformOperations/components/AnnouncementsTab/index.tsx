@@ -28,6 +28,7 @@ const AnnouncementsTab = () => {
 
   const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_DEFAULT);
   const [modalVisible, setModalVisible] = useState(false);
   const [editing, setEditing] = useState<PlatformAnnouncement | null>(null);
 
@@ -36,7 +37,7 @@ const AnnouncementsTab = () => {
     () => all.filter((a) => !keyword || a.title.toLowerCase().includes(keyword.toLowerCase())),
     [all, keyword],
   );
-  const pageData = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pageData = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   const handleDelete = (item: PlatformAnnouncement) => {
     Modal.confirm({
