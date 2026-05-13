@@ -3,10 +3,11 @@
  * 基于 Figma 设计实现
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Popover, Dropdown } from '@douyinfe/semi-ui';
-import { Building2, ChevronRight, ExternalLink, Languages, LogOut, Monitor, User } from 'lucide-react';
+import { Building2, ChevronRight, ExternalLink, Info, Languages, LogOut, Monitor, User } from 'lucide-react';
+import AboutModal from '../AboutModal';
 import './index.less';
 
 export interface UserInfoConfig {
@@ -89,6 +90,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
   style,
 }) => {
   const { t } = useTranslation();
+  const [aboutVisible, setAboutVisible] = useState(false);
   // 映射默认图标
   const getIcon = (key: string) => {
     switch (key) {
@@ -175,6 +177,12 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             </div>
           </div>
         </Popover>
+        {/* 关于 */}
+        <MenuItemComponent
+          icon={<Info size={20} strokeWidth={2} />}
+          label={t('sidebar.userMenu.about')}
+          onClick={() => setAboutVisible(true)}
+        />
         {/* 退出登录放在最下面 */}
         {actions.filter(a => a.key === 'logout').map((action) => (
           <MenuItemComponent
@@ -185,6 +193,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
           />
         ))}
       </div>
+      <AboutModal visible={aboutVisible} onCancel={() => setAboutVisible(false)} />
     </div>
   );
 };

@@ -206,7 +206,8 @@
       "logout": "Log Out",
       "language": "Language",
       "languageZh": "中文",
-      "languageEn": "English"
+      "languageEn": "English",
+      "about": "About"
     },
     "requirementsProjects": "Projects & Workspaces",
     "sharingAdmin": "Sharing Center Config",
@@ -2053,6 +2054,14 @@
         "retry": "Retry upgrade"
       }
     }
+  },
+  "about": {
+    "productName": "Digital Workforce Platform",
+    "versionNumber": "Version",
+    "releaseDate": "Release Date",
+    "copy": "Copy Version",
+    "copySuccess": "Version copied to clipboard",
+    "copyError": "Copy failed, please retry"
   },
   "personalCenter": {
     "title": "Personal Center",

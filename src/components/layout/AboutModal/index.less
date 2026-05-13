@@ -1,0 +1,49 @@
+.about-modal {
+  .semi-modal-body {
+    padding: 0;
+  }
+
+  &-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 56px 32px 56px;
+  }
+
+  &-logo {
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 16px;
+  }
+
+  &-product {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--semi-color-text-1);
+    margin-bottom: 56px;
+    letter-spacing: 2px;
+  }
+
+  &-info {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-self: center;
+  }
+
+  &-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+  }
+
+  &-label {
+    color: var(--semi-color-text-1);
+  }
+
+  &-value {
+    color: var(--semi-color-text-0);
+    font-weight: 500;
+  }
+}

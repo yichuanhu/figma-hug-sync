@@ -163,7 +163,8 @@
       "adminConsole": "管理后台",
       "personalCenter": "个人中心",
       "logout": "退出登录",
-      "language": "语言"
+      "language": "语言",
+      "about": "关于"
     },
     "requirementsProjects": "项目与工作空间",
     "sharingAdmin": "共享中心配置",
@@ -1708,6 +1709,14 @@
         "copyError": "复制失败，请重试"
       }
     }
+  },
+  "about": {
+    "productName": "数字员工平台",
+    "versionNumber": "版本号",
+    "releaseDate": "发布时间",
+    "copy": "复制版本号",
+    "copySuccess": "版本号已复制到剪贴板",
+    "copyError": "复制失败，请重试"
   },
   "personalCredential": {
     "searchPlaceholder": "搜索个人凭据名称",

@@ -6,7 +6,7 @@ export interface PlatformVersionInfo {
 }
 
 export const PLATFORM_VERSION: PlatformVersionInfo = {
-  name: 'APA Commander',
-  version: 'v6.8.0',
-  releaseDate: '2025-03-15 10:00:00',
+  name: '数字员工平台',
+  version: 'V1.0.0',
+  releaseDate: '2026/06/30',
 };
