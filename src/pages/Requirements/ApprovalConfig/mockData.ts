@@ -378,7 +378,7 @@ export const deleteScheme = async (schemeId: string): Promise<void> => {
   if (target.is_preset) throw new Error('系统预设方案不可删除');
   if (target.is_active) throw new Error('已激活方案不可删除，请先切换激活方案');
   schemes = schemes.filter((s) => s.id !== schemeId);
-  history = history.filter((h) => h.scheme_id !== schemeId);
+  
   persist();
   notify();
 };
