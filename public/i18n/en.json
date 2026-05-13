@@ -4101,7 +4101,89 @@
       "timeoutProcessCount": "Timeout Processes"
     },
     "costManagement": {
-      "title": "Cost Management"
+      "title": "Cost Management",
+      "description": "Manage project costs and global operational costs by type. Project costs feed ROI calculation.",
+      "searchPlaceholder": "Search cost name / project",
+      "tabs": {
+        "project": "Project Cost",
+        "license": "License Cost",
+        "infrastructure": "Infrastructure",
+        "thirdParty": "Third-party",
+        "training": "Training",
+        "other": "Other"
+      },
+      "overview": {
+        "periodCost": "Current Period",
+        "cumulativeCost": "Cumulative",
+        "itemCount": "Cost Items",
+        "monthlyAvg": "Monthly Avg"
+      },
+      "columns": {
+        "costName": "Cost Name",
+        "project": "Project",
+        "amount": "Amount",
+        "occurrenceDate": "Occurrence Date",
+        "recurring": "Recurring",
+        "createdBy": "Created By",
+        "createdAt": "Created At",
+        "actions": "Actions"
+      },
+      "actions": {
+        "create": "New Cost Record",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "modal": {
+        "createTitle": "New Cost Record",
+        "editTitle": "Edit Cost Record"
+      },
+      "form": {
+        "costName": "Cost Name",
+        "costNamePlaceholder": "Enter cost name",
+        "project": "Related Project",
+        "projectPlaceholder": "Select a project",
+        "amount": "Amount",
+        "amountPlaceholder": "Enter amount",
+        "occurrenceDate": "Occurrence Date",
+        "isRecurring": "Recurring Cost",
+        "recurrencePattern": "Recurrence",
+        "recurrencePlaceholder": "Select recurrence",
+        "description": "Description",
+        "descriptionPlaceholder": "Optional, max 500 chars"
+      },
+      "recurrence": {
+        "NONE": "—",
+        "DAILY": "Daily",
+        "WEEKLY": "Weekly",
+        "MONTHLY": "Monthly",
+        "QUARTERLY": "Quarterly",
+        "YEARLY": "Yearly"
+      },
+      "validation": {
+        "nameRequired": "Cost name is required",
+        "nameMax": "Cost name must be at most 200 characters",
+        "nameDuplicate": "A cost with the same name already exists in this type",
+        "amountRequired": "Amount is required",
+        "amountPositive": "Amount must be greater than 0",
+        "dateRequired": "Occurrence date is required",
+        "dateNotFuture": "Occurrence date cannot be in the future",
+        "projectRequired": "Please select a project",
+        "recurrenceRequired": "Please select a recurrence pattern"
+      },
+      "confirm": {
+        "deleteTitle": "Delete this cost record?",
+        "deleteContent": "After deletion, this cost will no longer be included in ROI. The action cannot be undone."
+      },
+      "toast": {
+        "created": "Created",
+        "updated": "Updated",
+        "deleted": "Deleted",
+        "refreshed": "Refreshed"
+      },
+      "empty": {
+        "noRecords": "No cost records yet",
+        "noProjects": "No projects available, please create one first"
+      }
     },
     "platformOperations": {
       "title": "Platform Operations",

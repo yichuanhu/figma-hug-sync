@@ -3471,7 +3471,89 @@
       "timeoutProcessCount": "超时流程数"
     },
     "costManagement": {
-      "title": "成本管理"
+      "title": "成本管理",
+      "description": "按成本类型管理项目成本与全局运营成本，项目成本参与 ROI 计算",
+      "searchPlaceholder": "搜索成本名称 / 项目",
+      "tabs": {
+        "project": "项目成本",
+        "license": "License 成本",
+        "infrastructure": "基础设施",
+        "thirdParty": "第三方服务",
+        "training": "培训",
+        "other": "其他"
+      },
+      "overview": {
+        "periodCost": "本期成本",
+        "cumulativeCost": "累计成本",
+        "itemCount": "成本项目数",
+        "monthlyAvg": "月均成本"
+      },
+      "columns": {
+        "costName": "成本名称",
+        "project": "关联项目",
+        "amount": "金额",
+        "occurrenceDate": "发生时间",
+        "recurring": "周期性",
+        "createdBy": "创建人",
+        "createdAt": "创建时间",
+        "actions": "操作"
+      },
+      "actions": {
+        "create": "新增成本记录",
+        "edit": "编辑",
+        "delete": "删除"
+      },
+      "modal": {
+        "createTitle": "新增成本记录",
+        "editTitle": "编辑成本记录"
+      },
+      "form": {
+        "costName": "成本名称",
+        "costNamePlaceholder": "请输入成本名称",
+        "project": "关联项目",
+        "projectPlaceholder": "请选择关联项目",
+        "amount": "金额",
+        "amountPlaceholder": "请输入金额（元）",
+        "occurrenceDate": "发生时间",
+        "isRecurring": "周期性成本",
+        "recurrencePattern": "周期类型",
+        "recurrencePlaceholder": "请选择周期类型",
+        "description": "描述",
+        "descriptionPlaceholder": "可选，最长 500 字"
+      },
+      "recurrence": {
+        "NONE": "—",
+        "DAILY": "日",
+        "WEEKLY": "周",
+        "MONTHLY": "月",
+        "QUARTERLY": "季",
+        "YEARLY": "年"
+      },
+      "validation": {
+        "nameRequired": "请输入成本名称",
+        "nameMax": "成本名称最长 200 字",
+        "nameDuplicate": "同类型下已存在同名成本",
+        "amountRequired": "请输入金额",
+        "amountPositive": "成本金额必须大于 0",
+        "dateRequired": "请选择发生时间",
+        "dateNotFuture": "发生时间不能为未来日期",
+        "projectRequired": "请选择关联项目",
+        "recurrenceRequired": "请选择周期类型"
+      },
+      "confirm": {
+        "deleteTitle": "确认删除此成本记录？",
+        "deleteContent": "删除后该成本将不再参与 ROI 计算，操作不可撤销。"
+      },
+      "toast": {
+        "created": "新增成功",
+        "updated": "更新成功",
+        "deleted": "删除成功",
+        "refreshed": "已刷新"
+      },
+      "empty": {
+        "noRecords": "暂无成本记录",
+        "noProjects": "暂无项目，请先创建项目"
+      }
     },
     "platformOperations": {
       "title": "平台运营",
