@@ -85,11 +85,6 @@ const CostTabContent = ({ costType }: Props) => {
 
   const overviewCards = [
     {
-      key: 'periodCost', tone: 'primary',
-      label: t('operations.costManagement.overview.periodCost'),
-      value: formatCurrency(overview.periodCost),
-    },
-    {
       key: 'cumulativeCost', tone: 'success',
       label: t('operations.costManagement.overview.cumulativeCost'),
       value: formatCurrency(overview.cumulativeCost),
