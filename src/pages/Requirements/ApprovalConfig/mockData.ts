@@ -2,7 +2,7 @@
  * 审批与评估配置 - 多方案管理
  *
  * - 一个租户可创建多套审批与评估方案，但仅允许一套处于 active 状态
- * - 系统预设方案（is_preset=true）：可复制不可编辑/删除/停用，初始为 active
+ * - 系统预设方案（is_preset=true）：自动激活，可编辑可复制，但不可删除/停用
  * - 每套方案包含完整的审批配置 + 评估配置
  * - 每套方案独立维护版本号与历史快照
  */
@@ -78,7 +78,7 @@ export interface ApprovalAssessmentScheme extends SchemeContent {
   updated_by: string;
 }
 
-const STORAGE_KEY = 'apa.requirements.approvalSchemes.v2';
+const STORAGE_KEY = 'apa.requirements.approvalSchemes.v3';
 const LEGACY_CONFIG_KEY = 'apa.requirements.approvalAssessmentConfig.v1';
 
 const PRESET_ID = 'scheme-preset';
@@ -88,21 +88,12 @@ const presetContent: SchemeContent = {
   approval_levels: [
     {
       id: 'lv-1',
-      name: '部门主管审批',
+      name: '部门负责人审批',
       user_ids: [],
-      mode: 'any_one',
+      mode: 'all',
       priority: 1,
       required: true,
       timeout_days: 3,
-    },
-    {
-      id: 'lv-2',
-      name: 'AI 委员会评审',
-      user_ids: [],
-      mode: 'majority',
-      priority: 2,
-      required: true,
-      timeout_days: 7,
     },
   ],
   assessment_enabled: true,
@@ -316,7 +307,7 @@ export const saveScheme = async (
   await delay();
   const target = schemes.find((s) => s.id === schemeId);
   if (!target) throw new Error('方案不存在');
-  if (target.is_preset) throw new Error('系统预设方案不可编辑');
+  // 系统预设方案允许编辑
   const errs = validateScheme(next);
   if (errs.length > 0) throw new Error(errs.map((e) => `[${e.code}] ${e.message}`).join('\n'));
 

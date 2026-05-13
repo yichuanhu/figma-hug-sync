@@ -18,7 +18,7 @@ import {
   Space,
   Banner,
 } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, RotateCcw, Lock } from 'lucide-react';
+import { ChevronLeft, Save, RotateCcw } from 'lucide-react';
 import {
   fetchSchemes,
   saveScheme,
@@ -69,7 +69,7 @@ const ApprovalConfigEditPage = () => {
     [draft, original],
   );
   const errors = useMemo(() => (draft ? validateScheme(draft) : []), [draft]);
-  const readonly = !!draft?.is_preset;
+  const readonly = false;
 
   const patch = (p: Partial<ApprovalAssessmentScheme>) =>
     setDraft((prev) => (prev ? { ...prev, ...p } : prev));
@@ -140,7 +140,7 @@ const ApprovalConfigEditPage = () => {
             <Tag color="green" type="solid" size="small">已激活</Tag>
           )}
           {draft.is_preset && (
-            <Tag color="blue" type="light" size="small" prefixIcon={<Lock size={10} strokeWidth={2.5} />}>
+            <Tag color="blue" type="light" size="small">
               系统预设
             </Tag>
           )}
