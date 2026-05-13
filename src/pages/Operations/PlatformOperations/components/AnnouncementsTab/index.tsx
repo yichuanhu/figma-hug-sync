@@ -5,7 +5,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import dayjs from 'dayjs';
-import { Plus, MoreHorizontal } from 'lucide-react';
+import { Plus, Ellipsis, Pencil, Send, EyeOff, Trash2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   getAnnouncements,
