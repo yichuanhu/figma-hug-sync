@@ -39,6 +39,7 @@ const ResourcesTab = () => {
 
   const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_DEFAULT);
   const [uploadVisible, setUploadVisible] = useState(false);
 
   const all = getResources();
@@ -46,7 +47,7 @@ const ResourcesTab = () => {
     () => all.filter((r) => !keyword || r.resourceName.toLowerCase().includes(keyword.toLowerCase())),
     [all, keyword],
   );
-  const pageData = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pageData = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   const handleDownload = (item: DownloadableResource) => {
     if (!item.fileUrl || item.fileUrl === '#') {
