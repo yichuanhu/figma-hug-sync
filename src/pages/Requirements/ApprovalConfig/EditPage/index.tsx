@@ -140,7 +140,7 @@ const ApprovalConfigEditPage = () => {
             <Tag color="green" type="solid" size="small">已激活</Tag>
           )}
           {draft.is_preset && (
-            <Tag color="blue" type="light" size="small" prefixIcon={<Lock size={10} strokeWidth={2.5} />}>
+            <Tag color="blue" type="light" size="small">
               系统预设
             </Tag>
           )}
