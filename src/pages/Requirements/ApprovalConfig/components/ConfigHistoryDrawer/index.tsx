@@ -1,35 +1,43 @@
 /**
- * 配置历史抽屉（只读）
+ * 配置历史抽屉（按方案过滤，只读）
  */
 import { useEffect, useState } from 'react';
 import { Empty, Tag, Typography, Spin, SideSheet } from '@douyinfe/semi-ui';
-import { fetchConfigHistory, type ConfigHistoryItem } from '../../mockData';
+import { fetchSchemeHistory, type ConfigHistoryItem } from '../../mockData';
 
 const { Text, Title } = Typography;
 
 interface Props {
   visible: boolean;
   onClose: () => void;
+  schemeId: string;
+  schemeName?: string;
 }
 
-const ConfigHistoryDrawer = ({ visible, onClose }: Props) => {
+const ConfigHistoryDrawer = ({ visible, onClose, schemeId, schemeName }: Props) => {
   const [list, setList] = useState<ConfigHistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState<ConfigHistoryItem | null>(null);
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || !schemeId) return;
     setLoading(true);
-    fetchConfigHistory()
+    fetchSchemeHistory(schemeId)
       .then((d) => {
         setList(d);
         setActive(d[0] ?? null);
       })
       .finally(() => setLoading(false));
-  }, [visible]);
+  }, [visible, schemeId]);
 
   return (
-    <SideSheet visible={visible} onCancel={onClose} title="配置历史" width={900} mask={false}>
+    <SideSheet
+      visible={visible}
+      onCancel={onClose}
+      title={schemeName ? `配置历史 · ${schemeName}` : '配置历史'}
+      width={900}
+      mask={false}
+    >
       {loading ? (
         <Spin />
       ) : list.length === 0 ? (
