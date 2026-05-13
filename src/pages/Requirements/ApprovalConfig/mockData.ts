@@ -50,15 +50,6 @@ const defaultFlows: ApprovalFlowTemplate[] = [
     updated_at: '2025-02-20T14:30:00Z',
   },
   {
-    id: '__placeholder__',
-    name: '',
-    code: '',
-    status: 'inactive',
-    approvers: [],
-    assessors: [],
-    created_at: '',
-    updated_at: '',
-  {
     id: 'flow-002',
     name: '轻量单级审批',
     code: 'LITE-1LV',
