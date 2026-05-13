@@ -1,393 +1,224 @@
 /**
- * 审批与评估配置 - 多方案管理
+ * 审批流模板（独立于需求模板的全局审批配置）
  *
- * - 一个租户可创建多套审批与评估方案，但仅允许一套处于 active 状态
- * - 系统预设方案（is_preset=true）：自动激活，可编辑可复制，但不可删除/停用
- * - 每套方案包含完整的审批配置 + 评估配置
- * - 每套方案独立维护版本号与历史快照
+ * 数据结构与"需求模板 → 工作流 → 审批人配置"完全一致，
+ * 直接复用 WorkflowApprover 类型，便于 UI/交互一比一还原。
  */
+import type { WorkflowApprover, AssessmentModel } from '@/pages/Requirements/RequirementsWorkbench/types';
 
-export type ApprovalMode = 'any_one' | 'all' | 'majority';
+export type ApprovalFlowStatus = 'active' | 'inactive';
 
-export interface ApprovalLevel {
+export interface ApprovalFlowTemplate {
   id: string;
   name: string;
-  /** 指定审批人 */
-  user_ids: string[];
-  mode: ApprovalMode;
-  /** 串行序号（升序） */
-  priority: number;
-  required: boolean;
-  timeout_days?: number;
-}
-
-export interface AssessorGroup {
-  id: string;
-  name: string;
-  user_ids: string[];
-  required: boolean;
-}
-
-export interface DimensionTier {
-  label: string;
-  condition: string;
-  score: number;
-}
-
-export type DimensionSourceType = 'manual' | 'auto_calculated';
-
-export interface AssessmentDimension {
-  key: string;
-  name: string;
-  weight: number;
-  source_type: DimensionSourceType;
-  expression?: string;
-  source_fields?: string[];
-  tiers: DimensionTier[];
-}
-
-export type AssessmentModelType = 'value' | 'complexity';
-
-export interface AssessmentModel {
-  type: AssessmentModelType;
-  label: string;
+  code: string;
   description?: string;
-  dimensions: AssessmentDimension[];
-}
-
-/** 方案配置内容（不含元数据） */
-export interface SchemeContent {
-  approval_enabled: boolean;
-  approval_levels: ApprovalLevel[];
-  assessment_enabled: boolean;
-  assessor_groups: AssessorGroup[];
-  value_model: AssessmentModel;
-  complexity_model: AssessmentModel;
-}
-
-/** 一套审批与评估方案 */
-export interface ApprovalAssessmentScheme extends SchemeContent {
-  id: string;
-  name: string;
-  description?: string;
-  is_preset: boolean;
-  is_active: boolean;
-  version: number;
+  status: ApprovalFlowStatus;
+  is_preset?: boolean;
+  is_draft?: boolean;
+  /** 审批人列表（priority 升序） */
+  approvers: WorkflowApprover[];
+  /** 技术评估人列表（priority 升序）；为空表示已关闭技术评估 */
+  assessors: WorkflowApprover[];
+  /** 价值评估模型 */
+  value_model?: AssessmentModel;
+  /** 复杂度评估模型 */
+  complexity_model?: AssessmentModel;
   created_at: string;
   updated_at: string;
-  updated_by: string;
 }
 
-const STORAGE_KEY = 'apa.requirements.approvalSchemes.v3';
-const LEGACY_CONFIG_KEY = 'apa.requirements.approvalAssessmentConfig.v1';
+const STORAGE_KEY = 'apa.requirements.approvalFlows.v2';
 
-const PRESET_ID = 'scheme-preset';
-
-const presetContent: SchemeContent = {
-  approval_enabled: true,
-  approval_levels: [
-    {
-      id: 'lv-1',
-      name: '部门负责人审批',
-      user_ids: [],
-      mode: 'all',
-      priority: 1,
-      required: true,
-      timeout_days: 3,
-    },
-  ],
-  assessment_enabled: true,
-  assessor_groups: [
-    {
-      id: 'ag-1',
-      name: '技术架构组',
-      user_ids: [],
-      required: true,
-    },
-  ],
-  value_model: {
-    type: 'value',
-    label: '价值评估',
-    description: '基于业务收益与战略契合度评估需求价值',
-    dimensions: [
-      {
-        key: 'biz_benefit',
-        name: '业务收益',
-        weight: 0.5,
-        source_type: 'manual',
-        tiers: [
-          { label: '高', condition: '>=80', score: 100 },
-          { label: '中', condition: '60~79', score: 75 },
-          { label: '低', condition: '<60', score: 40 },
-        ],
-      },
-      {
-        key: 'strategy_fit',
-        name: '战略契合度',
-        weight: 0.5,
-        source_type: 'manual',
-        tiers: [
-          { label: '高', condition: '>=80', score: 100 },
-          { label: '中', condition: '60~79', score: 75 },
-          { label: '低', condition: '<60', score: 40 },
-        ],
-      },
+const defaultFlows: ApprovalFlowTemplate[] = [
+  {
+    id: 'flow-001',
+    name: '标准三级审批',
+    code: 'STD-3LV',
+    description: '部门主管 → AI 委员会 → 财务负责人',
+    status: 'active',
+    is_preset: true,
+    approvers: [
+      { id: 'a1', name: '部门主管审批', type: 'department_leader', priority: 1, required: true, approval_mode: 'any_one', timeout_days: 3 },
+      { id: 'a2', name: 'AI 委员会评审', type: 'role', priority: 2, required: true, approval_mode: 'majority', timeout_days: 7, target_ids: ['role-committee'] },
+      { id: 'a3', name: '财务负责人审批', type: 'role', priority: 3, required: true, approval_mode: 'any_one', timeout_days: 3, target_ids: ['role-dept-head'] },
     ],
-  },
-  complexity_model: {
-    type: 'complexity',
-    label: '复杂度评估',
-    description: '基于实施周期与技术难度评估需求复杂度',
-    dimensions: [
-      {
-        key: 'tech_difficulty',
-        name: '技术难度',
-        weight: 0.6,
-        source_type: 'manual',
-        tiers: [
-          { label: '高', condition: '>=80', score: 100 },
-          { label: '中', condition: '60~79', score: 75 },
-          { label: '低', condition: '<60', score: 40 },
-        ],
-      },
-      {
-        key: 'impl_period',
-        name: '实施周期',
-        weight: 0.4,
-        source_type: 'auto_calculated',
-        expression: 'duration_days',
-        source_fields: ['duration_days'],
-        tiers: [
-          { label: '长', condition: '>=30', score: 100 },
-          { label: '中', condition: '15~29', score: 60 },
-          { label: '短', condition: '<15', score: 30 },
-        ],
-      },
+    assessors: [
+      { id: 'as1', name: '技术架构评估', type: 'role', priority: 1, required: true, approval_mode: 'majority', timeout_days: 5, target_ids: ['role-committee'] },
     ],
+    value_model: {
+      key: 'value-model-default',
+      type: 'value',
+      label: '价值评估',
+      description: '基于业务收益与战略契合度评估需求价值',
+      dimensions: [
+        { key: 'dim_biz', label: '业务收益', weight: 0.5, dimension_type: 'manual_score', tiers: [] },
+        { key: 'dim_strategy', label: '战略契合度', weight: 0.5, dimension_type: 'manual_score', tiers: [] },
+      ],
+      tiers: [
+        { condition: '>=80', score: 100, label: '高', color: 'green' },
+        { condition: '60~79', score: 75, label: '中', color: 'blue' },
+        { condition: '<60', score: 40, label: '低', color: 'orange' },
+      ],
+    },
+    complexity_model: {
+      key: 'complexity-model-default',
+      type: 'complexity',
+      label: '复杂度评估',
+      description: '基于实施周期与技术难度评估需求复杂度',
+      dimensions: [
+        { key: 'dim_tech', label: '技术难度', weight: 0.6, dimension_type: 'manual_score', tiers: [] },
+        { key: 'dim_period', label: '实施周期', weight: 0.4, dimension_type: 'manual_score', tiers: [] },
+      ],
+      tiers: [
+        { condition: '>=80', score: 100, label: '高', color: 'red' },
+        { condition: '60~79', score: 75, label: '中', color: 'orange' },
+        { condition: '<60', score: 40, label: '低', color: 'green' },
+      ],
+    },
+    created_at: '2025-01-10T09:00:00Z',
+    updated_at: '2025-02-20T14:30:00Z',
   },
-};
+  {
+    id: 'flow-002',
+    name: '轻量单级审批',
+    code: 'LITE-1LV',
+    description: '仅需直属主管审批，适用于小型需求',
+    status: 'inactive',
+    is_preset: true,
+    approvers: [
+      { id: 'a1', name: '直属主管审批', type: 'department_leader', priority: 1, required: true, approval_mode: 'any_one', timeout_days: 3 },
+    ],
+    assessors: [],
+    created_at: '2025-01-12T10:00:00Z',
+    updated_at: '2025-01-12T10:00:00Z',
+  },
+];
 
-const buildPresetScheme = (): ApprovalAssessmentScheme => ({
-  ...JSON.parse(JSON.stringify(presetContent)),
-  id: PRESET_ID,
-  name: '系统默认审批与评估',
-  description: '系统预设方案，可复制为新方案后修改；预设本身不可编辑或删除',
-  is_preset: true,
-  is_active: true,
-  version: 1,
-  created_at: '2025-01-10T09:00:00Z',
-  updated_at: '2025-01-10T09:00:00Z',
-  updated_by: '系统初始化',
-});
-
-const loadSchemes = (): ApprovalAssessmentScheme[] => {
+const load = (): ApprovalFlowTemplate[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw) as ApprovalAssessmentScheme[];
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        // 旧数据兼容：剥掉 level.type，补齐 user_ids
-        parsed.forEach((s) => {
-          s.approval_levels?.forEach((lv) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            delete (lv as any).type;
-            if (!Array.isArray(lv.user_ids)) lv.user_ids = [];
-          });
-        });
-        // 保证预设始终存在
-        const hasPreset = parsed.some((s) => s.id === PRESET_ID);
-        if (!hasPreset) parsed.unshift(buildPresetScheme());
-        // 保证有且仅有一个 active
-        if (!parsed.some((s) => s.is_active)) {
-          const preset = parsed.find((s) => s.id === PRESET_ID)!;
-          preset.is_active = true;
-        }
-        return parsed;
-      }
-    }
-    // 兼容老 key：迁移为预设方案
-    const legacy = localStorage.getItem(LEGACY_CONFIG_KEY);
-    if (legacy) {
-      try {
-        const cfg = JSON.parse(legacy);
-        const migrated: ApprovalAssessmentScheme = {
-          ...buildPresetScheme(),
-          approval_enabled: cfg.approval_enabled,
-          approval_levels: cfg.approval_levels,
-          assessment_enabled: cfg.assessment_enabled,
-          assessor_groups: cfg.assessor_groups,
-          value_model: cfg.value_model,
-          complexity_model: cfg.complexity_model,
-        };
-        return [migrated];
-      } catch {
-        /* noop */
-      }
+      const parsed = JSON.parse(raw) as ApprovalFlowTemplate[];
+      // 兼容旧版本数据：补全 assessors 字段
+      return parsed.map((f) => ({ ...f, approvers: f.approvers ?? [], assessors: f.assessors ?? [] }));
     }
   } catch {
     /* noop */
   }
-  return [buildPresetScheme()];
+  return defaultFlows;
 };
 
-let schemes: ApprovalAssessmentScheme[] = loadSchemes();
-
-const persist = () => {
+const save = (list: ApprovalFlowTemplate[]) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(schemes));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   } catch {
     /* noop */
   }
 };
+
+let cache: ApprovalFlowTemplate[] = load();
 
 const listeners = new Set<() => void>();
-export const subscribeConfigChange = (cb: () => void): (() => void) => {
+export const subscribeApprovalFlowChange = (cb: () => void): (() => void) => {
   listeners.add(cb);
-  return () => {
-    listeners.delete(cb);
-  };
+  return () => listeners.delete(cb);
 };
 const notify = () => listeners.forEach((cb) => cb());
+
 const delay = (ms = 200) => new Promise((r) => setTimeout(r, ms));
 
-const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v));
-
-export const fetchSchemes = async (): Promise<ApprovalAssessmentScheme[]> => {
-  await delay(120);
-  return clone(schemes);
+export const fetchApprovalFlows = async (keyword?: string): Promise<ApprovalFlowTemplate[]> => {
+  await delay(150);
+  const kw = keyword?.trim().toLowerCase();
+  if (!kw) return [...cache];
+  return cache.filter(
+    (f) =>
+      f.name.toLowerCase().includes(kw) ||
+      f.code.toLowerCase().includes(kw) ||
+      (f.description?.toLowerCase().includes(kw) ?? false),
+  );
 };
 
-export const fetchActiveScheme = async (): Promise<ApprovalAssessmentScheme> => {
-  await delay(80);
-  const active = schemes.find((s) => s.is_active) ?? schemes[0];
-  return clone(active);
-};
+export const getApprovalFlowById = (id: string): ApprovalFlowTemplate | undefined =>
+  cache.find((f) => f.id === id);
 
-
-export interface ValidationError {
-  code: 'E1' | 'E2' | 'E3' | 'E4' | 'E5';
-  message: string;
-}
-
-export const validateScheme = (cfg: SchemeContent): ValidationError[] => {
-  const errs: ValidationError[] = [];
-  if (cfg.approval_enabled && cfg.approval_levels.length === 0) {
-    errs.push({ code: 'E1', message: '审批已启用，请至少配置一个审批层级' });
-  }
-  cfg.approval_levels.forEach((lv, i) => {
-    if (!lv.user_ids || lv.user_ids.length === 0) {
-      errs.push({ code: 'E2', message: `第 ${i + 1} 级「${lv.name}」未指定审批人` });
-    }
-  });
-  if (cfg.assessment_enabled) {
-    if (cfg.assessor_groups.length === 0) {
-      errs.push({ code: 'E3', message: '评估已启用，请至少配置一个评估人组' });
-    }
-    cfg.assessor_groups.forEach((g, i) => {
-      if (g.user_ids.length === 0) {
-        errs.push({ code: 'E4', message: `第 ${i + 1} 个评估人组「${g.name}」未指定具体人员` });
-      }
-    });
-    [cfg.value_model, cfg.complexity_model].forEach((m) => {
-      m.dimensions.forEach((d) => {
-        if (d.weight < 0 || d.weight > 1) {
-          errs.push({ code: 'E5', message: `${m.label} 维度「${d.name}」权重需在 0~1 之间` });
-        }
-      });
-    });
-  }
-  return errs;
-};
-
-export const saveScheme = async (
-  schemeId: string,
-  next: SchemeContent & { name: string; description?: string },
-  updatedBy = '当前用户',
-): Promise<ApprovalAssessmentScheme> => {
+export const createApprovalFlowDraft = async (
+  payload?: Partial<Pick<ApprovalFlowTemplate, 'name' | 'code' | 'description' | 'approvers' | 'assessors' | 'value_model' | 'complexity_model'>>,
+): Promise<ApprovalFlowTemplate> => {
   await delay();
-  const target = schemes.find((s) => s.id === schemeId);
-  if (!target) throw new Error('方案不存在');
-  // 系统预设方案允许编辑
-  const errs = validateScheme(next);
-  if (errs.length > 0) throw new Error(errs.map((e) => `[${e.code}] ${e.message}`).join('\n'));
-
-  Object.assign(target, {
-
-    name: next.name,
-    description: next.description,
-    approval_enabled: next.approval_enabled,
-    approval_levels: next.approval_levels,
-    assessment_enabled: next.assessment_enabled,
-    assessor_groups: next.assessor_groups,
-    value_model: next.value_model,
-    complexity_model: next.complexity_model,
-    version: target.version + 1,
-    updated_at: new Date().toISOString(),
-    updated_by: updatedBy,
-  });
-  persist();
-  notify();
-  return clone(target);
-};
-
-export interface CreateSchemeInput {
-  name: string;
-  description?: string;
-  /** 复制源方案 ID */
-  source_scheme_id: string;
-}
-
-export const createScheme = async (
-  input: CreateSchemeInput,
-  updatedBy = '当前用户',
-): Promise<ApprovalAssessmentScheme> => {
-  await delay();
-  const src = schemes.find((s) => s.id === input.source_scheme_id);
-  if (!src) throw new Error('复制源方案不存在');
-  if (!input.name || !input.name.trim()) throw new Error('请输入方案名称');
-  if (schemes.some((s) => s.name.trim() === input.name.trim())) {
-    throw new Error('方案名称已存在');
-  }
   const now = new Date().toISOString();
-  const created: ApprovalAssessmentScheme = {
-    ...clone(src),
-    id: `scheme-${Date.now().toString(36)}`,
-    name: input.name.trim(),
-    description: input.description,
-    is_preset: false,
-    is_active: false,
-    version: 1,
+  const item: ApprovalFlowTemplate = {
+    id: `flow-${Date.now()}`,
+    name: payload?.name ?? '未命名审批流',
+    code: payload?.code ?? `FLOW-${Date.now().toString(36).slice(-5).toUpperCase()}`,
+    description: payload?.description,
+    status: 'inactive',
+    is_draft: true,
+    approvers: payload?.approvers ?? [],
+    assessors: payload?.assessors ?? [],
+    value_model: payload?.value_model,
+    complexity_model: payload?.complexity_model,
     created_at: now,
     updated_at: now,
-    updated_by: updatedBy,
   };
-  schemes = [...schemes, created];
-  persist();
+  cache = [item, ...cache];
+  save(cache);
   notify();
-  return clone(created);
+  return item;
 };
 
-export const deleteScheme = async (schemeId: string): Promise<void> => {
+export const updateApprovalFlow = async (
+  id: string,
+  patch: Partial<Omit<ApprovalFlowTemplate, 'id' | 'created_at'>>,
+): Promise<ApprovalFlowTemplate> => {
   await delay();
-  const target = schemes.find((s) => s.id === schemeId);
-  if (!target) return;
-  if (target.is_preset) throw new Error('系统预设方案不可删除');
-  if (target.is_active) throw new Error('已激活方案不可删除，请先切换激活方案');
-  schemes = schemes.filter((s) => s.id !== schemeId);
-  
-  persist();
+  cache = cache.map((f) => (f.id === id ? { ...f, ...patch, updated_at: new Date().toISOString() } : f));
+  save(cache);
   notify();
+  return cache.find((f) => f.id === id)!;
 };
 
-export const activateScheme = async (schemeId: string): Promise<void> => {
+export const deleteApprovalFlow = async (id: string): Promise<void> => {
   await delay();
-  const target = schemes.find((s) => s.id === schemeId);
-  if (!target) throw new Error('方案不存在');
-  const errs = validateScheme(target);
-  if (errs.length > 0) {
-    throw new Error('该方案存在校验错误，无法激活：\n' + errs.map((e) => `[${e.code}] ${e.message}`).join('\n'));
+  const target = cache.find((f) => f.id === id);
+  if (target?.status === 'active') {
+    throw new Error('已启用的审批流不能删除，请先停用');
   }
-  schemes = schemes.map((s) => ({ ...s, is_active: s.id === schemeId }));
-  persist();
+  cache = cache.filter((f) => f.id !== id);
+  save(cache);
   notify();
+};
+
+export const activateApprovalFlow = async (id: string): Promise<void> => {
+  await delay();
+  cache = cache.map((f) => ({
+    ...f,
+    status: f.id === id ? 'active' : f.status === 'active' ? 'inactive' : f.status,
+    is_draft: f.id === id ? false : f.is_draft,
+    updated_at: f.id === id ? new Date().toISOString() : f.updated_at,
+  }));
+  save(cache);
+  notify();
+};
+
+export const deactivateApprovalFlow = async (id: string): Promise<void> => {
+  await delay();
+  cache = cache.map((f) => (f.id === id ? { ...f, status: 'inactive' as const, updated_at: new Date().toISOString() } : f));
+  save(cache);
+  notify();
+};
+
+export const cloneApprovalFlowAsDraft = async (sourceId: string): Promise<ApprovalFlowTemplate> => {
+  const src = cache.find((f) => f.id === sourceId);
+  if (!src) throw new Error('源审批流不存在');
+  return createApprovalFlowDraft({
+    name: `${src.name} 副本`,
+    code: `${src.code}-COPY`,
+    description: src.description,
+    approvers: src.approvers.map((a, i) => ({ ...a, id: `appr-${Date.now().toString(36).slice(-4)}-${i + 1}` })),
+    assessors: src.assessors.map((a, i) => ({ ...a, id: `asse-${Date.now().toString(36).slice(-4)}-${i + 1}` })),
+    value_model: src.value_model,
+    complexity_model: src.complexity_model,
+  });
 };
