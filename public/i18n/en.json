@@ -2055,6 +2055,14 @@
       }
     }
   },
+  "about": {
+    "productName": "Digital Workforce Platform",
+    "versionNumber": "Version",
+    "releaseDate": "Release Date",
+    "copy": "Copy Version",
+    "copySuccess": "Version copied to clipboard",
+    "copyError": "Copy failed, please retry"
+  },
   "personalCenter": {
     "title": "Personal Center",
     "tabs": {
