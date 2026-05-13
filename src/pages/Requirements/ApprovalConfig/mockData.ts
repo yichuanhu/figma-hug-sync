@@ -307,7 +307,7 @@ export const saveScheme = async (
   await delay();
   const target = schemes.find((s) => s.id === schemeId);
   if (!target) throw new Error('方案不存在');
-  if (target.is_preset) throw new Error('系统预设方案不可编辑');
+  // 系统预设方案允许编辑
   const errs = validateScheme(next);
   if (errs.length > 0) throw new Error(errs.map((e) => `[${e.code}] ${e.message}`).join('\n'));
 
