@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { Button, Input, InputNumber, Select, Typography, Tag, Empty } from '@douyinfe/semi-ui';
-import { Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { Button, Input, InputNumber, Select, Typography, Tag, Empty, Tooltip } from '@douyinfe/semi-ui';
+import { Plus, Trash2, ArrowUp, ArrowDown, HelpCircle } from 'lucide-react';
 import type {
   AssessmentModel,
   AssessmentDimension,
@@ -89,13 +89,15 @@ const ModelCard = ({
           <div className="dim-header">
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', flex: 1, flexWrap: 'wrap' }}>
               <Input value={d.label} onChange={(v) => updateDim(idx, { ...d, label: v })} style={{ maxWidth: 200 }} placeholder="维度名称" />
-              <InputNumber value={d.weight} onChange={(v) => updateDim(idx, { ...d, weight: Number(v) || 0 })} step={0.05} min={0} max={1} prefix="权重" style={{ width: 130 }} />
+              <Tooltip content="所有维度权重之和需等于 1.0" position="top">
+                <InputNumber value={d.weight} onChange={(v) => updateDim(idx, { ...d, weight: Number(v) || 0 })} step={0.05} min={0} max={1} prefix="权重" style={{ width: 130 }} />
+              </Tooltip>
               <Select value={d.dimension_type ?? 'manual_score'} onChange={(v) => updateDim(idx, { ...d, dimension_type: v as 'auto_calculated' | 'manual_score' })} style={{ width: 140 }}
                 optionList={[{ label: '手动打分', value: 'manual_score' }, { label: '自动计算', value: 'auto_calculated' }]} />
               {d.dimension_type === 'auto_calculated' ? (
-                <Input value={d.expression} onChange={(v) => updateDim(idx, { ...d, expression: v })} placeholder="表达式 如 {a}*{b}/60" style={{ flex: 1, minWidth: 200 }} />
+                <Input value={d.expression} onChange={(v) => updateDim(idx, { ...d, expression: v })} placeholder="表达式，如 {工时}*{单价}/60" style={{ flex: 1, minWidth: 200 }} />
               ) : (
-                <Select value={d.source_field} onChange={(v) => updateDim(idx, { ...d, source_field: v as string })} placeholder="来源字段" style={{ flex: 1, minWidth: 160 }}
+                <Select value={d.source_field} onChange={(v) => updateDim(idx, { ...d, source_field: v as string })} placeholder="选择来源字段" style={{ flex: 1, minWidth: 160 }}
                   showClear optionList={fields.map((f) => ({ label: f.label, value: f.key }))} />
               )}
             </div>
@@ -105,19 +107,37 @@ const ModelCard = ({
           </div>
 
           <div className="tier-list">
+            {(d.tiers ?? []).length > 0 && (
+              <div style={{ display: 'flex', gap: 6, marginBottom: 4, paddingLeft: 4 }}>
+                <Text type="tertiary" size="small" style={{ width: 140 }}>档位名称</Text>
+                <Text type="tertiary" size="small" style={{ width: 140, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  命中条件
+                  <Tooltip content="支持 >=80、60~79、<60、==A 等表达式" position="top">
+                    <HelpCircle size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)', cursor: 'pointer' }} />
+                  </Tooltip>
+                </Text>
+                <Text type="tertiary" size="small" style={{ width: 100 }}>输出分数</Text>
+                <span style={{ width: 28 }} />
+              </div>
+            )}
             {(d.tiers ?? []).map((tier, ti) => (
-              <div key={ti} style={{ display: 'flex', gap: 6 }}>
-                <Input value={tier.label} onChange={(v) => updateDim(idx, { ...d, tiers: d.tiers!.map((x, i) => i === ti ? { ...x, label: v } : x) })} placeholder="档位名" style={{ width: 140 }} />
+              <div key={ti} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                <Input value={tier.label} onChange={(v) => updateDim(idx, { ...d, tiers: d.tiers!.map((x, i) => i === ti ? { ...x, label: v } : x) })} placeholder="如：高" style={{ width: 140 }} />
                 <Input value={tier.condition} onChange={(v) => updateDim(idx, { ...d, tiers: d.tiers!.map((x, i) => i === ti ? { ...x, condition: v } : x) })} placeholder=">=80" style={{ width: 140 }} />
-                <InputNumber value={tier.score} onChange={(v) => updateDim(idx, { ...d, tiers: d.tiers!.map((x, i) => i === ti ? { ...x, score: Number(v) || 0 } : x) })} placeholder="分数" style={{ width: 100 }} />
+                <InputNumber value={tier.score} onChange={(v) => updateDim(idx, { ...d, tiers: d.tiers!.map((x, i) => i === ti ? { ...x, score: Number(v) || 0 } : x) })} placeholder="0-100" min={0} max={100} style={{ width: 100 }} />
                 <Button icon={<Trash2 size={14} strokeWidth={2} />} theme="borderless" type="danger" size="small"
                   onClick={() => updateDim(idx, { ...d, tiers: d.tiers!.filter((_, i) => i !== ti) })} />
               </div>
             ))}
-            <Button icon={<Plus size={12} strokeWidth={2} />} theme="borderless" size="small"
-              onClick={() => updateDim(idx, { ...d, tiers: [...(d.tiers ?? []), newTier()] })}>
-              添加档位
-            </Button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+              <Button icon={<Plus size={12} strokeWidth={2} />} theme="borderless" size="small"
+                onClick={() => updateDim(idx, { ...d, tiers: [...(d.tiers ?? []), newTier()] })}>
+                添加档位
+              </Button>
+              {(d.tiers ?? []).length === 0 && (
+                <Text type="tertiary" size="small">档位用于把维度得分映射为最终等级</Text>
+              )}
+            </div>
           </div>
         </div>
       ))}
