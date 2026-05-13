@@ -28,7 +28,7 @@ export interface ApprovalFlowTemplate {
   updated_at: string;
 }
 
-const STORAGE_KEY = 'apa.requirements.approvalFlows.v2';
+const STORAGE_KEY = 'apa.requirements.approvalFlows.v3';
 
 const defaultFlows: ApprovalFlowTemplate[] = [
   {
