@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { Button, Input, InputNumber, Select, Typography, Tag, Empty } from '@douyinfe/semi-ui';
-import { Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { Button, Input, InputNumber, Select, Typography, Tag, Empty, Tooltip } from '@douyinfe/semi-ui';
+import { Plus, Trash2, ArrowUp, ArrowDown, HelpCircle } from 'lucide-react';
 import type {
   AssessmentModel,
   AssessmentDimension,
