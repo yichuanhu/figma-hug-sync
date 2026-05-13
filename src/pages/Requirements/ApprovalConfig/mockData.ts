@@ -78,7 +78,7 @@ export interface ApprovalAssessmentScheme extends SchemeContent {
   updated_by: string;
 }
 
-const STORAGE_KEY = 'apa.requirements.approvalSchemes.v2';
+const STORAGE_KEY = 'apa.requirements.approvalSchemes.v3';
 const LEGACY_CONFIG_KEY = 'apa.requirements.approvalAssessmentConfig.v1';
 
 const PRESET_ID = 'scheme-preset';
