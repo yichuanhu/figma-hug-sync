@@ -206,7 +206,8 @@
       "logout": "Log Out",
       "language": "Language",
       "languageZh": "中文",
-      "languageEn": "English"
+      "languageEn": "English",
+      "about": "About"
     },
     "requirementsProjects": "Projects & Workspaces",
     "sharingAdmin": "Sharing Center Config",
