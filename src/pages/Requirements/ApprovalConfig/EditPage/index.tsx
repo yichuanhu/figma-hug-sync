@@ -69,7 +69,7 @@ const ApprovalConfigEditPage = () => {
     [draft, original],
   );
   const errors = useMemo(() => (draft ? validateScheme(draft) : []), [draft]);
-  const readonly = !!draft?.is_preset;
+  const readonly = false;
 
   const patch = (p: Partial<ApprovalAssessmentScheme>) =>
     setDraft((prev) => (prev ? { ...prev, ...p } : prev));
