@@ -149,6 +149,7 @@ export const createCostRecord = (data: CostFormPayload): CostRecord => {
   const item: CostRecord = {
     id: `cost-${Date.now()}`,
     ...data,
+    isRecurring: false,
     projectName: data.costType === 'PROJECT' ? projectName(data.projectId) : undefined,
     createdBy: '管理员',
     createdAt: now(),

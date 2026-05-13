@@ -171,30 +171,6 @@ const CostFormModal = ({ visible, costType, editing, onClose }: Props) => {
           rules={[{ required: true, message: t('operations.costManagement.validation.dateRequired') }]}
         />
 
-        <Form.Switch
-          field="isRecurring"
-          label={t('operations.costManagement.form.isRecurring')}
-          onChange={(v) => setIsRecurring(!!v)}
-        />
-
-        {isRecurring && (
-          <Form.Select
-            field="recurrencePattern"
-            label={t('operations.costManagement.form.recurrencePattern')}
-            placeholder={t('operations.costManagement.form.recurrencePlaceholder')}
-            style={{ width: '100%' }}
-            optionList={[
-              { label: t('operations.costManagement.recurrence.DAILY'), value: 'DAILY' },
-              { label: t('operations.costManagement.recurrence.WEEKLY'), value: 'WEEKLY' },
-              { label: t('operations.costManagement.recurrence.MONTHLY'), value: 'MONTHLY' },
-              { label: t('operations.costManagement.recurrence.QUARTERLY'), value: 'QUARTERLY' },
-              { label: t('operations.costManagement.recurrence.YEARLY'), value: 'YEARLY' },
-            ]}
-            trigger={['blur', 'change']}
-            rules={[{ required: true, message: t('operations.costManagement.validation.recurrenceRequired') }]}
-          />
-        )}
-
         <Form.TextArea
           field="description"
           label={t('operations.costManagement.form.description')}
