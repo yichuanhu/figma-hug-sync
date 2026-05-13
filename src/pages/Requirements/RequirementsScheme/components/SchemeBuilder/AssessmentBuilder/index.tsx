@@ -107,19 +107,37 @@ const ModelCard = ({
           </div>
 
           <div className="tier-list">
+            {(d.tiers ?? []).length > 0 && (
+              <div style={{ display: 'flex', gap: 6, marginBottom: 4, paddingLeft: 4 }}>
+                <Text type="tertiary" size="small" style={{ width: 140 }}>档位名称</Text>
+                <Text type="tertiary" size="small" style={{ width: 140, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  命中条件
+                  <Tooltip content="支持 >=80、60~79、<60、==A 等表达式" position="top">
+                    <HelpCircle size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)', cursor: 'pointer' }} />
+                  </Tooltip>
+                </Text>
+                <Text type="tertiary" size="small" style={{ width: 100 }}>输出分数</Text>
+                <span style={{ width: 28 }} />
+              </div>
+            )}
             {(d.tiers ?? []).map((tier, ti) => (
-              <div key={ti} style={{ display: 'flex', gap: 6 }}>
-                <Input value={tier.label} onChange={(v) => updateDim(idx, { ...d, tiers: d.tiers!.map((x, i) => i === ti ? { ...x, label: v } : x) })} placeholder="档位名" style={{ width: 140 }} />
+              <div key={ti} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                <Input value={tier.label} onChange={(v) => updateDim(idx, { ...d, tiers: d.tiers!.map((x, i) => i === ti ? { ...x, label: v } : x) })} placeholder="如：高" style={{ width: 140 }} />
                 <Input value={tier.condition} onChange={(v) => updateDim(idx, { ...d, tiers: d.tiers!.map((x, i) => i === ti ? { ...x, condition: v } : x) })} placeholder=">=80" style={{ width: 140 }} />
-                <InputNumber value={tier.score} onChange={(v) => updateDim(idx, { ...d, tiers: d.tiers!.map((x, i) => i === ti ? { ...x, score: Number(v) || 0 } : x) })} placeholder="分数" style={{ width: 100 }} />
+                <InputNumber value={tier.score} onChange={(v) => updateDim(idx, { ...d, tiers: d.tiers!.map((x, i) => i === ti ? { ...x, score: Number(v) || 0 } : x) })} placeholder="0-100" min={0} max={100} style={{ width: 100 }} />
                 <Button icon={<Trash2 size={14} strokeWidth={2} />} theme="borderless" type="danger" size="small"
                   onClick={() => updateDim(idx, { ...d, tiers: d.tiers!.filter((_, i) => i !== ti) })} />
               </div>
             ))}
-            <Button icon={<Plus size={12} strokeWidth={2} />} theme="borderless" size="small"
-              onClick={() => updateDim(idx, { ...d, tiers: [...(d.tiers ?? []), newTier()] })}>
-              添加档位
-            </Button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+              <Button icon={<Plus size={12} strokeWidth={2} />} theme="borderless" size="small"
+                onClick={() => updateDim(idx, { ...d, tiers: [...(d.tiers ?? []), newTier()] })}>
+                添加档位
+              </Button>
+              {(d.tiers ?? []).length === 0 && (
+                <Text type="tertiary" size="small">档位用于把维度得分映射为最终等级</Text>
+              )}
+            </div>
           </div>
         </div>
       ))}
