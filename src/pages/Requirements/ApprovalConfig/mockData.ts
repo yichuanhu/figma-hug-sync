@@ -80,17 +80,7 @@ export interface ApprovalAssessmentScheme extends SchemeContent {
   updated_by: string;
 }
 
-export interface ConfigHistoryItem {
-  scheme_id: string;
-  version: number;
-  snapshot: SchemeContent;
-  updated_at: string;
-  updated_by: string;
-  remark?: string;
-}
-
 const STORAGE_KEY = 'apa.requirements.approvalSchemes.v2';
-const HISTORY_KEY = 'apa.requirements.approvalSchemesHistory.v2';
 const LEGACY_CONFIG_KEY = 'apa.requirements.approvalAssessmentConfig.v1';
 
 const PRESET_ID = 'scheme-preset';
@@ -244,23 +234,11 @@ const loadSchemes = (): ApprovalAssessmentScheme[] => {
   return [buildPresetScheme()];
 };
 
-const loadHistory = (): ConfigHistoryItem[] => {
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    if (raw) return JSON.parse(raw) as ConfigHistoryItem[];
-  } catch {
-    /* noop */
-  }
-  return [];
-};
-
 let schemes: ApprovalAssessmentScheme[] = loadSchemes();
-let history: ConfigHistoryItem[] = loadHistory();
 
 const persist = () => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(schemes));
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   } catch {
     /* noop */
   }
@@ -289,10 +267,6 @@ export const fetchActiveScheme = async (): Promise<ApprovalAssessmentScheme> => 
   return clone(active);
 };
 
-export const fetchSchemeHistory = async (schemeId: string): Promise<ConfigHistoryItem[]> => {
-  await delay(120);
-  return history.filter((h) => h.scheme_id === schemeId).sort((a, b) => b.version - a.version);
-};
 
 export interface ValidationError {
   code: 'E1' | 'E2' | 'E3' | 'E4' | 'E5';
@@ -341,26 +315,8 @@ export const saveScheme = async (
   const errs = validateScheme(next);
   if (errs.length > 0) throw new Error(errs.map((e) => `[${e.code}] ${e.message}`).join('\n'));
 
-  // 入历史
-  history = [
-    {
-      scheme_id: target.id,
-      version: target.version,
-      snapshot: {
-        approval_enabled: target.approval_enabled,
-        approval_levels: target.approval_levels,
-        assessment_enabled: target.assessment_enabled,
-        assessor_groups: target.assessor_groups,
-        value_model: target.value_model,
-        complexity_model: target.complexity_model,
-      },
-      updated_at: target.updated_at,
-      updated_by: target.updated_by,
-    },
-    ...history,
-  ];
-
   Object.assign(target, {
+
     name: next.name,
     description: next.description,
     approval_enabled: next.approval_enabled,
@@ -422,7 +378,7 @@ export const deleteScheme = async (schemeId: string): Promise<void> => {
   if (target.is_preset) throw new Error('系统预设方案不可删除');
   if (target.is_active) throw new Error('已激活方案不可删除，请先切换激活方案');
   schemes = schemes.filter((s) => s.id !== schemeId);
-  history = history.filter((h) => h.scheme_id !== schemeId);
+  
   persist();
   notify();
 };
