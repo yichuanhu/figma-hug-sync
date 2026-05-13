@@ -81,6 +81,8 @@ const ApprovalAssessmentConfigPage = () => {
     );
   }, [schemes, keyword]);
 
+  const goView = (s: ApprovalAssessmentScheme) =>
+    navigate(`/requirements/approval-config/${s.id}/edit?mode=view`);
   const goEdit = (s: ApprovalAssessmentScheme) =>
     navigate(`/requirements/approval-config/${s.id}/edit`);
 
