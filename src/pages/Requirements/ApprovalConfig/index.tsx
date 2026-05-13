@@ -249,20 +249,12 @@ const ApprovalAssessmentConfigPage = () => {
                             激活此方案
                           </Dropdown.Item>
                         )}
-                        {s.is_preset ? (
-                          <Tooltip content="系统预设不可编辑，可复制后修改" position="left">
-                            <Dropdown.Item icon={<Pencil size={14} />} disabled>
-                              编辑
-                            </Dropdown.Item>
-                          </Tooltip>
-                        ) : (
-                          <Dropdown.Item
-                            icon={<Pencil size={14} />}
-                            onClick={(e) => { e.stopPropagation(); goEdit(s); }}
-                          >
-                            编辑
-                          </Dropdown.Item>
-                        )}
+                        <Dropdown.Item
+                          icon={<Pencil size={14} />}
+                          onClick={(e) => { e.stopPropagation(); goEdit(s); }}
+                        >
+                          编辑
+                        </Dropdown.Item>
                         <Dropdown.Item
                           icon={<Copy size={14} />}
                           onClick={(e) => { e.stopPropagation(); openCreate(s.id); }}
