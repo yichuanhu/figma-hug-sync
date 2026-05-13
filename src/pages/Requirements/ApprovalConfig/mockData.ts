@@ -7,15 +7,13 @@
  * - 每套方案独立维护版本号与历史快照
  */
 
-export type ApproverType = 'department_leader' | 'specific_users';
 export type ApprovalMode = 'any_one' | 'all' | 'majority';
 
 export interface ApprovalLevel {
   id: string;
   name: string;
-  type: ApproverType;
-  /** specific_users 时必填 */
-  user_ids?: string[];
+  /** 指定审批人 */
+  user_ids: string[];
   mode: ApprovalMode;
   /** 串行序号（升序） */
   priority: number;
@@ -91,7 +89,7 @@ const presetContent: SchemeContent = {
     {
       id: 'lv-1',
       name: '部门主管审批',
-      type: 'department_leader',
+      user_ids: [],
       mode: 'any_one',
       priority: 1,
       required: true,
@@ -100,7 +98,6 @@ const presetContent: SchemeContent = {
     {
       id: 'lv-2',
       name: 'AI 委员会评审',
-      type: 'specific_users',
       user_ids: [],
       mode: 'majority',
       priority: 2,
@@ -279,8 +276,8 @@ export const validateScheme = (cfg: SchemeContent): ValidationError[] => {
     errs.push({ code: 'E1', message: '审批已启用，请至少配置一个审批层级' });
   }
   cfg.approval_levels.forEach((lv, i) => {
-    if (lv.type === 'specific_users' && (!lv.user_ids || lv.user_ids.length === 0)) {
-      errs.push({ code: 'E2', message: `第 ${i + 1} 级「${lv.name}」选择了指定用户，但未指定具体人员` });
+    if (!lv.user_ids || lv.user_ids.length === 0) {
+      errs.push({ code: 'E2', message: `第 ${i + 1} 级「${lv.name}」未指定审批人` });
     }
   });
   if (cfg.assessment_enabled) {
