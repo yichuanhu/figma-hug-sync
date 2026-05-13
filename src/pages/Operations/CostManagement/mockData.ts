@@ -130,8 +130,6 @@ export interface CostFormPayload {
   costName: string;
   amount: number;
   occurrenceDate: string;
-  isRecurring: boolean;
-  recurrencePattern?: RecurrencePattern;
   description?: string;
 }
 
