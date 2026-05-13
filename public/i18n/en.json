@@ -2061,7 +2061,16 @@
       "personalCredentials": "Personal Credentials"
     },
     "settings": {
-      "comingSoon": "Coming Soon"
+      "comingSoon": "Coming Soon",
+      "version": {
+        "title": "About Platform",
+        "platformName": "Platform Name",
+        "versionNumber": "Version",
+        "releaseDate": "Release Date",
+        "copy": "Copy Version",
+        "copySuccess": "Version copied to clipboard",
+        "copyError": "Copy failed, please retry"
+      }
     }
   },
   "personalCredential": {
