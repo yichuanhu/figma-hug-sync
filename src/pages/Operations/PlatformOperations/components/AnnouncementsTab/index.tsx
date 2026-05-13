@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Table, Button, Input, Tag, Dropdown, Modal, Toast, Pagination,
+  Table, Button, Input, Tag, Dropdown, Modal, Toast, Pagination, Typography,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import dayjs from 'dayjs';
-import { Plus, MoreHorizontal, Search } from 'lucide-react';
+import { Plus, MoreHorizontal } from 'lucide-react';
+import EmptyState from '@/components/EmptyState';
 import {
   getAnnouncements,
   deleteAnnouncement,
@@ -15,6 +17,8 @@ import {
 } from '../../mockData';
 import AnnouncementFormModal from '../AnnouncementFormModal';
 import './index.less';
+
+const { Text } = Typography;
 
 const PAGE_SIZE = 10;
 
