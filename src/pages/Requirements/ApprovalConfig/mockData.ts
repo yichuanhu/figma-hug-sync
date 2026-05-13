@@ -1,12 +1,10 @@
 /**
- * 审批与评估配置（租户级单一配置 + 历史版本）
+ * 审批与评估配置 - 多方案管理
  *
- * 数据契约对齐 STORY-016：
- * - 顶部两个独立开关：approval_enabled / assessment_enabled
- * - 审批人类型仅 department_leader / specific_users
- * - 评估人类型仅 specific_users（多组）
- * - 价值/复杂度两个模型固定，维度可增删，权重 0~1，档位 label/condition/score
- * - 保存即生成新版本快照（version 自增），历史只读、不支持回滚（仅查看）
+ * - 一个租户可创建多套审批与评估方案，但仅允许一套处于 active 状态
+ * - 系统预设方案（is_preset=true）：可复制不可编辑/删除/停用，初始为 active
+ * - 每套方案包含完整的审批配置 + 评估配置
+ * - 每套方案独立维护版本号与历史快照
  */
 
 export type ApproverType = 'department_leader' | 'specific_users';
@@ -28,14 +26,12 @@ export interface ApprovalLevel {
 export interface AssessorGroup {
   id: string;
   name: string;
-  /** 评估人列表（仅 specific_users 类型） */
   user_ids: string[];
   required: boolean;
 }
 
 export interface DimensionTier {
   label: string;
-  /** 形如 ">=80" "60~79" "<60" */
   condition: string;
   score: number;
 }
@@ -45,12 +41,9 @@ export type DimensionSourceType = 'manual' | 'auto_calculated';
 export interface AssessmentDimension {
   key: string;
   name: string;
-  /** 0 ~ 1 */
   weight: number;
   source_type: DimensionSourceType;
-  /** 自动计算表达式 */
   expression?: string;
-  /** 自动计算引用字段 */
   source_fields?: string[];
   tiers: DimensionTier[];
 }
@@ -64,30 +57,45 @@ export interface AssessmentModel {
   dimensions: AssessmentDimension[];
 }
 
-export interface ApprovalAssessmentConfig {
+/** 方案配置内容（不含元数据） */
+export interface SchemeContent {
   approval_enabled: boolean;
   approval_levels: ApprovalLevel[];
   assessment_enabled: boolean;
   assessor_groups: AssessorGroup[];
   value_model: AssessmentModel;
   complexity_model: AssessmentModel;
+}
+
+/** 一套审批与评估方案 */
+export interface ApprovalAssessmentScheme extends SchemeContent {
+  id: string;
+  name: string;
+  description?: string;
+  is_preset: boolean;
+  is_active: boolean;
   version: number;
+  created_at: string;
   updated_at: string;
   updated_by: string;
 }
 
 export interface ConfigHistoryItem {
+  scheme_id: string;
   version: number;
-  snapshot: Omit<ApprovalAssessmentConfig, 'version' | 'updated_at' | 'updated_by'>;
+  snapshot: SchemeContent;
   updated_at: string;
   updated_by: string;
   remark?: string;
 }
 
-const STORAGE_KEY = 'apa.requirements.approvalAssessmentConfig.v1';
-const HISTORY_KEY = 'apa.requirements.approvalAssessmentConfigHistory.v1';
+const STORAGE_KEY = 'apa.requirements.approvalSchemes.v2';
+const HISTORY_KEY = 'apa.requirements.approvalSchemesHistory.v2';
+const LEGACY_CONFIG_KEY = 'apa.requirements.approvalAssessmentConfig.v1';
 
-const defaultConfig: ApprovalAssessmentConfig = {
+const PRESET_ID = 'scheme-preset';
+
+const presetContent: SchemeContent = {
   approval_enabled: true,
   approval_levels: [
     {
@@ -179,19 +187,61 @@ const defaultConfig: ApprovalAssessmentConfig = {
       },
     ],
   },
-  version: 1,
-  updated_at: '2025-01-10T09:00:00Z',
-  updated_by: '系统初始化',
 };
 
-const loadConfig = (): ApprovalAssessmentConfig => {
+const buildPresetScheme = (): ApprovalAssessmentScheme => ({
+  ...JSON.parse(JSON.stringify(presetContent)),
+  id: PRESET_ID,
+  name: '系统默认审批与评估',
+  description: '系统预设方案，可复制为新方案后修改；预设本身不可编辑或删除',
+  is_preset: true,
+  is_active: true,
+  version: 1,
+  created_at: '2025-01-10T09:00:00Z',
+  updated_at: '2025-01-10T09:00:00Z',
+  updated_by: '系统初始化',
+});
+
+const loadSchemes = (): ApprovalAssessmentScheme[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as ApprovalAssessmentConfig;
+    if (raw) {
+      const parsed = JSON.parse(raw) as ApprovalAssessmentScheme[];
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // 保证预设始终存在
+        const hasPreset = parsed.some((s) => s.id === PRESET_ID);
+        if (!hasPreset) parsed.unshift(buildPresetScheme());
+        // 保证有且仅有一个 active
+        if (!parsed.some((s) => s.is_active)) {
+          const preset = parsed.find((s) => s.id === PRESET_ID)!;
+          preset.is_active = true;
+        }
+        return parsed;
+      }
+    }
+    // 兼容老 key：迁移为预设方案
+    const legacy = localStorage.getItem(LEGACY_CONFIG_KEY);
+    if (legacy) {
+      try {
+        const cfg = JSON.parse(legacy);
+        const migrated: ApprovalAssessmentScheme = {
+          ...buildPresetScheme(),
+          approval_enabled: cfg.approval_enabled,
+          approval_levels: cfg.approval_levels,
+          assessment_enabled: cfg.assessment_enabled,
+          assessor_groups: cfg.assessor_groups,
+          value_model: cfg.value_model,
+          complexity_model: cfg.complexity_model,
+        };
+        return [migrated];
+      } catch {
+        /* noop */
+      }
+    }
   } catch {
     /* noop */
   }
-  return JSON.parse(JSON.stringify(defaultConfig));
+  return [buildPresetScheme()];
 };
 
 const loadHistory = (): ConfigHistoryItem[] => {
@@ -204,12 +254,12 @@ const loadHistory = (): ConfigHistoryItem[] => {
   return [];
 };
 
-let cache: ApprovalAssessmentConfig = loadConfig();
+let schemes: ApprovalAssessmentScheme[] = loadSchemes();
 let history: ConfigHistoryItem[] = loadHistory();
 
 const persist = () => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(schemes));
     localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   } catch {
     /* noop */
@@ -224,17 +274,24 @@ export const subscribeConfigChange = (cb: () => void): (() => void) => {
   };
 };
 const notify = () => listeners.forEach((cb) => cb());
-
 const delay = (ms = 200) => new Promise((r) => setTimeout(r, ms));
 
-export const fetchConfig = async (): Promise<ApprovalAssessmentConfig> => {
+const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v));
+
+export const fetchSchemes = async (): Promise<ApprovalAssessmentScheme[]> => {
   await delay(120);
-  return JSON.parse(JSON.stringify(cache));
+  return clone(schemes);
 };
 
-export const fetchConfigHistory = async (): Promise<ConfigHistoryItem[]> => {
+export const fetchActiveScheme = async (): Promise<ApprovalAssessmentScheme> => {
+  await delay(80);
+  const active = schemes.find((s) => s.is_active) ?? schemes[0];
+  return clone(active);
+};
+
+export const fetchSchemeHistory = async (schemeId: string): Promise<ConfigHistoryItem[]> => {
   await delay(120);
-  return [...history].sort((a, b) => b.version - a.version);
+  return history.filter((h) => h.scheme_id === schemeId).sort((a, b) => b.version - a.version);
 };
 
 export interface ValidationError {
@@ -242,15 +299,7 @@ export interface ValidationError {
   message: string;
 }
 
-/**
- * 校验配置：
- * - E1: 审批开启但层级为空
- * - E2: specific_users 类型审批人未选用户
- * - E3: 评估开启但未配置任何评估人组
- * - E4: 评估人组未选用户
- * - E5: 维度权重超出 0~1 范围
- */
-export const validateConfig = (cfg: ApprovalAssessmentConfig): ValidationError[] => {
+export const validateScheme = (cfg: SchemeContent): ValidationError[] => {
   const errs: ValidationError[] = [];
   if (cfg.approval_enabled && cfg.approval_levels.length === 0) {
     errs.push({ code: 'E1', message: '审批已启用，请至少配置一个审批层级' });
@@ -280,39 +329,113 @@ export const validateConfig = (cfg: ApprovalAssessmentConfig): ValidationError[]
   return errs;
 };
 
-export const saveConfig = async (
-  next: ApprovalAssessmentConfig,
+export const saveScheme = async (
+  schemeId: string,
+  next: SchemeContent & { name: string; description?: string },
   updatedBy = '当前用户',
-): Promise<ApprovalAssessmentConfig> => {
+): Promise<ApprovalAssessmentScheme> => {
   await delay();
-  const errs = validateConfig(next);
-  if (errs.length > 0) {
-    throw new Error(errs.map((e) => `[${e.code}] ${e.message}`).join('\n'));
-  }
-  // 旧版本入历史
+  const target = schemes.find((s) => s.id === schemeId);
+  if (!target) throw new Error('方案不存在');
+  if (target.is_preset) throw new Error('系统预设方案不可编辑');
+  const errs = validateScheme(next);
+  if (errs.length > 0) throw new Error(errs.map((e) => `[${e.code}] ${e.message}`).join('\n'));
+
+  // 入历史
   history = [
     {
-      version: cache.version,
+      scheme_id: target.id,
+      version: target.version,
       snapshot: {
-        approval_enabled: cache.approval_enabled,
-        approval_levels: cache.approval_levels,
-        assessment_enabled: cache.assessment_enabled,
-        assessor_groups: cache.assessor_groups,
-        value_model: cache.value_model,
-        complexity_model: cache.complexity_model,
+        approval_enabled: target.approval_enabled,
+        approval_levels: target.approval_levels,
+        assessment_enabled: target.assessment_enabled,
+        assessor_groups: target.assessor_groups,
+        value_model: target.value_model,
+        complexity_model: target.complexity_model,
       },
-      updated_at: cache.updated_at,
-      updated_by: cache.updated_by,
+      updated_at: target.updated_at,
+      updated_by: target.updated_by,
     },
     ...history,
   ];
-  cache = {
-    ...next,
-    version: cache.version + 1,
+
+  Object.assign(target, {
+    name: next.name,
+    description: next.description,
+    approval_enabled: next.approval_enabled,
+    approval_levels: next.approval_levels,
+    assessment_enabled: next.assessment_enabled,
+    assessor_groups: next.assessor_groups,
+    value_model: next.value_model,
+    complexity_model: next.complexity_model,
+    version: target.version + 1,
     updated_at: new Date().toISOString(),
     updated_by: updatedBy,
-  };
+  });
   persist();
   notify();
-  return JSON.parse(JSON.stringify(cache));
+  return clone(target);
+};
+
+export interface CreateSchemeInput {
+  name: string;
+  description?: string;
+  /** 复制源方案 ID */
+  source_scheme_id: string;
+}
+
+export const createScheme = async (
+  input: CreateSchemeInput,
+  updatedBy = '当前用户',
+): Promise<ApprovalAssessmentScheme> => {
+  await delay();
+  const src = schemes.find((s) => s.id === input.source_scheme_id);
+  if (!src) throw new Error('复制源方案不存在');
+  if (!input.name || !input.name.trim()) throw new Error('请输入方案名称');
+  if (schemes.some((s) => s.name.trim() === input.name.trim())) {
+    throw new Error('方案名称已存在');
+  }
+  const now = new Date().toISOString();
+  const created: ApprovalAssessmentScheme = {
+    ...clone(src),
+    id: `scheme-${Date.now().toString(36)}`,
+    name: input.name.trim(),
+    description: input.description,
+    is_preset: false,
+    is_active: false,
+    version: 1,
+    created_at: now,
+    updated_at: now,
+    updated_by: updatedBy,
+  };
+  schemes = [...schemes, created];
+  persist();
+  notify();
+  return clone(created);
+};
+
+export const deleteScheme = async (schemeId: string): Promise<void> => {
+  await delay();
+  const target = schemes.find((s) => s.id === schemeId);
+  if (!target) return;
+  if (target.is_preset) throw new Error('系统预设方案不可删除');
+  if (target.is_active) throw new Error('已激活方案不可删除，请先切换激活方案');
+  schemes = schemes.filter((s) => s.id !== schemeId);
+  history = history.filter((h) => h.scheme_id !== schemeId);
+  persist();
+  notify();
+};
+
+export const activateScheme = async (schemeId: string): Promise<void> => {
+  await delay();
+  const target = schemes.find((s) => s.id === schemeId);
+  if (!target) throw new Error('方案不存在');
+  const errs = validateScheme(target);
+  if (errs.length > 0) {
+    throw new Error('该方案存在校验错误，无法激活：\n' + errs.map((e) => `[${e.code}] ${e.message}`).join('\n'));
+  }
+  schemes = schemes.map((s) => ({ ...s, is_active: s.id === schemeId }));
+  persist();
+  notify();
 };
