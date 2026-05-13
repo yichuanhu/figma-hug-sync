@@ -11,6 +11,13 @@ import type {
   ResourceEfficiencyData,
   BusinessOutcomesData,
 } from './types';
+import { getCostList } from './CostManagement/mockData';
+
+// 总投入成本 = 成本管理中所有成本类型的累计支出之和
+const getTotalInvestmentFromCostStore = (): number => {
+  const types = ['PROJECT', 'LICENSE', 'INFRASTRUCTURE', 'THIRD_PARTY', 'TRAINING', 'OTHER'] as const;
+  return types.reduce((sum, t) => sum + getCostList(t).reduce((s, r) => s + r.amount, 0), 0);
+};
 
 export const mockRoiMetrics: RoiMetrics = {
   totalSavedCost: 1247800,
@@ -527,6 +534,8 @@ export function getRoiAnalysis(filter: RoiAnalysisFilter, seed = 0): RoiAnalysis
   const totalScale = timeScale * deptScale * projScale * clsScale;
 
   const metrics = scaleDeep(clone(mockRoiMetrics), totalScale, rng);
+  // 总投入成本以「成本管理」全部成本之和为准，不随筛选/缩放变化
+  metrics.totalInvestmentCost = getTotalInvestmentFromCostStore();
 
   let requirements = clone(mockRequirementRoiDetails);
   let departments = clone(mockDepartmentRoiDetails);
