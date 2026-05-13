@@ -590,7 +590,28 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      gap: 12px;
+
+      .model-card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .model-card-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+    }
+
+    .model-card-desc {
+      margin: 4px 0 12px;
+      padding-left: 0;
+      color: var(--semi-color-text-2);
+      font-size: 12px;
     }
 
     .dimension-card {
@@ -601,15 +622,41 @@
 
       .dim-header {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        margin-bottom: 8px;
+        gap: 8px;
+        flex-wrap: wrap;
+
+        .dim-weight {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
       }
 
       .tier-list {
         display: flex;
         flex-direction: column;
         gap: 6px;
+        margin-top: 12px;
+
+        .tier-header {
+          display: flex;
+          gap: 8px;
+          padding: 0 4px;
+          color: var(--semi-color-text-2);
+          font-size: 12px;
+        }
+
+        .tier-row {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+        }
+
+        .col-label { width: 100px; flex: none; }
+        .col-cond { flex: 1; min-width: 0; }
+        .col-score { width: 90px; flex: none; }
+        .col-action { width: 28px; flex: none; }
       }
     }
   }
