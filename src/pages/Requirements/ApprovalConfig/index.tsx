@@ -17,7 +17,6 @@ import {
   Modal,
   Input,
   TextArea,
-  Tooltip,
   Dropdown,
   Row,
   Col,
