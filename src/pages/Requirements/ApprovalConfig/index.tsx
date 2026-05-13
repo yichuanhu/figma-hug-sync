@@ -1,11 +1,11 @@
 /**
- * 审批与评估配置 - 多方案管理
+ * 审批与评估配置 - 多方案管理（卡片列表 + 详情抽屉）
  *
- * 左侧：方案列表（含系统预设；预设可复制不可编辑/删除/停用）
- * 右侧：选中方案详情（审批 + 评估）
- * 顶部：激活/保存/复制/删除/历史
+ * - 列表样式与「需求模版」保持一致：搜索 + 新建按钮 + 卡片网格
+ * - 点击卡片打开详情抽屉进行查看/编辑
+ * - 系统预设方案：可复制不可编辑/删除/停用
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Typography,
   Switch,
@@ -19,10 +19,12 @@ import {
   Input,
   TextArea,
   Tooltip,
-  Empty,
+  Dropdown,
+  Row,
+  Col,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import {
-  History,
   Save,
   RotateCcw,
   Copy,
@@ -30,7 +32,13 @@ import {
   Plus,
   CheckCircle2,
   Lock,
+  Ellipsis,
+  Eye,
+  Pencil,
+  CheckCircle,
 } from 'lucide-react';
+import EmptyState from '@/components/EmptyState';
+import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import {
   fetchSchemes,
   saveScheme,
@@ -44,19 +52,20 @@ import {
 import ApprovalLevelList from './components/ApprovalLevelList';
 import AssessorGroupList from './components/AssessorGroupList';
 import AssessmentModelCard from './components/AssessmentModelCard';
-import ConfigHistoryDrawer from './components/ConfigHistoryDrawer';
 import './index.less';
 
 const { Title, Text } = Typography;
 
 const ApprovalAssessmentConfigPage = () => {
   const [schemes, setSchemes] = useState<ApprovalAssessmentScheme[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [draft, setDraft] = useState<ApprovalAssessmentScheme | null>(null);
-  const [original, setOriginal] = useState<ApprovalAssessmentScheme | null>(null);
+  const [keyword, setKeyword] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [historyVisible, setHistoryVisible] = useState(false);
+
+  const [detailId, setDetailId] = useState<string | null>(null);
+  const [draft, setDraft] = useState<ApprovalAssessmentScheme | null>(null);
+  const [original, setOriginal] = useState<ApprovalAssessmentScheme | null>(null);
+
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [createForm, setCreateForm] = useState<{ name: string; description: string; sourceId: string }>({
     name: '',
@@ -64,22 +73,21 @@ const ApprovalAssessmentConfigPage = () => {
     sourceId: '',
   });
 
-  const selectedIdRef = useRef<string | null>(null);
-  selectedIdRef.current = selectedId;
-
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const list = await fetchSchemes();
       setSchemes(list);
-      const currentId = selectedIdRef.current;
-      const next =
-        list.find((s) => s.id === currentId) ?? list.find((s) => s.is_active) ?? list[0];
-      if (next) {
-        setSelectedId(next.id);
-        setDraft(JSON.parse(JSON.stringify(next)));
-        setOriginal(JSON.parse(JSON.stringify(next)));
-      }
+      // 同步当前抽屉内容
+      setDraft((prev) => {
+        if (!prev) return prev;
+        const next = list.find((s) => s.id === prev.id);
+        if (next) {
+          setOriginal(JSON.parse(JSON.stringify(next)));
+          return JSON.parse(JSON.stringify(next));
+        }
+        return prev;
+      });
     } finally {
       setLoading(false);
     }
@@ -91,39 +99,49 @@ const ApprovalAssessmentConfigPage = () => {
 
   useEffect(() => subscribeConfigChange(() => load()), [load]);
 
+  const filteredSchemes = useMemo(() => {
+    const k = keyword.trim().toLowerCase();
+    if (!k) return schemes;
+    return schemes.filter(
+      (s) => s.name.toLowerCase().includes(k) || (s.description ?? '').toLowerCase().includes(k),
+    );
+  }, [schemes, keyword]);
+
   const dirty = useMemo(
     () => JSON.stringify(draft) !== JSON.stringify(original),
     [draft, original],
   );
 
   const errors = useMemo(() => (draft ? validateScheme(draft) : []), [draft]);
-
-  const isPreset = !!draft?.is_preset;
-  const readonly = isPreset;
+  const readonly = !!draft?.is_preset;
 
   const patch = (p: Partial<ApprovalAssessmentScheme>) =>
     setDraft((prev) => (prev ? { ...prev, ...p } : prev));
 
-  const handleSelect = (id: string) => {
-    if (id === selectedId) return;
-    const doSwitch = () => {
-      const target = schemes.find((s) => s.id === id);
-      if (!target) return;
-      setSelectedId(id);
-      setDraft(JSON.parse(JSON.stringify(target)));
-      setOriginal(JSON.parse(JSON.stringify(target)));
-    };
+  const openDetail = (s: ApprovalAssessmentScheme) => {
+    setDetailId(s.id);
+    setDraft(JSON.parse(JSON.stringify(s)));
+    setOriginal(JSON.parse(JSON.stringify(s)));
+  };
+
+  const closeDetail = () => {
     if (dirty) {
       Modal.confirm({
-        title: '切换方案',
-        content: '当前方案存在未保存的修改，切换将丢弃。是否继续？',
-        okText: '继续切换',
+        title: '关闭方案',
+        content: '当前修改尚未保存，关闭将丢弃。是否继续？',
+        okText: '关闭',
         cancelText: '取消',
-        onOk: doSwitch,
+        onOk: () => {
+          setDetailId(null);
+          setDraft(null);
+          setOriginal(null);
+        },
       });
-    } else {
-      doSwitch();
+      return;
     }
+    setDetailId(null);
+    setDraft(null);
+    setOriginal(null);
   };
 
   const handleSave = async () => {
@@ -156,22 +174,13 @@ const ApprovalAssessmentConfigPage = () => {
     });
   };
 
-  const handleActivate = () => {
-    if (!draft) return;
-    if (draft.is_active) return;
-    if (dirty) {
-      Toast.warning('请先保存当前修改后再激活');
-      return;
-    }
-    if (errors.length > 0) {
-      Toast.error('该方案存在校验错误，无法激活');
-      return;
-    }
+  const handleActivate = (s: ApprovalAssessmentScheme) => {
+    if (s.is_active) return;
     Modal.confirm({
       title: '切换激活方案',
       content: (
         <div>
-          确认将「{draft.name}」设为当前激活方案？
+          确认将「{s.name}」设为当前激活方案？
           <br />
           切换后，所有<strong>新建需求</strong>将走该方案的审批与评估流程；
           <br />
@@ -182,7 +191,7 @@ const ApprovalAssessmentConfigPage = () => {
       cancelText: '取消',
       onOk: async () => {
         try {
-          await activateScheme(draft.id);
+          await activateScheme(s.id);
           Toast.success('已激活');
         } catch (e) {
           Toast.error((e as Error).message);
@@ -191,18 +200,22 @@ const ApprovalAssessmentConfigPage = () => {
     });
   };
 
-  const handleDelete = () => {
-    if (!draft || draft.is_preset || draft.is_active) return;
+  const handleDelete = (s: ApprovalAssessmentScheme) => {
+    if (s.is_preset || s.is_active) return;
     Modal.confirm({
       title: '删除方案',
-      content: `确认删除方案「${draft.name}」？删除后该方案的全部历史快照一并清除。`,
+      content: `确认删除方案「${s.name}」？该操作不可恢复。`,
       okText: '删除',
       cancelText: '取消',
       okButtonProps: { type: 'danger' },
       onOk: async () => {
         try {
-          await deleteScheme(draft.id);
-          setSelectedId(null);
+          await deleteScheme(s.id);
+          if (detailId === s.id) {
+            setDetailId(null);
+            setDraft(null);
+            setOriginal(null);
+          }
           Toast.success('已删除');
         } catch (e) {
           Toast.error((e as Error).message);
@@ -211,13 +224,9 @@ const ApprovalAssessmentConfigPage = () => {
     });
   };
 
-  const openCreate = (sourceId: string) => {
+  const openCreate = (sourceId?: string) => {
     const src = schemes.find((s) => s.id === sourceId) ?? schemes[0];
-    setCreateForm({
-      name: '',
-      description: '',
-      sourceId: src?.id ?? '',
-    });
+    setCreateForm({ name: '', description: '', sourceId: src?.id ?? '' });
     setCreateModalVisible(true);
   };
 
@@ -237,161 +246,239 @@ const ApprovalAssessmentConfigPage = () => {
         source_scheme_id: createForm.sourceId,
       });
       setCreateModalVisible(false);
-      setSelectedId(created.id);
       Toast.success('方案已创建');
+      // 自动打开新方案进入编辑
+      openDetail(created);
     } catch (e) {
       Toast.error((e as Error).message);
     }
   };
 
-  if (loading || !draft) {
-    return (
-      <div className="approval-config-page">
-        <Spin />
-      </div>
-    );
-  }
-
   return (
     <div className="approval-config-page">
       <div className="approval-config-page-header">
         <div className="approval-config-page-header-title">
-          <Title heading={3} className="title">
-            审批与评估配置
-          </Title>
+          <Title heading={3} className="title">审批与评估配置</Title>
           <Text type="tertiary">
             可创建多套方案，仅一套方案处于激活状态；新建需求将走当前激活方案的流程。
           </Text>
         </div>
+        <Row
+          type="flex"
+          justify="space-between"
+          align="middle"
+          className="approval-config-page-header-toolbar"
+        >
+          <Col>
+            <Space>
+              <Input
+                prefix={<IconSearchStroked />}
+                placeholder="搜索方案名称或描述"
+                className="approval-config-search-input"
+                value={keyword}
+                onChange={setKeyword}
+                showClear
+                maxLength={100}
+              />
+            </Space>
+          </Col>
+          <Col>
+            <Space>
+              <Button
+                icon={<Plus size={16} strokeWidth={2} />}
+                theme="solid"
+                type="primary"
+                onClick={() => openCreate()}
+              >
+                新建方案
+              </Button>
+            </Space>
+          </Col>
+        </Row>
       </div>
 
-      <div className="approval-config-layout">
-        {/* 左侧：方案列表 */}
-        <aside className="scheme-list-panel">
-          <div className="scheme-list-head">
-            <Text strong>方案列表</Text>
-            <Button
-              icon={<Plus size={14} strokeWidth={2} />}
-              size="small"
-              theme="solid"
-              type="primary"
-              onClick={() => openCreate(draft?.id ?? schemes[0]?.id ?? '')}
-            >
-              新建方案
-            </Button>
+      <div className="approval-config-page-content">
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 48 }}>
+            <Spin />
           </div>
-          <div className="scheme-list-body">
-            {schemes.length === 0 ? (
-              <Empty description="暂无方案" />
-            ) : (
-              schemes.map((s) => {
-                const active = s.id === selectedId;
-                return (
-                  <div
-                    key={s.id}
-                    className={`scheme-item${active ? ' is-selected' : ''}`}
-                    onClick={() => handleSelect(s.id)}
-                  >
-                    <div className="scheme-item-row">
-                      <Text strong ellipsis={{ showTooltip: true }} style={{ flex: 1, minWidth: 0 }}>
-                        {s.name}
-                      </Text>
-                      {s.is_active && (
-                        <Tag color="green" type="solid" size="small" prefixIcon={<CheckCircle2 size={10} strokeWidth={2.5} />}>
-                          已激活
-                        </Tag>
-                      )}
-                    </div>
-                    <div className="scheme-item-row">
-                      {s.is_preset ? (
-                        <Tag color="grey" type="light" size="small" prefixIcon={<Lock size={10} strokeWidth={2.5} />}>
-                          系统预设
-                        </Tag>
-                      ) : (
-                        <Tag color="blue" type="light" size="small">
-                          自定义
-                        </Tag>
-                      )}
-                      <Text type="tertiary" size="small">
-                        v{s.version}
-                      </Text>
-                    </div>
+        ) : filteredSchemes.length === 0 ? (
+          <EmptyState variant="noData" description={keyword ? '未找到匹配的方案' : '暂无方案'} />
+        ) : (
+          <div className="approval-config-grid">
+            {filteredSchemes.map((s) => (
+              <div
+                key={s.id}
+                className={`scheme-card ${s.is_active ? 'active' : ''}`}
+                onClick={() => openDetail(s)}
+              >
+                <div className="scheme-card-header">
+                  <div className="scheme-card-title-row">
+                    <Text strong ellipsis={{ showTooltip: true }} style={{ fontSize: 16 }}>
+                      {s.name}
+                    </Text>
+                    {s.is_active && (
+                      <Tag color="green" type="solid" size="small">已激活</Tag>
+                    )}
+                    {s.is_preset && (
+                      <Tag color="blue" type="light" size="small">系统预设</Tag>
+                    )}
                   </div>
-                );
-              })
-            )}
-          </div>
-        </aside>
-
-        {/* 右侧：方案详情 */}
-        <section className="scheme-detail-panel">
-          <div className="scheme-detail-head">
-            <div className="scheme-detail-head-meta">
-              <Space spacing={8} align="center" wrap>
-                <Title heading={5} style={{ margin: 0 }}>
-                  {draft.name}
-                </Title>
-                {draft.is_active && (
-                  <Tag color="green" type="solid" size="small">
-                    已激活
-                  </Tag>
-                )}
-                {draft.is_preset && (
-                  <Tag color="grey" type="light" size="small" prefixIcon={<Lock size={10} strokeWidth={2.5} />}>
-                    系统预设
-                  </Tag>
-                )}
-                <Tag color="blue" type="light" size="small">
-                  v{draft.version}
-                </Tag>
-                <Text type="tertiary" size="small">
-                  {new Date(draft.updated_at).toLocaleString()} · {draft.updated_by}
-                </Text>
-              </Space>
-              {draft.description && (
-                <Text type="tertiary" size="small" style={{ display: 'block', marginTop: 4 }}>
-                  {draft.description}
-                </Text>
-              )}
-            </div>
-            <Space>
-              <Button icon={<History size={14} strokeWidth={2} />} onClick={() => setHistoryVisible(true)}>
-                配置历史
-              </Button>
-              <Button icon={<Copy size={14} strokeWidth={2} />} onClick={() => openCreate(draft.id)}>
-                复制为新方案
-              </Button>
-              {!draft.is_preset && !draft.is_active && (
-                <Tooltip content="删除后该方案的全部历史快照将被清除">
-                  <Button
-                    icon={<Trash2 size={14} strokeWidth={2} />}
-                    type="danger"
-                    onClick={handleDelete}
+                  <Dropdown
+                    trigger="click"
+                    clickToHide
+                    position="bottomRight"
+                    render={
+                      <Dropdown.Menu>
+                        <Dropdown.Item
+                          icon={<Eye size={14} />}
+                          onClick={(e) => { e.stopPropagation(); openDetail(s); }}
+                        >
+                          查看详情
+                        </Dropdown.Item>
+                        {!s.is_active && (
+                          <Dropdown.Item
+                            icon={<CheckCircle size={14} />}
+                            onClick={(e) => { e.stopPropagation(); handleActivate(s); }}
+                          >
+                            激活此方案
+                          </Dropdown.Item>
+                        )}
+                        {s.is_preset ? (
+                          <Tooltip content="系统预设不可编辑，可复制后修改" position="left">
+                            <Dropdown.Item icon={<Pencil size={14} />} disabled>
+                              编辑
+                            </Dropdown.Item>
+                          </Tooltip>
+                        ) : (
+                          <Dropdown.Item
+                            icon={<Pencil size={14} />}
+                            onClick={(e) => { e.stopPropagation(); openDetail(s); }}
+                          >
+                            编辑
+                          </Dropdown.Item>
+                        )}
+                        <Dropdown.Item
+                          icon={<Copy size={14} />}
+                          onClick={(e) => { e.stopPropagation(); openCreate(s.id); }}
+                        >
+                          基于此创建副本
+                        </Dropdown.Item>
+                        {!s.is_preset && !s.is_active && (
+                          <Dropdown.Item
+                            icon={<Trash2 size={14} />}
+                            type="danger"
+                            onClick={(e) => { e.stopPropagation(); handleDelete(s); }}
+                          >
+                            删除
+                          </Dropdown.Item>
+                        )}
+                      </Dropdown.Menu>
+                    }
                   >
-                    删除
-                  </Button>
-                </Tooltip>
+                    <Button
+                      icon={<Ellipsis size={16} />}
+                      theme="borderless"
+                      size="small"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </Dropdown>
+                </div>
+                <div className="scheme-card-meta">
+                  <Text type="tertiary" size="small">
+                    v{s.version} · {new Date(s.updated_at).toLocaleDateString()}
+                  </Text>
+                </div>
+                {s.description && (
+                  <Text
+                    type="secondary"
+                    size="small"
+                    ellipsis={{ rows: 2 }}
+                    style={{ marginTop: 8 }}
+                  >
+                    {s.description}
+                  </Text>
+                )}
+                <div className="scheme-card-footer">
+                  <Tag size="small" color="grey" type="light">
+                    {s.approval_enabled ? `${s.approval_levels.length} 审批层级` : '免审批'}
+                  </Tag>
+                  <Tag size="small" color="grey" type="light">
+                    {s.assessment_enabled ? `${s.assessor_groups.length} 评估组` : '免评估'}
+                  </Tag>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 详情/编辑抽屉 */}
+      <DetailDrawerWrapper
+        visible={!!draft}
+        onClose={closeDetail}
+        dataList={filteredSchemes}
+        currentId={draft?.id}
+        onNavigate={(s) => openDetail(s)}
+        defaultWidth={900}
+        storageKey="approvalConfigDrawerWidth"
+        title={
+          draft ? (
+            <Space spacing={8} align="center">
+              <span>{draft.name}</span>
+              {draft.is_active && (
+                <Tag color="green" type="solid" size="small">已激活</Tag>
               )}
+              {draft.is_preset && (
+                <Tag color="blue" type="light" size="small" prefixIcon={<Lock size={10} strokeWidth={2.5} />}>
+                  系统预设
+                </Tag>
+              )}
+              <Tag color="grey" type="light" size="small">v{draft.version}</Tag>
+            </Space>
+          ) : (
+            ''
+          )
+        }
+        extraActions={
+          draft && (
+            <>
               {!draft.is_active && (
                 <Button
                   icon={<CheckCircle2 size={14} strokeWidth={2} />}
                   theme="light"
                   type="primary"
+                  size="small"
                   disabled={dirty || errors.length > 0}
-                  onClick={handleActivate}
+                  onClick={() => handleActivate(draft)}
                 >
-                  激活此方案
+                  激活
                 </Button>
               )}
+              <Button
+                icon={<Copy size={14} strokeWidth={2} />}
+                theme="borderless"
+                size="small"
+                onClick={() => openCreate(draft.id)}
+              >
+                复制
+              </Button>
               {!readonly && (
                 <>
-                  <Button icon={<RotateCcw size={14} strokeWidth={2} />} disabled={!dirty} onClick={handleReset}>
-                    放弃修改
+                  <Button
+                    icon={<RotateCcw size={14} strokeWidth={2} />}
+                    theme="borderless"
+                    size="small"
+                    disabled={!dirty}
+                    onClick={handleReset}
+                  >
+                    放弃
                   </Button>
                   <Button
                     icon={<Save size={14} strokeWidth={2} />}
                     theme="solid"
                     type="primary"
+                    size="small"
                     loading={saving}
                     disabled={!dirty || errors.length > 0}
                     onClick={handleSave}
@@ -400,51 +487,59 @@ const ApprovalAssessmentConfigPage = () => {
                   </Button>
                 </>
               )}
-            </Space>
-          </div>
+            </>
+          )
+        }
+        deleteAction={
+          draft && !draft.is_preset && !draft.is_active ? (
+            <Tooltip content="删除该方案">
+              <Button
+                icon={<Trash2 size={14} strokeWidth={2} />}
+                theme="borderless"
+                type="danger"
+                size="small"
+                onClick={() => handleDelete(draft)}
+              />
+            </Tooltip>
+          ) : undefined
+        }
+      >
+        {draft && (
+          <div className="approval-config-drawer-body">
+            {readonly && (
+              <Banner
+                type="info"
+                fullMode={false}
+                closeIcon={null}
+                description="系统预设方案为只读，不可编辑或删除。如需调整，请使用「复制」生成自定义副本后再修改。"
+                style={{ marginBottom: 12 }}
+              />
+            )}
+            {!readonly && errors.length > 0 && (
+              <Banner
+                type="danger"
+                fullMode={false}
+                closeIcon={null}
+                description={
+                  <ul style={{ margin: 0, paddingLeft: 20 }}>
+                    {errors.map((e, i) => (
+                      <li key={i}>
+                        <Text size="small">[{e.code}] {e.message}</Text>
+                      </li>
+                    ))}
+                  </ul>
+                }
+                style={{ marginBottom: 12 }}
+              />
+            )}
 
-          {readonly && (
-            <Banner
-              type="info"
-              fullMode={false}
-              closeIcon={null}
-              description="系统预设方案为只读，不可编辑或删除。如需调整，请使用「复制为新方案」生成自定义副本后再修改。"
-              style={{ marginBottom: 12 }}
-            />
-          )}
-
-          {!readonly && errors.length > 0 && (
-            <Banner
-              type="danger"
-              fullMode={false}
-              closeIcon={null}
-              description={
-                <ul style={{ margin: 0, paddingLeft: 20 }}>
-                  {errors.map((e, i) => (
-                    <li key={i}>
-                      <Text size="small">
-                        [{e.code}] {e.message}
-                      </Text>
-                    </li>
-                  ))}
-                </ul>
-              }
-              style={{ marginBottom: 12 }}
-            />
-          )}
-
-          <div className="approval-config-page-content">
             {/* 基本信息 */}
             {!readonly && (
               <section className="config-section">
                 <div className="config-section-head">
                   <div>
-                    <Title heading={5} style={{ margin: 0 }}>
-                      基本信息
-                    </Title>
-                    <Text type="tertiary" size="small">
-                      方案名称与描述
-                    </Text>
+                    <Title heading={5} style={{ margin: 0 }}>基本信息</Title>
+                    <Text type="tertiary" size="small">方案名称与描述</Text>
                   </div>
                 </div>
                 <div className="config-section-body">
@@ -466,13 +561,11 @@ const ApprovalAssessmentConfigPage = () => {
               </section>
             )}
 
-            {/* 审批配置区 */}
+            {/* 审批配置 */}
             <section className="config-section">
               <div className="config-section-head">
                 <div>
-                  <Title heading={5} style={{ margin: 0 }}>
-                    审批配置
-                  </Title>
+                  <Title heading={5} style={{ margin: 0 }}>审批配置</Title>
                   <Text type="tertiary" size="small">
                     控制需求是否需要进入审批流程；启用后按层级串行审批
                   </Text>
@@ -499,13 +592,11 @@ const ApprovalAssessmentConfigPage = () => {
               )}
             </section>
 
-            {/* 评估配置区 */}
+            {/* 评估配置 */}
             <section className="config-section">
               <div className="config-section-head">
                 <div>
-                  <Title heading={5} style={{ margin: 0 }}>
-                    评估配置
-                  </Title>
+                  <Title heading={5} style={{ margin: 0 }}>评估配置</Title>
                   <Text type="tertiary" size="small">
                     控制需求是否需要技术评估；启用后由评估人组对价值与复杂度进行打分
                   </Text>
@@ -542,16 +633,10 @@ const ApprovalAssessmentConfigPage = () => {
               )}
             </section>
           </div>
-        </section>
-      </div>
+        )}
+      </DetailDrawerWrapper>
 
-      <ConfigHistoryDrawer
-        visible={historyVisible}
-        onClose={() => setHistoryVisible(false)}
-        schemeId={draft.id}
-        schemeName={draft.name}
-      />
-
+      {/* 新建方案 */}
       <Modal
         title="新建方案"
         visible={createModalVisible}
@@ -575,9 +660,7 @@ const ApprovalAssessmentConfigPage = () => {
             />
           </div>
           <div>
-            <Text strong style={{ display: 'block', marginBottom: 6 }}>
-              方案描述
-            </Text>
+            <Text strong style={{ display: 'block', marginBottom: 6 }}>方案描述</Text>
             <TextArea
               value={createForm.description}
               onChange={(v) => setCreateForm((p) => ({ ...p, description: v }))}
