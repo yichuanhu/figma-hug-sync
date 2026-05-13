@@ -292,6 +292,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     // 运营管理 - 分组标题
     { key: 'operationsManagement', labelKey: 'sidebar.operationsManagement', isGroupLabel: true },
     { key: 'platformOperations', labelKey: 'sidebar.platformOperations', icon: <Settings size={18} strokeWidth={2} />, path: '/operations/platform-operations' },
+    { key: 'costManagement', labelKey: 'sidebar.costManagement', icon: <Wallet size={18} strokeWidth={2} />, path: '/operations/cost-management' },
   ];
 
   // 需求中心的详细菜单结构 - 使用分组标题样式
