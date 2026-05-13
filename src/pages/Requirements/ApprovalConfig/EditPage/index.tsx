@@ -162,17 +162,22 @@ const ApprovalConfigEditPage = () => {
           <Space>
             <Button
               icon={<RotateCcw size={14} strokeWidth={2} />}
-              disabled={!dirty}
-              onClick={handleReset}
+              onClick={() => {
+                if (dirty) {
+                  handleReset();
+                } else {
+                  setSearchParams({ mode: 'view' });
+                }
+              }}
             >
-              放弃
+              取消编辑
             </Button>
             <Button
               icon={<Save size={14} strokeWidth={2} />}
               theme="solid"
               type="primary"
               loading={saving}
-              disabled={!dirty || errors.length > 0}
+              disabled={!dirty}
               onClick={handleSave}
             >
               保存
