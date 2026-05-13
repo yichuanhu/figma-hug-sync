@@ -17,7 +17,6 @@ interface Props {
   onNavigate: (s: RequirementScheme) => void;
   onActivate: (s: RequirementScheme) => void;
   onDelete: (s: RequirementScheme) => void;
-  onEditApprovalFlow?: (s: RequirementScheme) => void;
 }
 
 const SchemeDetailDrawer = ({
@@ -28,7 +27,6 @@ const SchemeDetailDrawer = ({
   onNavigate,
   onActivate,
   onDelete,
-  onEditApprovalFlow,
 }: Props) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('basic');
@@ -74,62 +72,6 @@ const SchemeDetailDrawer = ({
     );
   }, [scheme, onDelete]);
 
-  const renderModel = (model: AssessmentModel | undefined, label: string) => {
-    if (!model) {
-      return (
-        <Empty
-          image={null}
-          description={<Text type="tertiary">{label}：{t('requirements.scheme.notConfigured')}</Text>}
-          style={{ padding: '24px 0' }}
-        />
-      );
-    }
-    return (
-      <div className="scheme-detail-drawer-model-card">
-        <div className="scheme-detail-drawer-model-card-header">
-          <div>
-            <Text strong>{model.label}</Text>
-            <Text type="tertiary" size="small" style={{ marginLeft: 8 }}>
-              {model.key}
-            </Text>
-          </div>
-          <Tag color={model.type === 'value' ? 'cyan' : 'purple'} type="light">
-            {model.type === 'value' ? t('requirements.scheme.valueModel') : t('requirements.scheme.complexityModel')}
-          </Tag>
-        </div>
-        {model.description && (
-          <Text type="secondary" size="small" style={{ display: 'block', marginBottom: 12 }}>
-            {model.description}
-          </Text>
-        )}
-        <Text strong size="small" style={{ display: 'block', marginBottom: 8 }}>
-          {t('requirements.scheme.dimensions')}（{model.dimensions.length}）
-        </Text>
-        {model.dimensions.map((d) => (
-          <div key={d.key} className="scheme-detail-drawer-dim-row">
-            <Text strong style={{ flex: 1 }}>{d.label}</Text>
-            <Tag size="small" color="grey" type="light">{t('requirements.scheme.weight')}: {(d.weight * 100).toFixed(0)}%</Tag>
-            {d.source_field && (
-              <Text type="tertiary" size="small" style={{ fontFamily: 'Menlo, monospace' }}>
-                {d.source_field}
-              </Text>
-            )}
-          </div>
-        ))}
-        <Text strong size="small" style={{ display: 'block', margin: '12px 0 8px' }}>
-          {t('requirements.scheme.tiers')}
-        </Text>
-        <div>
-          {model.tiers.map((tier, i) => (
-            <span key={i} className="scheme-detail-drawer-tier-row">
-              <Tag size="small" color={(tier.color as any) || 'blue'} type="light">{tier.label}</Tag>
-              <Text type="tertiary" size="small">{tier.condition} → {tier.score}</Text>
-            </span>
-          ))}
-        </div>
-      </div>
-    );
-  };
 
   // 「表单字段」Tab 的预览初始值：按字段类型生成示例数据，让禁用表单看起来像真实填写后的样子
   const buildPreviewValues = (fields: SchemeField[]): Record<string, unknown> => {
@@ -173,15 +115,6 @@ const SchemeDetailDrawer = ({
     return values;
   };
 
-  const renderLevel = (l: ApprovalLevelConfig) => (
-    <div key={l.order} className="scheme-detail-drawer-level-row">
-      <Tag color="blue" type="solid" size="small">{t('requirements.scheme.level')} {l.order}</Tag>
-      <Text strong style={{ flex: 1 }}>{l.name}</Text>
-      <Tag size="small" color="grey" type="light">{l.approver_type}</Tag>
-      {l.count_sign && <Tag size="small" color="orange" type="light">{t('requirements.scheme.countSign')}</Tag>}
-      <Text type="tertiary" size="small">{l.approver_ids.length} {t('requirements.scheme.approvers')}</Text>
-    </div>
-  );
 
   return (
     <DetailDrawerWrapper
@@ -255,35 +188,6 @@ const SchemeDetailDrawer = ({
             </div>
           </TabPane>
 
-          <TabPane tab={t('requirements.scheme.tab.assessment')} itemKey="assessment">
-            <div className="scheme-detail-drawer-content">
-              {renderModel(scheme.value_assessment_model, t('requirements.scheme.valueModel'))}
-              {renderModel(scheme.complexity_assessment_model, t('requirements.scheme.complexityModel'))}
-            </div>
-          </TabPane>
-
-          <TabPane tab={`${t('requirements.scheme.tab.approval')} (${scheme.approval_flow.levels.length})`} itemKey="approval">
-            <div className="scheme-detail-drawer-content">
-              {!scheme.is_preset && onEditApprovalFlow && (
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
-                  <Button
-                    icon={<Pencil size={14} strokeWidth={2} />}
-                    theme="light"
-                    type="primary"
-                    size="small"
-                    onClick={() => onEditApprovalFlow(scheme)}
-                  >
-                    {t('requirements.scheme.editor.entry')}
-                  </Button>
-                </div>
-              )}
-              {scheme.approval_flow.levels.length === 0 ? (
-                <Empty description={t('common.noData')} />
-              ) : (
-                scheme.approval_flow.levels.map(renderLevel)
-              )}
-            </div>
-          </TabPane>
         </Tabs>
       )}
     </DetailDrawerWrapper>
