@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Tabs, Typography } from '@douyinfe/semi-ui';
 import PersonalCredentialManagement from './PersonalCredentialManagement';
-import SettingsContent from './components/SettingsContent';
 
 import './index.less';
 
