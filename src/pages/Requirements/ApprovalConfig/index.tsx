@@ -1,257 +1,243 @@
 /**
- * 审批配置列表页：与「需求模板」一致的卡片网格布局。
+ * 审批与评估配置（租户级单一配置）
+ *
+ * 顶部两个独立开关，分别控制审批与评估区域；
+ * 关闭某区域则该区域配置项隐藏（数据保留），保存时仅校验启用区域。
  */
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Typography,
+  Switch,
   Button,
-  Input,
-  Tag,
   Toast,
-  Modal,
-  Dropdown,
-  Row,
-  Col,
   Space,
+  Spin,
+  Tag,
+  Modal,
+  Banner,
 } from '@douyinfe/semi-ui';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause } from 'lucide-react';
-import EmptyState from '@/components/EmptyState';
+import { History, Save, RotateCcw } from 'lucide-react';
 import {
-  fetchApprovalFlows,
-  deleteApprovalFlow,
-  activateApprovalFlow,
-  deactivateApprovalFlow,
-  createApprovalFlowDraft,
-  
-  subscribeApprovalFlowChange,
-  type ApprovalFlowTemplate,
+  fetchConfig,
+  saveConfig,
+  validateConfig,
+  subscribeConfigChange,
+  type ApprovalAssessmentConfig,
 } from './mockData';
+import ApprovalLevelList from './components/ApprovalLevelList';
+import AssessorGroupList from './components/AssessorGroupList';
+import AssessmentModelCard from './components/AssessmentModelCard';
+import ConfigHistoryDrawer from './components/ConfigHistoryDrawer';
 import './index.less';
 
 const { Title, Text } = Typography;
 
-const ApprovalConfigPage = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [keyword, setKeyword] = useState('');
-  const [flows, setFlows] = useState<ApprovalFlowTemplate[]>([]);
+const ApprovalAssessmentConfigPage = () => {
+  const [config, setConfig] = useState<ApprovalAssessmentConfig | null>(null);
+  const [original, setOriginal] = useState<ApprovalAssessmentConfig | null>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [historyVisible, setHistoryVisible] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      setFlows(await fetchApprovalFlows(keyword));
+      const d = await fetchConfig();
+      setConfig(d);
+      setOriginal(JSON.parse(JSON.stringify(d)));
     } finally {
       setLoading(false);
     }
-  }, [keyword]);
+  }, []);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  useEffect(() => subscribeApprovalFlowChange(() => load()), [load]);
+  useEffect(() => subscribeConfigChange(() => load()), [load]);
 
-  const goEdit = (f: ApprovalFlowTemplate) => {
-    navigate(`/requirements/approval-config/builder/${f.id}`);
+  const dirty = useMemo(
+    () => JSON.stringify(config) !== JSON.stringify(original),
+    [config, original],
+  );
+
+  const errors = useMemo(() => (config ? validateConfig(config) : []), [config]);
+
+  const patch = (p: Partial<ApprovalAssessmentConfig>) =>
+    setConfig((prev) => (prev ? { ...prev, ...p } : prev));
+
+  const handleSave = async () => {
+    if (!config) return;
+    if (errors.length > 0) {
+      Toast.error('存在校验错误，请修正后再保存');
+      return;
+    }
+    setSaving(true);
+    try {
+      const next = await saveConfig(config);
+      setConfig(next);
+      setOriginal(JSON.parse(JSON.stringify(next)));
+      Toast.success(`已保存为 v${next.version}`);
+    } catch (e) {
+      Toast.error((e as Error).message);
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const goDetail = (f: ApprovalFlowTemplate) => {
-    navigate(`/requirements/approval-config/detail/${f.id}`);
-  };
-
-  const handleCreateNew = async () => {
-    const draft = await createApprovalFlowDraft();
-    navigate(`/requirements/approval-config/builder/${draft.id}`);
-  };
-
-  const handleActivate = (f: ApprovalFlowTemplate) => {
+  const handleReset = () => {
+    if (!dirty) return;
     Modal.confirm({
-      title: '启用审批流',
-      content: `确认将「${f.name}」设为当前生效的审批流？同一时间仅一个审批流处于启用状态。`,
-      okText: '启用',
-      cancelText: t('common.cancel'),
-      onOk: async () => {
-        await activateApprovalFlow(f.id);
-        Toast.success('启用成功');
-        load();
-      },
+      title: '放弃修改',
+      content: '当前修改尚未保存，确认放弃并恢复到上一次保存的版本？',
+      okText: '放弃',
+      cancelText: '取消',
+      onOk: () => setConfig(original ? JSON.parse(JSON.stringify(original)) : null),
     });
   };
 
-  const handleDeactivate = async (f: ApprovalFlowTemplate) => {
-    await deactivateApprovalFlow(f.id);
-    Toast.success('已停用');
-    load();
-  };
-
-  const handleDelete = (f: ApprovalFlowTemplate) => {
-    Modal.confirm({
-      title: '删除审批流',
-      content: `确认删除「${f.name}」？此操作不可恢复。`,
-      okText: t('common.delete'),
-      okButtonProps: { type: 'danger' },
-      cancelText: t('common.cancel'),
-      onOk: async () => {
-        try {
-          await deleteApprovalFlow(f.id);
-          Toast.success(t('common.deleteSuccess'));
-          load();
-        } catch (e) {
-          Toast.error((e as Error).message);
-        }
-      },
-    });
-  };
+  if (loading || !config) {
+    return (
+      <div className="approval-config-page">
+        <Spin />
+      </div>
+    );
+  }
 
   return (
     <div className="approval-config-page">
       <div className="approval-config-page-header">
         <div className="approval-config-page-header-title">
-          <Title heading={3} className="title">审批配置</Title>
-          <Text type="tertiary">集中管理需求审批流模板，与具体的需求模板解耦，支持创建、编辑、启用与停用。</Text>
+          <Title heading={3} className="title">
+            审批与评估配置
+          </Title>
+          <Space spacing={8} align="center">
+            <Text type="tertiary">
+              租户级单一配置，控制需求审批流程与评估打分模型；保存即生成新版本快照。
+            </Text>
+            <Tag color="blue" type="light" size="small">
+              当前 v{config.version}
+            </Tag>
+            <Text type="tertiary" size="small">
+              {new Date(config.updated_at).toLocaleString()} · {config.updated_by}
+            </Text>
+          </Space>
         </div>
-        <Row type="flex" justify="space-between" align="middle" className="approval-config-page-header-toolbar">
-          <Col>
-            <Input
-              prefix={<IconSearchStroked />}
-              placeholder="搜索名称 / 编码 / 描述"
-              className="approval-config-page-search-input"
-              value={keyword}
-              onChange={setKeyword}
-              showClear
-              maxLength={100}
-            />
-          </Col>
-          <Col>
-            <Space>
-              <Button
-                icon={<Plus size={16} strokeWidth={2} />}
-                theme="solid"
-                type="primary"
-                onClick={handleCreateNew}
-              >
-                新建审批流
-              </Button>
-            </Space>
-          </Col>
-        </Row>
+        <Space>
+          <Button icon={<History size={14} strokeWidth={2} />} onClick={() => setHistoryVisible(true)}>
+            配置历史
+          </Button>
+          <Button icon={<RotateCcw size={14} strokeWidth={2} />} disabled={!dirty} onClick={handleReset}>
+            放弃修改
+          </Button>
+          <Button
+            icon={<Save size={14} strokeWidth={2} />}
+            theme="solid"
+            type="primary"
+            loading={saving}
+            disabled={!dirty || errors.length > 0}
+            onClick={handleSave}
+          >
+            保存
+          </Button>
+        </Space>
       </div>
 
+      {errors.length > 0 && (
+        <Banner
+          type="danger"
+          fullMode={false}
+          closeIcon={null}
+          description={
+            <ul style={{ margin: 0, paddingLeft: 20 }}>
+              {errors.map((e, i) => (
+                <li key={i}>
+                  <Text size="small">
+                    [{e.code}] {e.message}
+                  </Text>
+                </li>
+              ))}
+            </ul>
+          }
+          style={{ marginBottom: 12 }}
+        />
+      )}
+
       <div className="approval-config-page-content">
-        {!loading && flows.length === 0 ? (
-          <EmptyState variant="noData" description="暂无审批流，点击右上角新建" />
-        ) : (
-          <div className="approval-config-page-grid">
-            {flows.map((f) => (
-              <div
-                key={f.id}
-                className={`approval-flow-card ${f.status === 'active' ? 'active' : ''}`}
-                onClick={() => goDetail(f)}
-              >
-                <div className="approval-flow-card-header">
-                  <div className="approval-flow-card-title-row">
-                    <Text strong ellipsis={{ showTooltip: true }} style={{ fontSize: 16 }}>
-                      {f.name}
-                    </Text>
-                    {f.status === 'active' && (
-                      <Tag color="green" type="solid" size="small">已启用</Tag>
-                    )}
-                    {f.is_preset && (
-                      <Tag color="blue" type="light" size="small">预设</Tag>
-                    )}
-                  </div>
-                  <Dropdown
-                    trigger="click"
-                    clickToHide
-                    position="bottomRight"
-                    render={
-                      <Dropdown.Menu>
-                        {f.status !== 'active' ? (
-                          <Dropdown.Item
-                            icon={<CheckCircle size={14} />}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleActivate(f);
-                            }}
-                          >
-                            启用
-                          </Dropdown.Item>
-                        ) : (
-                          <Dropdown.Item
-                            icon={<Pause size={14} />}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeactivate(f);
-                            }}
-                          >
-                            停用
-                          </Dropdown.Item>
-                        )}
-                        <Dropdown.Item
-                          icon={<Pencil size={14} />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            goEdit(f);
-                          }}
-                        >
-                          编辑
-                        </Dropdown.Item>
-                        {!f.is_preset && (
-                          <Dropdown.Item
-                            icon={<Trash2 size={14} />}
-                            type="danger"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDelete(f);
-                            }}
-                          >
-                            {t('common.delete')}
-                          </Dropdown.Item>
-                        )}
-                      </Dropdown.Menu>
-                    }
-                  >
-                    <Button
-                      icon={<Ellipsis size={16} />}
-                      theme="borderless"
-                      size="small"
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  </Dropdown>
-                </div>
-                <div className="approval-flow-card-meta">
-                  <Text type="tertiary" size="small">{f.code}</Text>
-                </div>
-                <Text
-                  type="secondary"
-                  size="small"
-                  ellipsis={{ rows: 2 }}
-                  style={{ marginTop: 8 }}
-                >
-                  {f.description || '暂无描述'}
-                </Text>
-                <div className="approval-flow-card-footer">
-                  <Tag size="small" color="grey" type="light">
-                    {f.approvers.length} 级审批
-                  </Tag>
-                  {f.approvers.some((a) => a.approval_mode === 'all') && (
-                    <Tag size="small" color="orange" type="light">含会签</Tag>
-                  )}
-                  {f.approvers.some((a) => a.approval_mode === 'majority') && (
-                    <Tag size="small" color="cyan" type="light">含多数通过</Tag>
-                  )}
-                </div>
-              </div>
-            ))}
+        {/* 审批配置区 */}
+        <section className="config-section">
+          <div className="config-section-head">
+            <div>
+              <Title heading={5} style={{ margin: 0 }}>
+                审批配置
+              </Title>
+              <Text type="tertiary" size="small">
+                控制需求是否需要进入审批流程；启用后按层级串行审批
+              </Text>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Text size="small" type="tertiary">
+                {config.approval_enabled ? '已启用' : '已关闭'}
+              </Text>
+              <Switch
+                checked={config.approval_enabled}
+                onChange={(v) => patch({ approval_enabled: v })}
+              />
+            </div>
           </div>
-        )}
+          {config.approval_enabled && (
+            <div className="config-section-body">
+              <ApprovalLevelList
+                levels={config.approval_levels}
+                onChange={(approval_levels) => patch({ approval_levels })}
+              />
+            </div>
+          )}
+        </section>
+
+        {/* 评估配置区 */}
+        <section className="config-section">
+          <div className="config-section-head">
+            <div>
+              <Title heading={5} style={{ margin: 0 }}>
+                评估配置
+              </Title>
+              <Text type="tertiary" size="small">
+                控制需求是否需要技术评估；启用后由评估人组对价值与复杂度进行打分
+              </Text>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Text size="small" type="tertiary">
+                {config.assessment_enabled ? '已启用' : '已关闭'}
+              </Text>
+              <Switch
+                checked={config.assessment_enabled}
+                onChange={(v) => patch({ assessment_enabled: v })}
+              />
+            </div>
+          </div>
+          {config.assessment_enabled && (
+            <div className="config-section-body">
+              <AssessorGroupList
+                groups={config.assessor_groups}
+                onChange={(assessor_groups) => patch({ assessor_groups })}
+              />
+              <AssessmentModelCard
+                model={config.value_model}
+                onChange={(value_model) => patch({ value_model })}
+              />
+              <AssessmentModelCard
+                model={config.complexity_model}
+                onChange={(complexity_model) => patch({ complexity_model })}
+              />
+            </div>
+          )}
+        </section>
       </div>
+
+      <ConfigHistoryDrawer visible={historyVisible} onClose={() => setHistoryVisible(false)} />
     </div>
   );
 };
 
-export default ApprovalConfigPage;
+export default ApprovalAssessmentConfigPage;
