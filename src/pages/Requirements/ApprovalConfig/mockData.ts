@@ -245,12 +245,10 @@ const loadHistory = (): ConfigHistoryItem[] => {
 };
 
 let schemes: ApprovalAssessmentScheme[] = loadSchemes();
-let history: ConfigHistoryItem[] = loadHistory();
 
 const persist = () => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(schemes));
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   } catch {
     /* noop */
   }
@@ -279,10 +277,6 @@ export const fetchActiveScheme = async (): Promise<ApprovalAssessmentScheme> => 
   return clone(active);
 };
 
-export const fetchSchemeHistory = async (schemeId: string): Promise<ConfigHistoryItem[]> => {
-  await delay(120);
-  return history.filter((h) => h.scheme_id === schemeId).sort((a, b) => b.version - a.version);
-};
 
 export interface ValidationError {
   code: 'E1' | 'E2' | 'E3' | 'E4' | 'E5';
