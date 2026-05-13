@@ -88,21 +88,12 @@ const presetContent: SchemeContent = {
   approval_levels: [
     {
       id: 'lv-1',
-      name: '部门主管审批',
+      name: '部门负责人审批',
       user_ids: [],
-      mode: 'any_one',
+      mode: 'all',
       priority: 1,
       required: true,
       timeout_days: 3,
-    },
-    {
-      id: 'lv-2',
-      name: 'AI 委员会评审',
-      user_ids: [],
-      mode: 'majority',
-      priority: 2,
-      required: true,
-      timeout_days: 7,
     },
   ],
   assessment_enabled: true,
