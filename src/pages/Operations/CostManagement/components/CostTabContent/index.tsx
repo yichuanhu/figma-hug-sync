@@ -132,21 +132,6 @@ const CostTabContent = ({ costType }: Props) => {
       render: (v: string) => (v ? dayjs(v).format('YYYY-MM-DD') : '—'),
     },
     {
-      title: t('operations.costManagement.columns.recurring'),
-      dataIndex: 'isRecurring',
-      width: 110,
-      render: (v: boolean, item: CostRecord) =>
-        v ? (
-          <Tag color="blue" size="small">
-            {item.recurrencePattern
-              ? t(`operations.costManagement.recurrence.${item.recurrencePattern}`)
-              : t('operations.costManagement.recurrence.NONE')}
-          </Tag>
-        ) : (
-          <Text type="tertiary">—</Text>
-        ),
-    },
-    {
       title: t('operations.costManagement.columns.createdBy'),
       dataIndex: 'createdBy',
       width: 110,
