@@ -44,7 +44,9 @@ const PersonalCenter = () => {
             tab={t('personalCenter.tabs.settings')}
             itemKey="settings"
           >
-            <SettingsContent />
+            <div className="personal-center-settings-placeholder">
+              {t('personalCenter.settings.comingSoon')}
+            </div>
           </Tabs.TabPane>
           <Tabs.TabPane
             tab={t('personalCenter.tabs.personalCredentials')}
