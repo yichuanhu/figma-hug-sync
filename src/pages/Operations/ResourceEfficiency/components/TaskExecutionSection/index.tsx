@@ -32,8 +32,9 @@ const TaskExecutionSection = ({ data }: Props) => {
   const { t } = useTranslation();
 
   const formatMinutes = (minutes: number) => {
-    if (minutes >= 60000) return `${(minutes / 60000).toFixed(1)}${t('operations.dashboard.tenThousandHours')}`;
-    if (minutes >= 60) return `${(minutes / 60).toFixed(0)}${t('operations.dashboard.hours')}`;
+    if (minutes >= 60) {
+      return `${Math.round(minutes / 60).toLocaleString()}${t('operations.dashboard.hours')}`;
+    }
     return `${minutes}${t('operations.dashboard.minutes')}`;
   };
 
