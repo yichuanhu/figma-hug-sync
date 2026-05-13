@@ -1,24 +1,27 @@
 .platform-ops-announcements-tab {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+
   .tab-toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 16px;
+    flex-shrink: 0;
   }
+
+  .tab-table {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+
   .row-actions {
     display: flex;
     align-items: center;
     gap: 4px;
-  }
-  .table-empty {
-    text-align: center;
-    color: var(--semi-color-text-2);
-    padding: 42px 0 24px;
-  }
-  .list-pagination {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 16px;
   }
 }
