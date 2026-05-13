@@ -118,39 +118,52 @@ const AnnouncementsTab = () => {
     },
     {
       title: t('operations.platformOperations.announcements.columns.actions'),
-      width: 160,
+      width: 60,
       render: (_: unknown, item: PlatformAnnouncement) => (
-        <div className="row-actions" onClick={(e) => e.stopPropagation()}>
-          <Button
-            theme="borderless"
-            size="small"
-            onClick={() => { setEditing(item); setModalVisible(true); }}
-          >
-            {t('operations.platformOperations.announcements.actions.edit')}
-          </Button>
-          {item.isPublished ? (
-            <Button theme="borderless" size="small" onClick={() => handleUnpublish(item)}>
-              {t('operations.platformOperations.announcements.actions.unpublish')}
-            </Button>
-          ) : (
-            <Button theme="borderless" type="primary" size="small" onClick={() => handlePublish(item)}>
-              {t('operations.platformOperations.announcements.actions.publish')}
-            </Button>
-          )}
-          <Dropdown
-            trigger="click"
-            position="bottomRight"
-            render={
-              <Dropdown.Menu>
-                <Dropdown.Item type="danger" onClick={() => handleDelete(item)}>
-                  {t('operations.platformOperations.announcements.actions.delete')}
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          stopPropagation
+          clickToHide
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item
+                icon={<Pencil size={16} strokeWidth={2} />}
+                onClick={() => { setEditing(item); setModalVisible(true); }}
+              >
+                {t('operations.platformOperations.announcements.actions.edit')}
+              </Dropdown.Item>
+              {item.isPublished ? (
+                <Dropdown.Item
+                  icon={<EyeOff size={16} strokeWidth={2} />}
+                  onClick={() => handleUnpublish(item)}
+                >
+                  {t('operations.platformOperations.announcements.actions.unpublish')}
                 </Dropdown.Item>
-              </Dropdown.Menu>
-            }
-          >
-            <Button icon={<MoreHorizontal size={14} strokeWidth={2} />} theme="borderless" size="small" />
-          </Dropdown>
-        </div>
+              ) : (
+                <Dropdown.Item
+                  icon={<Send size={16} strokeWidth={2} />}
+                  onClick={() => handlePublish(item)}
+                >
+                  {t('operations.platformOperations.announcements.actions.publish')}
+                </Dropdown.Item>
+              )}
+              <Dropdown.Item
+                icon={<Trash2 size={16} strokeWidth={2} />}
+                type="danger"
+                onClick={() => handleDelete(item)}
+              >
+                {t('operations.platformOperations.announcements.actions.delete')}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          }
+        >
+          <Button
+            icon={<Ellipsis size={16} strokeWidth={2} />}
+            theme="borderless"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </Dropdown>
       ),
     },
   ];
