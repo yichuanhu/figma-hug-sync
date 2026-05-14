@@ -657,6 +657,20 @@ const RequirementDetailDrawer = ({
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
+                {/* 需求分类模块 */}
+                <div className="requirement-detail-section">
+                  <Text strong style={{ display: 'block', marginBottom: 12 }}>
+                    需求分类
+                  </Text>
+                  <ClassificationTagsField
+                    entityType="requirement"
+                    entityId={effectiveData.id}
+                    value={{}}
+                    onChange={() => {}}
+                    readonly
+                  />
+                </div>
+
                 <CustomFieldsSection data={effectiveData} t={t} />
               </div>
             </TabPane>
