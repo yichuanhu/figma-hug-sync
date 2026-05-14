@@ -1,0 +1,120 @@
+.classification-tags-field {
+  width: 100%;
+
+  &.is-loading {
+    display: flex;
+    align-items: center;
+    padding: 24px 0;
+  }
+
+  &.is-error-state {
+    border: 1px dashed var(--semi-color-danger);
+    border-radius: 8px;
+    padding: 20px;
+    background: var(--semi-color-danger-light-default);
+
+    .cls-error-inner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--semi-color-danger);
+    }
+  }
+
+  &.is-empty-state {
+    border: 1px dashed var(--semi-color-border);
+    border-radius: 8px;
+    padding: 24px;
+    background: var(--semi-color-fill-0);
+    text-align: center;
+
+    .semi-empty {
+      padding: 0;
+    }
+  }
+
+  &.is-ready {
+    border: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    background: var(--semi-color-bg-0);
+    transition: border-color 0.2s;
+
+    &.has-error {
+      border-color: var(--semi-color-danger);
+    }
+  }
+
+  .cls-header {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+
+    &-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--semi-color-text-0);
+    }
+
+    &-hint {
+      color: var(--semi-color-text-2);
+    }
+  }
+
+  .cls-required-mark {
+    color: var(--semi-color-danger);
+    margin-left: 2px;
+  }
+
+  .cls-error-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--semi-color-danger);
+    font-size: 13px;
+    margin: 4px 0 12px;
+  }
+
+  .cls-key-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 16px;
+  }
+
+  .cls-key-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cls-key-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--semi-color-text-1);
+  }
+
+  // ============ 只读视图 ============
+  &.is-readonly {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .cls-readonly-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      line-height: 22px;
+    }
+
+    .cls-readonly-label {
+      min-width: 64px;
+    }
+
+    .cls-readonly-value {
+      flex: 1;
+      word-break: break-all;
+    }
+  }
+}

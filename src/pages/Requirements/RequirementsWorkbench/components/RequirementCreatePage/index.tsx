@@ -26,6 +26,7 @@ import {
   saveDraft,
   discardDraft,
   publishChange,
+  deleteRequirement,
 } from '../../mockData';
 import type {
   SchemeField,
@@ -34,8 +35,17 @@ import type {
   RequirementDraft,
 } from '../../types';
 import { isPostProjectStatus } from '../../utils/fieldEditability';
+import { isClassificationEditable } from '../../utils/classificationEditable';
 import SchemeFieldRenderer from '../SchemeFieldRenderer';
 import PublishChangePanel, { ERROR_MAP } from '../PublishChangePanel';
+import ClassificationTagsField, {
+  type ClassificationValueMap,
+  type ClassificationLoadStatus,
+} from '@/components/ClassificationTagsField';
+import {
+  assignEntityClassifications,
+  removeEntityClassifications,
+} from '@/mocks/classification/service';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -44,7 +54,8 @@ const STEP_FIELDS: Array<string[]> = [
   ['title', 'department', 'owner', 'priority'],
   [],
   [],
-  [], // Step 3 (post-project edit only): 发布变更
+  [], // Step 3: 分类标签
+  [], // Step 4 (post-project edit only): 发布变更
 ];
 
 /** 动态 scheme 字段渲染器 */
@@ -125,6 +136,18 @@ const RequirementCreatePage = () => {
   };
   const removePositionCost = (idx: number) => {
     setPositionCosts((prev) => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== idx)));
+    setDirty(true);
+  };
+
+  // ============ 分类标签状态 ============
+  const [classificationValue, setClassificationValue] = useState<ClassificationValueMap>({});
+  const [classificationStatus, setClassificationStatus] =
+    useState<ClassificationLoadStatus>('loading');
+  const [forceClsError, setForceClsError] = useState(false);
+  const classificationEditable = isClassificationEditable(editData?.status);
+  const handleClassificationChange = (next: ClassificationValueMap) => {
+    setClassificationValue(next);
+    setForceClsError(false);
     setDirty(true);
   };
 
@@ -264,9 +287,12 @@ const RequirementCreatePage = () => {
     }
   };
 
-  const totalSteps = isPostProjectEdit ? 4 : 3;
-  const lastFormStep = isPostProjectEdit ? 2 : 2; // 详情页索引
-  const isPublishStep = isPostProjectEdit && currentStep === 3;
+  // 步骤布局：
+  //   0 基础信息 / 1 岗位与执行成本 / 2 需求详情 / 3 分类标签
+  //   立项后编辑追加 4 发布变更
+  const totalSteps = isPostProjectEdit ? 5 : 4;
+  const lastFormStep = 3; // 提交按钮所在步骤（分类标签）
+  const isPublishStep = isPostProjectEdit && currentStep === 4;
 
   const handleNext = async () => {
     const ok = await validateCurrentStep();
@@ -351,6 +377,35 @@ const RequirementCreatePage = () => {
     Toast.success('草稿已丢弃');
   };
 
+  const validateClassification = (): boolean => {
+    if (!classificationEditable) return true;
+    if (classificationStatus === 'error') {
+      Toast.error('分类标签加载失败，请稍后重试');
+      setCurrentStep(3);
+      return false;
+    }
+    if (classificationStatus === 'loading') {
+      Toast.info('分类标签加载中，请稍候');
+      return false;
+    }
+    if (classificationStatus === 'empty') return true; // AF1：无适用分类键
+    // ready 态：合计至少 1 个
+    const total = Object.values(classificationValue).reduce(
+      (sum, ids) => sum + (ids?.length ?? 0),
+      0,
+    );
+    if (total === 0) {
+      setForceClsError(true);
+      setCurrentStep(3);
+      setTimeout(() => {
+        const el = document.querySelector('[data-classification-anchor]');
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async () => {
     if (!formApi) return;
     if (!departmentValue) {
@@ -371,6 +426,8 @@ const RequirementCreatePage = () => {
       return;
     }
 
+    if (!validateClassification()) return;
+
     // 立项后：进入发布变更步骤
     if (isPostProjectEdit && editData) {
       try {
@@ -379,20 +436,48 @@ const RequirementCreatePage = () => {
       } catch {
         // 不阻塞
       }
-      setCurrentStep(3);
+      setCurrentStep(4);
       return;
     }
+
+    const buildAssignmentPayload = () =>
+      Object.entries(classificationValue)
+        .filter(([, ids]) => ids && ids.length > 0)
+        .map(([classificationKeyId, valueIds]) => ({ classificationKeyId, valueIds }));
 
     const { submitValues } = buildSubmitValues();
     setSubmitting(true);
     try {
+      let entityId: string;
       if (isEdit && editData) {
         await updateRequirement(editData.id, submitValues);
-        Toast.success(t('requirements.form.editSuccess'));
+        entityId = editData.id;
       } else {
-        await createRequirement(submitValues);
-        Toast.success(t('requirements.form.createSuccess'));
+        const created = await createRequirement(submitValues);
+        // mockData.createRequirement 返回创建的 RequirementItem
+        entityId = (created as RequirementItem)?.id ?? '';
       }
+      // 保存分类
+      if (classificationStatus === 'ready') {
+        try {
+          await assignEntityClassifications('requirement', entityId, buildAssignmentPayload());
+        } catch {
+          // 回滚需求创建
+          if (!isEdit && entityId) {
+            try {
+              await deleteRequirement(entityId);
+            } catch {
+              /* ignore */
+            }
+            removeEntityClassifications('requirement', entityId);
+          }
+          Toast.error('需求创建失败：分类标签保存异常，请稍后重试');
+          return;
+        }
+      }
+      Toast.success(
+        isEdit ? t('requirements.form.editSuccess') : t('requirements.form.createSuccess'),
+      );
       navigate('/requirements/list');
     } catch {
       Toast.error(t('requirements.form.submitError'));
@@ -468,6 +553,7 @@ const RequirementCreatePage = () => {
           <Steps.Step title="基础信息" description="标题、部门、归属人、优先级" />
           <Steps.Step title="岗位与执行成本" description="人力级别、成本、执行频率、时长" />
           <Steps.Step title="需求详情" description="按模版填写业务字段" />
+          <Steps.Step title="分类标签" description="按业务维度打标，便于后续筛选" />
           {isPostProjectEdit && (
             <Steps.Step title="发布变更" description="填写变更说明并发布" />
           )}
@@ -607,6 +693,20 @@ const RequirementCreatePage = () => {
             </div>
           </Form>
 
+          {/* Step 3：分类标签 */}
+          <div style={{ display: currentStep === 3 ? 'block' : 'none' }}>
+            <ClassificationTagsField
+              entityType="requirement"
+              entityId={editData?.id}
+              value={classificationValue}
+              onChange={handleClassificationChange}
+              onStatusChange={setClassificationStatus}
+              required
+              forceShowError={forceClsError}
+              readonly={!classificationEditable}
+            />
+          </div>
+
           {/* Step 3: 发布变更（仅立项后编辑） */}
           {isPublishStep && editData && (
             <PublishChangePanel
@@ -650,7 +750,16 @@ const RequirementCreatePage = () => {
             </Button>
           )}
           {currentStep === lastFormStep && (
-            <Button theme="solid" type="primary" loading={submitting} onClick={handleSubmit}>
+            <Button
+              theme="solid"
+              type="primary"
+              loading={submitting}
+              disabled={
+                classificationEditable &&
+                (classificationStatus === 'error' || classificationStatus === 'loading')
+              }
+              onClick={handleSubmit}
+            >
               {isPostProjectEdit ? '下一步：发布变更' : (isEdit ? t('common.save') : t('common.create'))}
             </Button>
           )}

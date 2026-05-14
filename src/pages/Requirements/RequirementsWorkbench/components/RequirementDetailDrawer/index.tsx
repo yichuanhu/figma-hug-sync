@@ -17,6 +17,7 @@ import EffortTab from './EffortTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ChangeLogTab from '../ChangeLogTab';
 import DevSchemeDocsTab from '../DevSchemeDocsTab';
+import ClassificationTagsField from '@/components/ClassificationTagsField';
 
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
@@ -191,6 +192,19 @@ const PropertyPanel = ({
           <Text type="tertiary" size="small">{t('common.updateTime')}</Text>
           <Text size="small">{data.updatedAt.replace('T', ' ').substring(0, 19)}</Text>
         </div>
+      </div>
+
+      <div className="requirement-detail-property-divider" />
+
+      <div className="requirement-detail-property-item">
+        <Text type="tertiary" size="small">分类标签</Text>
+        <ClassificationTagsField
+          entityType="requirement"
+          entityId={data.id}
+          value={{}}
+          onChange={() => {}}
+          readonly
+        />
       </div>
 
       {data.status === 'DRAFT' && (() => {
