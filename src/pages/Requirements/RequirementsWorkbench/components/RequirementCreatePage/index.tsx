@@ -750,7 +750,16 @@ const RequirementCreatePage = () => {
             </Button>
           )}
           {currentStep === lastFormStep && (
-            <Button theme="solid" type="primary" loading={submitting} onClick={handleSubmit}>
+            <Button
+              theme="solid"
+              type="primary"
+              loading={submitting}
+              disabled={
+                classificationEditable &&
+                (classificationStatus === 'error' || classificationStatus === 'loading')
+              }
+              onClick={handleSubmit}
+            >
               {isPostProjectEdit ? '下一步：发布变更' : (isEdit ? t('common.save') : t('common.create'))}
             </Button>
           )}
