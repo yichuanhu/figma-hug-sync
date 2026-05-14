@@ -287,9 +287,12 @@ const RequirementCreatePage = () => {
     }
   };
 
-  const totalSteps = isPostProjectEdit ? 4 : 3;
-  const lastFormStep = isPostProjectEdit ? 2 : 2; // 详情页索引
-  const isPublishStep = isPostProjectEdit && currentStep === 3;
+  // 步骤布局：
+  //   0 基础信息 / 1 岗位与执行成本 / 2 需求详情 / 3 分类标签
+  //   立项后编辑追加 4 发布变更
+  const totalSteps = isPostProjectEdit ? 5 : 4;
+  const lastFormStep = 3; // 提交按钮所在步骤（分类标签）
+  const isPublishStep = isPostProjectEdit && currentStep === 4;
 
   const handleNext = async () => {
     const ok = await validateCurrentStep();
