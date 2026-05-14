@@ -139,6 +139,18 @@ const RequirementCreatePage = () => {
     setDirty(true);
   };
 
+  // ============ 分类标签状态 ============
+  const [classificationValue, setClassificationValue] = useState<ClassificationValueMap>({});
+  const [classificationStatus, setClassificationStatus] =
+    useState<ClassificationLoadStatus>('loading');
+  const [forceClsError, setForceClsError] = useState(false);
+  const classificationEditable = isClassificationEditable(editData?.status);
+  const handleClassificationChange = (next: ClassificationValueMap) => {
+    setClassificationValue(next);
+    setForceClsError(false);
+    setDirty(true);
+  };
+
   const activeScheme = useMemo(() => getActiveScheme(), []);
 
   const priorityOptions = useMemo(
