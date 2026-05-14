@@ -17,6 +17,7 @@ import EffortTab from './EffortTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ChangeLogTab from '../ChangeLogTab';
 import DevSchemeDocsTab from '../DevSchemeDocsTab';
+import ClassificationTagsField from '@/components/ClassificationTagsField';
 
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
