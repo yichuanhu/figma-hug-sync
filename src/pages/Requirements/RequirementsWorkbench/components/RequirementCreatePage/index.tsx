@@ -553,6 +553,7 @@ const RequirementCreatePage = () => {
           <Steps.Step title="基础信息" description="标题、部门、归属人、优先级" />
           <Steps.Step title="岗位与执行成本" description="人力级别、成本、执行频率、时长" />
           <Steps.Step title="需求详情" description="按模版填写业务字段" />
+          <Steps.Step title="分类标签" description="按业务维度打标，便于后续筛选" />
           {isPostProjectEdit && (
             <Steps.Step title="发布变更" description="填写变更说明并发布" />
           )}
@@ -691,6 +692,20 @@ const RequirementCreatePage = () => {
               )}
             </div>
           </Form>
+
+          {/* Step 3：分类标签 */}
+          <div style={{ display: currentStep === 3 ? 'block' : 'none' }}>
+            <ClassificationTagsField
+              entityType="requirement"
+              entityId={editData?.id}
+              value={classificationValue}
+              onChange={handleClassificationChange}
+              onStatusChange={setClassificationStatus}
+              required
+              forceShowError={forceClsError}
+              readonly={!classificationEditable}
+            />
+          </div>
 
           {/* Step 3: 发布变更（仅立项后编辑） */}
           {isPublishStep && editData && (
