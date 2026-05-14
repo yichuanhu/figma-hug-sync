@@ -193,6 +193,19 @@ const PropertyPanel = ({
         </div>
       </div>
 
+      <div className="requirement-detail-property-divider" />
+
+      <div className="requirement-detail-property-item">
+        <Text type="tertiary" size="small">分类标签</Text>
+        <ClassificationTagsField
+          entityType="requirement"
+          entityId={data.id}
+          value={{}}
+          onChange={() => {}}
+          readonly
+        />
+      </div>
+
       {data.status === 'DRAFT' && (() => {
         const submitLabel = hasApproval
           ? t('requirements.detail.submitForApproval')
