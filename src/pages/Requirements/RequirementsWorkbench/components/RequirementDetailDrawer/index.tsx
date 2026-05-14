@@ -194,19 +194,6 @@ const PropertyPanel = ({
         </div>
       </div>
 
-      <div className="requirement-detail-property-divider" />
-
-      <div className="requirement-detail-property-item">
-        <Text type="tertiary" size="small">分类标签</Text>
-        <ClassificationTagsField
-          entityType="requirement"
-          entityId={data.id}
-          value={{}}
-          onChange={() => {}}
-          readonly
-        />
-      </div>
-
       {data.status === 'DRAFT' && (() => {
         const submitLabel = hasApproval
           ? t('requirements.detail.submitForApproval')
@@ -670,6 +657,20 @@ const RequirementDetailDrawer = ({
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
+                {/* 需求分类模块 */}
+                <div className="requirement-detail-section">
+                  <Text strong style={{ display: 'block', marginBottom: 12 }}>
+                    需求分类
+                  </Text>
+                  <ClassificationTagsField
+                    entityType="requirement"
+                    entityId={effectiveData.id}
+                    value={{}}
+                    onChange={() => {}}
+                    readonly
+                  />
+                </div>
+
                 <CustomFieldsSection data={effectiveData} t={t} />
               </div>
             </TabPane>
