@@ -26,6 +26,7 @@ import {
   saveDraft,
   discardDraft,
   publishChange,
+  deleteRequirement,
 } from '../../mockData';
 import type {
   SchemeField,
@@ -34,8 +35,17 @@ import type {
   RequirementDraft,
 } from '../../types';
 import { isPostProjectStatus } from '../../utils/fieldEditability';
+import { isClassificationEditable } from '../../utils/classificationEditable';
 import SchemeFieldRenderer from '../SchemeFieldRenderer';
 import PublishChangePanel, { ERROR_MAP } from '../PublishChangePanel';
+import ClassificationTagsField, {
+  type ClassificationValueMap,
+  type ClassificationLoadStatus,
+} from '@/components/ClassificationTagsField';
+import {
+  assignEntityClassifications,
+  removeEntityClassifications,
+} from '@/mocks/classification/service';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -44,7 +54,8 @@ const STEP_FIELDS: Array<string[]> = [
   ['title', 'department', 'owner', 'priority'],
   [],
   [],
-  [], // Step 3 (post-project edit only): 发布变更
+  [], // Step 3: 分类标签
+  [], // Step 4 (post-project edit only): 发布变更
 ];
 
 /** 动态 scheme 字段渲染器 */
