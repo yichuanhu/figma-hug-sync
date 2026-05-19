@@ -31,6 +31,8 @@ import { MetricServiceError } from '@/mocks/operationsMetrics/types';
 import MetricFormModal from './components/MetricFormModal';
 import MetricRecordsDrawer from './components/MetricRecordsDrawer';
 import MetricsMockSwitcher from '@/components/MetricsMockSwitcher';
+import noDataImg from '@/assets/empty-state/no-data.svg';
+import noResultImg from '@/assets/empty-state/no-result.svg';
 import './index.less';
 
 const { Title, Text } = Typography;
