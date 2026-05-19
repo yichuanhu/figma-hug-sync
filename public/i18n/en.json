@@ -225,6 +225,8 @@
     "createMetric": "New Metric",
     "empty": "No business metrics yet",
     "loadFailed": "Failed to load metrics, please retry",
+    "loadFailedTitle": "Load Failed",
+    "loadFailedDesc": "Unable to fetch business metrics. Please check the network and retry.",
     "viewRecords": "View History",
     "toggleVisibleSuccess": "Visibility updated",
     "toggleVisibleFailed": "Failed to update visibility",
@@ -4206,7 +4208,9 @@
         "updatedAt": "Updated at {{time}}",
         "trendTitle": "Last 30 Days Trend",
         "trendLimit": "Only the first 4 numeric metrics are shown in the trend chart",
-        "latestTitle": "Latest Value"
+        "latestTitle": "Latest Value",
+        "errorTitle": "Load Failed",
+        "errorDesc": "Unable to load custom business metrics, please retry"
       }
     },
     "costManagement": {
