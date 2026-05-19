@@ -4218,15 +4218,15 @@
         "title": "Custom Business Metrics",
         "manage": "Manage Metrics",
         "emptyTitle": "No visible business metrics",
-        "emptyDesc": "Add and enable metrics on the Business Metrics configuration page",
+        "emptyDesc": "Create and enable metrics on the Business Metrics page; once automation runs report them, they will surface here.",
         "goConfig": "Go to Config",
         "totalCount": "{{count}} metrics in total",
         "updatedAt": "Updated at {{time}}",
         "trendTitle": "Last 30 Days Trend",
         "trendLimit": "Only the first 4 numeric metrics are shown in the trend chart",
         "latestTitle": "Latest Value",
-        "errorTitle": "Load Failed",
-        "errorDesc": "Unable to load custom business metrics, please retry"
+        "errorTitle": "Failed to load business metrics",
+        "errorDesc": "Network error or service unavailable. Please check your connection and retry."
       }
     },
     "costManagement": {
