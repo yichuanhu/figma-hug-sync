@@ -137,7 +137,7 @@ const CustomMetricsSection = () => {
   if (loading) {
     return (
       <div className="dashboard-card custom-metrics-section">
-        <Spin spinning style={{ display: 'block', padding: 40, textAlign: 'center' }} />
+        <MetricsSkeleton variant="dashboard" />
       </div>
     );
   }
@@ -150,11 +150,10 @@ const CustomMetricsSection = () => {
             {t('operations.businessOutcomes.customMetrics.title')}
           </span>
         </div>
-        <Empty
-          image={<AlertTriangle size={48} strokeWidth={1.5} color="var(--semi-color-danger)" />}
+        <MetricsEmptyState
+          variant="error"
           title={t('operations.businessOutcomes.customMetrics.errorTitle')}
           description={t('operations.businessOutcomes.customMetrics.errorDesc')}
-          style={{ padding: '32px 0' }}
         >
           <Button
             theme="solid"
@@ -162,13 +161,12 @@ const CustomMetricsSection = () => {
             icon={<RefreshCw size={14} strokeWidth={2} />}
             onClick={fetchData}
           >
-            {t('common.refresh')}
+            {t('common.retry')}
           </Button>
-        </Empty>
+        </MetricsEmptyState>
       </div>
     );
   }
-
 
   if (metrics.length === 0) {
     return (
@@ -187,20 +185,20 @@ const CustomMetricsSection = () => {
             {t('operations.businessOutcomes.customMetrics.manage')}
           </Button>
         </div>
-        <Empty
-          image={<Gauge size={48} strokeWidth={1.5} color="#9CA3AF" />}
+        <MetricsEmptyState
+          variant="empty"
           title={t('operations.businessOutcomes.customMetrics.emptyTitle')}
           description={t('operations.businessOutcomes.customMetrics.emptyDesc')}
-          style={{ padding: '32px 0' }}
         >
           <Button
             theme="solid"
             type="primary"
+            icon={<Plus size={14} strokeWidth={2} />}
             onClick={() => navigate('/operations/metrics-config')}
           >
             {t('operations.businessOutcomes.customMetrics.goConfig')}
           </Button>
-        </Empty>
+        </MetricsEmptyState>
       </div>
     );
   }
