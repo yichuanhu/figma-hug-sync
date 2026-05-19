@@ -130,7 +130,7 @@ const CustomMetricsSection = () => {
       <div className="dashboard-card custom-metrics-section">
         <div className="dashboard-card-header">
           <span className="dashboard-card-title">
-            {t('businessOutcomes.customMetrics.title')}
+            {t('operations.businessOutcomes.customMetrics.title')}
           </span>
           <Button
             icon={<ArrowRight size={14} strokeWidth={2} />}
@@ -139,13 +139,13 @@ const CustomMetricsSection = () => {
             type="primary"
             onClick={() => navigate('/operations/metrics-config')}
           >
-            {t('businessOutcomes.customMetrics.manage')}
+            {t('operations.businessOutcomes.customMetrics.manage')}
           </Button>
         </div>
         <Empty
           image={<Gauge size={48} strokeWidth={1.5} color="#9CA3AF" />}
-          title={t('businessOutcomes.customMetrics.emptyTitle')}
-          description={t('businessOutcomes.customMetrics.emptyDesc')}
+          title={t('operations.businessOutcomes.customMetrics.emptyTitle')}
+          description={t('operations.businessOutcomes.customMetrics.emptyDesc')}
           style={{ padding: '32px 0' }}
         >
           <Button
@@ -153,7 +153,7 @@ const CustomMetricsSection = () => {
             type="primary"
             onClick={() => navigate('/operations/metrics-config')}
           >
-            {t('businessOutcomes.customMetrics.goConfig')}
+            {t('operations.businessOutcomes.customMetrics.goConfig')}
           </Button>
         </Empty>
       </div>
@@ -164,9 +164,9 @@ const CustomMetricsSection = () => {
     <div className="dashboard-card custom-metrics-section">
       <div className="dashboard-card-header">
         <span className="dashboard-card-title">
-          {t('businessOutcomes.customMetrics.title')}
+          {t('operations.businessOutcomes.customMetrics.title')}
           <Text type="tertiary" size="small" style={{ marginLeft: 8 }}>
-            {t('businessOutcomes.customMetrics.totalCount', { count: metrics.length })}
+            {t('operations.businessOutcomes.customMetrics.totalCount', { count: metrics.length })}
           </Text>
         </span>
         <Button
@@ -176,7 +176,7 @@ const CustomMetricsSection = () => {
           type="primary"
           onClick={() => navigate('/operations/metrics-config')}
         >
-          {t('businessOutcomes.customMetrics.manage')}
+          {t('operations.businessOutcomes.customMetrics.manage')}
         </Button>
       </div>
 
@@ -199,7 +199,7 @@ const CustomMetricsSection = () => {
               )}
             </div>
             <Text type="tertiary" size="small">
-              {t('businessOutcomes.customMetrics.updatedAt', {
+              {t('operations.businessOutcomes.customMetrics.updatedAt', {
                 time: formatDateTime(m.lastUpdatedAt),
               })}
             </Text>
@@ -212,10 +212,10 @@ const CustomMetricsSection = () => {
         {trendOption && (
           <div className="custom-metrics-trend">
             <div className="chart-subtitle">
-              {t('businessOutcomes.customMetrics.trendTitle')}
+              {t('operations.businessOutcomes.customMetrics.trendTitle')}
               {numericMetrics.length > 4 && (
                 <Text type="tertiary" size="small" style={{ marginLeft: 8 }}>
-                  {t('businessOutcomes.customMetrics.trendLimit')}
+                  {t('operations.businessOutcomes.customMetrics.trendLimit')}
                 </Text>
               )}
             </div>
@@ -225,7 +225,7 @@ const CustomMetricsSection = () => {
         {latestMetrics.length > 0 && (
           <div className="custom-metrics-latest">
             <div className="chart-subtitle">
-              {t('businessOutcomes.customMetrics.latestTitle')}
+              {t('operations.businessOutcomes.customMetrics.latestTitle')}
             </div>
             <div className="custom-metrics-latest-list">
               {latestMetrics.map((m) => (
