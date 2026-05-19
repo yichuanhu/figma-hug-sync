@@ -58,6 +58,7 @@ const MetricsConfig = () => {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [page, setPage] = useState(1);
+  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   const [pageSize, setPageSize] = useState(20);
 
   const [formVisible, setFormVisible] = useState(false);
