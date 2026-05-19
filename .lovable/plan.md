@@ -1,89 +1,162 @@
-## 目标
 
-将 `src/pages/SharingCenter/Admin/Permissions/index.tsx` 与 i18n 全量对齐 `sharing-center-L1-permission-management-v1.0.0.md`：12 个 `SC_*` 权限点（5 类）+ 4 个内置角色模板，并补上「角色 × 权限」矩阵。
+# 自定义业务指标（STORY-010）实施方案
 
----
+## 一、目标
 
-## 一、页面信息架构调整
+落地 STORY-010 的两块能力：
+1. **业务指标配置**：运营中心新增独立菜单与页面，提供 CustomMetric 的完整 CRUD + 历史记录查看。
+2. **业务成果看板消费**：用 CustomMetric/MetricSnapshot 数据**替换**现有「业务量统计」区块，按 visible 指标动态渲染 KPI、趋势、排行。
 
-旧版（不符合规范）：5 个实体 × 19 个 `entity.action` 权限点；4 个角色仅文本描述。
-
-新版结构（自上而下）：
-
-1. **页面标题**：`权限点与角色`（heading=3）
-2. **引导 Banner（info）**：「共享中心向 APA 权限引擎注册 12 个 `SC_*` 权限点（命名 `SC_{ENTITY}_{ACTION}`），由 APA AuthContext 统一承载 `hasPermission()` 检查。角色绑定可在 APA 管理后台调整。」
-3. **Section A — 权限点（按 5 类分组卡片）**
-   - 资产浏览 / 资产操作 / 展示与上架 / 审批 / 管理
-   - 每张卡片：分类标题 + 该分类下的权限点列表，每条 = `Tag(SC_*)` + 一行说明文字
-4. **Section B — 内置角色模板**
-   - 4 张角色卡片（管理员 / 上架者 / 审批者 / 使用者）：角色名 + 一句定位 + 已绑定权限点 Tag 云 + 权限点数量统计
-5. **Section C — 角色 × 权限矩阵**
-   - Semi `Table size="small"`：第一列「权限点」，后 4 列对应 4 个角色，单元格用 `IconTickCircle`（绑定）/ `—`（未绑定）
-   - 表头加 ARCH 角色映射小字（如「资产上架者 / 上架者」）
-6. **Section D — 业务规则提示（tertiary 文本）**
-   - BR-PERM-SC-002：`publishedBy` 匹配业务层判断
-   - BR-PERM-SC-003：DEV_CENTER 元信息只读
+数据全部走前端 mock service（参考既有 `src/mocks/classification/` 模式）。
 
 ---
 
-## 二、权限点与角色绑定数据（写入常量）
+## 二、文件结构
 
-```text
-分类               权限点                  绑定角色（管/上/审/使）
-资产浏览           SC_ASSET_VIEW           ✓ ✓ ✓ ✓
-资产浏览           SC_ASSET_REUSE          ✓ ✓ ✓ ✓
-资产操作           SC_ASSET_CREATE         ✓ ✓ · ·
-资产操作           SC_ASSET_EDIT           ✓ ✓ · ·
-资产操作           SC_ASSET_DELETE         ✓ ✓ · ·
-展示与上架         SC_DISPLAY_EDIT         ✓ ✓ · ·
-展示与上架         SC_PUBLISH_SUBMIT       ✓ ✓ · ·
-展示与上架         SC_PUBLISH_MANAGE       ✓ ✓ · ·
-展示与上架         SC_PUBLISH_FEATURE      ✓ ✓ · ·
-审批               SC_APPROVAL_VIEW        ✓ · ✓ ·
-审批               SC_APPROVAL_HANDLE      ✓ · ✓ ·
-管理               SC_ADMIN_RULE           ✓ · · ·
+### 新增
+
+```
+src/mocks/operationsMetrics/
+  types.ts          // CustomMetric / MetricSnapshot / MetricRecord
+  mockData.ts       // 预置 5~6 个指标 + 30 天历史
+  service.ts        // listMetrics / createMetric / updateMetric / deleteMetric
+                    // listMetricRecords / getSnapshots
+                    // 含 latency 与可切换 error 模式
+
+src/pages/Operations/MetricsConfig/
+  index.tsx         // 列表页（Tab: 全部/可见/隐藏 + Table）
+  index.less
+  components/
+    MetricFormModal/index.tsx       // 520px 新增/编辑（FormModal 封装）
+    MetricRecordsDrawer/index.tsx   // 900px 历史记录抽屉（DetailDrawerWrapper）
+    MetricRecordsDrawer/index.less
+
+src/pages/Operations/BusinessOutcomes/components/CustomMetricsSection/
+  index.tsx         // 替换原"业务量统计"区块
+  index.less
 ```
 
-每个权限点描述照搬 L1 §4.1 表格。
+### 修改
+
+- `src/App.tsx`：注册路由 `/operations/metrics-config`
+- `src/components/layout/`（侧边栏配置）：在运营中心组下新增「业务指标配置」菜单项（Lucide `Gauge` 图标）
+- `src/pages/Operations/BusinessOutcomes/index.tsx`：删除"业务量统计"卡片（含 todayVolume/totalVolume/MoM、volumeTrend、typeShare 饼图、volumeRanking），替换为 `<CustomMetricsSection filter={filter} />`
+- `public/i18n/zh-CN.json` & `en.json`：新增 `operations.metricsConfig.*` 和 `operations.businessOutcomes.customMetrics.*` 文案
 
 ---
 
-## 三、文件改动
+## 三、数据模型（mock）
 
-### 1. `src/pages/SharingCenter/Admin/Permissions/index.tsx`（重写）
-- 移除旧 `GROUPS`（entity/items）与 `roles` 文本拼接
-- 新增 `PERMISSION_GROUPS`（5 类 × 12 点，含 i18n 描述 key）
-- 新增 `ROLE_TEMPLATES`（4 角色 + 绑定数组 + ARCH 映射 key）
-- 渲染顺序：Title → Banner → 权限点分组卡片 → 角色卡片 → 角色×权限矩阵 → 规则提示
-- 图标：`IconTickCircle`（Semi）表示绑定；表格首列固定列名
+```ts
+type MetricType = 'COUNTER' | 'ACCUMULATOR' | 'LATEST';
+type MetricOperator = 'SET' | 'INCREMENT' | 'ACCUMULATE' | 'LATEST';
 
-### 2. `src/pages/SharingCenter/Admin/Permissions/index.less`
-- 保留 `.entity-grid` 样式，重命名为 `.permission-groups`
-- 新增 `.role-grid`（4 列响应式，<900 视口降为 2 列）
-- `.matrix-section .semi-table-cell` 内 ✓ 居中
+interface CustomMetric {
+  id: string; code: string; displayName: string;
+  metricType: MetricType; unit?: string; description?: string;
+  visible: boolean; createdAt: string; updatedAt: string;
+  hasRecords: boolean;     // 计算属性，决定 type/unit 是否可改、是否可删
+}
+interface MetricSnapshot { metricId: string; currentValue: number | string; lastUpdatedAt: string; version: number; }
+interface MetricRecord {
+  id: string; metricId: string; executionId: string;
+  delta: number; value: number | string;
+  operator: MetricOperator; timestamp: string;
+}
+```
 
-### 3. `public/i18n/zh-CN.json` 与 `public/i18n/en.json` — `sharing.admin.permissions`
-- **改写**：`pageTitle`、`notice`
-- **新增**：
-  - `groups.{browse|operate|publish|approval|admin}` 五个分类标题
-  - `points.{SC_*}.label` 与 `points.{SC_*}.desc`（12 × 2）
-  - `roles.{admin|publisher|approver|consumer}.label`、`.summary`、`.archMapping`
-  - `sectionTitles.points` / `.roles` / `.matrix`
-  - `matrix.permission` 列名
-  - `rules.br002` / `rules.br003`
-- **删除**：`entities.*`、`entityTitle`、`roleTitle`、`col.{role|apa|permissions}`、`allPermissions`、旧 `roles.creator` 等冗余键
-
-### 4. 不动
-- 路由、菜单入口、`Permissions` 文件夹位置不改
-- 不引入新的 mock store（纯静态页）
+预置 6 个指标：`ORDER_COUNT(COUNTER,笔)`、`INVOICE_AMT(ACCUMULATOR,元)`、`CURR_STATUS(LATEST)`、`REFUND_COUNT(COUNTER,笔)`、`COST_SAVED(ACCUMULATOR,元)`、`LAST_BATCH(LATEST)`，配 30 天 MetricRecord 用于趋势。
 
 ---
 
-## 四、验收点
+## 四、业务指标配置页
 
-- [ ] 页面标题「权限点与角色」，Banner 文案含「12 个 `SC_*`」「APA AuthContext」
-- [ ] 5 张分类卡片共显示 12 个 `SC_*` Tag，每条带说明
-- [ ] 4 张角色卡片显示绑定权限点数（12/9/4/2）
-- [ ] 角色×权限矩阵 12 行 5 列，✓ 数与上表完全一致
-- [ ] 中英文切换无 missing key；旧 entity.* 键彻底移除
-- [ ] 1006px 视口下卡片不挤压、矩阵不出现横向滚动条溢出
+### 页面布局（沿用项目规范）
+
+- `Title heading={3}` 标题 + 顶部操作区：左 Tabs `全部/可见/隐藏`、320px 搜索框（按 code/displayName），右「+ 新增指标」按钮、刷新按钮
+- Semi UI `Table size="small"`，列：代码 / 展示名称 / 类型(Tag) / 单位 / 当前值（来自 snapshot）/ 最后更新 / 可见(Switch 直接切换 visible) / 操作（编辑 / 历史 / 删除）
+- 删除按钮：若 `hasRecords` 为 true → 禁用 + Tooltip "已有更新明细，不可删除"；否则 `Modal.confirm` 二次确认
+- 外置 `.list-pagination` 分页栏
+
+### 新增/编辑弹窗（MetricFormModal，520px）
+
+字段（顺序）：
+1. 指标代码 `code` — Input，正则 `^[A-Z][A-Z0-9_]*$`，长度 2~30。**编辑模式禁用**
+2. 展示名称 `displayName` — Input，最长 50，全局唯一
+3. 指标类型 `metricType` — Select（COUNTER/ACCUMULATOR/LATEST）。**编辑时若 `hasRecords` 则禁用 + 提示**
+4. 单位 `unit` — Input，最长 20。**编辑时若 `hasRecords` 则禁用**；LATEST 类型 unit 可空
+5. 描述 `description` — TextArea，最长 500
+6. 是否展示 `visible` — Switch，默认 true
+
+Semi UI Form 原生校验（`trigger=['blur','change']`），提交统一走 `service.createMetric / updateMetric`，唯一性冲突时表单标红。
+
+### 历史记录抽屉（MetricRecordsDrawer，900px maskless）
+
+- 顶部展示：指标代码、displayName、type Tag、当前值、最后更新时间
+- 上方折线图（ECharts，复用 BusinessOutcomes 调色）：30 天趋势（按天聚合 value）
+- 下方 Table：时间 / 操作 / 增量(Counter/Accumulator 显示，Latest 显示 "-") / 更新后值 / 执行ID（可点击占位）
+- 外置分页
+
+---
+
+## 五、业务成果看板「自定义指标」区块
+
+### 替换范围
+
+删除 `BusinessOutcomes/index.tsx` 中第 476~552 行的"业务量统计"卡片（含 `volumeOption`、`pieOption`、`volumeRanking` 相关 useMemo 及容器）。
+
+### 新区块（CustomMetricsSection）
+
+```
+┌─ 业务指标（自定义） ──── [管理指标 →] ──┐
+│ 顶部 KPI 网格（动态列数，最多 4 列/行）  │
+│   ┌──────────┐ ┌──────────┐            │
+│   │ 处理订单数 │ │ 发票金额  │ ...       │
+│   │ 125 笔    │ │ 38,500 元 │           │
+│   │ 较昨日+12 │ │ 较昨日+500│           │
+│   └──────────┘ └──────────┘            │
+│                                         │
+│ 详情区（按指标类型）：                   │
+│  - COUNTER/ACCUMULATOR：堆叠/折线趋势   │
+│  - LATEST：列表展示最新值与时间          │
+└─────────────────────────────────────────┘
+```
+
+要点：
+- 数据源 `service.listMetrics({ visible: true })` + 当前 snapshot + 最近 30 天 record
+- 顶部「管理指标 →」按钮直接 `navigate('/operations/metrics-config')`
+- 指标为 0 时：EmptyState（复用 `no-data.svg`），文案 "尚未配置业务指标"，CTA 跳转配置页
+- 趋势图：COUNTER/ACCUMULATOR 指标合并到一张多系列折线（每指标一条线，单位差异通过 tooltip 区分；超过 4 个指标默认只展示前 4，其余通过 Select 切换）
+- LATEST 指标独立卡片列表，展示 displayName / 当前值（字符串）/ lastUpdatedAt
+- `filter`（部门/分类/时间维度）仍传入，时间维度影响趋势区间；mock 内忽略 department/classification 过滤但保留入参
+
+---
+
+## 六、路由与导航
+
+- 新增路由：`/operations/metrics-config` → `<MetricsConfig />`
+- 侧边栏 `运营中心` 组添加菜单项「业务指标配置」（图标 `Gauge`，置于"业务成果看板"之后）
+- i18n key `nav.operations.metricsConfig`
+
+---
+
+## 七、技术细节
+
+- mock service 全部走 `setTimeout` 模拟 300~500ms 延迟
+- 唯一性校验：service 内部按 `code` / `displayName` 比对，冲突时 reject `{ code: 'DUPLICATE_CODE' | 'DUPLICATE_NAME' }`，组件按 code 翻译错误
+- `Toast.config({ theme: 'light' })`（项目已全局配置）；新增/编辑/删除成功后 Toast.success
+- 类型枚举的 Tag 颜色：COUNTER=blue，ACCUMULATOR=violet，LATEST=teal
+- 列表 visible 切换：直接调用 updateMetric，乐观更新 + 失败回滚
+- 不涉及后端、不涉及命令解析逻辑（文档明确属执行引擎范畴），仅在 mockData 中"伪造"已经被解析后的 snapshot/record
+
+---
+
+## 八、不在本轮范围
+
+- `APA_METRIC.XXX(...)` 命令在 Creator 流程编辑器中的预埋 UI
+- 真实的执行引擎命令解析、原子写入、乐观锁
+- 指标趋势的分钟级粒度（mock 按天聚合）
+- 指标 code 批量导入/导出
+- STORY-008/009 文档的废弃标记（属文档维护工作，不在代码侧）
+
+确认后回复"开始实施"即可。
