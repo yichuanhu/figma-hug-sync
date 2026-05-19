@@ -1,0 +1,40 @@
+.metrics-empty-state {
+  padding: 48px 0;
+  display: flex;
+  justify-content: center;
+
+  :global(.semi-empty-image) {
+    margin-bottom: 16px;
+  }
+
+  :global(.semi-empty-title) {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+    margin-bottom: 6px;
+  }
+
+  :global(.semi-empty-description) {
+    font-size: 13px;
+    color: var(--semi-color-text-2);
+    max-width: 420px;
+    line-height: 1.6;
+  }
+
+  :global(.semi-empty-footer) {
+    margin-top: 20px;
+  }
+
+  &.is-compact {
+    padding: 32px 0;
+
+    :global(.semi-empty-title) {
+      font-size: 14px;
+    }
+
+    :global(.semi-empty-description) {
+      font-size: 12px;
+      max-width: 360px;
+    }
+  }
+}
