@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Button, Tag, Empty, Spin } from '@douyinfe/semi-ui';
+import { Typography, Button, Tag } from '@douyinfe/semi-ui';
 import ReactECharts from 'echarts-for-react';
-import { ArrowRight, Gauge, RefreshCw, AlertTriangle } from 'lucide-react';
+import { ArrowRight, Plus, RefreshCw } from 'lucide-react';
 import {
   listMetrics,
   getAllRecords,
@@ -12,6 +12,8 @@ import {
 import type {
   CustomMetricWithSnapshot,
 } from '@/mocks/operationsMetrics/types';
+import MetricsEmptyState from '@/pages/Operations/MetricsConfig/components/MetricsEmptyState';
+import MetricsSkeleton from '@/pages/Operations/MetricsConfig/components/MetricsSkeleton';
 import './index.less';
 
 const { Text } = Typography;
