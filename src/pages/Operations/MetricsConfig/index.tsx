@@ -334,7 +334,7 @@ const MetricsConfig = () => {
               </Empty>
             ) : tab !== 'all' || debouncedKw ? (
               <Empty
-                image={<img src="/src/assets/empty-state/no-result.svg" alt="" style={{ width: 120 }} />}
+                image={<img src="" + noResultImg + "" alt="" style={{ width: 120 }} />}
                 title={t('metricsConfig.emptyFilterTitle')}
                 description={t('metricsConfig.emptyFilterDesc')}
                 style={{ padding: '42px 0' }}
@@ -350,7 +350,7 @@ const MetricsConfig = () => {
               </Empty>
             ) : (
               <Empty
-                image={<img src="/src/assets/empty-state/no-data.svg" alt="" style={{ width: 120 }} />}
+                image={<img src="" + noDataImg + "" alt="" style={{ width: 120 }} />}
                 title={t('metricsConfig.emptyTitle')}
                 description={t('metricsConfig.emptyDesc')}
                 style={{ padding: '42px 0' }}
