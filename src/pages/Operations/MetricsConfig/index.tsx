@@ -271,27 +271,7 @@ const MetricsConfig = () => {
       </Text>
 
       <div className="metrics-config-toolbar">
-        <FilterPopover
-          visible={filterPopoverVisible}
-          onVisibleChange={setFilterPopoverVisible}
-          sections={[
-            {
-              key: 'visible',
-              label: t('common.status'),
-              type: 'radio',
-              value: tab === 'all' ? null : tab,
-              options: [
-                { value: 'visible', label: t('metricsConfig.tabVisible') },
-                { value: 'hidden', label: t('metricsConfig.tabHidden') },
-              ],
-            },
-          ]}
-          onConfirm={(values) => {
-            const v = values.visible as VisibleFilter | null;
-            setTab(v ?? 'all');
-          }}
-        />
-        <div className="metrics-config-toolbar-right">
+        <div className="metrics-config-toolbar-left">
           <Input
             prefix={<Search size={14} strokeWidth={2} />}
             placeholder={t('metricsConfig.searchPlaceholder')}
@@ -300,6 +280,28 @@ const MetricsConfig = () => {
             showClear
             style={{ width: 320 }}
           />
+          <FilterPopover
+            visible={filterPopoverVisible}
+            onVisibleChange={setFilterPopoverVisible}
+            sections={[
+              {
+                key: 'visible',
+                label: t('common.status'),
+                type: 'radio',
+                value: tab === 'all' ? null : tab,
+                options: [
+                  { value: 'visible', label: t('metricsConfig.tabVisible') },
+                  { value: 'hidden', label: t('metricsConfig.tabHidden') },
+                ],
+              },
+            ]}
+            onConfirm={(values) => {
+              const v = values.visible as VisibleFilter | null;
+              setTab(v ?? 'all');
+            }}
+          />
+        </div>
+        <div className="metrics-config-toolbar-right">
           <Button
             icon={<RefreshCw size={14} strokeWidth={2} />}
             onClick={() => {
