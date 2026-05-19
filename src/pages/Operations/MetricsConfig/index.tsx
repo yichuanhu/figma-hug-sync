@@ -350,7 +350,7 @@ const MetricsConfig = () => {
               </Empty>
             ) : (
               <Empty
-                image={<img src="" + noDataImg + "" alt="" style={{ width: 120 }} />}
+                image={<img src={noDataImg} alt="" style={{ width: 120 }} />}
                 title={t('metricsConfig.emptyTitle')}
                 description={t('metricsConfig.emptyDesc')}
                 style={{ padding: '42px 0' }}
