@@ -11,6 +11,7 @@ import {
 } from '@/pages/Operations/mockData';
 import type { BusinessOutcomesFilter } from '@/pages/Operations/types';
 import MetricLabel from './components/MetricLabel';
+import CustomMetricsSection from './components/CustomMetricsSection';
 import './index.less';
 
 const { Title } = Typography;
@@ -473,83 +474,8 @@ const BusinessOutcomes = () => {
         </div>
       </div>
 
-      {/* 3. 业务量统计: KPI 3 卡 + 趋势 + 排行榜 */}
-      <div className="dashboard-card">
-        <div className="dashboard-card-header">
-          <span className="dashboard-card-title">{t('operations.businessOutcomes.volumeTrendTitle')}</span>
-        </div>
-        <div className="bo-kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-          <div className="bo-kpi-card">
-            <div className="bo-kpi-label">
-              <MetricLabel label={t('operations.businessOutcomes.todayVolume')} tip={t('operations.businessOutcomes.tips.todayVolume')} />
-            </div>
-            <div className="bo-kpi-value">{data.todayVolume.toLocaleString()}</div>
-            <div className="bo-kpi-sub">{t('operations.dashboard.count')}</div>
-          </div>
-          <div className="bo-kpi-card">
-            <div className="bo-kpi-label">
-              <MetricLabel label={t('operations.businessOutcomes.totalVolume')} tip={t('operations.businessOutcomes.tips.totalVolume')} />
-            </div>
-            <div className="bo-kpi-value">{data.totalVolume.toLocaleString()}</div>
-            <div className="bo-kpi-sub">{t('operations.dashboard.count')}</div>
-          </div>
-          <div className="bo-kpi-card">
-            <div className="bo-kpi-label">
-              <MetricLabel label={t('operations.businessOutcomes.volumeGrowthMoM')} tip={t('operations.businessOutcomes.tips.volumeGrowthMoM')} />
-            </div>
-            <div className="bo-kpi-value" style={{ color: data.volumeGrowthMoM >= 0 ? COLORS.success : COLORS.danger }}>
-              {data.volumeGrowthMoM >= 0 ? '+' : ''}{data.volumeGrowthMoM}%
-            </div>
-          </div>
-        </div>
-
-        <div className="bo-row cols-2" style={{ marginTop: 16 }}>
-          <div>
-            <div className="chart-subtitle">{t('operations.businessOutcomes.volumeTrendTitle')}</div>
-            <ReactECharts option={volumeOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
-          </div>
-          <div>
-            <div className="chart-subtitle">
-              <MetricLabel label={t('operations.businessOutcomes.typeShareTitle')} tip={t('operations.businessOutcomes.tips.typeShare')} />
-            </div>
-            <ReactECharts option={pieOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
-          </div>
-        </div>
-
-        <div style={{ marginTop: 16 }}>
-          <div className="bo-ranking-header">
-            <div className="chart-subtitle" style={{ marginBottom: 0 }}>
-              <MetricLabel label={t('operations.businessOutcomes.volumeRankingTitle')} tip={t('operations.businessOutcomes.tips.volumeRanking')} />
-            </div>
-            <div className="bo-ranking-controls">
-              <Tooltip content={rankSortDesc ? t('operations.businessOutcomes.rankSortDesc') : t('operations.businessOutcomes.rankSortAsc')}>
-                <Button
-                  icon={rankSortDesc
-                    ? <ArrowDownWideNarrow size={16} strokeWidth={2} />
-                    : <ArrowUpNarrowWide size={16} strokeWidth={2} />}
-                  onClick={() => setRankSortDesc(v => !v)}
-                />
-              </Tooltip>
-            </div>
-          </div>
-          <div className="bo-ranking-list">
-            {displayedRanking.length === 0 ? (
-              <div className="bo-ranking-empty">{t('operations.businessOutcomes.rankEmpty')}</div>
-            ) : displayedRanking.map((r, i) => (
-              <div key={r.name} className="bo-ranking-item">
-                <span className={`rank rank-${i + 1}`}>{i + 1}</span>
-                <div className="info">
-                  <div className="name">{r.name}</div>
-                  <div className="bar-track">
-                    <div className="bar-fill" style={{ width: `${(r.volume / rankMax) * 100}%` }} />
-                  </div>
-                </div>
-                <div className="value">{r.volume.toLocaleString()}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* 3. 自定义业务指标 (STORY-010 替换业务量统计) */}
+      <CustomMetricsSection />
 
       {/* 4. 节省工时: KPI 3 卡 (含人年) + 累计曲线 + 部门对比 */}
       <div className="dashboard-card">
