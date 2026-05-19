@@ -61,13 +61,18 @@ const MetricRecordsDrawer = ({ visible, metric, onClose }: Props) => {
       .finally(() => setLoading(false));
   }, [visible, metric, page, pageSize]);
 
+  const allRecords = useMemo(
+    () => (metric ? getAllRecords(metric.id) : []),
+    [metric, total],
+  );
+  const hasAnyRecords = allRecords.length > 0;
+
   const trendOption = useMemo(() => {
     if (!metric) return null;
     if (metric.metricType === 'LATEST') return null;
-    // 按日聚合 value（取每日最后值）
-    const all = getAllRecords(metric.id);
+    if (!hasAnyRecords) return null;
     const byDay = new Map<string, number>();
-    all.forEach((r) => {
+    allRecords.forEach((r) => {
       const day = r.timestamp.slice(0, 10);
       byDay.set(day, typeof r.value === 'number' ? r.value : 0);
     });
@@ -116,7 +121,7 @@ const MetricRecordsDrawer = ({ visible, metric, onClose }: Props) => {
         },
       ],
     };
-  }, [metric]);
+  }, [metric, allRecords, hasAnyRecords]);
 
   const columns = [
     {
