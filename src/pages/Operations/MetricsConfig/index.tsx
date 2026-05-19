@@ -5,8 +5,6 @@ import {
   Button,
   Table,
   Input,
-  Tabs,
-  TabPane,
   Tag,
   Switch,
   Tooltip,
@@ -14,6 +12,7 @@ import {
   Modal,
   Pagination,
 } from '@douyinfe/semi-ui';
+import FilterPopover from '@/components/FilterPopover';
 import { Plus, RefreshCw, Pencil, History as HistoryIcon, Trash2, Search } from 'lucide-react';
 import {
   listMetrics,
@@ -59,6 +58,7 @@ const MetricsConfig = () => {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [page, setPage] = useState(1);
+  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   const [pageSize, setPageSize] = useState(20);
 
   const [formVisible, setFormVisible] = useState(false);
@@ -271,11 +271,26 @@ const MetricsConfig = () => {
       </Text>
 
       <div className="metrics-config-toolbar">
-        <Tabs activeKey={tab} onChange={(k) => setTab(k as VisibleFilter)} type="line">
-          <TabPane tab={t('metricsConfig.tabAll')} itemKey="all" />
-          <TabPane tab={t('metricsConfig.tabVisible')} itemKey="visible" />
-          <TabPane tab={t('metricsConfig.tabHidden')} itemKey="hidden" />
-        </Tabs>
+        <FilterPopover
+          visible={filterPopoverVisible}
+          onVisibleChange={setFilterPopoverVisible}
+          sections={[
+            {
+              key: 'visible',
+              label: t('common.status'),
+              type: 'radio',
+              value: tab === 'all' ? null : tab,
+              options: [
+                { value: 'visible', label: t('metricsConfig.tabVisible') },
+                { value: 'hidden', label: t('metricsConfig.tabHidden') },
+              ],
+            },
+          ]}
+          onConfirm={(values) => {
+            const v = values.visible as VisibleFilter | null;
+            setTab(v ?? 'all');
+          }}
+        />
         <div className="metrics-config-toolbar-right">
           <Input
             prefix={<Search size={14} strokeWidth={2} />}
