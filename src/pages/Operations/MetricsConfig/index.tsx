@@ -56,6 +56,7 @@ const MetricsConfig = () => {
   const [debouncedKw, setDebouncedKw] = useState('');
   const [data, setData] = useState<CustomMetricWithSnapshot[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
 
@@ -78,11 +79,14 @@ const MetricsConfig = () => {
 
   const fetchData = async () => {
     setLoading(true);
+    setLoadError(false);
     try {
       const visible = tab === 'all' ? undefined : tab === 'visible';
       const list = await listMetrics({ visible, keyword: debouncedKw || undefined });
       setData(list);
     } catch (e) {
+      setLoadError(true);
+      setData([]);
       Toast.error(t('metricsConfig.loadFailed'));
     } finally {
       setLoading(false);
@@ -92,6 +96,14 @@ const MetricsConfig = () => {
   useEffect(() => {
     fetchData();
     setPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, debouncedKw]);
+
+  // 订阅 Mock 模式切换，自动重拉
+  useEffect(() => {
+    return subscribeMetricsMockMode(() => {
+      fetchData();
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, debouncedKw]);
 
