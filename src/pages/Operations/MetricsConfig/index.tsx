@@ -13,10 +13,8 @@ import {
   Toast,
   Modal,
   Pagination,
-  Spin,
-  Empty,
 } from '@douyinfe/semi-ui';
-import { Plus, RefreshCw, Pencil, History as HistoryIcon, Trash2, Search, AlertTriangle } from 'lucide-react';
+import { Plus, RefreshCw, Pencil, History as HistoryIcon, Trash2, Search } from 'lucide-react';
 import {
   listMetrics,
   deleteMetric,
@@ -31,8 +29,8 @@ import { MetricServiceError } from '@/mocks/operationsMetrics/types';
 import MetricFormModal from './components/MetricFormModal';
 import MetricRecordsDrawer from './components/MetricRecordsDrawer';
 import MetricsMockSwitcher from '@/components/MetricsMockSwitcher';
-import noDataImg from '@/assets/empty-state/no-data.svg';
-import noResultImg from '@/assets/empty-state/no-result.svg';
+import MetricsEmptyState from './components/MetricsEmptyState';
+import MetricsSkeleton from './components/MetricsSkeleton';
 import './index.less';
 
 const { Title, Text } = Typography;
