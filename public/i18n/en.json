@@ -215,6 +215,84 @@
     "sharingApprovalLevels": "Approval Levels",
     "sharingPermissions": "Permissions & Roles"
   },
+  "metricsConfig": {
+    "title": "Business Metrics",
+    "description": "Manage metadata of custom business metrics displayed on the Business Outcomes dashboard.",
+    "tabAll": "All",
+    "tabVisible": "Visible",
+    "tabHidden": "Hidden",
+    "searchPlaceholder": "Search code / name",
+    "createMetric": "New Metric",
+    "empty": "No business metrics yet",
+    "loadFailed": "Failed to load metrics, please retry",
+    "viewRecords": "View History",
+    "toggleVisibleSuccess": "Visibility updated",
+    "toggleVisibleFailed": "Failed to update visibility",
+    "deleteConfirmTitle": "Delete Business Metric",
+    "deleteConfirmContent": "Delete metric \"{{name}}\"? This cannot be undone.",
+    "deleteSuccess": "Deleted",
+    "deleteFailed": "Delete failed",
+    "cannotDeleteHasRecords": "This metric has historical records and cannot be deleted",
+    "createSuccess": "Created successfully",
+    "updateSuccess": "Saved successfully",
+    "createTitle": "New Business Metric",
+    "editTitle": "Edit Business Metric",
+    "lockedHint": "This metric already has historical records; type and unit can no longer be changed.",
+    "type": {
+      "COUNTER": "Counter",
+      "ACCUMULATOR": "Accumulator",
+      "LATEST": "Latest"
+    },
+    "col": {
+      "code": "Code",
+      "displayName": "Name",
+      "type": "Type",
+      "unit": "Unit",
+      "currentValue": "Current Value",
+      "lastUpdated": "Last Updated",
+      "visible": "Visible"
+    },
+    "field": {
+      "code": "Metric Code",
+      "codePlaceholder": "e.g. ORDER_COUNT (uppercase letters, digits, underscores)",
+      "codeRequired": "Please enter metric code",
+      "codePattern": "Only uppercase letters, digits and underscores; must start with a letter",
+      "codeLength": "Length must be 2-30 characters",
+      "displayName": "Display Name",
+      "displayNamePlaceholder": "e.g. Order Count",
+      "displayNameRequired": "Please enter display name",
+      "metricType": "Metric Type",
+      "metricTypeRequired": "Please select a metric type",
+      "unit": "Unit",
+      "unitPlaceholder": "e.g. orders, USD, % (optional)",
+      "description": "Description",
+      "descriptionPlaceholder": "Brief business meaning of this metric (optional)",
+      "visible": "Show on Business Outcomes dashboard"
+    },
+    "err": {
+      "duplicateCode": "This metric code already exists",
+      "duplicateName": "This display name already exists",
+      "typeUnitLocked": "Type and unit cannot be modified once records exist",
+      "network": "Network error, please try again later"
+    },
+    "records": {
+      "title": "Metric History",
+      "trendTitle": "Trend",
+      "tableTitle": "Records",
+      "empty": "No historical records",
+      "time": "Time",
+      "operator": "Operation",
+      "delta": "Delta",
+      "value": "Value",
+      "executionId": "Execution ID",
+      "op": {
+        "SET": "Set",
+        "INCREMENT": "Increment",
+        "ACCUMULATE": "Accumulate",
+        "LATEST": "Update"
+      }
+    }
+  },
   "credential": {
     "title": "Credential Management",
     "description": "Manage credentials used by processes",
@@ -4117,7 +4195,19 @@
       "estVsActualY": "Actual (h)",
       "diagonal": "Reference y=x",
       "activeDeveloperCount": "Active Developers",
-      "timeoutProcessCount": "Timeout Processes"
+      "timeoutProcessCount": "Timeout Processes",
+      "customMetrics": {
+        "title": "Custom Business Metrics",
+        "manage": "Manage Metrics",
+        "emptyTitle": "No visible business metrics",
+        "emptyDesc": "Add and enable metrics on the Business Metrics configuration page",
+        "goConfig": "Go to Config",
+        "totalCount": "{{count}} metrics in total",
+        "updatedAt": "Updated at {{time}}",
+        "trendTitle": "Last 30 Days Trend",
+        "trendLimit": "Only the first 4 numeric metrics are shown in the trend chart",
+        "latestTitle": "Latest Value"
+      }
     },
     "costManagement": {
       "title": "Cost Management",

@@ -172,6 +172,84 @@
     "sharingApprovalLevels": "审批层级配置",
     "sharingPermissions": "权限点与角色"
   },
+  "metricsConfig": {
+    "title": "业务指标配置",
+    "description": "管理自定义业务指标的元数据，用于在业务成果看板中展示业务侧的关键数值。",
+    "tabAll": "全部",
+    "tabVisible": "已启用",
+    "tabHidden": "已隐藏",
+    "searchPlaceholder": "搜索指标编码 / 名称",
+    "createMetric": "新建指标",
+    "empty": "暂无业务指标",
+    "loadFailed": "加载指标失败，请重试",
+    "viewRecords": "查看历史记录",
+    "toggleVisibleSuccess": "可见性已更新",
+    "toggleVisibleFailed": "更新可见性失败",
+    "deleteConfirmTitle": "删除业务指标",
+    "deleteConfirmContent": "确定删除指标「{{name}}」吗？删除后无法恢复。",
+    "deleteSuccess": "删除成功",
+    "deleteFailed": "删除失败",
+    "cannotDeleteHasRecords": "该指标已有历史数据，无法删除",
+    "createSuccess": "创建成功",
+    "updateSuccess": "保存成功",
+    "createTitle": "新建业务指标",
+    "editTitle": "编辑业务指标",
+    "lockedHint": "该指标已有历史数据，类型与单位不可再修改",
+    "type": {
+      "COUNTER": "计数器",
+      "ACCUMULATOR": "累加值",
+      "LATEST": "最新值"
+    },
+    "col": {
+      "code": "指标编码",
+      "displayName": "指标名称",
+      "type": "类型",
+      "unit": "单位",
+      "currentValue": "当前值",
+      "lastUpdated": "最近更新",
+      "visible": "看板可见"
+    },
+    "field": {
+      "code": "指标编码",
+      "codePlaceholder": "如 ORDER_COUNT，仅支持大写字母、数字与下划线",
+      "codeRequired": "请输入指标编码",
+      "codePattern": "仅支持大写字母、数字与下划线，且需以字母开头",
+      "codeLength": "长度需在 2-30 个字符之间",
+      "displayName": "指标名称",
+      "displayNamePlaceholder": "如 订单数量",
+      "displayNameRequired": "请输入指标名称",
+      "metricType": "指标类型",
+      "metricTypeRequired": "请选择指标类型",
+      "unit": "单位",
+      "unitPlaceholder": "如 单、元、%（可选）",
+      "description": "描述",
+      "descriptionPlaceholder": "简要说明该指标的业务含义（可选）",
+      "visible": "在业务成果看板展示"
+    },
+    "err": {
+      "duplicateCode": "该指标编码已存在",
+      "duplicateName": "该指标名称已存在",
+      "typeUnitLocked": "已有历史数据，无法修改类型或单位",
+      "network": "网络异常，请稍后重试"
+    },
+    "records": {
+      "title": "指标历史记录",
+      "trendTitle": "趋势图",
+      "tableTitle": "数据明细",
+      "empty": "暂无历史数据",
+      "time": "时间",
+      "operator": "操作",
+      "delta": "变化量",
+      "value": "结果值",
+      "executionId": "执行 ID",
+      "op": {
+        "SET": "设置",
+        "INCREMENT": "累加",
+        "ACCUMULATE": "累计",
+        "LATEST": "更新"
+      }
+    }
+  },
   "credential": {
     "title": "凭据管理",
     "description": "管理流程使用的各类凭据信息",
@@ -3487,7 +3565,19 @@
       "estVsActualY": "实际工时(h)",
       "diagonal": "参考线 y=x",
       "activeDeveloperCount": "活跃开发者数",
-      "timeoutProcessCount": "超时流程数"
+      "timeoutProcessCount": "超时流程数",
+      "customMetrics": {
+        "title": "自定义业务指标",
+        "manage": "管理指标",
+        "emptyTitle": "暂无可见的业务指标",
+        "emptyDesc": "请前往业务指标配置页面添加并开启指标",
+        "goConfig": "前往配置",
+        "totalCount": "共 {{count}} 项指标",
+        "updatedAt": "更新于 {{time}}",
+        "trendTitle": "近 30 天趋势",
+        "trendLimit": "仅展示前 4 个数值型指标的趋势",
+        "latestTitle": "最新数值"
+      }
     },
     "costManagement": {
       "title": "成本管理",
