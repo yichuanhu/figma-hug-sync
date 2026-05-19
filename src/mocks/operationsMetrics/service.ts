@@ -21,18 +21,42 @@ import {
   MetricType,
 } from './types';
 
-let MOCK_MODE: MetricsMockMode = 'ready';
+const MODE_STORAGE_KEY = 'metricsMockMode';
+
+const readPersistedMode = (): MetricsMockMode => {
+  if (typeof window === 'undefined') return 'ready';
+  const v = window.localStorage.getItem(MODE_STORAGE_KEY);
+  return v === 'error' || v === 'slow' || v === 'ready' ? v : 'ready';
+};
+
+let MOCK_MODE: MetricsMockMode = readPersistedMode();
 
 const { metrics: METRICS, snapshots: SNAPSHOTS, records: RECORDS } = buildInitialData();
 
+const listeners = new Set<(mode: MetricsMockMode) => void>();
+
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
-const latency = () => sleep(280 + Math.random() * 200);
+const latency = () => {
+  if (MOCK_MODE === 'slow') return sleep(1800 + Math.random() * 800);
+  return sleep(280 + Math.random() * 200);
+};
 const guard = () => {
   if (MOCK_MODE === 'error') throw new MetricServiceError('NETWORK', '网络异常');
 };
 
+export const getMetricsMockMode = (): MetricsMockMode => MOCK_MODE;
+
+export const subscribeMetricsMockMode = (fn: (m: MetricsMockMode) => void): (() => void) => {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+};
+
 export const setMetricsMockMode = (mode: MetricsMockMode) => {
   MOCK_MODE = mode;
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(MODE_STORAGE_KEY, mode);
+  }
+  listeners.forEach((fn) => fn(mode));
   // eslint-disable-next-line no-console
   console.info(`[metrics mock] mode = ${mode}`);
 };

@@ -41,7 +41,7 @@ export interface MetricRecord {
 }
 
 /** Mock 运行模式（用于演示 ready/error） */
-export type MetricsMockMode = 'ready' | 'error';
+export type MetricsMockMode = 'ready' | 'slow' | 'error';
 
 /** 服务端错误码 */
 export type MetricServiceErrorCode =
