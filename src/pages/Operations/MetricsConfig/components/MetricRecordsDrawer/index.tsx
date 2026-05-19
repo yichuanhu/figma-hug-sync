@@ -220,10 +220,26 @@ const MetricRecordsDrawer = ({ visible, metric, onClose }: Props) => {
               columns={columns}
               size="small"
               pagination={false}
-              empty={<Empty description={t('metricsConfig.records.empty')} />}
+              empty={
+                <Empty
+                  image={<img src={noDataImg} alt="" style={{ width: 110 }} />}
+                  title={t('metricsConfig.records.emptyTitle')}
+                  description={t('metricsConfig.records.emptyDesc')}
+                  style={{ padding: '32px 0' }}
+                />
+              }
               style={{ marginTop: 8 }}
             />
           </Spin>
+          {!loading && !hasAnyRecords && (
+            <Banner
+              type="info"
+              fullMode={false}
+              closeIcon={null}
+              description={t('metricsConfig.records.deletableHint')}
+              style={{ marginTop: 12 }}
+            />
+          )}
           {total > 0 && (
             <div className="list-pagination">
               <Text type="tertiary">
