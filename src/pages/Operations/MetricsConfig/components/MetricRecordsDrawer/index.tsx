@@ -221,11 +221,11 @@ const MetricRecordsDrawer = ({ visible, metric, onClose }: Props) => {
               size="small"
               pagination={false}
               empty={
-                <Empty
-                  image={<img src={noDataImg} alt="" style={{ width: 110 }} />}
+                <MetricsEmptyState
+                  variant="empty"
+                  compact
                   title={t('metricsConfig.records.emptyTitle')}
                   description={t('metricsConfig.records.emptyDesc')}
-                  style={{ padding: '32px 0' }}
                 />
               }
               style={{ marginTop: 8 }}
