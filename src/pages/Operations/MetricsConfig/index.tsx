@@ -313,9 +313,27 @@ const MetricsConfig = () => {
           size="small"
           pagination={false}
           empty={
-            <div style={{ padding: '42px 0', textAlign: 'center', color: 'var(--semi-color-text-2)' }}>
-              {t('metricsConfig.empty')}
-            </div>
+            loadError ? (
+              <Empty
+                image={<AlertTriangle size={48} strokeWidth={1.5} color="var(--semi-color-danger)" />}
+                title={t('metricsConfig.loadFailedTitle')}
+                description={t('metricsConfig.loadFailedDesc')}
+                style={{ padding: '32px 0' }}
+              >
+                <Button
+                  theme="solid"
+                  type="primary"
+                  icon={<RefreshCw size={14} strokeWidth={2} />}
+                  onClick={fetchData}
+                >
+                  {t('common.refresh')}
+                </Button>
+              </Empty>
+            ) : (
+              <div style={{ padding: '42px 0', textAlign: 'center', color: 'var(--semi-color-text-2)' }}>
+                {t('metricsConfig.empty')}
+              </div>
+            )
           }
         />
       </Spin>
