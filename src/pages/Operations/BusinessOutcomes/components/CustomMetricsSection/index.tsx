@@ -140,6 +140,34 @@ const CustomMetricsSection = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="dashboard-card custom-metrics-section">
+        <div className="dashboard-card-header">
+          <span className="dashboard-card-title">
+            {t('operations.businessOutcomes.customMetrics.title')}
+          </span>
+        </div>
+        <Empty
+          image={<AlertTriangle size={48} strokeWidth={1.5} color="var(--semi-color-danger)" />}
+          title={t('operations.businessOutcomes.customMetrics.errorTitle')}
+          description={t('operations.businessOutcomes.customMetrics.errorDesc')}
+          style={{ padding: '32px 0' }}
+        >
+          <Button
+            theme="solid"
+            type="primary"
+            icon={<RefreshCw size={14} strokeWidth={2} />}
+            onClick={fetchData}
+          >
+            {t('common.refresh')}
+          </Button>
+        </Empty>
+      </div>
+    );
+  }
+
+
   if (metrics.length === 0) {
     return (
       <div className="dashboard-card custom-metrics-section">
