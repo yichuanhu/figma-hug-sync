@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Tag, Table, Pagination, Spin, Empty } from '@douyinfe/semi-ui';
+import { Typography, Tag, Table, Pagination, Spin, Empty, Banner } from '@douyinfe/semi-ui';
 import ReactECharts from 'echarts-for-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import {
@@ -13,6 +13,7 @@ import type {
   MetricRecord,
   MetricType,
 } from '@/mocks/operationsMetrics/types';
+import noDataImg from '@/assets/empty-state/no-data.svg';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -60,13 +61,18 @@ const MetricRecordsDrawer = ({ visible, metric, onClose }: Props) => {
       .finally(() => setLoading(false));
   }, [visible, metric, page, pageSize]);
 
+  const allRecords = useMemo(
+    () => (metric ? getAllRecords(metric.id) : []),
+    [metric, total],
+  );
+  const hasAnyRecords = allRecords.length > 0;
+
   const trendOption = useMemo(() => {
     if (!metric) return null;
     if (metric.metricType === 'LATEST') return null;
-    // 按日聚合 value（取每日最后值）
-    const all = getAllRecords(metric.id);
+    if (!hasAnyRecords) return null;
     const byDay = new Map<string, number>();
-    all.forEach((r) => {
+    allRecords.forEach((r) => {
       const day = r.timestamp.slice(0, 10);
       byDay.set(day, typeof r.value === 'number' ? r.value : 0);
     });
@@ -115,7 +121,7 @@ const MetricRecordsDrawer = ({ visible, metric, onClose }: Props) => {
         },
       ],
     };
-  }, [metric]);
+  }, [metric, allRecords, hasAnyRecords]);
 
   const columns = [
     {
@@ -214,10 +220,26 @@ const MetricRecordsDrawer = ({ visible, metric, onClose }: Props) => {
               columns={columns}
               size="small"
               pagination={false}
-              empty={<Empty description={t('metricsConfig.records.empty')} />}
+              empty={
+                <Empty
+                  image={<img src={noDataImg} alt="" style={{ width: 110 }} />}
+                  title={t('metricsConfig.records.emptyTitle')}
+                  description={t('metricsConfig.records.emptyDesc')}
+                  style={{ padding: '32px 0' }}
+                />
+              }
               style={{ marginTop: 8 }}
             />
           </Spin>
+          {!loading && !hasAnyRecords && (
+            <Banner
+              type="info"
+              fullMode={false}
+              closeIcon={null}
+              description={t('metricsConfig.records.deletableHint')}
+              style={{ marginTop: 12 }}
+            />
+          )}
           {total > 0 && (
             <div className="list-pagination">
               <Text type="tertiary">
