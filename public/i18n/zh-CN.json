@@ -3487,7 +3487,19 @@
       "estVsActualY": "实际工时(h)",
       "diagonal": "参考线 y=x",
       "activeDeveloperCount": "活跃开发者数",
-      "timeoutProcessCount": "超时流程数"
+      "timeoutProcessCount": "超时流程数",
+      "customMetrics": {
+        "title": "自定义业务指标",
+        "manage": "管理指标",
+        "emptyTitle": "暂无可见的业务指标",
+        "emptyDesc": "请前往业务指标配置页面添加并开启指标",
+        "goConfig": "前往配置",
+        "totalCount": "共 {{count}} 项指标",
+        "updatedAt": "更新于 {{time}}",
+        "trendTitle": "近 30 天趋势",
+        "trendLimit": "仅展示前 4 个数值型指标的趋势",
+        "latestTitle": "最新数值"
+      }
     },
     "costManagement": {
       "title": "成本管理",
