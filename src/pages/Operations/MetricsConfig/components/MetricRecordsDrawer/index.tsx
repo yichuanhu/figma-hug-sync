@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Tag, Table, Pagination, Spin, Empty, Banner } from '@douyinfe/semi-ui';
+import { Typography, Tag, Table, Pagination, Spin, Banner } from '@douyinfe/semi-ui';
 import ReactECharts from 'echarts-for-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import {
@@ -13,7 +13,7 @@ import type {
   MetricRecord,
   MetricType,
 } from '@/mocks/operationsMetrics/types';
-import noDataImg from '@/assets/empty-state/no-data.svg';
+import MetricsEmptyState from '../MetricsEmptyState';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -221,11 +221,11 @@ const MetricRecordsDrawer = ({ visible, metric, onClose }: Props) => {
               size="small"
               pagination={false}
               empty={
-                <Empty
-                  image={<img src={noDataImg} alt="" style={{ width: 110 }} />}
+                <MetricsEmptyState
+                  variant="empty"
+                  compact
                   title={t('metricsConfig.records.emptyTitle')}
                   description={t('metricsConfig.records.emptyDesc')}
-                  style={{ padding: '32px 0' }}
                 />
               }
               style={{ marginTop: 8 }}

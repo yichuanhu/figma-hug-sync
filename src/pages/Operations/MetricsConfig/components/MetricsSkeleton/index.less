@@ -1,0 +1,49 @@
+.metrics-skeleton {
+  width: 100%;
+
+  &-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 16px 12px;
+
+    .skeleton-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+  }
+
+  &-dashboard {
+    .skeleton-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .skeleton-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+
+      @media (max-width: 1280px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .skeleton-kpi-card {
+      padding: 16px;
+      background-color: var(--semi-color-fill-0);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .skeleton-chart {
+      padding: 8px 0;
+    }
+  }
+}
