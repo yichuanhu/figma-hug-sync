@@ -295,6 +295,14 @@
       }
     }
   },
+  "metricsMock": {
+    "title": "Mock Debugger",
+    "tooltip": "Switch metrics mock mode",
+    "ready": "Normal",
+    "slow": "Slow (~2s)",
+    "error": "Error",
+    "hint": "All metrics requests refetch on switch. Mode is persisted across reloads."
+  },
   "credential": {
     "title": "Credential Management",
     "description": "Manage credentials used by processes",

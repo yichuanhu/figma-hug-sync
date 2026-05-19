@@ -252,6 +252,14 @@
       }
     }
   },
+  "metricsMock": {
+    "title": "Mock 调试器",
+    "tooltip": "切换业务指标 Mock 模式",
+    "ready": "正常",
+    "slow": "慢速 (~2s)",
+    "error": "错误",
+    "hint": "切换后所有指标请求会自动重拉，刷新页面保留模式"
+  },
   "credential": {
     "title": "凭据管理",
     "description": "管理流程使用的各类凭据信息",
