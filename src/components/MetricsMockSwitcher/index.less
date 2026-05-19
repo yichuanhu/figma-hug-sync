@@ -1,0 +1,98 @@
+.metrics-mock-switcher {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 999;
+
+  .mock-toggle-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--semi-color-bg-2);
+    color: var(--semi-color-text-1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.18s ease;
+    &:hover {
+      transform: translateY(-1px);
+    }
+    &.mode-error {
+      background: var(--semi-color-danger);
+      color: #fff;
+    }
+    &.mode-slow {
+      background: var(--semi-color-warning);
+      color: #fff;
+    }
+  }
+
+  .mock-panel {
+    width: 220px;
+    background: var(--semi-color-bg-2);
+    border: 1px solid var(--semi-color-border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    padding: 12px;
+  }
+
+  .mock-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--semi-color-text-0);
+    margin-bottom: 10px;
+  }
+  .mock-panel-close {
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--semi-color-text-2);
+    &:hover {
+      color: var(--semi-color-text-0);
+    }
+  }
+
+  .mock-panel-options {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .mock-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--semi-color-border);
+    background: var(--semi-color-bg-0);
+    color: var(--semi-color-text-1);
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.18s ease;
+    &:hover {
+      border-color: var(--semi-color-primary-light-default);
+    }
+    &.active {
+      border-color: var(--semi-color-primary);
+      background: var(--semi-color-primary-light-default);
+      color: var(--semi-color-primary);
+      font-weight: 500;
+    }
+  }
+
+  .mock-panel-hint {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--semi-color-text-2);
+    line-height: 1.4;
+  }
+}
