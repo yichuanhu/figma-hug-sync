@@ -306,69 +306,67 @@ const MetricsConfig = () => {
         </div>
       </div>
 
-      <Spin spinning={loading}>
+      {loading ? (
+        <MetricsSkeleton variant="list" />
+      ) : loadError ? (
+        <MetricsEmptyState
+          variant="error"
+          title={t('metricsConfig.loadFailedTitle')}
+          description={t('metricsConfig.loadFailedDesc')}
+        >
+          <Button
+            theme="solid"
+            type="primary"
+            icon={<RefreshCw size={14} strokeWidth={2} />}
+            onClick={fetchData}
+          >
+            {t('common.retry')}
+          </Button>
+        </MetricsEmptyState>
+      ) : data.length === 0 ? (
+        tab !== 'all' || debouncedKw ? (
+          <MetricsEmptyState
+            variant="filter"
+            title={t('metricsConfig.emptyFilterTitle')}
+            description={t('metricsConfig.emptyFilterDesc')}
+          >
+            <Button
+              onClick={() => {
+                setKeyword('');
+                setTab('all');
+              }}
+            >
+              {t('metricsConfig.clearFilter')}
+            </Button>
+          </MetricsEmptyState>
+        ) : (
+          <MetricsEmptyState
+            variant="empty"
+            title={t('metricsConfig.emptyTitle')}
+            description={t('metricsConfig.emptyDesc')}
+          >
+            <Button
+              theme="solid"
+              type="primary"
+              icon={<Plus size={14} strokeWidth={2} />}
+              onClick={() => {
+                setEditing(null);
+                setFormVisible(true);
+              }}
+            >
+              {t('metricsConfig.createMetric')}
+            </Button>
+          </MetricsEmptyState>
+        )
+      ) : (
         <Table
           rowKey="id"
           dataSource={pagedData}
           columns={columns}
           size="small"
           pagination={false}
-          empty={
-            loadError ? (
-              <Empty
-                image={<AlertTriangle size={48} strokeWidth={1.5} color="var(--semi-color-danger)" />}
-                title={t('metricsConfig.loadFailedTitle')}
-                description={t('metricsConfig.loadFailedDesc')}
-                style={{ padding: '42px 0' }}
-              >
-                <Button
-                  theme="solid"
-                  type="primary"
-                  icon={<RefreshCw size={14} strokeWidth={2} />}
-                  onClick={fetchData}
-                >
-                  {t('common.refresh')}
-                </Button>
-              </Empty>
-            ) : tab !== 'all' || debouncedKw ? (
-              <Empty
-                image={<img src={noResultImg} alt="" style={{ width: 120 }} />}
-                title={t('metricsConfig.emptyFilterTitle')}
-                description={t('metricsConfig.emptyFilterDesc')}
-                style={{ padding: '42px 0' }}
-              >
-                <Button
-                  onClick={() => {
-                    setKeyword('');
-                    setTab('all');
-                  }}
-                >
-                  {t('metricsConfig.clearFilter')}
-                </Button>
-              </Empty>
-            ) : (
-              <Empty
-                image={<img src={noDataImg} alt="" style={{ width: 120 }} />}
-                title={t('metricsConfig.emptyTitle')}
-                description={t('metricsConfig.emptyDesc')}
-                style={{ padding: '42px 0' }}
-              >
-                <Button
-                  theme="solid"
-                  type="primary"
-                  icon={<Plus size={14} strokeWidth={2} />}
-                  onClick={() => {
-                    setEditing(null);
-                    setFormVisible(true);
-                  }}
-                >
-                  {t('metricsConfig.createMetric')}
-                </Button>
-              </Empty>
-            )
-          }
         />
-      </Spin>
+      )}
 
       {data.length > 0 && (
         <div className="list-pagination">
