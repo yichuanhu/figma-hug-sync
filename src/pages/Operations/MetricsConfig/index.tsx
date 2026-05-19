@@ -5,8 +5,6 @@ import {
   Button,
   Table,
   Input,
-  Tabs,
-  TabPane,
   Tag,
   Switch,
   Tooltip,
@@ -14,6 +12,7 @@ import {
   Modal,
   Pagination,
 } from '@douyinfe/semi-ui';
+import FilterPopover from '@/components/FilterPopover';
 import { Plus, RefreshCw, Pencil, History as HistoryIcon, Trash2, Search } from 'lucide-react';
 import {
   listMetrics,
