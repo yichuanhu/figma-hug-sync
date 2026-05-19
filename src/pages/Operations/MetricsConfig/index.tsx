@@ -270,11 +270,26 @@ const MetricsConfig = () => {
       </Text>
 
       <div className="metrics-config-toolbar">
-        <Tabs activeKey={tab} onChange={(k) => setTab(k as VisibleFilter)} type="line">
-          <TabPane tab={t('metricsConfig.tabAll')} itemKey="all" />
-          <TabPane tab={t('metricsConfig.tabVisible')} itemKey="visible" />
-          <TabPane tab={t('metricsConfig.tabHidden')} itemKey="hidden" />
-        </Tabs>
+        <FilterPopover
+          visible={filterPopoverVisible}
+          onVisibleChange={setFilterPopoverVisible}
+          sections={[
+            {
+              key: 'visible',
+              label: t('common.status'),
+              type: 'radio',
+              value: tab === 'all' ? null : tab,
+              options: [
+                { value: 'visible', label: t('metricsConfig.tabVisible') },
+                { value: 'hidden', label: t('metricsConfig.tabHidden') },
+              ],
+            },
+          ]}
+          onConfirm={(values) => {
+            const v = values.visible as VisibleFilter | null;
+            setTab(v ?? 'all');
+          }}
+        />
         <div className="metrics-config-toolbar-right">
           <Input
             prefix={<Search size={14} strokeWidth={2} />}
