@@ -319,7 +319,7 @@ const MetricsConfig = () => {
                 image={<AlertTriangle size={48} strokeWidth={1.5} color="var(--semi-color-danger)" />}
                 title={t('metricsConfig.loadFailedTitle')}
                 description={t('metricsConfig.loadFailedDesc')}
-                style={{ padding: '32px 0' }}
+                style={{ padding: '42px 0' }}
               >
                 <Button
                   theme="solid"
@@ -330,10 +330,41 @@ const MetricsConfig = () => {
                   {t('common.refresh')}
                 </Button>
               </Empty>
+            ) : tab !== 'all' || debouncedKw ? (
+              <Empty
+                image={<img src="/src/assets/empty-state/no-result.svg" alt="" style={{ width: 120 }} />}
+                title={t('metricsConfig.emptyFilterTitle')}
+                description={t('metricsConfig.emptyFilterDesc')}
+                style={{ padding: '42px 0' }}
+              >
+                <Button
+                  onClick={() => {
+                    setKeyword('');
+                    setTab('all');
+                  }}
+                >
+                  {t('metricsConfig.clearFilter')}
+                </Button>
+              </Empty>
             ) : (
-              <div style={{ padding: '42px 0', textAlign: 'center', color: 'var(--semi-color-text-2)' }}>
-                {t('metricsConfig.empty')}
-              </div>
+              <Empty
+                image={<img src="/src/assets/empty-state/no-data.svg" alt="" style={{ width: 120 }} />}
+                title={t('metricsConfig.emptyTitle')}
+                description={t('metricsConfig.emptyDesc')}
+                style={{ padding: '42px 0' }}
+              >
+                <Button
+                  theme="solid"
+                  type="primary"
+                  icon={<Plus size={14} strokeWidth={2} />}
+                  onClick={() => {
+                    setEditing(null);
+                    setFormVisible(true);
+                  }}
+                >
+                  {t('metricsConfig.createMetric')}
+                </Button>
+              </Empty>
             )
           }
         />
