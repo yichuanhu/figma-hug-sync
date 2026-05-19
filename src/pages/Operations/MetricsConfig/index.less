@@ -1,0 +1,43 @@
+.metrics-config-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+
+  .metrics-config-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+
+    .semi-tabs-bar {
+      border-bottom: none;
+    }
+
+    &-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+
+  .metrics-config-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .list-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 4px;
+
+    &-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+  }
+}
