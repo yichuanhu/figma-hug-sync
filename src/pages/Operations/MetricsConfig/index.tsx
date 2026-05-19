@@ -30,6 +30,7 @@ import type {
 import { MetricServiceError } from '@/mocks/operationsMetrics/types';
 import MetricFormModal from './components/MetricFormModal';
 import MetricRecordsDrawer from './components/MetricRecordsDrawer';
+import MetricsMockSwitcher from '@/components/MetricsMockSwitcher';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -381,6 +382,8 @@ const MetricsConfig = () => {
         metric={drawerMetric}
         onClose={() => setDrawerVisible(false)}
       />
+
+      <MetricsMockSwitcher />
     </div>
   );
 };
