@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Button, Tag, Empty, Spin } from '@douyinfe/semi-ui';
 import ReactECharts from 'echarts-for-react';
-import { ArrowRight, Gauge } from 'lucide-react';
+import { ArrowRight, Gauge, RefreshCw, AlertTriangle } from 'lucide-react';
 import {
   listMetrics,
   getAllRecords,
+  subscribeMetricsMockMode,
 } from '@/mocks/operationsMetrics/service';
 import type {
   CustomMetricWithSnapshot,
@@ -29,14 +30,28 @@ const CustomMetricsSection = () => {
   const navigate = useNavigate();
   const [metrics, setMetrics] = useState<CustomMetricWithSnapshot[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     setLoading(true);
+    setError(null);
     listMetrics({ visible: true })
-      .then(setMetrics)
-      .catch(() => setMetrics([]))
+      .then((list) => {
+        setMetrics(list);
+        setError(null);
+      })
+      .catch(() => {
+        setMetrics([]);
+        setError('NETWORK');
+      })
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetchData();
+    // 切换 mock 模式时自动重拉
+    return subscribeMetricsMockMode(() => fetchData());
+  }, [fetchData]);
 
   const numericMetrics = useMemo(
     () => metrics.filter((m) => m.metricType !== 'LATEST'),
@@ -124,6 +139,34 @@ const CustomMetricsSection = () => {
       </div>
     );
   }
+
+  if (error) {
+    return (
+      <div className="dashboard-card custom-metrics-section">
+        <div className="dashboard-card-header">
+          <span className="dashboard-card-title">
+            {t('operations.businessOutcomes.customMetrics.title')}
+          </span>
+        </div>
+        <Empty
+          image={<AlertTriangle size={48} strokeWidth={1.5} color="var(--semi-color-danger)" />}
+          title={t('operations.businessOutcomes.customMetrics.errorTitle')}
+          description={t('operations.businessOutcomes.customMetrics.errorDesc')}
+          style={{ padding: '32px 0' }}
+        >
+          <Button
+            theme="solid"
+            type="primary"
+            icon={<RefreshCw size={14} strokeWidth={2} />}
+            onClick={fetchData}
+          >
+            {t('common.refresh')}
+          </Button>
+        </Empty>
+      </div>
+    );
+  }
+
 
   if (metrics.length === 0) {
     return (

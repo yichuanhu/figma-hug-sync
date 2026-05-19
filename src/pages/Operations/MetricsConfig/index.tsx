@@ -14,12 +14,14 @@ import {
   Modal,
   Pagination,
   Spin,
+  Empty,
 } from '@douyinfe/semi-ui';
-import { Plus, RefreshCw, Pencil, History as HistoryIcon, Trash2, Search } from 'lucide-react';
+import { Plus, RefreshCw, Pencil, History as HistoryIcon, Trash2, Search, AlertTriangle } from 'lucide-react';
 import {
   listMetrics,
   deleteMetric,
   updateMetric,
+  subscribeMetricsMockMode,
 } from '@/mocks/operationsMetrics/service';
 import type {
   CustomMetricWithSnapshot,
@@ -28,6 +30,7 @@ import type {
 import { MetricServiceError } from '@/mocks/operationsMetrics/types';
 import MetricFormModal from './components/MetricFormModal';
 import MetricRecordsDrawer from './components/MetricRecordsDrawer';
+import MetricsMockSwitcher from '@/components/MetricsMockSwitcher';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -54,6 +57,7 @@ const MetricsConfig = () => {
   const [debouncedKw, setDebouncedKw] = useState('');
   const [data, setData] = useState<CustomMetricWithSnapshot[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
 
@@ -76,11 +80,14 @@ const MetricsConfig = () => {
 
   const fetchData = async () => {
     setLoading(true);
+    setLoadError(false);
     try {
       const visible = tab === 'all' ? undefined : tab === 'visible';
       const list = await listMetrics({ visible, keyword: debouncedKw || undefined });
       setData(list);
     } catch (e) {
+      setLoadError(true);
+      setData([]);
       Toast.error(t('metricsConfig.loadFailed'));
     } finally {
       setLoading(false);
@@ -90,6 +97,14 @@ const MetricsConfig = () => {
   useEffect(() => {
     fetchData();
     setPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, debouncedKw]);
+
+  // 订阅 Mock 模式切换，自动重拉
+  useEffect(() => {
+    return subscribeMetricsMockMode(() => {
+      fetchData();
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, debouncedKw]);
 
@@ -299,9 +314,27 @@ const MetricsConfig = () => {
           size="small"
           pagination={false}
           empty={
-            <div style={{ padding: '42px 0', textAlign: 'center', color: 'var(--semi-color-text-2)' }}>
-              {t('metricsConfig.empty')}
-            </div>
+            loadError ? (
+              <Empty
+                image={<AlertTriangle size={48} strokeWidth={1.5} color="var(--semi-color-danger)" />}
+                title={t('metricsConfig.loadFailedTitle')}
+                description={t('metricsConfig.loadFailedDesc')}
+                style={{ padding: '32px 0' }}
+              >
+                <Button
+                  theme="solid"
+                  type="primary"
+                  icon={<RefreshCw size={14} strokeWidth={2} />}
+                  onClick={fetchData}
+                >
+                  {t('common.refresh')}
+                </Button>
+              </Empty>
+            ) : (
+              <div style={{ padding: '42px 0', textAlign: 'center', color: 'var(--semi-color-text-2)' }}>
+                {t('metricsConfig.empty')}
+              </div>
+            )
           }
         />
       </Spin>
@@ -349,6 +382,8 @@ const MetricsConfig = () => {
         metric={drawerMetric}
         onClose={() => setDrawerVisible(false)}
       />
+
+      <MetricsMockSwitcher />
     </div>
   );
 };

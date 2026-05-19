@@ -12,6 +12,7 @@ import {
 import type { BusinessOutcomesFilter } from '@/pages/Operations/types';
 import MetricLabel from './components/MetricLabel';
 import CustomMetricsSection from './components/CustomMetricsSection';
+import MetricsMockSwitcher from '@/components/MetricsMockSwitcher';
 import './index.less';
 
 const { Title } = Typography;
@@ -560,6 +561,7 @@ const BusinessOutcomes = () => {
         </div>
       </div>
       </Spin>
+      <MetricsMockSwitcher />
     </div>
   );
 };
