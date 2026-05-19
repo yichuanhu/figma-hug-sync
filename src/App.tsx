@@ -57,6 +57,7 @@ import EmptyStateOptionsPreview from "@/pages/DevPreview/EmptyStateOptionsPrevie
 import ROIAnalysis from "@/pages/Operations/ROIAnalysis";
 import ResourceEfficiency from "@/pages/Operations/ResourceEfficiency";
 import BusinessOutcomes from "@/pages/Operations/BusinessOutcomes";
+import MetricsConfig from "@/pages/Operations/MetricsConfig";
 import PlatformOperations from "@/pages/Operations/PlatformOperations";
 import CostManagement from "@/pages/Operations/CostManagement";
 // Requirements & Other
@@ -188,6 +189,7 @@ const App = () => {
           <Route path="/operations/roi-analysis" element={<ROIAnalysis />} />
           <Route path="/operations/resource-efficiency" element={<ResourceEfficiency />} />
           <Route path="/operations/business-outcomes" element={<BusinessOutcomes />} />
+          <Route path="/operations/metrics-config" element={<MetricsConfig />} />
           <Route path="/operations/platform-operations" element={<PlatformOperations />} />
           <Route path="/operations/cost-management" element={<CostManagement />} />
           <Route path="/maintenance" element={<Navigate to="/maintenance/config" replace />} />
