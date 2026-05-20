@@ -15,6 +15,7 @@ import {
   Row,
   Col,
   Space,
+  Popover,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Building2 } from 'lucide-react';
@@ -31,8 +32,10 @@ import {
 } from './mockData';
 import {
   getBoundDepartmentCountMap,
+  listDepartmentsByTemplate,
   subscribeBindingChange,
 } from '@/mocks/departmentApprovalFlowBinding';
+import { getDepartmentName } from '@/mocks/departmentData';
 import './index.less';
 
 const { Title, Text } = Typography;
