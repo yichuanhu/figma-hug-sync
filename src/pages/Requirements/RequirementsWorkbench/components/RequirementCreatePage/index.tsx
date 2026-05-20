@@ -28,6 +28,7 @@ import {
   publishChange,
   deleteRequirement,
 } from '../../mockData';
+import { getActiveSchemes, getSchemeById } from '../../schemeConfig';
 import type {
   SchemeField,
   SchemeFieldDependsOn,
@@ -151,7 +152,33 @@ const RequirementCreatePage = () => {
     setDirty(true);
   };
 
-  const activeScheme = useMemo(() => getActiveScheme(), []);
+  // 可选方案列表（多激活）
+  const activeSchemes = useMemo(() => {
+    const list = getActiveSchemes();
+    // 编辑态：若需求绑定的方案不在 active 列表里，也加入下拉
+    if (isEdit && editData?.scheme_id) {
+      const bound = getSchemeById(editData.scheme_id);
+      if (bound && !list.some((s) => s.id === bound.id)) {
+        return [bound, ...list];
+      }
+    }
+    return list;
+  }, [isEdit, editData]);
+
+  const [selectedSchemeId, setSelectedSchemeId] = useState<string | undefined>(() => {
+    if (isEdit && editData?.scheme_id) return editData.scheme_id;
+    const first = getActiveSchemes()[0];
+    return first?.id;
+  });
+
+  useEffect(() => {
+    if (isEdit && editData?.scheme_id) setSelectedSchemeId(editData.scheme_id);
+  }, [isEdit, editData]);
+
+  const activeScheme = useMemo(() => {
+    if (selectedSchemeId) return getSchemeById(selectedSchemeId);
+    return getActiveScheme();
+  }, [selectedSchemeId]);
 
   const priorityOptions = useMemo(
     () => [
@@ -272,6 +299,10 @@ const RequirementCreatePage = () => {
     try {
       if (fields.length > 0) await formApi.validate(fields);
       if (currentStep === 0) {
+        if (!selectedSchemeId) {
+          Toast.warning('请选择需求方案');
+          return false;
+        }
         if (!departmentValue) {
           Toast.warning(t('requirements.form.departmentRequired'));
           return false;
@@ -335,7 +366,7 @@ const RequirementCreatePage = () => {
     if (cleanedPositionCosts.length > 0) {
       form_data.position_costs = cleanedPositionCosts;
     }
-    const submitValues = { ...values, form_data };
+    const submitValues = { ...values, form_data, scheme_id: selectedSchemeId };
     Object.keys(form_data).forEach((k) => {
       if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
     });
@@ -408,6 +439,11 @@ const RequirementCreatePage = () => {
 
   const handleSubmit = async () => {
     if (!formApi) return;
+    if (!selectedSchemeId) {
+      setCurrentStep(0);
+      Toast.warning('请选择需求方案');
+      return;
+    }
     if (!departmentValue) {
       setCurrentStep(0);
       Toast.warning(t('requirements.form.departmentRequired'));
@@ -572,6 +608,32 @@ const RequirementCreatePage = () => {
           >
             {/* Step 0 */}
             <div style={{ display: currentStep === 0 ? 'block' : 'none' }}>
+              <Form.Slot label={{ text: '需求方案', required: true }}>
+                <Select
+                  placeholder={
+                    activeSchemes.length === 0
+                      ? '当前无激活的需求方案，请先在「需求模板」中激活'
+                      : '请选择需求方案'
+                  }
+                  value={selectedSchemeId}
+                  onChange={(v) => {
+                    setSelectedSchemeId(v as string);
+                    setDirty(true);
+                  }}
+                  optionList={activeSchemes.map((s) => ({
+                    value: s.id,
+                    label: `${s.name} · v${s.version}`,
+                  }))}
+                  disabled={isPostProjectEdit || activeSchemes.length === 0}
+                  style={{ width: '100%' }}
+                  showClear={false}
+                />
+                {activeScheme?.description && (
+                  <Text type="tertiary" size="small" style={{ marginTop: 6, display: 'block' }}>
+                    {activeScheme.description}
+                  </Text>
+                )}
+              </Form.Slot>
               <Form.Input
                 field="title"
                 label={t('requirements.form.titleLabel')}

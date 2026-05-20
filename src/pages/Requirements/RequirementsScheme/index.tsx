@@ -8,6 +8,7 @@ import EmptyState from '@/components/EmptyState';
 import {
   fetchSchemes,
   activateScheme,
+  deactivateScheme,
   deleteScheme,
   createSchemeDraft,
   cloneSchemeAsDraft,
@@ -63,6 +64,21 @@ const RequirementsScheme = () => {
       onOk: async () => {
         await activateScheme(s.id);
         Toast.success(t('requirements.scheme.activateSuccess'));
+        load();
+      },
+    });
+  };
+
+  const handleDeactivate = (s: RequirementScheme) => {
+    Modal.confirm({
+      title: '取消激活方案？',
+      content: `取消激活后，「${s.name}」将不再出现在创建需求的方案选择中。`,
+      okText: '取消激活',
+      okButtonProps: { type: 'warning' },
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        await deactivateScheme(s.id);
+        Toast.success('已取消激活');
         load();
       },
     });
@@ -155,6 +171,11 @@ const RequirementsScheme = () => {
                         {s.status !== 'active' && (
                           <Dropdown.Item icon={<CheckCircle size={14} />} onClick={(e) => { e.stopPropagation(); handleActivate(s); }}>
                             {t('requirements.scheme.activate')}
+                          </Dropdown.Item>
+                        )}
+                        {s.status === 'active' && (
+                          <Dropdown.Item icon={<CheckCircle size={14} />} onClick={(e) => { e.stopPropagation(); handleDeactivate(s); }}>
+                            取消激活
                           </Dropdown.Item>
                         )}
                         {!s.is_preset && s.status === 'active' && (
