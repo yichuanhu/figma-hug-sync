@@ -80,3 +80,32 @@
 
   // 复用 .workflow-builder / .workflow-section 样式（已在 SchemeBuilder/index.less 中定义为全局类）
 }
+
+.approval-flow-section-card {
+  background: var(--semi-color-bg-0);
+  border: 1px solid var(--semi-color-border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+    font-size: 14px;
+  }
+
+  &-body {
+    padding-top: 4px;
+  }
+}
