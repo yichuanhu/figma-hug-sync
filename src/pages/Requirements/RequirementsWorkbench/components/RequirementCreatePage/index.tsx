@@ -572,23 +572,23 @@ const RequirementCreatePage = () => {
           />
           <Title heading={3} className="title">{t('requirements.form.createTitle')}</Title>
         </div>
-        <div style={{ padding: '80px 0' }}>
+        <div style={{ padding: '40px 0' }}>
           <EmptyState
             variant="noData"
-            description={
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ marginBottom: 8, fontSize: 14, color: 'var(--semi-color-text-0)' }}>
-                  当前部门没有生效的需求模板
-                </div>
+            description="当前部门没有生效的需求模板"
+            footer={
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
                 <Text type="tertiary" size="small">
                   请联系管理员在「需求模板」中为「{getDepartmentName(MOCK_CURRENT_USER.department_id)}」配置适用方案
                 </Text>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <Button onClick={() => navigate('/requirements/list')}>返回需求列表</Button>
+                  <Button theme="solid" type="primary" onClick={() => navigate('/requirements/scheme')}>
+                    前往需求模板管理
+                  </Button>
+                </div>
               </div>
             }
-            actions={[
-              { label: '返回需求列表', onClick: () => navigate('/requirements/list') },
-              { label: '前往需求模板管理', type: 'primary', onClick: () => navigate('/requirements/scheme') },
-            ]}
           />
         </div>
       </div>
