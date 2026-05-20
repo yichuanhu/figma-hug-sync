@@ -152,7 +152,33 @@ const RequirementCreatePage = () => {
     setDirty(true);
   };
 
-  const activeScheme = useMemo(() => getActiveScheme(), []);
+  // 可选方案列表（多激活）
+  const activeSchemes = useMemo(() => {
+    const list = getActiveSchemes();
+    // 编辑态：若需求绑定的方案不在 active 列表里，也加入下拉
+    if (isEdit && editData?.scheme_id) {
+      const bound = getSchemeById(editData.scheme_id);
+      if (bound && !list.some((s) => s.id === bound.id)) {
+        return [bound, ...list];
+      }
+    }
+    return list;
+  }, [isEdit, editData]);
+
+  const [selectedSchemeId, setSelectedSchemeId] = useState<string | undefined>(() => {
+    if (isEdit && editData?.scheme_id) return editData.scheme_id;
+    const first = getActiveSchemes()[0];
+    return first?.id;
+  });
+
+  useEffect(() => {
+    if (isEdit && editData?.scheme_id) setSelectedSchemeId(editData.scheme_id);
+  }, [isEdit, editData]);
+
+  const activeScheme = useMemo(() => {
+    if (selectedSchemeId) return getSchemeById(selectedSchemeId);
+    return getActiveScheme();
+  }, [selectedSchemeId]);
 
   const priorityOptions = useMemo(
     () => [
