@@ -7,10 +7,10 @@ import {
   advanceApprovalFlow,
   withdrawRequirement,
   resubmitRequirement,
-  useSchemeFlags,
+  resolveRuntimeFlagsByDepartment,
   MOCK_CURRENT_USER_ID,
 } from '../../mockData';
-import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
+import ResubmitDialog from '../ResubmitDialog';
 
 const { Text } = Typography;
 
@@ -22,42 +22,30 @@ interface ApprovalSectionProps {
 
 const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionProps) => {
   const { t } = useTranslation();
-  const { hasApproval, hasAssessment } = useSchemeFlags();
+  // STORY-016：以需求归属部门为准解析跳过策略
+  const runtimeFlags = resolveRuntimeFlagsByDepartment(data.owning_department_id);
+  const { hasApproval } = runtimeFlags;
   const [reason, setReason] = useState('');
   const [submitting, setSubmitting] = useState<'approve' | 'reject' | 'withdraw' | 'resubmit' | null>(null);
+  const [resubmitVisible, setResubmitVisible] = useState(false);
 
   const isCreator = data.creatorId === MOCK_CURRENT_USER_ID;
 
   // ===== REJECTED / WITHDRAWN：仅显示「重新提交」 =====
   if (data.status === 'REJECTED' || data.status === 'WITHDRAWN') {
     if (!isCreator) return null;
-    const handleResubmit = () => {
-      Modal.confirm({
-        title: hasApproval
-          ? t('requirements.detail.resubmitConfirmTitle')
-          : t('requirements.detail.submitDirectConfirmTitle'),
-        content: hasApproval
-          ? t('requirements.detail.resubmitConfirmContent')
-          : buildSubmitConfirmContent(false, hasAssessment, t),
-        okText: t('requirements.detail.resubmit'),
-        cancelText: t('common.cancel'),
-        onOk: async () => {
-          setSubmitting('resubmit');
-          try {
-            await resubmitRequirement(data.id);
-            Toast.success(
-              hasApproval
-                ? t('requirements.detail.resubmitSuccess')
-                : t('requirements.detail.submitDirectSuccess'),
-            );
-            onRefresh?.();
-          } catch (e) {
-            Toast.error((e as Error).message);
-          } finally {
-            setSubmitting(null);
-          }
-        },
-      });
+    const handleResubmit = async (changeReason: string) => {
+      setSubmitting('resubmit');
+      try {
+        await resubmitRequirement(data.id, changeReason);
+        Toast.success(hasApproval ? '已重新提交，进入新一轮审批' : '已重新提交');
+        setResubmitVisible(false);
+        onRefresh?.();
+      } catch (e) {
+        Toast.error((e as Error).message);
+      } finally {
+        setSubmitting(null);
+      }
     };
     return (
       <>
@@ -70,11 +58,19 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
             style={{ height: 32 }}
             icon={<Send size={16} strokeWidth={2} />}
             loading={submitting === 'resubmit'}
-            onClick={handleResubmit}
+            onClick={() => setResubmitVisible(true)}
           >
             {t('requirements.detail.resubmit')}
           </Button>
         </div>
+        <ResubmitDialog
+          visible={resubmitVisible}
+          requirementTitle={data.title}
+          needsApproval={hasApproval}
+          loading={submitting === 'resubmit'}
+          onCancel={() => setResubmitVisible(false)}
+          onConfirm={handleResubmit}
+        />
       </>
     );
   }

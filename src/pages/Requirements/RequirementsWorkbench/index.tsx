@@ -45,6 +45,7 @@ import { statusConfigV2, legacyStatusMap, statusOptionsV2 } from './statusConfig
 
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
 import WorkspacePickerModal from './components/RequirementDetailDrawer/WorkspacePickerModal';
+import ResubmitDialog from './components/ResubmitDialog';
 import { findWorkspaceByRequirementId } from '../RequirementsProjects/mockData';
 import StatusDot from './components/StatusDot';
 import TitleCell from './components/TitleCell';
@@ -232,31 +233,25 @@ const RequirementsWorkbench = () => {
   };
 
   // 重新提交（REJECTED / WITHDRAWN）—— 文案与目标状态由当前模版标志驱动
+  // 重新提交（REJECTED/WITHDRAWN + 提交人）
+  const [resubmitTarget, setResubmitTarget] = useState<RequirementItem | null>(null);
+  const [resubmitLoading, setResubmitLoading] = useState(false);
   const handleResubmit = (record: RequirementItem) => {
-    const resubmitLabel = t('requirements.detail.resubmit');
-    Modal.confirm({
-      title: hasApproval
-        ? t('requirements.detail.resubmitConfirmTitle')
-        : t('requirements.detail.submitDirectConfirmTitle'),
-      content: hasApproval
-        ? t('requirements.detail.resubmitConfirmContent')
-        : buildSubmitConfirmContent(false, hasAssessment, t),
-      okText: resubmitLabel,
-      cancelText: t('common.cancel'),
-      onOk: async () => {
-        try {
-          await resubmitRequirement(record.id);
-          loadData();
-          Toast.success(
-            hasApproval
-              ? t('requirements.detail.resubmitSuccess')
-              : t('requirements.detail.submitDirectSuccess'),
-          );
-        } catch (err) {
-          Toast.error((err as Error).message);
-        }
-      },
-    });
+    setResubmitTarget(record);
+  };
+  const handleResubmitConfirm = async (changeReason: string) => {
+    if (!resubmitTarget) return;
+    setResubmitLoading(true);
+    try {
+      await resubmitRequirement(resubmitTarget.id, changeReason);
+      Toast.success(hasApproval ? '已重新提交，进入新一轮审批' : '已重新提交');
+      setResubmitTarget(null);
+      loadData();
+    } catch (err) {
+      Toast.error((err as Error).message);
+    } finally {
+      setResubmitLoading(false);
+    }
   };
 
   // 撤回（PENDING_APPROVAL + 提交人）
@@ -800,6 +795,14 @@ const RequirementsWorkbench = () => {
           setPickerRecord(null);
           loadData();
         }}
+      />
+      <ResubmitDialog
+        visible={!!resubmitTarget}
+        requirementTitle={resubmitTarget?.title}
+        needsApproval={hasApproval}
+        loading={resubmitLoading}
+        onCancel={() => setResubmitTarget(null)}
+        onConfirm={handleResubmitConfirm}
       />
     </div>
   );

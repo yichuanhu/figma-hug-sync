@@ -31,11 +31,12 @@
 - [x] 侧栏新增条目 `requirementsDeptApprovalBinding` + zh-CN/en i18n
 - [ ] 方案构建器移除审批流绑定 UI（移到 Batch 3 一起处理，与运行时跳过逻辑一并改）
 
-### Batch 3 — 提交/审批/评估运行时
-- 提交逻辑改造：按部门查模板，三种跳过路径
-- round 概念入 ApprovalRecord / AssessmentRecord（mock + types）
-- ApprovalSection / TechnicalAssessmentSection 按 round 折叠
-- Resubmit 弹窗：变更说明必填 ≥ 10 字符，写 ChangeLog(`RESUBMIT`)
+### Batch 3 — 提交/审批/评估运行时（本轮） ✅
+- [x] `resolveSubmittedStatus(deptId)` / `resolvePostApprovalStatus(deptId)` 接入「部门审批流绑定」；新增 `resolveRuntimeFlagsByDepartment` 暴露三种跳过路径
+- [x] `RequirementItem.round`、`ApprovalRecord.round`、`AssessmentRecord.round`、`ApprovalHistoryEntry.round` 全部补齐
+- [x] `resubmitRequirement(id, changeReason)`：必填 ≥10 字、`round +1`、写入 `changeType='RESUBMIT'` 的 ChangeLog
+- [x] 新组件 `ResubmitDialog`（520 Modal，实时字数校验）取代旧 `Modal.confirm`；ApprovalSection、Workbench 列表行操作均接入
+- [ ] 详情页按 round 折叠展示历史轮次（移至 Batch 5 与「创建流程」一起做）
 
 ### Batch 4 — 创建表单与方案
 - 创建需求表单顶部「需求方案」下拉（从所有 is_active 方案中选）

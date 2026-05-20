@@ -367,6 +367,8 @@ export interface ApprovalRecord {
   status: ApprovalActionStatus;
   comment?: string;
   acted_at?: string;
+  /** STORY-006：所属审批轮次（resubmit 后 +1，原历史按 round 折叠展示） */
+  round?: number;
 }
 
 /** [活动记录] 一次评估打分的留痕（含维度分、档位、总分），不属于需求本体。 */
@@ -383,6 +385,8 @@ export interface AssessmentRecord {
   total_score: number;
   comment?: string;
   acted_at: string;
+  /** STORY-006：所属评估轮次（与 ApprovalRecord.round 同步） */
+  round?: number;
 }
 
 /** [活动记录] 需求版本变更引用（指向 snapshot），不属于需求本体。 */
@@ -468,6 +472,8 @@ export interface RequirementItem {
 
   /** 当前版本号（编辑即 +1） */
   version?: number;
+  /** STORY-006：当前审批/评估轮次；首次提交为 1，每次 resubmit 后 +1 */
+  round?: number;
 
   // ===== 旧字段（兼容旧弹窗与抽屉，新代码请勿使用） =====
   involvedTech?: ('UI_AUTOMATION' | 'ADP')[];
@@ -616,6 +622,8 @@ export interface ApprovalHistoryEntry {
   action: ApprovalHistoryAction;
   comment?: string;
   timestamp: string;
+  /** STORY-006：所属审批轮次（与 ApprovalRecord.round 同步） */
+  round?: number;
 }
 export type LinkedProcessStatus = 'DEVELOPING' | 'TESTING' | 'PENDING' | 'ONLINE' | 'FAILED';
 export interface LinkedProcess {
@@ -695,6 +703,7 @@ export interface RequirementListResponse {
 /** 变更日志类型枚举（'CONTENT' 为旧版默认） */
 export type RequirementChangeType =
   | 'CONTENT'
+  | 'RESUBMIT'
   | 'DEV_SCHEME_DOC_UPLOADED'
   | 'DEV_SCHEME_DOC_DELETED';
 
