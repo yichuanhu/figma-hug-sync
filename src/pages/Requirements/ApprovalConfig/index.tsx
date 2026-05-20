@@ -79,9 +79,15 @@ const ApprovalConfigPage = () => {
   };
 
   const handleActivate = (f: ApprovalFlowTemplate) => {
+    const deptCount = (f.applicable_department_ids ?? []).length;
+    if (deptCount === 0) {
+      Toast.warning('请先在审批流模板中配置「适用部门」，启用时至少选择 1 个部门');
+      goEdit(f);
+      return;
+    }
     Modal.confirm({
       title: '启用审批流',
-      content: `确认启用「${f.name}」？启用后可在该模板的「适用部门」中分配具体部门。`,
+      content: `确认启用「${f.name}」？启用后该流程将对所选部门的需求生效。`,
       okText: '启用',
       cancelText: t('common.cancel'),
       onOk: async () => {
