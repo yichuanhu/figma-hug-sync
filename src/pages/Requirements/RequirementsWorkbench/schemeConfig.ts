@@ -190,15 +190,9 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     code: 'RPA-STAT',
     name: 'RPA 统计表标准模版',
     version: '1.0.0',
-    description: '基于《RPA 统计表》模板设计的标准化需求采集模版，提交后跳过审批与评估，直接进入待立项状态。',
-    status: 'inactive',
-    is_preset: true,
-    meta: {
-      code: 'RPA-STAT',
-      name: 'RPA 统计表标准模版',
-      category: 'RPA',
-      scenario: '集团 RPA 需求统一采集',
-      description: '对齐《RPA 统计表》字段；无审批、无评估，提交即进入待立项',
+    description: '基于《RPA 统计表》模板设计的标准化需求采集模版，提交后跳过审批与评估，直接进入待开发状态。',
+... 
+      description: '对齐《RPA 统计表》字段；无审批、无评估，提交即进入待开发',
     },
     custom_fields: [
       { key: 'requirement_description', label: '需求描述', type: 'textarea', required: true, validation: { maxLength: 2000 }, ui_width: 'full', description: '描述需求背景、目标与范围' },
