@@ -156,7 +156,7 @@ const DepartmentApprovalBinding = () => {
           </div>
           <div className="dept-approval-binding-tree-pane-body">
             <Tree
-              treeData={treeFiltered as unknown as Tree['props']['treeData']}
+              treeData={treeFiltered as any}
               value={selectedDept}
               onChange={(v) => setSelectedDept(v as string)}
               defaultExpandAll
