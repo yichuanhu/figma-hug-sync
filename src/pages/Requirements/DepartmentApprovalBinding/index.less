@@ -1,0 +1,100 @@
+.dept-approval-binding {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  &-header {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+
+    .title { margin-bottom: 8px; }
+  }
+
+  &-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    gap: 16px;
+    overflow: hidden;
+  }
+
+  &-tree-pane {
+    width: 320px;
+    flex-shrink: 0;
+    border: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    background: var(--semi-color-bg-2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--semi-color-border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    &-body {
+      flex: 1;
+      overflow: auto;
+      padding: 8px;
+    }
+  }
+
+  &-detail-pane {
+    flex: 1;
+    border: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    background: var(--semi-color-bg-2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--semi-color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      .dept-path { color: var(--semi-color-text-2); font-size: 12px; margin-top: 2px; }
+    }
+
+    &-body {
+      flex: 1;
+      overflow: auto;
+      padding: 20px;
+    }
+  }
+
+  &-binding-card {
+    border: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    padding: 16px;
+    background: var(--semi-color-bg-0);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+
+    .meta { flex: 1; min-width: 0; }
+    .meta-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .actions { display: flex; gap: 8px; flex-shrink: 0; }
+  }
+
+  &-empty-binding {
+    border: 1px dashed var(--semi-color-border);
+    border-radius: 8px;
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--semi-color-text-2);
+  }
+
+  &-summary {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--semi-color-border);
+  }
+}
