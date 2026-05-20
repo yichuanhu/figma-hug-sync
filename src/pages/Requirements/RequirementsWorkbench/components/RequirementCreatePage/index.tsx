@@ -12,9 +12,12 @@ import {
   Spin,
   useFormState,
 } from '@douyinfe/semi-ui';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
-import { Select, InputNumber } from '@douyinfe/semi-ui';
+import { ArrowLeft, Plus, Trash2, Building2 } from 'lucide-react';
+import { Select, InputNumber, Banner } from '@douyinfe/semi-ui';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import EmptyState from '@/components/EmptyState';
+import { getSchemeIdByDepartment, subscribeSchemeBindingChange } from '@/mocks/departmentSchemeBinding';
+import { getDepartmentName } from '@/mocks/departmentData';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import {
