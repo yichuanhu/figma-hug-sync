@@ -69,6 +69,21 @@ const RequirementsScheme = () => {
     });
   };
 
+  const handleDeactivate = (s: RequirementScheme) => {
+    Modal.confirm({
+      title: '取消激活方案？',
+      content: `取消激活后，「${s.name}」将不再出现在创建需求的方案选择中。`,
+      okText: '取消激活',
+      okButtonProps: { type: 'warning' },
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        await deactivateScheme(s.id);
+        Toast.success('已取消激活');
+        load();
+      },
+    });
+  };
+
   const handleDelete = (s: RequirementScheme) => {
     Modal.confirm({
       title: t('requirements.scheme.deleteTitle'),
