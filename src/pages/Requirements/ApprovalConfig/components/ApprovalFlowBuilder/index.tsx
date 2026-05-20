@@ -100,6 +100,7 @@ const ApprovalFlowBuilderPage = () => {
       }
     }
     try {
+      const deptIds = draft.applicable_department_ids ?? [];
       const updated = await updateApprovalFlow(draft.id, {
         name: draft.name,
         code: draft.code,
@@ -108,10 +109,18 @@ const ApprovalFlowBuilderPage = () => {
         assessors: draft.assessors,
         value_model: draft.value_model,
         complexity_model: draft.complexity_model,
+        applicable_department_ids: deptIds,
       });
+      // 同步部门绑定表
+      const result = setBindingsForTemplate(draft.id, deptIds);
+      const overriddenCount = Object.keys(result.overridden).length;
       setDraft(updated);
       setDirty(false);
-      Toast.success('已保存');
+      if (overriddenCount > 0) {
+        Toast.success(`已保存，其中 ${overriddenCount} 个部门已从其他审批流改绑至本模板`);
+      } else {
+        Toast.success('已保存');
+      }
     } catch (e) {
       Toast.error((e as Error).message);
     }
