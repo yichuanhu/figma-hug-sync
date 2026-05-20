@@ -796,6 +796,14 @@ const RequirementsWorkbench = () => {
           loadData();
         }}
       />
+      <ResubmitDialog
+        visible={!!resubmitTarget}
+        requirementTitle={resubmitTarget?.title}
+        needsApproval={hasApproval}
+        loading={resubmitLoading}
+        onCancel={() => setResubmitTarget(null)}
+        onConfirm={handleResubmitConfirm}
+      />
     </div>
   );
 };
