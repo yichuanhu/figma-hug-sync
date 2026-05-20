@@ -1,79 +1,102 @@
-# 需求中心 v4 改造执行计划
+# 需求中心 v5 文档变更适配方案
 
-> 对齐 STORY-001 / 003 / 006 / 007 / 009 / 013 / 016 / 017 / 018 / 019 的 v4 规范。
-> 用户已确认：直接改代码 + 预览；独立菜单「部门审批流绑定」；全量重命名「待立项→待开发」。
+## 一、变更要点（来自上传的故事文档）
 
-## 改造范围与对应 Story
+| Story | v5 关键变更 |
+|---|---|
+| STORY-016 v5 | 审批流模板编辑页新增 **"适用部门"多选** 字段，保存模板时同步写入 `department_approval_flow_binding`；**取消独立的"部门审批流绑定"菜单/页面** |
+| STORY-001 / 013 v5 | 需求模板（Scheme）新增 **"适用部门"多选**，保存时同步写入 `department_scheme_binding`；列表展示"适用部门数量" |
+| STORY-003 v5 | 创建需求时 **不再手动选模板**，按用户所属部门自动匹配；部门未绑定方案 → 阻止创建，提示「当前部门没有生效的需求模板」 |
+| STORY-006 / 007 | 部门未绑定审批流 → 跳过审批和评估，直接进入"待开发" |
+| STORY-017 | 分类标签必填（已实现，复核保持） |
+| STORY-019 | 流程模型加 `developer_name`，列表按 `requirement_id` 筛选，调度中心展示关联需求 |
 
-| 模块 | 涉及 Story | 当前代码状态 | 改造动作 |
-|------|-----------|-------------|---------|
-| 状态命名 | 009 | 现有 `PENDING_PROJECT`「待立项」 | i18n + 文案统一为「待开发」；枚举值暂保留 `PENDING_PROJECT` 不动（影响面太大），如需也改下一轮再说 |
-| 方案管理 | 001 + 013 | 单激活，方案带 `approval_flow_template_id` | 改为多激活；方案构建器移除审批/评估配置；保留 form 节点；锁定 4 个系统固定字段 |
-| 审批流模板 | 016 | `ApprovalConfig` 单激活模板列表 | 改为多激活；新增「绑定部门数」列；移除「绑定到方案」概念；预设模板「默认审批流程」不可删 |
-| 部门审批流绑定 | 016 | 不存在 | 新增独立菜单与页面：部门树左 + 当前绑定模板右；business_type=REQUIREMENT |
-| 提交与跳过 | 006 | 全局激活模板读取 | 改为按 `requirement.department_id` 查 `department_approval_flow_binding`；三种跳过：未绑定→直接待开发、approval_enabled=false→跳审批、assessment_enabled=false→跳评估 |
-| round + resubmit | 006 + 007 | 仅有当前轮记录 | ApprovalRecord/AssessmentRecord 增 `round`；详情页按 round 折叠；resubmit 弹窗强制 `change_reason ≥ 10` 字符 |
-| 创建流程入口 | 003 + 009 | 不存在 | 待开发/开发中/已上线/已下线 显示「创建流程」按钮；弹窗填流程名（必填）+ 开发者姓名（可选）；首个流程触发 待开发→开发中 |
-| 分类标签 | 017 | 已存在 ClassificationTagsField | 提交时校验「至少 1 个标签」（已存在校验需要核对） |
-| 可见性 | 018 | Mock 当前直接返回全量 | mock 层加入部门/工作空间/创建人 三层过滤 |
-| 跨模块 | 019 | Process 实体无 developer_name | Process 加 developer_name；开发中心/调度中心列表展示「关联需求」 |
+## 二、页面与交互改造
 
-## 执行批次
+### 1. 审批流管理（ApprovalConfig）— 模板编辑弹窗
+新增一个"适用部门"区块（位于"基本信息"之后、"审批配置"之前）：
+- 字段：`applicable_department_ids: string[]`，使用 `DepartmentSelect` 多选（`multiple` + `checkRelation="unRelated"`）
+- 说明文案：「选择该审批流模板适用的部门，部门发起的需求将走该流程；同一部门同时被多个激活模板选中时，按最近更新优先」
+- 列表卡片：将原"N 个部门已绑定"Tag 改为 "适用 N 个部门"，hover Popover 展示部门名清单
+- 保存模板：在 `updateApprovalFlow / createApprovalFlow` 内同步调用 `setDepartmentApprovalFlowBindings(templateId, deptIds)`，覆盖式写入
 
-### Batch 1 — 基线对齐 ✅
-- [x] 编写本计划文档
-- [x] 状态文案全量重命名 「待立项 → 待开发」（i18n + 引导文案 + Toast）
+### 2. 删除 "部门审批流绑定" 独立菜单
+- 移除路由 `/requirements/department-approval-binding`
+- 移除侧边栏 "Dept Approval Binding" 入口
+- 保留 `src/mocks/departmentApprovalFlowBinding.ts` 作为底层存储（继续被审批流和运行时消费）
+- `DepartmentApprovalBinding/` 目录删除
 
-### Batch 2 — 审批流体系骨架（本轮） ✅
-- [x] 审批流模板多激活：`activateApprovalFlow` 不再强制下线其它模板；卡片新增「N 个部门已绑定」
-- [x] 新增 mock：`src/mocks/departmentApprovalFlowBinding.ts`（business_type=REQUIREMENT，含 3 条种子数据）
-- [x] 新增菜单/页面「部门审批流绑定」`/requirements/department-approval-binding`：左部门树（含「已绑定」标签）+ 右当前部门绑定（含解除/更换模板）
-- [x] 侧栏新增条目 `requirementsDeptApprovalBinding` + zh-CN/en i18n
-- [ ] 方案构建器移除审批流绑定 UI（移到 Batch 3 一起处理，与运行时跳过逻辑一并改）
+### 3. 需求模板管理（RequirementsScheme）
+- 列表卡片新增 "适用 N 个部门" Tag（点击查看部门列表 Popover）
+- Scheme 类型扩展 `applicable_department_ids?: string[]`
+- 方案构建器（SchemeBuilder）头部 / 表单 Tab 顶部新增"适用部门"多选条
+  - 位置：放在 FormBuilder 上方一个 Banner 行，标签 + 多选 + 提示
+  - 修改触发 dirty，保存时同步写 `department_scheme_binding`
 
-### Batch 3 — 提交/审批/评估运行时（本轮） ✅
-- [x] `resolveSubmittedStatus(deptId)` / `resolvePostApprovalStatus(deptId)` 接入「部门审批流绑定」；新增 `resolveRuntimeFlagsByDepartment` 暴露三种跳过路径
-- [x] `RequirementItem.round`、`ApprovalRecord.round`、`AssessmentRecord.round`、`ApprovalHistoryEntry.round` 全部补齐
-- [x] `resubmitRequirement(id, changeReason)`：必填 ≥10 字、`round +1`、写入 `changeType='RESUBMIT'` 的 ChangeLog
-- [x] 新组件 `ResubmitDialog`（520 Modal，实时字数校验）取代旧 `Modal.confirm`；ApprovalSection、Workbench 列表行操作均接入
-- [ ] 详情页按 round 折叠展示历史轮次（移至 Batch 5 与「创建流程」一起做）
-
-### Batch 4 — 创建表单与方案 ✅
-- [x] `schemeConfig` 支持多激活：`getActiveSchemes()` 新增；`activateScheme` 不再互斥；新增 `deactivateScheme`
-- [x] 方案管理页菜单新增「取消激活」操作
-- [x] 创建/编辑需求顶部新增「需求方案」下拉（来自所有 is_active 方案；编辑态绑定原方案不可改）
-- [x] 表单 Step 2 按所选方案 `custom_fields` 动态渲染
-- [x] 4 个系统固定字段保留在 Step 1（岗位级别/岗位成本/执行频率/单次时长）
-- [x] `createRequirement` 接收 `values.scheme_id`，落库 scheme_id + scheme_version
-- [x] 分类标签必选校验（已有）
-
-### Batch 5 — 创建流程入口（详情页）
-- 待开发/开发中/已上线/已下线 显示「创建流程」按钮
-- 弹窗：流程名（必填）+ 开发者姓名（可选）
-- 触发 待开发→开发中（首个流程）
-- 详情页「已创建流程」列表 Tab
-
-### Batch 6 — 可见性与跨模块
-- mock requirements 列表加可见性过滤（部门成员 / 创建人 / 工作空间）
-- Process 加 developer_name；开发中心 / 调度中心列表展示「关联需求」
-
-## 路由与菜单
-
+### 4. 新增 mock：`src/mocks/departmentSchemeBinding.ts`
+对称于审批流绑定，提供：
+```ts
+getSchemeByDepartmentId(deptId): SchemeId | null
+setDepartmentSchemeBindings(schemeId, deptIds[])
+getBoundDepartmentIdsByScheme(schemeId)
+listAllBindings()
 ```
-需求中心
-├── 需求工作台         /requirements/workbench
-├── 配置需求
-│   ├── 需求模板         /requirements/scheme           (方案管理)
-│   ├── 审批流管理       /requirements/approval-config  (审批流模板)
-│   └── 部门审批流绑定   /requirements/department-approval-binding  ★新增
-├── 需求评审           /requirements/review
-├── 需求评估           /requirements/assessment
-└── 需求项目           /requirements/projects
+同一部门只能绑定一个生效方案（与多模板激活并存 → 保存时若部门已被其他方案占用，提示二次确认覆盖）。
+
+### 5. 创建需求流程（RequirementCreatePage）
+- **移除** Step 0 的"需求方案"下拉选择
+- 进入页面时根据 `MOCK_CURRENT_USER.department_id` 调用 `getSchemeByDepartmentId(deptId)`：
+  - 命中 → 顶部展示只读 Banner「使用模板：xxx（适用于 xx 部门）」，照常渲染字段
+  - 未命中 → 全屏 EmptyState「当前部门没有生效的需求模板」+ 主按钮"返回需求列表"，副按钮（管理员可见）"前往需求模板管理"
+- 表行级"新建"入口前置同样校验（无模板时弹 Toast 拦截）
+
+### 6. 运行时联动（已部分实现，复核）
+- `resolveRuntimeFlagsByDepartment(deptId)`：维持当前逻辑（无绑定 → 跳过审批 + 评估 → 直接 `PENDING_PROJECT`）
+- 提交需求时若仍需校验分类标签 ≥ 1（STORY-017 已实现，保留）
+
+### 7. i18n
+新增 key（zh-CN + en）：
+- `requirements.scheme.applicableDepartments` / `requirements.approvalFlow.applicableDepartments`
+- `requirements.create.noSchemeForDepartment` / `noSchemeHint`
+- `requirements.scheme.deptConflictTitle` / `deptConflictContent`
+
+## 三、技术实现要点
+
+```text
+src/
+├─ mocks/
+│  ├─ departmentSchemeBinding.ts                [新增]
+│  └─ departmentApprovalFlowBinding.ts          [保留，仅作存储]
+├─ pages/Requirements/
+│  ├─ ApprovalConfig/
+│  │  ├─ index.tsx                              [改：卡片显示适用部门数]
+│  │  └─ components/ApprovalFlowBuilder/        [改：新增适用部门字段]
+│  ├─ DepartmentApprovalBinding/                [删除]
+│  ├─ RequirementsScheme/
+│  │  ├─ index.tsx                              [改：卡片显示适用部门数]
+│  │  └─ components/SchemeBuilder/index.tsx     [改：头部新增适用部门]
+│  └─ RequirementsWorkbench/
+│     ├─ components/RequirementCreatePage/      [改：移除手选模板 + 无模板拦截]
+│     ├─ mockData.ts                            [改：createRequirement 按部门解析模板]
+│     └─ schemeConfig.ts                        [改：activate/save 同步部门绑定]
+├─ App.tsx                                       [改：移除绑定路由]
+└─ components/layout/Sidebar/index.tsx          [改：移除菜单项]
 ```
 
-## 开放问题（先按下列假设推进，如不同意告诉我即可）
+冲突策略：
+- 一个部门只能被一个 Scheme 绑定（创建需求查找唯一）
+- 一个部门只能被一个 ApprovalFlow 绑定（同上）
+- 保存时若发生覆盖，弹 Modal.confirm 提示「部门 X 当前绑定的是 Y，是否改绑为本模板？」
 
-1. **状态枚举值** `PENDING_PROJECT` 是否需改成 `PENDING_DEVELOPMENT`？本计划假设：**不改**，仅改文案，避免破坏 mock/数据迁移。
-2. **「部门审批流绑定」页面**采用「左部门树 + 右当前绑定」的主从布局；也可以做成简单的「部门列表 + 行内下拉选模板」表格。本计划假设：**主从布局**（更适合多部门批量管理）。
-3. **预设方案能否被「停用」？** 文档说「不可删除」，未明确能否停用。本计划假设：**预设方案可激活/取消激活但不可删除**。
-4. **创建流程按钮**仅在用户具备 `Perm.ProcessDev.CREATE` 权限时显示。Mock 阶段一律显示。
+## 四、交付顺序（建议单轮一次完成）
+1. 新增 `departmentSchemeBinding.ts` mock
+2. 审批流模板编辑器加"适用部门"字段 + 保存联动 + 列表展示
+3. 需求模板构建器加"适用部门"字段 + 保存联动 + 列表展示
+4. 删除独立绑定页面 + 菜单 + 路由
+5. 改造需求创建流程（按部门解析 + 空态拦截）
+6. i18n 补齐 + 视觉验收
+
+## 五、待确认问题
+1. **冲突覆盖策略**：同一部门被多个模板/方案选中时，是「弹确认覆盖」还是「允许多选不报错，运行时取最近更新」？计划默认采用前者（更稳）
+2. **空态页"前往需求模板管理"按钮**是否仅管理员可见？还是所有用户都展示
+3. 当前管理员演示登录是否需要切换默认 `MOCK_CURRENT_USER.department_id` 已绑定方案，以确保创建路径仍可演示？
