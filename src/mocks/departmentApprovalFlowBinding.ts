@@ -140,3 +140,25 @@ export const setBindingsForTemplate = (templateId: string, deptIds: string[]): S
   notify();
   return { added, removed, overridden };
 };
+
+/** Dry-run：仅计算会被抢占的部门，不写入。用于"保存前冲突确认"。 */
+export interface BindingConflictItem { deptId: string; prevTemplateId: string; }
+export const previewBindingsForTemplate = (templateId: string, deptIds: string[]): BindingConflictItem[] => {
+  const items: BindingConflictItem[] = [];
+  deptIds.forEach((deptId) => {
+    const prev = cache.find((b) => b.department_id === deptId);
+    if (prev && prev.approval_flow_template_id !== templateId) {
+      items.push({ deptId, prevTemplateId: prev.approval_flow_template_id });
+    }
+  });
+  return items;
+};
+
+/** 返回 deptId -> 当前归属模板 id 的占用 map（可排除指定模板）。 */
+export const getOccupiedDepartmentMap = (excludeTemplateId?: string): Record<string, string> => {
+  const map: Record<string, string> = {};
+  cache.forEach((b) => {
+    if (b.approval_flow_template_id !== excludeTemplateId) map[b.department_id] = b.approval_flow_template_id;
+  });
+  return map;
+};

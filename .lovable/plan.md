@@ -1,102 +1,88 @@
-# 需求中心 v5 文档变更适配方案
+## 背景
 
-## 一、变更要点（来自上传的故事文档）
+当前「审批流模板」和「需求方案」都允许多选适用部门，并约定「一个部门同时只能绑定一个生效模板/方案」。现在的实现是**保存时静默覆盖**——只弹一个 Toast「N 个部门已从其他模板改绑至本模板」，用户既看不到是哪些部门、原来归属哪个模板，也无法在选择时提前感知冲突。激活后另一个原本绑定该部门的模板还会继续显示「适用 N 个部门」，但运行时已经被抢走，体验割裂。
 
-| Story | v5 关键变更 |
-|---|---|
-| STORY-016 v5 | 审批流模板编辑页新增 **"适用部门"多选** 字段，保存模板时同步写入 `department_approval_flow_binding`；**取消独立的"部门审批流绑定"菜单/页面** |
-| STORY-001 / 013 v5 | 需求模板（Scheme）新增 **"适用部门"多选**，保存时同步写入 `department_scheme_binding`；列表展示"适用部门数量" |
-| STORY-003 v5 | 创建需求时 **不再手动选模板**，按用户所属部门自动匹配；部门未绑定方案 → 阻止创建，提示「当前部门没有生效的需求模板」 |
-| STORY-006 / 007 | 部门未绑定审批流 → 跳过审批和评估，直接进入"待开发" |
-| STORY-017 | 分类标签必填（已实现，复核保持） |
-| STORY-019 | 流程模型加 `developer_name`，列表按 `requirement_id` 筛选，调度中心展示关联需求 |
+## 优化目标
 
-## 二、页面与交互改造
+让"部门抢占"这件事在**选择 → 保存 → 激活**三个时机都是显式、可见、可撤销的。
 
-### 1. 审批流管理（ApprovalConfig）— 模板编辑弹窗
-新增一个"适用部门"区块（位于"基本信息"之后、"审批配置"之前）：
-- 字段：`applicable_department_ids: string[]`，使用 `DepartmentSelect` 多选（`multiple` + `checkRelation="unRelated"`）
-- 说明文案：「选择该审批流模板适用的部门，部门发起的需求将走该流程；同一部门同时被多个激活模板选中时，按最近更新优先」
-- 列表卡片：将原"N 个部门已绑定"Tag 改为 "适用 N 个部门"，hover Popover 展示部门名清单
-- 保存模板：在 `updateApprovalFlow / createApprovalFlow` 内同步调用 `setDepartmentApprovalFlowBindings(templateId, deptIds)`，覆盖式写入
+## 方案
 
-### 2. 删除 "部门审批流绑定" 独立菜单
-- 移除路由 `/requirements/department-approval-binding`
-- 移除侧边栏 "Dept Approval Binding" 入口
-- 保留 `src/mocks/departmentApprovalFlowBinding.ts` 作为底层存储（继续被审批流和运行时消费）
-- `DepartmentApprovalBinding/` 目录删除
+### 1. 选择时即时提示（前置感知）
 
-### 3. 需求模板管理（RequirementsScheme）
-- 列表卡片新增 "适用 N 个部门" Tag（点击查看部门列表 Popover）
-- Scheme 类型扩展 `applicable_department_ids?: string[]`
-- 方案构建器（SchemeBuilder）头部 / 表单 Tab 顶部新增"适用部门"多选条
-  - 位置：放在 FormBuilder 上方一个 Banner 行，标签 + 多选 + 提示
-  - 修改触发 dirty，保存时同步写 `department_scheme_binding`
+`DepartmentSelect` 在审批流 / 方案构建器里增加 `occupiedMap` 入参：
 
-### 4. 新增 mock：`src/mocks/departmentSchemeBinding.ts`
-对称于审批流绑定，提供：
 ```ts
-getSchemeByDepartmentId(deptId): SchemeId | null
-setDepartmentSchemeBindings(schemeId, deptIds[])
-getBoundDepartmentIdsByScheme(schemeId)
-listAllBindings()
+occupiedMap: Record<deptId, { ownerId: string; ownerName: string; ownerType: 'scheme' | 'flow' }>
 ```
-同一部门只能绑定一个生效方案（与多模板激活并存 → 保存时若部门已被其他方案占用，提示二次确认覆盖）。
 
-### 5. 创建需求流程（RequirementCreatePage）
-- **移除** Step 0 的"需求方案"下拉选择
-- 进入页面时根据 `MOCK_CURRENT_USER.department_id` 调用 `getSchemeByDepartmentId(deptId)`：
-  - 命中 → 顶部展示只读 Banner「使用模板：xxx（适用于 xx 部门）」，照常渲染字段
-  - 未命中 → 全屏 EmptyState「当前部门没有生效的需求模板」+ 主按钮"返回需求列表"，副按钮（管理员可见）"前往需求模板管理"
-- 表行级"新建"入口前置同样校验（无模板时弹 Toast 拦截）
+- 已被其他**生效**模板占用的部门，在下拉项右侧渲染一个浅琥珀色小标签 `已绑定：xxx 模板`
+- 选中后，已选区在该 Tag 右侧追加 `⚠ 将从「xxx」改绑` 的内联提示（hover Popover 显示完整说明）
+- 部门未被任何模板占用时无任何额外样式，保持干净
 
-### 6. 运行时联动（已部分实现，复核）
-- `resolveRuntimeFlagsByDepartment(deptId)`：维持当前逻辑（无绑定 → 跳过审批 + 评估 → 直接 `PENDING_PROJECT`）
-- 提交需求时若仍需校验分类标签 ≥ 1（STORY-017 已实现，保留）
+数据来源：构建器加载时调用 `listAllBindings()` + 过滤掉当前模板自身，构造 map 传入。
 
-### 7. i18n
-新增 key（zh-CN + en）：
-- `requirements.scheme.applicableDepartments` / `requirements.approvalFlow.applicableDepartments`
-- `requirements.create.noSchemeForDepartment` / `noSchemeHint`
-- `requirements.scheme.deptConflictTitle` / `deptConflictContent`
+### 2. 保存时显式冲突确认（替代静默覆盖）
 
-## 三、技术实现要点
+`handleSave` 在调用 `setBindingsForTemplate / setSchemeBindingsForScheme` 前**先 dry-run**：
+
+新增 mock 方法 `previewBindingsForTemplate(templateId, deptIds): { overridden: Array<{ deptId, deptName, prevTemplateId, prevTemplateName }> }`，不写入只计算。
+
+- 若 `overridden.length === 0` → 直接保存，Toast 成功
+- 若 `> 0` → 弹 `Modal.confirm`，标题「部门归属冲突」，内容用一个紧凑的两列表格：
+
+  ```text
+  部门              原归属               操作
+  数据仓库部        数据类需求模板        将改绑到本模板
+  财务部           财务审批流 v2         将改绑到本模板
+  ```
+
+  底部副文案：「确认后，原模板对这些部门的绑定将被解除」。按钮：`确认改绑` / `取消`
+
+### 3. 激活时二次校验（防并发抢占）
+
+`handleActivate` 在 `Modal.confirm` 的 `content` 里增加一行：
+
+- 通过 `getActiveTemplatesBindingDepartments(deptIds, excludeId)` 检查所选部门当前在**其他已启用模板**下是否仍有归属
+- 有冲突时把弹窗扩展成同样的"冲突表格 + 改绑提示"，文案改为「启用后将自动抢占以下部门的绑定」
+- 没冲突时保持现在的简短确认
+
+> 这一步处理"保存到激活之间另一个管理员把部门绑走"的边界情况，演示价值也大。
+
+### 4. 列表页的"被抢占"状态展示
+
+`ApprovalConfig` 和 `RequirementsScheme` 卡片底部的"适用 N 个部门"Tag，hover Popover 内：
+
+- 每个部门名后面，如果该部门**当前实际归属已不是本模板**（即 `getBindingByDepartment(deptId) !== currentId`），追加灰色小字 `（已被「xxx」接管）` 并把该项整体置灰
+- 卡片底部 Tag 文案改为 `适用 N · 生效 M`（M < N 时变琥珀色），让管理员一眼看到"我选了 5 个部门但只有 3 个真正在用我"
+
+### 5. 文案与 i18n
+
+新增 key：
+- `requirements.binding.conflictTitle` = "部门归属冲突"
+- `requirements.binding.conflictHint` = "确认后，原模板对这些部门的绑定将被解除"
+- `requirements.binding.preempted` = "已被「{{name}}」接管"
+- `requirements.binding.willRebind` = "将从「{{name}}」改绑"
+
+## 技术改造点
 
 ```text
 src/
 ├─ mocks/
-│  ├─ departmentSchemeBinding.ts                [新增]
-│  └─ departmentApprovalFlowBinding.ts          [保留，仅作存储]
-├─ pages/Requirements/
-│  ├─ ApprovalConfig/
-│  │  ├─ index.tsx                              [改：卡片显示适用部门数]
-│  │  └─ components/ApprovalFlowBuilder/        [改：新增适用部门字段]
-│  ├─ DepartmentApprovalBinding/                [删除]
-│  ├─ RequirementsScheme/
-│  │  ├─ index.tsx                              [改：卡片显示适用部门数]
-│  │  └─ components/SchemeBuilder/index.tsx     [改：头部新增适用部门]
-│  └─ RequirementsWorkbench/
-│     ├─ components/RequirementCreatePage/      [改：移除手选模板 + 无模板拦截]
-│     ├─ mockData.ts                            [改：createRequirement 按部门解析模板]
-│     └─ schemeConfig.ts                        [改：activate/save 同步部门绑定]
-├─ App.tsx                                       [改：移除绑定路由]
-└─ components/layout/Sidebar/index.tsx          [改：移除菜单项]
+│  ├─ departmentApprovalFlowBinding.ts   [+previewBindingsForTemplate, +getActiveOwnersMap]
+│  └─ departmentSchemeBinding.ts          [+previewSchemeBindings, +getActiveOwnersMap]
+├─ components/DepartmentSelect/index.tsx  [+occupiedMap prop, renderSelectedItem/renderOptionItem]
+└─ pages/Requirements/
+   ├─ ApprovalConfig/
+   │  ├─ index.tsx                        [卡片 Tag: 适用 N · 生效 M + Popover 灰显被抢占项]
+   │  └─ components/ApprovalFlowBuilder/  [接占用 map + dry-run + 冲突 Modal + 激活二次校验]
+   └─ RequirementsScheme/
+      ├─ index.tsx                        [同上卡片改造]
+      └─ components/SchemeBuilder/        [同上构建器改造]
 ```
 
-冲突策略：
-- 一个部门只能被一个 Scheme 绑定（创建需求查找唯一）
-- 一个部门只能被一个 ApprovalFlow 绑定（同上）
-- 保存时若发生覆盖，弹 Modal.confirm 提示「部门 X 当前绑定的是 Y，是否改绑为本模板？」
+## 待确认
 
-## 四、交付顺序（建议单轮一次完成）
-1. 新增 `departmentSchemeBinding.ts` mock
-2. 审批流模板编辑器加"适用部门"字段 + 保存联动 + 列表展示
-3. 需求模板构建器加"适用部门"字段 + 保存联动 + 列表展示
-4. 删除独立绑定页面 + 菜单 + 路由
-5. 改造需求创建流程（按部门解析 + 空态拦截）
-6. i18n 补齐 + 视觉验收
-
-## 五、待确认问题
-1. **冲突覆盖策略**：同一部门被多个模板/方案选中时，是「弹确认覆盖」还是「允许多选不报错，运行时取最近更新」？计划默认采用前者（更稳）
-2. **空态页"前往需求模板管理"按钮**是否仅管理员可见？还是所有用户都展示
-3. 当前管理员演示登录是否需要切换默认 `MOCK_CURRENT_USER.department_id` 已绑定方案，以确保创建路径仍可演示？
+1. 冲突 Modal 的默认按钮是 `取消` 还是 `确认改绑`？倾向**默认取消**，避免误操作。
+2. 列表卡片是否要把"被抢占"的部门数单独显示一个红色徽标（更醒目），还是只在 Popover 内灰显（更克制）？倾向后者。
+3. 是否需要在「需求模板」和「审批流模板」之间也做冲突提示？目前两类绑定互相独立、互不冲突，**不做**。

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Input, Toast, Modal, Space, Tag, Spin, Tooltip, Banner } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, CheckCircle, Pencil, Building2 } from 'lucide-react';
+import { ChevronLeft, Save, CheckCircle, Pencil, Building2, AlertTriangle } from 'lucide-react';
 import {
   getApprovalFlowById,
   updateApprovalFlow,
@@ -20,8 +20,11 @@ import DepartmentSelect from '@/components/DepartmentSelect';
 import {
   setBindingsForTemplate,
   listDepartmentsByTemplate,
+  previewBindingsForTemplate,
+  getOccupiedDepartmentMap,
 } from '@/mocks/departmentApprovalFlowBinding';
 import { getDepartmentName } from '@/mocks/departmentData';
+import BindingConflictContent from '@/pages/Requirements/_shared/BindingConflictContent';
 import './index.less';
 
 const { Title } = Typography;
@@ -99,31 +102,51 @@ const ApprovalFlowBuilderPage = () => {
         return;
       }
     }
-    try {
-      const deptIds = draft.applicable_department_ids ?? [];
-      const updated = await updateApprovalFlow(draft.id, {
-        name: draft.name,
-        code: draft.code,
-        description: draft.description,
-        approvers: draft.approvers,
-        assessors: draft.assessors,
-        value_model: draft.value_model,
-        complexity_model: draft.complexity_model,
-        applicable_department_ids: deptIds,
-      });
-      // 同步部门绑定表
-      const result = setBindingsForTemplate(draft.id, deptIds);
-      const overriddenCount = Object.keys(result.overridden).length;
-      setDraft(updated);
-      setDirty(false);
-      if (overriddenCount > 0) {
-        Toast.success(`已保存，其中 ${overriddenCount} 个部门已从其他审批流改绑至本模板`);
-      } else {
+    const deptIds = draft.applicable_department_ids ?? [];
+    const doPersist = async () => {
+      try {
+        const updated = await updateApprovalFlow(draft.id, {
+          name: draft.name,
+          code: draft.code,
+          description: draft.description,
+          approvers: draft.approvers,
+          assessors: draft.assessors,
+          value_model: draft.value_model,
+          complexity_model: draft.complexity_model,
+          applicable_department_ids: deptIds,
+        });
+        setBindingsForTemplate(draft.id, deptIds);
+        setDraft(updated);
+        setDirty(false);
         Toast.success('已保存');
+      } catch (e) {
+        Toast.error((e as Error).message);
       }
-    } catch (e) {
-      Toast.error((e as Error).message);
+    };
+
+    // 冲突预检：若存在归属抢占，弹出二次确认
+    const conflicts = previewBindingsForTemplate(draft.id, deptIds);
+    if (conflicts.length === 0) {
+      await doPersist();
+      return;
     }
+    Modal.confirm({
+      title: '部门归属冲突',
+      icon: <AlertTriangle size={20} strokeWidth={2} style={{ color: 'var(--semi-color-warning)' }} />,
+      width: 520,
+      content: (
+        <BindingConflictContent
+          hint={`已选部门中有 ${conflicts.length} 个当前归属其他审批流，保存后将改绑至本模板：`}
+          conflicts={conflicts.map((c) => ({
+            deptId: c.deptId,
+            prevOwnerName: getApprovalFlowById(c.prevTemplateId)?.name ?? '未知模板',
+          }))}
+        />
+      ),
+      okText: '确认改绑',
+      cancelText: t('common.cancel'),
+      onOk: doPersist,
+    });
   };
 
   const handleActivate = () => {
@@ -132,21 +155,38 @@ const ApprovalFlowBuilderPage = () => {
       Toast.warning('请先保存当前修改后再启用');
       return;
     }
-    const deptCount = (draft.applicable_department_ids ?? []).length;
-    if (deptCount === 0) {
+    const deptIds = draft.applicable_department_ids ?? [];
+    if (deptIds.length === 0) {
       Toast.warning('请先选择「适用部门」，启用时至少选择 1 个部门');
       return;
     }
+    // 启用前再次校验是否被其它模板抢占（演示场景下也用于回显当前归属）
+    const conflicts = previewBindingsForTemplate(draft.id, deptIds);
+    const doActivate = async () => {
+      // 若有冲突，启用同时把绑定一并抢回来
+      if (conflicts.length > 0) setBindingsForTemplate(draft.id, deptIds);
+      await activateApprovalFlow(draft.id);
+      Toast.success('启用成功');
+      navigate('/requirements/approval-config');
+    };
     Modal.confirm({
       title: '启用审批流',
-      content: `确认将「${draft.name}」启用？启用后该流程将对所选 ${deptCount} 个部门的需求生效。`,
+      width: conflicts.length > 0 ? 520 : 416,
+      content: conflicts.length > 0 ? (
+        <BindingConflictContent
+          hint={`确认启用「${draft.name}」？以下 ${conflicts.length} 个部门当前归属其他审批流，启用后将一并改绑到本模板：`}
+          conflicts={conflicts.map((c) => ({
+            deptId: c.deptId,
+            prevOwnerName: getApprovalFlowById(c.prevTemplateId)?.name ?? '未知模板',
+          }))}
+          actionLabel="改绑并启用"
+        />
+      ) : (
+        `确认将「${draft.name}」启用？启用后该流程将对所选 ${deptIds.length} 个部门的需求生效。`
+      ),
       okText: '启用',
       cancelText: t('common.cancel'),
-      onOk: async () => {
-        await activateApprovalFlow(draft.id);
-        Toast.success('启用成功');
-        navigate('/requirements/approval-config');
-      },
+      onOk: doActivate,
     });
   };
 
@@ -319,13 +359,38 @@ const ApprovalFlowBuilderPage = () => {
                       <Typography.Text type="tertiary">尚未配置适用部门</Typography.Text>
                     )
                   ) : (
-                    <DepartmentSelect
-                      multiple
-                      value={draft.applicable_department_ids ?? []}
-                      onChange={(ids) => patch({ applicable_department_ids: ids })}
-                      placeholder="请选择适用部门（可多选）"
-                      maxTagCount={6}
-                    />
+                    <>
+                      <DepartmentSelect
+                        multiple
+                        value={draft.applicable_department_ids ?? []}
+                        onChange={(ids) => patch({ applicable_department_ids: ids })}
+                        placeholder="请选择适用部门（可多选）"
+                        maxTagCount={6}
+                      />
+                      {(() => {
+                        const occupied = getOccupiedDepartmentMap(draft.id);
+                        const conflicts = (draft.applicable_department_ids ?? []).filter((d) => occupied[d]);
+                        if (conflicts.length === 0) return null;
+                        return (
+                          <Banner
+                            type="warning"
+                            fullMode={false}
+                            closeIcon={null}
+                            style={{ marginTop: 12 }}
+                            description={
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+                                <span style={{ marginRight: 4 }}>{conflicts.length} 个部门当前归属其他审批流，保存后将改绑到本模板：</span>
+                                {conflicts.map((d) => (
+                                  <Tag key={d} color="amber" type="light" size="small">
+                                    {getDepartmentName(d)} ← 「{getApprovalFlowById(occupied[d])?.name ?? '未知'}」
+                                  </Tag>
+                                ))}
+                              </div>
+                            }
+                          />
+                        );
+                      })()}
+                    </>
                   )}
                 </div>
               </div>
