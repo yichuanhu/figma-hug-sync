@@ -964,11 +964,14 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
   const creator = mockCreators['user-001'];
   const { baseline, cost, form_data } = extractBaselineAndCost(values.form_data as Record<string, unknown> | undefined);
   const activeScheme = getEffectiveScheme();
+  const chosenSchemeId = (values.scheme_id as string | undefined) || activeScheme.id;
+  const chosenScheme =
+    (chosenSchemeId && PRESET_SCHEMES.find((s) => s.id === chosenSchemeId)) || activeScheme;
   const newItem: RequirementItem = {
     id: generateUUID(),
     req_no: `REQ-2026-${String(mockRequirementData.length + 1).padStart(4, '0')}`,
-    scheme_id: activeScheme.id,
-    scheme_version: activeScheme.version,
+    scheme_id: chosenScheme.id,
+    scheme_version: chosenScheme.version,
     title: values.title as string,
     description: (values.description as string) || '',
     owning_department_name: values.department as string,
