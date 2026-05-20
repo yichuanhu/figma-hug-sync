@@ -8,6 +8,7 @@ import EmptyState from '@/components/EmptyState';
 import {
   fetchSchemes,
   activateScheme,
+  deactivateScheme,
   deleteScheme,
   createSchemeDraft,
   cloneSchemeAsDraft,
