@@ -173,8 +173,18 @@ const RequirementsScheme = () => {
                             {t('requirements.scheme.activate')}
                           </Dropdown.Item>
                         )}
+                        {s.status === 'active' && (
+                          <Dropdown.Item icon={<CheckCircle size={14} />} onClick={(e) => { e.stopPropagation(); handleDeactivate(s); }}>
+                            取消激活
+                          </Dropdown.Item>
+                        )}
                         {!s.is_preset && s.status === 'active' && (
                           <Tooltip content={t('requirements.scheme.editDisabledTip')} position="left">
+                            <Dropdown.Item icon={<Pencil size={14} />} disabled>
+                              {t('requirements.scheme.edit')}
+                            </Dropdown.Item>
+                          </Tooltip>
+                        )}
                             <Dropdown.Item icon={<Pencil size={14} />} disabled>
                               {t('requirements.scheme.edit')}
                             </Dropdown.Item>
