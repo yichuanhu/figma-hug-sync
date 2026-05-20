@@ -966,7 +966,8 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
   const activeScheme = getEffectiveScheme();
   const chosenSchemeId = (values.scheme_id as string | undefined) || activeScheme.id;
   const chosenScheme =
-    (chosenSchemeId && PRESET_SCHEMES.find((s) => s.id === chosenSchemeId)) || activeScheme;
+    (chosenSchemeId && (getSchemeById(chosenSchemeId) || PRESET_SCHEMES.find((s) => s.id === chosenSchemeId))) ||
+    activeScheme;
   const newItem: RequirementItem = {
     id: generateUUID(),
     req_no: `REQ-2026-${String(mockRequirementData.length + 1).padStart(4, '0')}`,
