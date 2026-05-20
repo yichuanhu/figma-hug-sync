@@ -6,8 +6,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Input, Toast, Modal, Space, Tag, Spin, Tooltip } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, CheckCircle, Pencil } from 'lucide-react';
+import { Typography, Button, Input, Toast, Modal, Space, Tag, Spin, Tooltip, Banner } from '@douyinfe/semi-ui';
+import { ChevronLeft, Save, CheckCircle, Pencil, Building2 } from 'lucide-react';
 import {
   getApprovalFlowById,
   updateApprovalFlow,
@@ -16,6 +16,12 @@ import {
 } from '../../mockData';
 import ApproverListEditor from '../ApproverListEditor';
 import AssessmentBuilder from '@/pages/Requirements/RequirementsScheme/components/SchemeBuilder/AssessmentBuilder';
+import DepartmentSelect from '@/components/DepartmentSelect';
+import {
+  setBindingsForTemplate,
+  listDepartmentsByTemplate,
+} from '@/mocks/departmentApprovalFlowBinding';
+import { getDepartmentName } from '@/mocks/departmentData';
 import './index.less';
 
 const { Title } = Typography;
@@ -40,7 +46,16 @@ const ApprovalFlowBuilderPage = () => {
       navigate('/requirements/approval-config');
       return;
     }
-    setDraft({ ...f, assessors: f.assessors ?? [], approvers: f.approvers ?? [] });
+    // 适用部门：优先取实体上的字段；为空则回填 binding 表中已绑定到本模板的部门
+    const applicable = f.applicable_department_ids && f.applicable_department_ids.length > 0
+      ? f.applicable_department_ids
+      : listDepartmentsByTemplate(f.id);
+    setDraft({
+      ...f,
+      assessors: f.assessors ?? [],
+      approvers: f.approvers ?? [],
+      applicable_department_ids: applicable,
+    });
     setLoading(false);
   }, [id, navigate]);
 
@@ -85,6 +100,7 @@ const ApprovalFlowBuilderPage = () => {
       }
     }
     try {
+      const deptIds = draft.applicable_department_ids ?? [];
       const updated = await updateApprovalFlow(draft.id, {
         name: draft.name,
         code: draft.code,
@@ -93,10 +109,18 @@ const ApprovalFlowBuilderPage = () => {
         assessors: draft.assessors,
         value_model: draft.value_model,
         complexity_model: draft.complexity_model,
+        applicable_department_ids: deptIds,
       });
+      // 同步部门绑定表
+      const result = setBindingsForTemplate(draft.id, deptIds);
+      const overriddenCount = Object.keys(result.overridden).length;
       setDraft(updated);
       setDirty(false);
-      Toast.success('已保存');
+      if (overriddenCount > 0) {
+        Toast.success(`已保存，其中 ${overriddenCount} 个部门已从其他审批流改绑至本模板`);
+      } else {
+        Toast.success('已保存');
+      }
     } catch (e) {
       Toast.error((e as Error).message);
     }
@@ -247,6 +271,42 @@ const ApprovalFlowBuilderPage = () => {
 
       <div className="approval-flow-builder-body">
         <div className="workflow-builder">
+          {/* 适用部门：保存时同步写入 department_approval_flow_binding（business_type=REQUIREMENT） */}
+          <div className="approval-flow-section-card">
+            <div className="approval-flow-section-card-header">
+              <div className="approval-flow-section-card-title">
+                <Building2 size={16} strokeWidth={2} />
+                <span>适用部门</span>
+              </div>
+              <Typography.Text type="tertiary" size="small">
+                选择本审批流模板适用的部门；同一部门同时被多个模板选中时，最新保存的将覆盖之前的绑定。
+              </Typography.Text>
+            </div>
+            <div className="approval-flow-section-card-body">
+              {isView ? (
+                (draft.applicable_department_ids && draft.applicable_department_ids.length > 0) ? (
+                  <Space wrap>
+                    {draft.applicable_department_ids.map((id) => (
+                      <Tag key={id} color="violet" type="light" size="large" prefixIcon={<Building2 size={12} strokeWidth={2} />}>
+                        {getDepartmentName(id)}
+                      </Tag>
+                    ))}
+                  </Space>
+                ) : (
+                  <Typography.Text type="tertiary">尚未配置适用部门</Typography.Text>
+                )
+              ) : (
+                <DepartmentSelect
+                  multiple
+                  value={draft.applicable_department_ids ?? []}
+                  onChange={(ids) => patch({ applicable_department_ids: ids })}
+                  placeholder="请选择适用部门（可多选）"
+                  maxTagCount={6}
+                />
+              )}
+            </div>
+          </div>
+
           <ApproverListEditor
             title="审批人配置"
             approvers={draft.approvers}

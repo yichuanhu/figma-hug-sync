@@ -337,6 +337,8 @@ export interface RequirementScheme {
   workflow_config?: WorkflowConfig;
   /** 原始 YAML 内容（用于查看） */
   raw_yaml?: string;
+  /** v5: 适用部门（多选）。保存方案时同步写入 department_scheme_binding。 */
+  applicable_department_ids?: string[];
   created_at: string;
   created_by?: string;
   updated_at?: string;

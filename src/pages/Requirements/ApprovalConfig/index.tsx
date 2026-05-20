@@ -15,6 +15,7 @@ import {
   Row,
   Col,
   Space,
+  Popover,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Building2 } from 'lucide-react';
@@ -31,8 +32,10 @@ import {
 } from './mockData';
 import {
   getBoundDepartmentCountMap,
+  listDepartmentsByTemplate,
   subscribeBindingChange,
 } from '@/mocks/departmentApprovalFlowBinding';
+import { getDepartmentName } from '@/mocks/departmentData';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -78,7 +81,7 @@ const ApprovalConfigPage = () => {
   const handleActivate = (f: ApprovalFlowTemplate) => {
     Modal.confirm({
       title: '启用审批流',
-      content: `确认启用「${f.name}」?启用后可在「部门审批流绑定」中将该模板分配给具体部门。`,
+      content: `确认启用「${f.name}」？启用后可在该模板的「适用部门」中分配具体部门。`,
       okText: '启用',
       cancelText: t('common.cancel'),
       onOk: async () => {
@@ -119,7 +122,7 @@ const ApprovalConfigPage = () => {
       <div className="approval-config-page-header">
         <div className="approval-config-page-header-title">
           <Title heading={3} className="title">审批配置</Title>
-          <Text type="tertiary">集中管理需求审批流模板。支持多模板同时启用；实际生效顺序由「部门审批流绑定」按部门分配。</Text>
+          <Text type="tertiary">集中管理需求审批流模板。支持同时启用多个模板；通过模板中的「适用部门」决定哪些部门走该流程。</Text>
         </div>
         <Row type="flex" justify="space-between" align="middle" className="approval-config-page-header-toolbar">
           <Col>
@@ -251,9 +254,32 @@ const ApprovalConfigPage = () => {
                   {f.approvers.some((a) => a.approval_mode === 'majority') && (
                     <Tag size="small" color="cyan" type="light">含多数通过</Tag>
                   )}
-                  <Tag size="small" color="violet" type="light" prefixIcon={<Building2 size={12} strokeWidth={2} />}>
-                    {bindCountMap[f.id] ?? 0} 个部门已绑定
-                  </Tag>
+                  <Popover
+                    position="top"
+                    showArrow
+                    content={(() => {
+                      const ids = listDepartmentsByTemplate(f.id);
+                      if (ids.length === 0) return <Text type="tertiary" size="small">尚未配置适用部门</Text>;
+                      return (
+                        <div style={{ maxWidth: 280, padding: '4px 0', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                          {ids.map((id) => (
+                            <Text key={id} size="small">{getDepartmentName(id)}</Text>
+                          ))}
+                        </div>
+                      );
+                    })()}
+                  >
+                    <Tag
+                      size="small"
+                      color="violet"
+                      type="light"
+                      prefixIcon={<Building2 size={12} strokeWidth={2} />}
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      适用 {bindCountMap[f.id] ?? 0} 个部门
+                    </Tag>
+                  </Popover>
                 </div>
               </div>
             ))}
