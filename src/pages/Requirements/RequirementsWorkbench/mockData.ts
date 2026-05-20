@@ -1330,9 +1330,22 @@ export const withdrawRequirement = async (id: string): Promise<RequirementItem |
   return mockRequirementData[index];
 };
 
-/** 重新提交：REJECTED/WITHDRAWN → 由当前模板决定目标状态（PENDING_APPROVAL / PENDING_ASSESSMENT / PENDING_PROJECT），保留历史 */
-export const resubmitRequirement = async (id: string): Promise<RequirementItem | null> => {
+/**
+ * 重新提交（STORY-006 / 007 / 014）
+ *
+ * - REJECTED / WITHDRAWN → 由「部门审批流绑定」决定目标状态（三种跳过路径）
+ * - 必填 `changeReason`，长度 ≥ 10
+ * - 本次轮次 `round +1`；旧 ApprovalRecord / AssessmentRecord 通过 `round` 字段保留可折叠
+ * - 写入一条 changeType='RESUBMIT' 的 RequirementChangeLog
+ */
+export const resubmitRequirement = async (
+  id: string,
+  changeReason: string,
+): Promise<RequirementItem | null> => {
   await new Promise((r) => setTimeout(r, 200));
+  if (!changeReason || changeReason.trim().length < 10) {
+    throw new Error('CHANGE_REASON_TOO_SHORT');
+  }
   const index = mockRequirementData.findIndex((r) => r.id === id);
   if (index === -1) return null;
   const cur = mockRequirementData[index];
@@ -1344,7 +1357,8 @@ export const resubmitRequirement = async (id: string): Promise<RequirementItem |
   }
   const now = new Date().toISOString();
   const submitter = mockCreators[cur.creatorId];
-  const targetStatus = resolveSubmittedStatus();
+  const targetStatus = resolveSubmittedStatus(cur.owning_department_id);
+  const nextRound = (cur.round ?? 1) + 1;
   const newFlow =
     targetStatus === 'PENDING_APPROVAL'
       ? generateMockApprovalFlow('PENDING_APPROVAL', {
@@ -1359,15 +1373,31 @@ export const resubmitRequirement = async (id: string): Promise<RequirementItem |
     approverId: cur.creatorId,
     approverName: submitter?.name ?? cur.creatorName,
     action: 'resubmit',
+    comment: changeReason.trim(),
     timestamp: now,
+    round: nextRound,
   };
   mockRequirementData[index] = {
     ...cur,
     status: targetStatus,
+    round: nextRound,
     approvalFlowConfig: newFlow,
     approvalHistory: [...(cur.approvalHistory ?? []), entry],
     updatedAt: now,
   };
+
+  // 写入变更日志（RESUBMIT）
+  changeLogStore.unshift({
+    id: `chg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    requirementId: id,
+    reason: changeReason.trim(),
+    publisherId: cur.creatorId,
+    publisherName: submitter?.name ?? cur.creatorName,
+    publishedAt: now,
+    changeType: 'RESUBMIT',
+    changedFields: { round: nextRound, targetStatus },
+  });
+
   return mockRequirementData[index];
 };
 
