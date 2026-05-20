@@ -38,11 +38,14 @@
 - [x] 新组件 `ResubmitDialog`（520 Modal，实时字数校验）取代旧 `Modal.confirm`；ApprovalSection、Workbench 列表行操作均接入
 - [ ] 详情页按 round 折叠展示历史轮次（移至 Batch 5 与「创建流程」一起做）
 
-### Batch 4 — 创建表单与方案
-- 创建需求表单顶部「需求方案」下拉（从所有 is_active 方案中选）
-- 表单按所选方案 form 节点动态渲染
-- 4 个系统固定字段：岗位级别 / 岗位成本 / 执行频率 / 单次时长
-- 分类标签必选校验
+### Batch 4 — 创建表单与方案 ✅
+- [x] `schemeConfig` 支持多激活：`getActiveSchemes()` 新增；`activateScheme` 不再互斥；新增 `deactivateScheme`
+- [x] 方案管理页菜单新增「取消激活」操作
+- [x] 创建/编辑需求顶部新增「需求方案」下拉（来自所有 is_active 方案；编辑态绑定原方案不可改）
+- [x] 表单 Step 2 按所选方案 `custom_fields` 动态渲染
+- [x] 4 个系统固定字段保留在 Step 1（岗位级别/岗位成本/执行频率/单次时长）
+- [x] `createRequirement` 接收 `values.scheme_id`，落库 scheme_id + scheme_version
+- [x] 分类标签必选校验（已有）
 
 ### Batch 5 — 创建流程入口（详情页）
 - 待开发/开发中/已上线/已下线 显示「创建流程」按钮
