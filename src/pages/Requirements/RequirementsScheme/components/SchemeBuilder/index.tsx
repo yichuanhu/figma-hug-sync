@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Banner, Input } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Clock, Pencil } from 'lucide-react';
+import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Clock, Pencil, Building2 } from 'lucide-react';
 import {
   getSchemeById,
   updateSchemeBuilder,
@@ -12,6 +12,11 @@ import {
   subscribeSchemeChange,
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '@/pages/Requirements/RequirementsWorkbench/types';
+import DepartmentSelect from '@/components/DepartmentSelect';
+import {
+  setSchemeBindingsForScheme,
+  listDepartmentsByScheme,
+} from '@/mocks/departmentSchemeBinding';
 import FormBuilder from './FormBuilder';
 import { validateAllFields } from './FormBuilder/validators';
 import WorkflowBuilder from './WorkflowBuilder';
