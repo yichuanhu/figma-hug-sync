@@ -81,7 +81,7 @@ const ApprovalConfigPage = () => {
   const handleActivate = (f: ApprovalFlowTemplate) => {
     Modal.confirm({
       title: '启用审批流',
-      content: `确认启用「${f.name}」?启用后可在「部门审批流绑定」中将该模板分配给具体部门。`,
+      content: `确认启用「${f.name}」？启用后可在该模板的「适用部门」中分配具体部门。`,
       okText: '启用',
       cancelText: t('common.cancel'),
       onOk: async () => {
