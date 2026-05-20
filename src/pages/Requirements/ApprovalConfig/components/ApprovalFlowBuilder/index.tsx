@@ -132,9 +132,14 @@ const ApprovalFlowBuilderPage = () => {
       Toast.warning('请先保存当前修改后再启用');
       return;
     }
+    const deptCount = (draft.applicable_department_ids ?? []).length;
+    if (deptCount === 0) {
+      Toast.warning('请先选择「适用部门」，启用时至少选择 1 个部门');
+      return;
+    }
     Modal.confirm({
       title: '启用审批流',
-      content: `确认将「${draft.name}」设为当前生效的审批流？同一时间仅一个审批流处于启用状态。`,
+      content: `确认将「${draft.name}」启用？启用后该流程将对所选 ${deptCount} 个部门的需求生效。`,
       okText: '启用',
       cancelText: t('common.cancel'),
       onOk: async () => {
@@ -272,40 +277,60 @@ const ApprovalFlowBuilderPage = () => {
       <div className="approval-flow-builder-body">
         <div className="workflow-builder">
           {/* 适用部门：保存时同步写入 department_approval_flow_binding（business_type=REQUIREMENT） */}
-          <div className="approval-flow-section-card">
-            <div className="approval-flow-section-card-header">
-              <div className="approval-flow-section-card-title">
-                <Building2 size={16} strokeWidth={2} />
-                <span>适用部门</span>
+          {(() => {
+            const deptCount = (draft.applicable_department_ids ?? []).length;
+            const showWarning = !isView && deptCount === 0;
+            return (
+              <div
+                className="approval-flow-section-card"
+                style={showWarning ? {
+                  background: 'var(--semi-color-warning-light-default)',
+                  borderColor: 'var(--semi-color-warning-light-active)',
+                } : undefined}
+              >
+                <div className="approval-flow-section-card-header">
+                  <div className="approval-flow-section-card-title">
+                    <Building2 size={16} strokeWidth={2} />
+                    <span>适用部门</span>
+                    {!isView && (
+                      <>
+                        <Typography.Text type="danger" size="small" style={{ marginLeft: 2 }}>*</Typography.Text>
+                        <Typography.Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>
+                          （启用时必填，草稿可留空）
+                        </Typography.Text>
+                      </>
+                    )}
+                  </div>
+                  <Typography.Text type="tertiary" size="small">
+                    同一部门同时被多个模板选中时，最新保存的将覆盖之前的绑定。
+                  </Typography.Text>
+                </div>
+                <div className="approval-flow-section-card-body">
+                  {isView ? (
+                    deptCount > 0 ? (
+                      <Space wrap>
+                        {draft.applicable_department_ids!.map((id) => (
+                          <Tag key={id} color="violet" type="light" size="large" prefixIcon={<Building2 size={12} strokeWidth={2} />}>
+                            {getDepartmentName(id)}
+                          </Tag>
+                        ))}
+                      </Space>
+                    ) : (
+                      <Typography.Text type="tertiary">尚未配置适用部门</Typography.Text>
+                    )
+                  ) : (
+                    <DepartmentSelect
+                      multiple
+                      value={draft.applicable_department_ids ?? []}
+                      onChange={(ids) => patch({ applicable_department_ids: ids })}
+                      placeholder="请选择适用部门（可多选）"
+                      maxTagCount={6}
+                    />
+                  )}
+                </div>
               </div>
-              <Typography.Text type="tertiary" size="small">
-                选择本审批流模板适用的部门；同一部门同时被多个模板选中时，最新保存的将覆盖之前的绑定。
-              </Typography.Text>
-            </div>
-            <div className="approval-flow-section-card-body">
-              {isView ? (
-                (draft.applicable_department_ids && draft.applicable_department_ids.length > 0) ? (
-                  <Space wrap>
-                    {draft.applicable_department_ids.map((id) => (
-                      <Tag key={id} color="violet" type="light" size="large" prefixIcon={<Building2 size={12} strokeWidth={2} />}>
-                        {getDepartmentName(id)}
-                      </Tag>
-                    ))}
-                  </Space>
-                ) : (
-                  <Typography.Text type="tertiary">尚未配置适用部门</Typography.Text>
-                )
-              ) : (
-                <DepartmentSelect
-                  multiple
-                  value={draft.applicable_department_ids ?? []}
-                  onChange={(ids) => patch({ applicable_department_ids: ids })}
-                  placeholder="请选择适用部门（可多选）"
-                  maxTagCount={6}
-                />
-              )}
-            </div>
-          </div>
+            );
+          })()}
 
           <ApproverListEditor
             title="审批人配置"

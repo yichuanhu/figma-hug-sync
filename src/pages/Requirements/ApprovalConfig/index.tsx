@@ -79,9 +79,15 @@ const ApprovalConfigPage = () => {
   };
 
   const handleActivate = (f: ApprovalFlowTemplate) => {
+    const deptCount = (f.applicable_department_ids ?? []).length;
+    if (deptCount === 0) {
+      Toast.warning('请先在审批流模板中配置「适用部门」，启用时至少选择 1 个部门');
+      goEdit(f);
+      return;
+    }
     Modal.confirm({
       title: '启用审批流',
-      content: `确认启用「${f.name}」？启用后可在该模板的「适用部门」中分配具体部门。`,
+      content: `确认启用「${f.name}」？启用后该流程将对所选部门的需求生效。`,
       okText: '启用',
       cancelText: t('common.cancel'),
       onOk: async () => {
@@ -259,7 +265,7 @@ const ApprovalConfigPage = () => {
                     showArrow
                     content={(() => {
                       const ids = listDepartmentsByTemplate(f.id);
-                      if (ids.length === 0) return <Text type="tertiary" size="small">尚未配置适用部门</Text>;
+                      if (ids.length === 0) return <Text type="tertiary" size="small">尚未配置适用部门（启用时必填）</Text>;
                       return (
                         <div style={{ maxWidth: 280, padding: '4px 0', display: 'flex', flexDirection: 'column', gap: 4 }}>
                           {ids.map((id) => (
@@ -269,16 +275,29 @@ const ApprovalConfigPage = () => {
                       );
                     })()}
                   >
-                    <Tag
-                      size="small"
-                      color="violet"
-                      type="light"
-                      prefixIcon={<Building2 size={12} strokeWidth={2} />}
-                      onClick={(e) => e.stopPropagation()}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      适用 {bindCountMap[f.id] ?? 0} 个部门
-                    </Tag>
+                    {(bindCountMap[f.id] ?? 0) > 0 ? (
+                      <Tag
+                        size="small"
+                        color="violet"
+                        type="light"
+                        prefixIcon={<Building2 size={12} strokeWidth={2} />}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        适用 {bindCountMap[f.id]} 个部门
+                      </Tag>
+                    ) : (
+                      <Tag
+                        size="small"
+                        color="amber"
+                        type="light"
+                        prefixIcon={<Building2 size={12} strokeWidth={2} />}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        未配置适用部门
+                      </Tag>
+                    )}
                   </Popover>
                 </div>
               </div>
