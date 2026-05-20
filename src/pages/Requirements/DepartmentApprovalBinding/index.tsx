@@ -23,7 +23,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Building2, Link as LinkIcon, Unlink, Pencil } from 'lucide-react';
-import { departmentTree, departmentNameMap, type DeptTreeNode } from '@/mocks/departmentData';
+import { departmentTree, type DeptTreeNode } from '@/mocks/departmentData';
 import {
   fetchAllBindings,
   getBindingByDepartment,
@@ -320,6 +320,3 @@ const DepartmentApprovalBinding = () => {
 };
 
 export default DepartmentApprovalBinding;
-
-// 仅为消除未使用导入告警
-export { departmentNameMap };
