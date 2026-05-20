@@ -264,40 +264,59 @@ const ApprovalConfigPage = () => {
                     position="top"
                     showArrow
                     content={(() => {
-                      const ids = listDepartmentsByTemplate(f.id);
-                      if (ids.length === 0) return <Text type="tertiary" size="small">尚未配置适用部门（启用时必填）</Text>;
+                      const selected = f.applicable_department_ids ?? [];
+                      const effective = new Set(listDepartmentsByTemplate(f.id));
+                      if (selected.length === 0) return <Text type="tertiary" size="small">尚未配置适用部门（启用时必填）</Text>;
                       return (
                         <div style={{ maxWidth: 280, padding: '4px 0', display: 'flex', flexDirection: 'column', gap: 4 }}>
-                          {ids.map((id) => (
-                            <Text key={id} size="small">{getDepartmentName(id)}</Text>
-                          ))}
+                          {selected.map((id) => {
+                            const isEffective = effective.has(id);
+                            return (
+                              <div key={id} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <Text size="small" type={isEffective ? 'primary' : 'tertiary'} style={{ textDecoration: isEffective ? 'none' : 'line-through' }}>
+                                  {getDepartmentName(id)}
+                                </Text>
+                                {!isEffective && (
+                                  <Text size="small" type="tertiary">（已被其他模板接管）</Text>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       );
                     })()}
                   >
-                    {(bindCountMap[f.id] ?? 0) > 0 ? (
-                      <Tag
-                        size="small"
-                        color="violet"
-                        type="light"
-                        prefixIcon={<Building2 size={12} strokeWidth={2} />}
-                        onClick={(e) => e.stopPropagation()}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        适用 {bindCountMap[f.id]} 个部门
-                      </Tag>
-                    ) : (
-                      <Tag
-                        size="small"
-                        color="amber"
-                        type="light"
-                        prefixIcon={<Building2 size={12} strokeWidth={2} />}
-                        onClick={(e) => e.stopPropagation()}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        未配置适用部门
-                      </Tag>
-                    )}
+                    {(() => {
+                      const selected = (f.applicable_department_ids ?? []).length;
+                      const effective = bindCountMap[f.id] ?? 0;
+                      if (selected === 0) {
+                        return (
+                          <Tag
+                            size="small"
+                            color="amber"
+                            type="light"
+                            prefixIcon={<Building2 size={12} strokeWidth={2} />}
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            未配置适用部门
+                          </Tag>
+                        );
+                      }
+                      const hasDrift = effective < selected;
+                      return (
+                        <Tag
+                          size="small"
+                          color={hasDrift ? 'amber' : 'violet'}
+                          type="light"
+                          prefixIcon={<Building2 size={12} strokeWidth={2} />}
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          {hasDrift ? `适用 ${selected} · 生效 ${effective}` : `适用 ${selected} 个部门`}
+                        </Tag>
+                      );
+                    })()}
                   </Popover>
                 </div>
               </div>
