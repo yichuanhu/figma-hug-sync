@@ -16,6 +16,8 @@ export interface ApprovalFlowTemplate {
   status: ApprovalFlowStatus;
   is_preset?: boolean;
   is_draft?: boolean;
+  /** v5: 适用部门（多选）。保存模板时同步写入 department_approval_flow_binding。 */
+  applicable_department_ids?: string[];
   /** 审批人列表（priority 升序） */
   approvers: WorkflowApprover[];
   /** 技术评估人列表（priority 升序）；为空表示已关闭技术评估 */
