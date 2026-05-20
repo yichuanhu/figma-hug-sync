@@ -1,5 +1,5 @@
 /**
- * WorkspacePickerModal — 待立项引导卡片中的工作空间选择弹窗
+ * WorkspacePickerModal — 待开发引导卡片中的工作空间选择弹窗
  * 复用 WorkspaceSelect，按需求所属部门过滤；提交时调用 linkRequirements。
  */
 import { useEffect, useState } from 'react';
