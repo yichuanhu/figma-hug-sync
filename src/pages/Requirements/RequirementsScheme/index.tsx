@@ -232,7 +232,7 @@ const RequirementsScheme = () => {
                     showArrow
                     content={(() => {
                       const ids = listDepartmentsByScheme(s.id);
-                      if (ids.length === 0) return <Text type="tertiary" size="small">尚未配置适用部门</Text>;
+                      if (ids.length === 0) return <Text type="tertiary" size="small">尚未配置适用部门（激活时必填）</Text>;
                       return (
                         <div style={{ maxWidth: 280, padding: '4px 0', display: 'flex', flexDirection: 'column', gap: 4 }}>
                           {ids.map((id) => (<Text key={id} size="small">{getDepartmentName(id)}</Text>))}
@@ -240,16 +240,29 @@ const RequirementsScheme = () => {
                       );
                     })()}
                   >
-                    <Tag
-                      size="small"
-                      color="violet"
-                      type="light"
-                      prefixIcon={<Building2 size={12} strokeWidth={2} />}
-                      onClick={(e) => e.stopPropagation()}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      适用 {bindCountMap[s.id] ?? 0} 个部门
-                    </Tag>
+                    {(bindCountMap[s.id] ?? 0) > 0 ? (
+                      <Tag
+                        size="small"
+                        color="violet"
+                        type="light"
+                        prefixIcon={<Building2 size={12} strokeWidth={2} />}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        适用 {bindCountMap[s.id]} 个部门
+                      </Tag>
+                    ) : (
+                      <Tag
+                        size="small"
+                        color="amber"
+                        type="light"
+                        prefixIcon={<Building2 size={12} strokeWidth={2} />}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        未配置适用部门
+                      </Tag>
+                    )}
                   </Popover>
                 </div>
               </div>
