@@ -65,6 +65,12 @@ const RequirementsScheme = () => {
   useEffect(() => { load(); }, [load]);
 
   const handleActivate = (s: RequirementScheme) => {
+    const deptCount = (s.applicable_department_ids ?? []).length;
+    if (deptCount === 0) {
+      Toast.warning('请先在模版中配置「适用部门」，激活时至少选择 1 个部门');
+      goEdit(s);
+      return;
+    }
     Modal.confirm({
       title: t('requirements.scheme.activateTitle'),
       content: t('requirements.scheme.activateContent', { name: s.name }),
