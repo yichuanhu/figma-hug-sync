@@ -439,6 +439,11 @@ const RequirementCreatePage = () => {
 
   const handleSubmit = async () => {
     if (!formApi) return;
+    if (!selectedSchemeId) {
+      setCurrentStep(0);
+      Toast.warning('请选择需求方案');
+      return;
+    }
     if (!departmentValue) {
       setCurrentStep(0);
       Toast.warning(t('requirements.form.departmentRequired'));
