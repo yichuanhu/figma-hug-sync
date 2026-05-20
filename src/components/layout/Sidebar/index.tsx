@@ -308,6 +308,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'requirementsConfig', labelKey: 'sidebar.requirementsConfig', isGroupLabel: true },
     { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <NotepadTextDashed size={18} strokeWidth={2} />, path: '/requirements/scheme' },
     { key: 'requirementsApprovalConfig', labelKey: 'sidebar.requirementsApprovalConfig', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/requirements/approval-config' },
+    { key: 'requirementsDeptApprovalBinding', labelKey: 'sidebar.requirementsDeptApprovalBinding', icon: <Building2 size={18} strokeWidth={2} />, path: '/requirements/department-approval-binding' },
   ];
 
   // 运维中心的详细菜单结构 - 使用分组标题样式
@@ -428,6 +429,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname.startsWith('/sharing-center/approvals')) return 'sharingApprovals';
     if (pathname.startsWith('/sharing-center/admin/approval-levels')) return 'sharingApprovalLevels';
     if (pathname.startsWith('/sharing-center/admin/permissions')) return 'sharingPermissions';
+    if (pathname.startsWith('/requirements/department-approval-binding')) return 'requirementsDeptApprovalBinding';
     if (pathname.startsWith('/requirements/approval-config')) return 'requirementsApprovalConfig';
     if (pathname.startsWith('/maintenance/config')) return 'mtConfigManagement';
     if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';

@@ -70,6 +70,7 @@ import RequirementsScheme from "@/pages/Requirements/RequirementsScheme";
 import SchemeBuilderPage from "@/pages/Requirements/RequirementsScheme/components/SchemeBuilder";
 import ApprovalConfigPage from "@/pages/Requirements/ApprovalConfig";
 import ApprovalFlowBuilderPage from "@/pages/Requirements/ApprovalConfig/components/ApprovalFlowBuilder";
+import DepartmentApprovalBindingPage from "@/pages/Requirements/DepartmentApprovalBinding";
 import RequirementsProjects from "@/pages/Requirements/RequirementsProjects";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
@@ -183,6 +184,7 @@ const App = () => {
           <Route path="/requirements/approval-config/builder/:id" element={<ApprovalFlowBuilderPage />} />
           <Route path="/requirements/approval-config/detail/:id" element={<ApprovalFlowBuilderPage />} />
           <Route path="/requirements/approval-config/*" element={<Navigate to="/requirements/approval-config" replace />} />
+          <Route path="/requirements/department-approval-binding" element={<DepartmentApprovalBindingPage />} />
           <Route path="/requirements/projects" element={<RequirementsProjects />} />
           <Route path="/operations" element={<Navigate to="/operations/business-outcomes" replace />} />
           <Route path="/operations/dashboard" element={<Navigate to="/operations/business-outcomes" replace />} />
