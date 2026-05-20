@@ -32,7 +32,7 @@ export type RequirementStatus =
   | 'DRAFT'              // 草稿
   | 'PENDING_APPROVAL'   // 待审批
   | 'PENDING_ASSESSMENT' // 待评估
-  | 'PENDING_PROJECT'    // 待立项
+  | 'PENDING_PROJECT'    // 待开发（v4 重命名；枚举值暂保留以兼容历史 mock 数据）
   | 'DEVELOPING'         // 开发中
   | 'LAUNCHED'           // 已上线
   | 'OFFLINE'            // 已下线

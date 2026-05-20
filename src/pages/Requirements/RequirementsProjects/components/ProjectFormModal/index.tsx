@@ -15,7 +15,7 @@ import {
 interface Props {
   visible: boolean;
   initialData?: Project | null;
-  /** 预选的关联需求 ID（来自需求中心待立项引导） */
+  /** 预选的关联需求 ID（来自需求中心待开发引导） */
   prefilledRequirementIds?: string[];
   onClose: () => void;
   onSuccess: () => void;

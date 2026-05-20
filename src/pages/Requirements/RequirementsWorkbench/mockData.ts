@@ -1324,7 +1324,7 @@ export const resubmitRequirement = async (id: string): Promise<RequirementItem |
 
 /**
  * 状态联动：当需求被关联到工作空间时，自动迁移到「开发中」并写入审批历史留痕。
- * 仅当当前状态属于审批/评估/待立项阶段时迁移；其余状态保持不变。
+ * 仅当当前状态属于审批/评估/待开发阶段时迁移；其余状态保持不变。
  */
 export const transitionToDeveloping = async (
   requirementId: string,
