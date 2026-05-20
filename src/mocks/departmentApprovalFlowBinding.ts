@@ -95,3 +95,48 @@ export const removeBinding = async (deptId: string): Promise<void> => {
 export const listDepartmentsByTemplate = (templateId: string): string[] => {
   return cache.filter((b) => b.approval_flow_template_id === templateId).map((b) => b.department_id);
 };
+
+/**
+ * 覆盖式同步：将「该模板的绑定」整体替换为传入的部门列表。
+ * - 移除：原本绑定到该模板但不在新列表里的部门
+ * - 新增/抢占：新列表里的部门统一指向该模板（若之前被其他模板占用，则抢占）
+ */
+export interface SetTemplateBindingsResult {
+  added: string[];
+  removed: string[];
+  /** 从其它模板抢占的明细：departmentId -> previousTemplateId */
+  overridden: Record<string, string>;
+}
+
+export const setBindingsForTemplate = (templateId: string, deptIds: string[]): SetTemplateBindingsResult => {
+  const now = new Date().toISOString();
+  const setIds = new Set(deptIds);
+  const overridden: Record<string, string> = {};
+  const added: string[] = [];
+  const removed: string[] = [];
+
+  cache.forEach((b) => {
+    if (b.approval_flow_template_id === templateId && !setIds.has(b.department_id)) removed.push(b.department_id);
+  });
+
+  const touchedDepts = new Set<string>([...deptIds, ...removed]);
+  const remaining = cache.filter((b) => !touchedDepts.has(b.department_id));
+
+  deptIds.forEach((deptId) => {
+    const prev = cache.find((b) => b.department_id === deptId);
+    if (!prev) added.push(deptId);
+    else if (prev.approval_flow_template_id !== templateId) overridden[deptId] = prev.approval_flow_template_id;
+    remaining.push({
+      department_id: deptId,
+      business_type: BUSINESS_TYPE,
+      approval_flow_template_id: templateId,
+      updated_at: now,
+      updated_by: '当前用户',
+    });
+  });
+
+  cache = remaining;
+  save(cache);
+  notify();
+  return { added, removed, overridden };
+};
