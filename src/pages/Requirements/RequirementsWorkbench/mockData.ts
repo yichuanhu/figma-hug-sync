@@ -307,6 +307,8 @@ import type { JobLevel, RequirementBaselineFormData, SchemeCostConfig, Requireme
 import { getActiveScheme as getActiveSchemeFromStore, PRESET_SCHEMES, subscribeSchemeChange, getSchemeVersion } from './schemeConfig';
 import { useSyncExternalStore } from 'react';
 import { resolveApprovers } from './utils/approverResolver';
+import { getBindingByDepartment } from '@/mocks/departmentApprovalFlowBinding';
+import { getApprovalFlowById } from '@/pages/Requirements/ApprovalConfig/mockData';
 
 /** 默认 cost 配置回退（当激活模板缺 cost_config 时使用） */
 const DEFAULT_COST_CONFIG: SchemeCostConfig = {
@@ -332,17 +334,64 @@ export const schemeHasAssessment = (): boolean => {
   return !!(s.value_assessment_model || s.complexity_assessment_model);
 };
 
+/**
+ * STORY-016：按部门审批流绑定解析「是否需要审批/评估」。
+ *
+ * 优先级：
+ *   1. 部门已绑定模板 → 用模板的 approvers/assessors 决定（三种跳过路径都在此）
+ *   2. 部门未绑定 → 全部跳过，直接「待开发」（PENDING_PROJECT）
+ *   3. 兜底（无 departmentId）→ 回落到当前激活方案（旧行为）
+ */
+export interface DepartmentRuntimeFlags {
+  hasApproval: boolean;
+  hasAssessment: boolean;
+  templateId: string | null;
+  templateName?: string;
+  /** 该部门是否已绑定模板；未绑定时上面两个 has* 均为 false */
+  hasBinding: boolean;
+}
+
+export const resolveRuntimeFlagsByDepartment = (deptId?: string): DepartmentRuntimeFlags => {
+  if (!deptId) {
+    return {
+      hasApproval: schemeHasApproval(),
+      hasAssessment: schemeHasAssessment(),
+      templateId: null,
+      hasBinding: false,
+    };
+  }
+  const tplId = getBindingByDepartment(deptId);
+  if (!tplId) {
+    // STORY-016 跳过路径 3：部门未绑定 → 跳过审批与评估
+    return { hasApproval: false, hasAssessment: false, templateId: null, hasBinding: false };
+  }
+  const tpl = getApprovalFlowById(tplId);
+  if (!tpl) {
+    return { hasApproval: false, hasAssessment: false, templateId: tplId, hasBinding: true };
+  }
+  return {
+    hasApproval: (tpl.approvers?.length ?? 0) > 0,
+    hasAssessment: (tpl.assessors?.length ?? 0) > 0,
+    templateId: tpl.id,
+    templateName: tpl.name,
+    hasBinding: true,
+  };
+};
+
 /** DRAFT 提交后的目标状态：依据模板是否含审批/评估，跳过对应阶段 */
-export const resolveSubmittedStatus = (): RequirementStatus => {
-  if (schemeHasApproval()) return 'PENDING_APPROVAL';
-  if (schemeHasAssessment()) return 'PENDING_ASSESSMENT';
+export const resolveSubmittedStatus = (deptId?: string): RequirementStatus => {
+  const f = resolveRuntimeFlagsByDepartment(deptId);
+  if (f.hasApproval) return 'PENDING_APPROVAL';
+  if (f.hasAssessment) return 'PENDING_ASSESSMENT';
   return 'PENDING_PROJECT';
 };
 
 /** 审批通过后的目标状态：无评估则跳过 PENDING_ASSESSMENT */
-export const resolvePostApprovalStatus = (): RequirementStatus => {
-  return schemeHasAssessment() ? 'PENDING_ASSESSMENT' : 'PENDING_PROJECT';
+export const resolvePostApprovalStatus = (deptId?: string): RequirementStatus => {
+  const f = resolveRuntimeFlagsByDepartment(deptId);
+  return f.hasAssessment ? 'PENDING_ASSESSMENT' : 'PENDING_PROJECT';
 };
+
 
 /**
  * React Hook：订阅当前激活模板的关键标志位（hasApproval/hasAssessment）。
