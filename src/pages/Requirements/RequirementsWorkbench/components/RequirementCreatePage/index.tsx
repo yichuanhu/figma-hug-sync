@@ -599,6 +599,32 @@ const RequirementCreatePage = () => {
           >
             {/* Step 0 */}
             <div style={{ display: currentStep === 0 ? 'block' : 'none' }}>
+              <Form.Slot label={{ text: '需求方案', required: true }}>
+                <Select
+                  placeholder={
+                    activeSchemes.length === 0
+                      ? '当前无激活的需求方案，请先在「需求模板」中激活'
+                      : '请选择需求方案'
+                  }
+                  value={selectedSchemeId}
+                  onChange={(v) => {
+                    setSelectedSchemeId(v as string);
+                    setDirty(true);
+                  }}
+                  optionList={activeSchemes.map((s) => ({
+                    value: s.id,
+                    label: `${s.name} · v${s.version}`,
+                  }))}
+                  disabled={isPostProjectEdit || activeSchemes.length === 0}
+                  style={{ width: '100%' }}
+                  showClear={false}
+                />
+                {activeScheme?.description && (
+                  <Text type="tertiary" size="small" style={{ marginTop: 6, display: 'block' }}>
+                    {activeScheme.description}
+                  </Text>
+                )}
+              </Form.Slot>
               <Form.Input
                 field="title"
                 label={t('requirements.form.titleLabel')}
