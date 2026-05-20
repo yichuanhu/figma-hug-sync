@@ -122,7 +122,7 @@ const ApprovalConfigPage = () => {
       <div className="approval-config-page-header">
         <div className="approval-config-page-header-title">
           <Title heading={3} className="title">审批配置</Title>
-          <Text type="tertiary">集中管理需求审批流模板。支持多模板同时启用；实际生效顺序由「部门审批流绑定」按部门分配。</Text>
+          <Text type="tertiary">集中管理需求审批流模板。支持同时启用多个模板；通过模板中的「适用部门」决定哪些部门走该流程。</Text>
         </div>
         <Row type="flex" justify="space-between" align="middle" className="approval-config-page-header-toolbar">
           <Col>
