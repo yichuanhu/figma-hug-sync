@@ -132,48 +132,71 @@ const SchemeBuilderPage = () => {
       setActiveTab('form');
       return;
     }
-    try {
-      const deptIds = draftScheme.applicable_department_ids ?? [];
-      const updated = await updateSchemeBuilder(draftScheme.id, {
-        name: draftScheme.name,
-        description: draftScheme.description,
-        custom_fields: draftScheme.custom_fields,
-        value_assessment_model: draftScheme.value_assessment_model,
-        complexity_assessment_model: draftScheme.complexity_assessment_model,
-        workflow_config: draftScheme.workflow_config,
-        cost_config: draftScheme.cost_config,
-        approval_flow: draftScheme.approval_flow,
-        applicable_department_ids: deptIds,
-      });
-      const bindResult = setSchemeBindingsForScheme(draftScheme.id, deptIds);
-      setSavedScheme(updated);
-      setDraftScheme(updated);
-      setDirty(false);
-      const overriddenCount = Object.keys(bindResult.overridden).length;
-      if (overriddenCount > 0) {
-        Toast.info(`${overriddenCount} 个部门已从其他方案改绑至本方案`);
-      }
-      const v = validateScheme(updated.id);
-      setMissingTabs(v.missing);
-      Toast.success(t('requirements.scheme.builder.savedDraft'));
-      if (!v.ok) {
-        // 草稿允许不完整，但提示一下哪些缺失
-        Modal.warning({
-          title: t('requirements.scheme.builder.incompleteTitle'),
-          content: (
-            <div>
-              <div style={{ marginBottom: 8 }}>{t('requirements.scheme.builder.incompleteHint')}</div>
-              <ul style={{ paddingLeft: 18, margin: 0 }}>
-                {v.errors.map((e, i) => <li key={i} style={{ color: 'var(--semi-color-warning)' }}>{e}</li>)}
-              </ul>
-            </div>
-          ),
-          okText: t('common.confirm'),
+    const deptIds = draftScheme.applicable_department_ids ?? [];
+
+    const doPersist = async () => {
+      try {
+        const updated = await updateSchemeBuilder(draftScheme.id, {
+          name: draftScheme.name,
+          description: draftScheme.description,
+          custom_fields: draftScheme.custom_fields,
+          value_assessment_model: draftScheme.value_assessment_model,
+          complexity_assessment_model: draftScheme.complexity_assessment_model,
+          workflow_config: draftScheme.workflow_config,
+          cost_config: draftScheme.cost_config,
+          approval_flow: draftScheme.approval_flow,
+          applicable_department_ids: deptIds,
         });
+        setSchemeBindingsForScheme(draftScheme.id, deptIds);
+        setSavedScheme(updated);
+        setDraftScheme(updated);
+        setDirty(false);
+        const v = validateScheme(updated.id);
+        setMissingTabs(v.missing);
+        Toast.success(t('requirements.scheme.builder.savedDraft'));
+        if (!v.ok) {
+          Modal.warning({
+            title: t('requirements.scheme.builder.incompleteTitle'),
+            content: (
+              <div>
+                <div style={{ marginBottom: 8 }}>{t('requirements.scheme.builder.incompleteHint')}</div>
+                <ul style={{ paddingLeft: 18, margin: 0 }}>
+                  {v.errors.map((e, i) => <li key={i} style={{ color: 'var(--semi-color-warning)' }}>{e}</li>)}
+                </ul>
+              </div>
+            ),
+            okText: t('common.confirm'),
+          });
+        }
+      } catch (e) {
+        Toast.error((e as Error).message);
       }
-    } catch (e) {
-      Toast.error((e as Error).message);
+    };
+
+    // 冲突预检：若存在归属抢占，弹出二次确认
+    const conflicts = previewSchemeBindings(draftScheme.id, deptIds);
+    if (conflicts.length === 0) {
+      await doPersist();
+      return;
     }
+    Modal.confirm({
+      title: '部门归属冲突',
+      icon: <AlertTriangle size={20} strokeWidth={2} style={{ color: 'var(--semi-color-warning)' }} />,
+      width: 520,
+      content: (
+        <BindingConflictContent
+          hint={`已选部门中有 ${conflicts.length} 个当前归属其他需求方案，保存后将改绑至本方案：`}
+          conflicts={conflicts.map((c) => ({
+            deptId: c.deptId,
+            prevOwnerName: getSchemeById(c.prevSchemeId)?.name ?? '未知方案',
+          }))}
+          actionLabel="改绑至本方案"
+        />
+      ),
+      okText: '确认改绑',
+      cancelText: t('common.cancel'),
+      onOk: doPersist,
+    });
   };
 
   const handleActivate = () => {
@@ -182,13 +205,15 @@ const SchemeBuilderPage = () => {
       Toast.warning(t('requirements.scheme.builder.activateDirty'));
       return;
     }
-    const deptCount = (draftScheme.applicable_department_ids ?? []).length;
-    if (deptCount === 0) {
+    const deptIds = draftScheme.applicable_department_ids ?? [];
+    if (deptIds.length === 0) {
       Toast.warning('请先选择「适用部门」，激活时至少选择 1 个部门');
       return;
     }
+    const conflicts = previewSchemeBindings(draftScheme.id, deptIds);
     const doActivate = async () => {
       try {
+        if (conflicts.length > 0) setSchemeBindingsForScheme(draftScheme.id, deptIds);
         await activateSchemeBuilder(draftScheme.id);
         Toast.success(t('requirements.scheme.activateSuccess'));
         setDirty(false);
@@ -201,7 +226,19 @@ const SchemeBuilderPage = () => {
     };
     Modal.confirm({
       title: t('requirements.scheme.builder.activateTitle'),
-      content: t('requirements.scheme.builder.activateContent', { name: draftScheme.name }),
+      width: conflicts.length > 0 ? 520 : 416,
+      content: conflicts.length > 0 ? (
+        <BindingConflictContent
+          hint={`确认激活「${draftScheme.name}」？以下 ${conflicts.length} 个部门当前归属其他方案，激活后将一并改绑到本方案：`}
+          conflicts={conflicts.map((c) => ({
+            deptId: c.deptId,
+            prevOwnerName: getSchemeById(c.prevSchemeId)?.name ?? '未知方案',
+          }))}
+          actionLabel="改绑并激活"
+        />
+      ) : (
+        t('requirements.scheme.builder.activateContent', { name: draftScheme.name })
+      ),
       okText: t('requirements.scheme.activate'),
       cancelText: t('common.cancel'),
       onOk: doActivate,
