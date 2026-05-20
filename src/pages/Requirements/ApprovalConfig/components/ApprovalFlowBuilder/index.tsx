@@ -271,6 +271,42 @@ const ApprovalFlowBuilderPage = () => {
 
       <div className="approval-flow-builder-body">
         <div className="workflow-builder">
+          {/* 适用部门：保存时同步写入 department_approval_flow_binding（business_type=REQUIREMENT） */}
+          <div className="approval-flow-section-card">
+            <div className="approval-flow-section-card-header">
+              <div className="approval-flow-section-card-title">
+                <Building2 size={16} strokeWidth={2} />
+                <span>适用部门</span>
+              </div>
+              <Typography.Text type="tertiary" size="small">
+                选择本审批流模板适用的部门；同一部门同时被多个模板选中时，最新保存的将覆盖之前的绑定。
+              </Typography.Text>
+            </div>
+            <div className="approval-flow-section-card-body">
+              {isView ? (
+                (draft.applicable_department_ids && draft.applicable_department_ids.length > 0) ? (
+                  <Space wrap>
+                    {draft.applicable_department_ids.map((id) => (
+                      <Tag key={id} color="violet" type="light" size="large" prefixIcon={<Building2 size={12} strokeWidth={2} />}>
+                        {getDepartmentName(id)}
+                      </Tag>
+                    ))}
+                  </Space>
+                ) : (
+                  <Typography.Text type="tertiary">尚未配置适用部门</Typography.Text>
+                )
+              ) : (
+                <DepartmentSelect
+                  multiple
+                  value={draft.applicable_department_ids ?? []}
+                  onChange={(ids) => patch({ applicable_department_ids: ids })}
+                  placeholder="请选择适用部门（可多选）"
+                  maxTagCount={6}
+                />
+              )}
+            </div>
+          </div>
+
           <ApproverListEditor
             title="审批人配置"
             approvers={draft.approvers}
