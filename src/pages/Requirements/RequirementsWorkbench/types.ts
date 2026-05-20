@@ -367,6 +367,8 @@ export interface ApprovalRecord {
   status: ApprovalActionStatus;
   comment?: string;
   acted_at?: string;
+  /** STORY-006：所属审批轮次（resubmit 后 +1，原历史按 round 折叠展示） */
+  round?: number;
 }
 
 /** [活动记录] 一次评估打分的留痕（含维度分、档位、总分），不属于需求本体。 */
@@ -383,6 +385,8 @@ export interface AssessmentRecord {
   total_score: number;
   comment?: string;
   acted_at: string;
+  /** STORY-006：所属评估轮次（与 ApprovalRecord.round 同步） */
+  round?: number;
 }
 
 /** [活动记录] 需求版本变更引用（指向 snapshot），不属于需求本体。 */
