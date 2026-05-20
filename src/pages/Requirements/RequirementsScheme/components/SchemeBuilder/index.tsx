@@ -299,35 +299,44 @@ const SchemeBuilderPage = () => {
         </Space>
       </div>
 
-      <div
-        className="scheme-builder-applicable-dept"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          padding: '12px 16px',
-          marginBottom: 12,
-          background: 'var(--semi-color-fill-0)',
-          borderRadius: 8,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--semi-color-text-1)', fontWeight: 500, flexShrink: 0 }}>
-          <Building2 size={14} strokeWidth={2} />
-          适用部门
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <DepartmentSelect
-            multiple
-            value={draftScheme.applicable_department_ids ?? []}
-            onChange={(v) => patch({ applicable_department_ids: (v as string[]) ?? [] })}
-            placeholder="选择适用该方案的部门，部门发起的需求将使用此方案"
-            style={{ width: '100%' }}
-          />
-        </div>
-        <Text type="tertiary" size="small" style={{ flexShrink: 0 }}>
-          已选 {(draftScheme.applicable_department_ids ?? []).length} 个部门
-        </Text>
-      </div>
+      {(() => {
+        const deptCount = (draftScheme.applicable_department_ids ?? []).length;
+        const isEmpty = deptCount === 0;
+        return (
+          <div
+            className="scheme-builder-applicable-dept"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              padding: '12px 16px',
+              marginBottom: 12,
+              background: isEmpty ? 'var(--semi-color-warning-light-default)' : 'var(--semi-color-fill-0)',
+              border: isEmpty ? '1px solid var(--semi-color-warning-light-active)' : '1px solid transparent',
+              borderRadius: 8,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--semi-color-text-1)', fontWeight: 500, flexShrink: 0 }}>
+              <Building2 size={14} strokeWidth={2} />
+              <span>适用部门</span>
+              <Text type="danger" size="small" style={{ marginLeft: 2 }}>*</Text>
+              <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>（激活时必填，草稿可留空）</Text>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <DepartmentSelect
+                multiple
+                value={draftScheme.applicable_department_ids ?? []}
+                onChange={(v) => patch({ applicable_department_ids: (v as string[]) ?? [] })}
+                placeholder="选择适用该方案的部门，部门发起的需求将使用此方案"
+                style={{ width: '100%' }}
+              />
+            </div>
+            <Text type={isEmpty ? 'warning' : 'tertiary'} size="small" style={{ flexShrink: 0 }}>
+              已选 {deptCount} 个部门
+            </Text>
+          </div>
+        );
+      })()}
 
       <div className="scheme-builder-body">
         <Tabs
