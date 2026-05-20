@@ -129,6 +129,7 @@ const SchemeBuilderPage = () => {
       return;
     }
     try {
+      const deptIds = draftScheme.applicable_department_ids ?? [];
       const updated = await updateSchemeBuilder(draftScheme.id, {
         name: draftScheme.name,
         description: draftScheme.description,
@@ -138,10 +139,16 @@ const SchemeBuilderPage = () => {
         workflow_config: draftScheme.workflow_config,
         cost_config: draftScheme.cost_config,
         approval_flow: draftScheme.approval_flow,
+        applicable_department_ids: deptIds,
       });
+      const bindResult = setSchemeBindingsForScheme(draftScheme.id, deptIds);
       setSavedScheme(updated);
       setDraftScheme(updated);
       setDirty(false);
+      const overriddenCount = Object.keys(bindResult.overridden).length;
+      if (overriddenCount > 0) {
+        Toast.info(`${overriddenCount} 个部门已从其他方案改绑至本方案`);
+      }
       const v = validateScheme(updated.id);
       setMissingTabs(v.missing);
       Toast.success(t('requirements.scheme.builder.savedDraft'));
