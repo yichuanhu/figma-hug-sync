@@ -155,28 +155,19 @@ const RequirementCreatePage = () => {
     setDirty(true);
   };
 
-  // 可选方案列表（多激活）
-  const activeSchemes = useMemo(() => {
-    const list = getActiveSchemes();
-    // 编辑态：若需求绑定的方案不在 active 列表里，也加入下拉
-    if (isEdit && editData?.scheme_id) {
-      const bound = getSchemeById(editData.scheme_id);
-      if (bound && !list.some((s) => s.id === bound.id)) {
-        return [bound, ...list];
-      }
-    }
-    return list;
-  }, [isEdit, editData]);
+  // v5：按当前用户所属部门自动匹配方案
+  const [bindingTick, setBindingTick] = useState(0);
+  useEffect(() => subscribeSchemeBindingChange(() => setBindingTick((k) => k + 1)), []);
 
-  const [selectedSchemeId, setSelectedSchemeId] = useState<string | undefined>(() => {
+  const autoMatchedSchemeId = useMemo(() => {
+    return getSchemeIdByDepartment(MOCK_CURRENT_USER.department_id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bindingTick]);
+
+  const selectedSchemeId = useMemo<string | undefined>(() => {
     if (isEdit && editData?.scheme_id) return editData.scheme_id;
-    const first = getActiveSchemes()[0];
-    return first?.id;
-  });
-
-  useEffect(() => {
-    if (isEdit && editData?.scheme_id) setSelectedSchemeId(editData.scheme_id);
-  }, [isEdit, editData]);
+    return autoMatchedSchemeId ?? undefined;
+  }, [isEdit, editData, autoMatchedSchemeId]);
 
   const activeScheme = useMemo(() => {
     if (selectedSchemeId) return getSchemeById(selectedSchemeId);
@@ -611,32 +602,23 @@ const RequirementCreatePage = () => {
           >
             {/* Step 0 */}
             <div style={{ display: currentStep === 0 ? 'block' : 'none' }}>
-              <Form.Slot label={{ text: '需求方案', required: true }}>
-                <Select
-                  placeholder={
-                    activeSchemes.length === 0
-                      ? '当前无激活的需求方案，请先在「需求模板」中激活'
-                      : '请选择需求方案'
+              {activeScheme && (
+                <Banner
+                  type="info"
+                  fullMode={false}
+                  closeIcon={null}
+                  style={{ marginBottom: 16 }}
+                  icon={<Building2 size={16} strokeWidth={2} />}
+                  description={
+                    <span>
+                      使用方案：<strong>{activeScheme.name}</strong> · v{activeScheme.version}
+                      <Text type="tertiary" size="small" style={{ marginLeft: 8 }}>
+                        （根据当前部门「{getDepartmentName(MOCK_CURRENT_USER.department_id)}」自动匹配）
+                      </Text>
+                    </span>
                   }
-                  value={selectedSchemeId}
-                  onChange={(v) => {
-                    setSelectedSchemeId(v as string);
-                    setDirty(true);
-                  }}
-                  optionList={activeSchemes.map((s) => ({
-                    value: s.id,
-                    label: `${s.name} · v${s.version}`,
-                  }))}
-                  disabled={isPostProjectEdit || activeSchemes.length === 0}
-                  style={{ width: '100%' }}
-                  showClear={false}
                 />
-                {activeScheme?.description && (
-                  <Text type="tertiary" size="small" style={{ marginTop: 6, display: 'block' }}>
-                    {activeScheme.description}
-                  </Text>
-                )}
-              </Form.Slot>
+              )}
               <Form.Input
                 field="title"
                 label={t('requirements.form.titleLabel')}
