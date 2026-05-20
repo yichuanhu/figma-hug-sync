@@ -304,7 +304,7 @@ const generateMockDetailedAssessment = (status: RequirementStatus, idx: number):
 // ============= Story-010 成本预估自动计算 =============
 
 import type { JobLevel, RequirementBaselineFormData, SchemeCostConfig, RequirementScheme } from './types';
-import { getActiveScheme as getActiveSchemeFromStore, PRESET_SCHEMES, subscribeSchemeChange, getSchemeVersion } from './schemeConfig';
+import { getActiveScheme as getActiveSchemeFromStore, PRESET_SCHEMES, subscribeSchemeChange, getSchemeVersion, getSchemeById } from './schemeConfig';
 import { useSyncExternalStore } from 'react';
 import { resolveApprovers } from './utils/approverResolver';
 import { getBindingByDepartment } from '@/mocks/departmentApprovalFlowBinding';
