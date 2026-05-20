@@ -558,6 +558,43 @@ const RequirementCreatePage = () => {
     );
   }
 
+  // v5：新建态时若当前部门未绑定方案，拦截并展示空态
+  if (!isEdit && !activeScheme) {
+    return (
+      <div className="requirement-create-page">
+        <div className="requirement-create-page-header">
+          <Button
+            icon={<ArrowLeft size={16} strokeWidth={2} />}
+            theme="borderless"
+            type="tertiary"
+            className="back-btn"
+            onClick={() => navigate('/requirements/list')}
+          />
+          <Title heading={3} className="title">{t('requirements.form.createTitle')}</Title>
+        </div>
+        <div style={{ padding: '80px 0' }}>
+          <EmptyState
+            variant="noData"
+            description={
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ marginBottom: 8, fontSize: 14, color: 'var(--semi-color-text-0)' }}>
+                  当前部门没有生效的需求模板
+                </div>
+                <Text type="tertiary" size="small">
+                  请联系管理员在「需求模板」中为「{getDepartmentName(MOCK_CURRENT_USER.department_id)}」配置适用方案
+                </Text>
+              </div>
+            }
+            actions={[
+              { label: '返回需求列表', onClick: () => navigate('/requirements/list') },
+              { label: '前往需求模板管理', type: 'primary', onClick: () => navigate('/requirements/scheme') },
+            ]}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="requirement-create-page">
       <div className="requirement-create-page-header">
