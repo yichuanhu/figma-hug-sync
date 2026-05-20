@@ -46,7 +46,16 @@ const ApprovalFlowBuilderPage = () => {
       navigate('/requirements/approval-config');
       return;
     }
-    setDraft({ ...f, assessors: f.assessors ?? [], approvers: f.approvers ?? [] });
+    // 适用部门：优先取实体上的字段；为空则回填 binding 表中已绑定到本模板的部门
+    const applicable = f.applicable_department_ids && f.applicable_department_ids.length > 0
+      ? f.applicable_department_ids
+      : listDepartmentsByTemplate(f.id);
+    setDraft({
+      ...f,
+      assessors: f.assessors ?? [],
+      approvers: f.approvers ?? [],
+      applicable_department_ids: applicable,
+    });
     setLoading(false);
   }, [id, navigate]);
 
