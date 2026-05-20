@@ -120,3 +120,25 @@ export const setSchemeBindingsForScheme = (schemeId: string, deptIds: string[]):
 };
 
 export const fetchAllSchemeBindings = (): DepartmentSchemeBinding[] => [...cache];
+
+/** Dry-run：仅计算会被抢占的部门，不写入。 */
+export interface SchemeBindingConflictItem { deptId: string; prevSchemeId: string; }
+export const previewSchemeBindings = (schemeId: string, deptIds: string[]): SchemeBindingConflictItem[] => {
+  const items: SchemeBindingConflictItem[] = [];
+  deptIds.forEach((deptId) => {
+    const prev = cache.find((b) => b.department_id === deptId);
+    if (prev && prev.scheme_id !== schemeId) {
+      items.push({ deptId, prevSchemeId: prev.scheme_id });
+    }
+  });
+  return items;
+};
+
+/** 返回 deptId -> 当前归属方案 id 的占用 map（可排除指定方案）。 */
+export const getOccupiedDepartmentMapByScheme = (excludeSchemeId?: string): Record<string, string> => {
+  const map: Record<string, string> = {};
+  cache.forEach((b) => {
+    if (b.scheme_id !== excludeSchemeId) map[b.department_id] = b.scheme_id;
+  });
+  return map;
+};
