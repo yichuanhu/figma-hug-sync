@@ -366,15 +366,29 @@ export const fetchSchemes = async (keyword?: string): Promise<RequirementScheme[
   return list;
 };
 
+/** 单激活兼容：返回第一个激活方案（旧逻辑）。优先使用 getActiveSchemes 获取全部激活方案。 */
 export const getActiveScheme = (): RequirementScheme | undefined =>
   schemeStore.find((s) => s.status === 'active');
 
+/** STORY-013 v4：支持多方案同时激活；返回所有 is_active 方案。 */
+export const getActiveSchemes = (): RequirementScheme[] =>
+  schemeStore.filter((s) => s.status === 'active');
+
+/** v4：激活某方案（不再互斥下线其它方案，允许多激活）。 */
 export const activateScheme = async (id: string): Promise<void> => {
   await new Promise((r) => setTimeout(r, 200));
-  schemeStore = schemeStore.map((s) => ({
-    ...s,
-    status: s.id === id ? 'active' : 'inactive',
-  }));
+  schemeStore = schemeStore.map((s) =>
+    s.id === id ? { ...s, status: 'active' } : s,
+  );
+  bumpSchemeVersion();
+};
+
+/** v4：取消激活某方案；预设方案允许停用但不可删除。 */
+export const deactivateScheme = async (id: string): Promise<void> => {
+  await new Promise((r) => setTimeout(r, 200));
+  schemeStore = schemeStore.map((s) =>
+    s.id === id ? { ...s, status: 'inactive' } : s,
+  );
   bumpSchemeVersion();
 };
 
