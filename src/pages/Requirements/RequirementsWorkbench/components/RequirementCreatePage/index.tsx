@@ -362,7 +362,7 @@ const RequirementCreatePage = () => {
     if (cleanedPositionCosts.length > 0) {
       form_data.position_costs = cleanedPositionCosts;
     }
-    const submitValues = { ...values, form_data };
+    const submitValues = { ...values, form_data, scheme_id: selectedSchemeId };
     Object.keys(form_data).forEach((k) => {
       if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
     });
