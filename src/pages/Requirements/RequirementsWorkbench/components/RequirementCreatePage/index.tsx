@@ -299,6 +299,10 @@ const RequirementCreatePage = () => {
     try {
       if (fields.length > 0) await formApi.validate(fields);
       if (currentStep === 0) {
+        if (!selectedSchemeId) {
+          Toast.warning('请选择需求方案');
+          return false;
+        }
         if (!departmentValue) {
           Toast.warning(t('requirements.form.departmentRequired'));
           return false;
