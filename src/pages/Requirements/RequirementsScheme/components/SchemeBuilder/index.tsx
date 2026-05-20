@@ -179,6 +179,11 @@ const SchemeBuilderPage = () => {
       Toast.warning(t('requirements.scheme.builder.activateDirty'));
       return;
     }
+    const deptCount = (draftScheme.applicable_department_ids ?? []).length;
+    if (deptCount === 0) {
+      Toast.warning('请先选择「适用部门」，激活时至少选择 1 个部门');
+      return;
+    }
     const doActivate = async () => {
       try {
         await activateSchemeBuilder(draftScheme.id);
