@@ -160,14 +160,16 @@ export const deleteApprovalFlow = async (id: string): Promise<void> => {
   notify();
 };
 
+/**
+ * STORY-016：审批流模板支持「多激活」。
+ * 激活当前模板，不再强制将其它模板设为停用；同一时间允许任意数量的模板处于启用状态，
+ * 实际「需求 → 审批流」选择由「部门审批流绑定」(department_approval_flow_binding) 决定。
+ */
 export const activateApprovalFlow = async (id: string): Promise<void> => {
   await delay();
-  cache = cache.map((f) => ({
-    ...f,
-    status: f.id === id ? 'active' : f.status === 'active' ? 'inactive' : f.status,
-    is_draft: f.id === id ? false : f.is_draft,
-    updated_at: f.id === id ? new Date().toISOString() : f.updated_at,
-  }));
+  cache = cache.map((f) => f.id === id
+    ? { ...f, status: 'active' as const, is_draft: false, updated_at: new Date().toISOString() }
+    : f);
   save(cache);
   notify();
 };

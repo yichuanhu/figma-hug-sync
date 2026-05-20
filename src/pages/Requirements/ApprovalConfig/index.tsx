@@ -17,7 +17,7 @@ import {
   Space,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause } from 'lucide-react';
+import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Building2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   fetchApprovalFlows,
@@ -29,6 +29,10 @@ import {
   subscribeApprovalFlowChange,
   type ApprovalFlowTemplate,
 } from './mockData';
+import {
+  getBoundDepartmentCountMap,
+  subscribeBindingChange,
+} from '@/mocks/departmentApprovalFlowBinding';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -39,11 +43,13 @@ const ApprovalConfigPage = () => {
   const [keyword, setKeyword] = useState('');
   const [flows, setFlows] = useState<ApprovalFlowTemplate[]>([]);
   const [loading, setLoading] = useState(true);
+  const [bindCountMap, setBindCountMap] = useState<Record<string, number>>(() => getBoundDepartmentCountMap());
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       setFlows(await fetchApprovalFlows(keyword));
+      setBindCountMap(getBoundDepartmentCountMap());
     } finally {
       setLoading(false);
     }
@@ -54,6 +60,7 @@ const ApprovalConfigPage = () => {
   }, [load]);
 
   useEffect(() => subscribeApprovalFlowChange(() => load()), [load]);
+  useEffect(() => subscribeBindingChange(() => setBindCountMap(getBoundDepartmentCountMap())), []);
 
   const goEdit = (f: ApprovalFlowTemplate) => {
     navigate(`/requirements/approval-config/builder/${f.id}`);
@@ -71,7 +78,7 @@ const ApprovalConfigPage = () => {
   const handleActivate = (f: ApprovalFlowTemplate) => {
     Modal.confirm({
       title: '启用审批流',
-      content: `确认将「${f.name}」设为当前生效的审批流？同一时间仅一个审批流处于启用状态。`,
+      content: `确认启用「${f.name}」?启用后可在「部门审批流绑定」中将该模板分配给具体部门。`,
       okText: '启用',
       cancelText: t('common.cancel'),
       onOk: async () => {
@@ -112,7 +119,7 @@ const ApprovalConfigPage = () => {
       <div className="approval-config-page-header">
         <div className="approval-config-page-header-title">
           <Title heading={3} className="title">审批配置</Title>
-          <Text type="tertiary">集中管理需求审批流模板，与具体的需求模板解耦，支持创建、编辑、启用与停用。</Text>
+          <Text type="tertiary">集中管理需求审批流模板。支持多模板同时启用；实际生效顺序由「部门审批流绑定」按部门分配。</Text>
         </div>
         <Row type="flex" justify="space-between" align="middle" className="approval-config-page-header-toolbar">
           <Col>
@@ -244,6 +251,9 @@ const ApprovalConfigPage = () => {
                   {f.approvers.some((a) => a.approval_mode === 'majority') && (
                     <Tag size="small" color="cyan" type="light">含多数通过</Tag>
                   )}
+                  <Tag size="small" color="violet" type="light" prefixIcon={<Building2 size={12} strokeWidth={2} />}>
+                    {bindCountMap[f.id] ?? 0} 个部门已绑定
+                  </Tag>
                 </div>
               </div>
             ))}

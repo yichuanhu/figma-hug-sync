@@ -20,17 +20,16 @@
 
 ## 执行批次
 
-### Batch 1（本轮）— 基线对齐
+### Batch 1 — 基线对齐 ✅
 - [x] 编写本计划文档
-- [ ] 状态文案全量重命名 「待立项 → 待开发」（i18n + 引导文案 + Toast）
+- [x] 状态文案全量重命名 「待立项 → 待开发」（i18n + 引导文案 + Toast）
 
-### Batch 2 — 审批流体系骨架（最大块）
-- 方案多激活；移除 Scheme 审批流绑定 UI（详情/列表/构建器）
-- 审批流模板列表：移除「绑定到方案」；新增「绑定部门数」列；多激活
-- 新增菜单「部门审批流绑定」：路由 `/requirements/department-approval-binding`
-  - 左侧 Tree（部门），右侧当前部门绑定的审批流模板（可改绑/解绑）
-  - 数据：新增 `mocks/departmentApprovalFlowBinding.ts`
-- 编辑模板时，名字与上面 v4 保持一致（默认审批流程 不可删但可编辑）
+### Batch 2 — 审批流体系骨架（本轮） ✅
+- [x] 审批流模板多激活：`activateApprovalFlow` 不再强制下线其它模板；卡片新增「N 个部门已绑定」
+- [x] 新增 mock：`src/mocks/departmentApprovalFlowBinding.ts`（business_type=REQUIREMENT，含 3 条种子数据）
+- [x] 新增菜单/页面「部门审批流绑定」`/requirements/department-approval-binding`：左部门树（含「已绑定」标签）+ 右当前部门绑定（含解除/更换模板）
+- [x] 侧栏新增条目 `requirementsDeptApprovalBinding` + zh-CN/en i18n
+- [ ] 方案构建器移除审批流绑定 UI（移到 Batch 3 一起处理，与运行时跳过逻辑一并改）
 
 ### Batch 3 — 提交/审批/评估运行时
 - 提交逻辑改造：按部门查模板，三种跳过路径
