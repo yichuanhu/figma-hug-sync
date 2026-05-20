@@ -132,9 +132,14 @@ const ApprovalFlowBuilderPage = () => {
       Toast.warning('请先保存当前修改后再启用');
       return;
     }
+    const deptCount = (draft.applicable_department_ids ?? []).length;
+    if (deptCount === 0) {
+      Toast.warning('请先选择「适用部门」，启用时至少选择 1 个部门');
+      return;
+    }
     Modal.confirm({
       title: '启用审批流',
-      content: `确认将「${draft.name}」设为当前生效的审批流？同一时间仅一个审批流处于启用状态。`,
+      content: `确认将「${draft.name}」启用？启用后该流程将对所选 ${deptCount} 个部门的需求生效。`,
       okText: '启用',
       cancelText: t('common.cancel'),
       onOk: async () => {
