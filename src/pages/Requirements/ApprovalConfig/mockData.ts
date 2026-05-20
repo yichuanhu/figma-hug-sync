@@ -48,6 +48,7 @@ const defaultFlows: ApprovalFlowTemplate[] = [
     assessors: [
       { id: 'as1', name: '技术架构评估', type: 'role', priority: 1, required: true, approval_mode: 'majority', timeout_days: 5, target_ids: ['role-committee'] },
     ],
+    applicable_department_ids: ['dept-apa-product', 'dept-dw'],
     created_at: '2025-01-10T09:00:00Z',
     updated_at: '2025-02-20T14:30:00Z',
   },
@@ -62,6 +63,7 @@ const defaultFlows: ApprovalFlowTemplate[] = [
       { id: 'a1', name: '直属主管审批', type: 'department_leader', priority: 1, required: true, approval_mode: 'any_one', timeout_days: 3 },
     ],
     assessors: [],
+    applicable_department_ids: ['dept-finance'],
     created_at: '2025-01-12T10:00:00Z',
     updated_at: '2025-01-12T10:00:00Z',
   },
