@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Banner, Input } from '@douyinfe/semi-ui';
+import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Banner, Input, Popover } from '@douyinfe/semi-ui';
 import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Clock, Pencil, Building2 } from 'lucide-react';
+import { getDepartmentName } from '@/mocks/departmentData';
 import {
   getSchemeById,
   updateSchemeBuilder,
@@ -291,6 +292,36 @@ const SchemeBuilderPage = () => {
             {t('requirements.scheme.activate')}
           </Button>
         </Space>
+      </div>
+
+      <div
+        className="scheme-builder-applicable-dept"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          padding: '12px 16px',
+          marginBottom: 12,
+          background: 'var(--semi-color-fill-0)',
+          borderRadius: 8,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--semi-color-text-1)', fontWeight: 500, flexShrink: 0 }}>
+          <Building2 size={14} strokeWidth={2} />
+          适用部门
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <DepartmentSelect
+            multiple
+            value={draftScheme.applicable_department_ids ?? []}
+            onChange={(v) => patch({ applicable_department_ids: (v as string[]) ?? [] })}
+            placeholder="选择适用该方案的部门，部门发起的需求将使用此方案"
+            style={{ width: '100%' }}
+          />
+        </div>
+        <Text type="tertiary" size="small" style={{ flexShrink: 0 }}>
+          已选 {(draftScheme.applicable_department_ids ?? []).length} 个部门
+        </Text>
       </div>
 
       <div className="scheme-builder-body">

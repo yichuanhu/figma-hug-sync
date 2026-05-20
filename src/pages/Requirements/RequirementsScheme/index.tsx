@@ -1,9 +1,15 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Input, Tag, Toast, Modal, Dropdown, Row, Col, Space, Tooltip } from '@douyinfe/semi-ui';
+import { Typography, Button, Input, Tag, Toast, Modal, Dropdown, Row, Col, Space, Tooltip, Popover } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, CheckCircle, Eye, Trash2, Pencil, Plus, Copy } from 'lucide-react';
+import { Ellipsis, CheckCircle, Eye, Trash2, Pencil, Plus, Copy, Building2 } from 'lucide-react';
+import {
+  getBoundDepartmentCountMapByScheme,
+  listDepartmentsByScheme,
+  subscribeSchemeBindingChange,
+} from '@/mocks/departmentSchemeBinding';
+import { getDepartmentName } from '@/mocks/departmentData';
 import EmptyState from '@/components/EmptyState';
 import {
   fetchSchemes,
@@ -27,7 +33,10 @@ const RequirementsScheme = () => {
 
   const [detailScheme, setDetailScheme] = useState<RequirementScheme | null>(null);
   const [presetPickerVisible, setPresetPickerVisible] = useState(false);
+  const [bindCountMap, setBindCountMap] = useState<Record<string, number>>(() => getBoundDepartmentCountMapByScheme());
   const navigate = useNavigate();
+
+  useEffect(() => subscribeSchemeBindingChange(() => setBindCountMap(getBoundDepartmentCountMapByScheme())), []);
 
   const goEdit = (s: RequirementScheme) => {
     navigate(`/requirements/scheme/builder/${s.id}`);
@@ -212,6 +221,30 @@ const RequirementsScheme = () => {
                 </Text>
                 <div className="scheme-card-footer">
                   <Tag size="small" color="grey" type="light">{s.custom_fields.length} 字段</Tag>
+                  <Popover
+                    position="top"
+                    showArrow
+                    content={(() => {
+                      const ids = listDepartmentsByScheme(s.id);
+                      if (ids.length === 0) return <Text type="tertiary" size="small">尚未配置适用部门</Text>;
+                      return (
+                        <div style={{ maxWidth: 280, padding: '4px 0', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                          {ids.map((id) => (<Text key={id} size="small">{getDepartmentName(id)}</Text>))}
+                        </div>
+                      );
+                    })()}
+                  >
+                    <Tag
+                      size="small"
+                      color="violet"
+                      type="light"
+                      prefixIcon={<Building2 size={12} strokeWidth={2} />}
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      适用 {bindCountMap[s.id] ?? 0} 个部门
+                    </Tag>
+                  </Popover>
                 </div>
               </div>
             ))}
