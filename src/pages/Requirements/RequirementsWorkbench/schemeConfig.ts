@@ -476,7 +476,6 @@ import type { WorkflowConfig, CostConfig } from './types';
 
 /** 创建空白模版草稿 */
 export const createSchemeDraft = async (meta: { name: string; description?: string; version?: string }): Promise<RequirementScheme> => {
-  await new Promise((r) => setTimeout(r, 200));
   const id = `scheme-draft-${Date.now()}`;
   const code = `CUSTOM-${Date.now().toString(36).toUpperCase()}`;
   const draft: RequirementScheme = {
