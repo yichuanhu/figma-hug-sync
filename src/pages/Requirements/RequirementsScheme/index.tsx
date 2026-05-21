@@ -8,9 +8,12 @@ import {
   getBoundDepartmentCountMapByScheme,
   listDepartmentsByScheme,
   subscribeSchemeBindingChange,
+  getOccupiedDepartmentMapByScheme,
 } from '@/mocks/departmentSchemeBinding';
 import { getDepartmentName } from '@/mocks/departmentData';
 import EmptyState from '@/components/EmptyState';
+import DepartmentPicker from '@/components/DepartmentPicker';
+import { computeDeptDisabledOptions } from '@/pages/Requirements/_shared/computeDeptDisabledOptions';
 import {
   fetchSchemes,
   activateScheme,
@@ -18,6 +21,9 @@ import {
   deleteScheme,
   createSchemeDraft,
   cloneSchemeAsDraft,
+  updateSchemeApplicableDepartments,
+  getActiveSchemes,
+  getSchemeById,
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '../RequirementsWorkbench/types';
 import SchemeDetailDrawer from './components/SchemeDetailDrawer';
