@@ -163,13 +163,19 @@ const FormBuilder = ({ fields, onChange }: Props) => {
 
         {/* 自定义字段 */}
         <div className="canvas-section">
-          <div className="canvas-section-title">
-            {t('requirements.scheme.builder.customFields')} ({fields.length})
+          <div className="canvas-section-title canvas-section-title-with-action">
+            <span>
+              {t('requirements.scheme.builder.customFields')} ({fields.length})
+            </span>
+            <AddFieldPopover onAdd={addField} compact />
           </div>
           {fields.length === 0 ? (
-            <div className="empty-fields">
-              <Text type="tertiary" size="small">{t('requirements.scheme.builder.emptyFields')}</Text>
-            </div>
+            <AddFieldPopover onAdd={addField} mode="empty">
+              <div className="empty-fields empty-fields-clickable">
+                <Text type="tertiary" size="small">{t('requirements.scheme.builder.emptyFields')}</Text>
+                <Text type="primary" size="small" style={{ marginTop: 6 }}>点击此处添加第一个字段</Text>
+              </div>
+            </AddFieldPopover>
           ) : (
             <div className="field-card-list">
               {fields.map((f, idx) => (
@@ -197,10 +203,12 @@ const FormBuilder = ({ fields, onChange }: Props) => {
           )}
         </div>
 
-        {/* 底部添加题目按钮 */}
-        <div className="add-field-bar">
-          <AddFieldPopover onAdd={addField} />
-        </div>
+        {/* 底部添加题目按钮（字段较多时方便末尾追加） */}
+        {fields.length > 0 && (
+          <div className="add-field-bar">
+            <AddFieldPopover onAdd={addField} />
+          </div>
+        )}
       </div>
 
       {/* 右侧固定的高级配置面板 */}
