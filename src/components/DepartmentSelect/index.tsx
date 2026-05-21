@@ -117,6 +117,7 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
     maxTagCount,
     useNameAsValue = false,
     disabledOptions,
+    autoCascadeDescendants = false,
   } = props as any;
 
   const { t } = useTranslation();
@@ -128,10 +129,43 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
 
   const dropdownWidth = useMemo(() => estimateMaxDropdownWidth(collectLabels(departmentTree)), []);
 
+  // 维护上一次 value，用于多选级联场景下计算新增/移除的部门，再扩展为整棵子树。
+  const prevValueRef = useRef<string[]>(Array.isArray(value) ? value : []);
+
+  const handleChange = (val: any) => {
+    if (multiple && autoCascadeDescendants && !useNameAsValue) {
+      const next = new Set<string>(Array.isArray(val) ? val : []);
+      const prev = new Set<string>(prevValueRef.current ?? []);
+      const isDisabled = (id: string) => !!disabledOptions?.[id];
+
+      // 新增的节点：递归加入子孙
+      next.forEach((id) => {
+        if (!prev.has(id)) {
+          getDepartmentSubtreeIds(id).forEach((sub) => {
+            if (!isDisabled(sub)) next.add(sub);
+          });
+        }
+      });
+      // 移除的节点：递归移除子孙
+      prev.forEach((id) => {
+        if (!next.has(id)) {
+          getDepartmentSubtreeIds(id).forEach((sub) => next.delete(sub));
+        }
+      });
+
+      const finalArr = Array.from(next);
+      prevValueRef.current = finalArr;
+      onChange?.(finalArr as any);
+      return;
+    }
+    if (multiple) prevValueRef.current = Array.isArray(val) ? val : [];
+    onChange?.(val as any);
+  };
+
   return (
     <TreeSelect
       value={value}
-      onChange={(val) => onChange?.(val as any)}
+      onChange={handleChange}
       treeData={treeData}
       placeholder={placeholder || t('common.owningDepartmentPlaceholder')}
       disabled={disabled}
