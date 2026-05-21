@@ -729,7 +729,7 @@
       "editDisabledTip": "已激活的模板不可直接编辑，请基于此创建副本",
       "activate": "激活",
       "activateTitle": "激活模板",
-      "activateContent": "确定激活模板「{{name}}」？同租户下其他模板将自动失效。",
+      "activateContent": "确定激活模板「{{name}}」？激活后将按「适用部门」参与需求创建的方案匹配。",
       "activateSuccess": "模板激活成功",
       "deleteTitle": "删除模板",
       "deleteContent": "确定删除模板「{{name}}」？删除后不可恢复。",
