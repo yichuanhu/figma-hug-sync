@@ -195,6 +195,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     description: '基于《RPA 统计表》模板设计的标准化需求采集模版，提交后跳过审批与评估，直接进入待开发状态。',
     status: 'inactive',
     is_preset: true,
+    applicable_department_ids: ['dept-ceo'],
     meta: {
       code: 'RPA-STAT',
       name: 'RPA 统计表标准模版',
