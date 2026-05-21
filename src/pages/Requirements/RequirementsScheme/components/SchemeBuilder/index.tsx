@@ -226,9 +226,8 @@ const SchemeBuilderPage = () => {
     });
   }, [dirty, navigate, t]);
 
-  const tabBadge = (key: string) => missingTabs.includes(key)
-    ? <AlertCircle size={14} style={{ color: 'var(--semi-color-danger)', marginLeft: 4 }} />
-    : null;
+
+
 
 
 
