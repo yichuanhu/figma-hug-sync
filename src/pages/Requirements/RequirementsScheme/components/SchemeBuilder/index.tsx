@@ -6,6 +6,7 @@ import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Pencil, Building2 } 
 
 import {
   getSchemeById,
+  getActiveSchemes,
   updateSchemeBuilder,
   validateScheme,
   activateSchemeBuilder,
@@ -18,6 +19,8 @@ import {
   setSchemeBindingsForScheme,
   getOccupiedDepartmentMapByScheme,
 } from '@/mocks/departmentSchemeBinding';
+import { expandDepartmentIdsWithDescendants } from '@/mocks/departmentData';
+import { computeDeptDisabledOptions } from '@/pages/Requirements/_shared/computeDeptDisabledOptions';
 import FormBuilder from './FormBuilder';
 import { validateAllFields } from './FormBuilder/validators';
 import WorkflowBuilder from './WorkflowBuilder';
