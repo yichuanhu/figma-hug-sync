@@ -821,7 +821,7 @@
       "editDisabledTip": "Activated templates cannot be edited directly. Please create a copy.",
       "activate": "Activate",
       "activateTitle": "Activate Template",
-      "activateContent": "Activate template \"{{name}}\"? Other templates in this tenant will be deactivated.",
+      "activateContent": "Activate template \"{{name}}\"? Once activated, it will participate in scheme matching based on its applicable departments.",
       "activateSuccess": "Template activated",
       "deleteTitle": "Delete Template",
       "deleteContent": "Delete template \"{{name}}\"? This cannot be undone.",
