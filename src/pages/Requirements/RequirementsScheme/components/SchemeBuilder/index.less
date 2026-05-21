@@ -215,6 +215,20 @@
     border-radius: 8px;
   }
 
+  .empty-fields-clickable {
+    cursor: pointer;
+    border: 1px dashed var(--semi-color-border);
+    transition: border-color 0.15s, background 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &:hover {
+      border-color: var(--semi-color-primary);
+      background: var(--semi-color-primary-light-default);
+    }
+  }
+
   .field-card-list {
     display: flex;
     flex-direction: column;
