@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast } from '@douyinfe/semi-ui';
 import { Plus, Trash2, GripVertical, PowerOff } from 'lucide-react';
@@ -172,14 +172,11 @@ const WorkflowBuilder = ({
   const { t: _t } = useTranslation();
   const wf: WorkflowConfig = workflow ?? { template: 'simple', states: [], approvers: [], assessors: [] };
 
-  const approverEnabled = wf.approvers.length > 0;
   const assessorEnabled = wf.assessors.length > 0;
 
   // 缓存关闭前的配置，再次启用时恢复
-  const cachedApproversRef = useRef<WorkflowApprover[] | null>(null);
   const cachedAssessorsRef = useRef<WorkflowApprover[] | null>(null);
   const cachedAssessmentRef = useRef<{ value?: AssessmentModel; complexity?: AssessmentModel } | null>(null);
-  if (approverEnabled) cachedApproversRef.current = wf.approvers;
   if (assessorEnabled) {
     cachedAssessorsRef.current = wf.assessors;
     cachedAssessmentRef.current = { value: valueModel, complexity: complexityModel };
@@ -192,19 +189,16 @@ const WorkflowBuilder = ({
     onChange({ ...wf, template: computeTemplate(approvers, assessors), approvers, assessors });
   };
 
-  const handleToggleApprover = (next: boolean) => {
-    if (next) {
-      const restored = cachedApproversRef.current && cachedApproversRef.current.length > 0
-        ? cachedApproversRef.current
-        : buildWorkflowFromTemplate('simple').approvers;
-      updateLists(restored, wf.assessors);
-      Toast.success('已启用审批人配置');
-    } else {
-      cachedApproversRef.current = wf.approvers;
+  // 移除审批配置后：清理历史遗留的 approvers 数据
+  useEffect(() => {
+    if (wf.approvers.length > 0) {
       updateLists([], wf.assessors);
-      Toast.success('已关闭审批人配置');
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
+
 
   const handleToggleAssessor = (next: boolean) => {
     if (next) {
@@ -259,25 +253,6 @@ const WorkflowBuilder = ({
 
   return (
     <div className="workflow-builder">
-      {/* 审批人配置卡片 */}
-      <div className="workflow-section">
-        {renderCardHeader(
-          '审批人配置',
-          approverEnabled,
-          handleToggleApprover,
-          () => updateLists([...wf.approvers, makeApprover(wf.approvers.length + 1)], wf.assessors),
-        )}
-        {approverEnabled ? (
-          <ApproverList
-            list={wf.approvers}
-            emptyHint="暂无审批级，点击右上角添加"
-            onChange={(list) => updateLists(list, wf.assessors)}
-          />
-        ) : (
-          renderDisabledBody('已关闭审批人配置，需求提交后将跳过审批环节。开启后可配置审批级与审批方式。')
-        )}
-      </div>
-
       {/* 技术评估人配置卡片 */}
       <div className="workflow-section">
         {renderCardHeader(

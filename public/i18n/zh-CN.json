@@ -828,7 +828,7 @@
         "tabs": {
           "form": "表单",
           "assessment": "评估",
-          "workflow": "审批配置",
+          "workflow": "评估配置",
           "cost": "成本"
         },
         "fieldType": {
