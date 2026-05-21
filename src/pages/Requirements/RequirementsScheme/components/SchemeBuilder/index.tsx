@@ -303,60 +303,45 @@ const SchemeBuilderPage = () => {
         const deptCount = deptIds.length;
         const isEmpty = deptCount === 0;
         const occupied = getOccupiedDepartmentMapByScheme(draftScheme.id);
-        const conflicts = deptIds.filter((d) => occupied[d]);
+        const disabledOptions: Record<string, string> = {};
+        Object.entries(occupied).forEach(([deptId, ownerId]) => {
+          const ownerName = getSchemeById(ownerId)?.name ?? '其他方案';
+          disabledOptions[deptId] = `已绑定「${ownerName}」`;
+        });
         return (
-          <>
-            <div
-              className="scheme-builder-applicable-dept"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: '12px 16px',
-                marginBottom: conflicts.length > 0 ? 8 : 12,
-                background: isEmpty ? 'var(--semi-color-warning-light-default)' : 'var(--semi-color-fill-0)',
-                border: isEmpty ? '1px solid var(--semi-color-warning-light-active)' : '1px solid transparent',
-                borderRadius: 8,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--semi-color-text-1)', fontWeight: 500, flexShrink: 0 }}>
-                <Building2 size={14} strokeWidth={2} />
-                <span>适用部门</span>
-                <Text type="danger" size="small" style={{ marginLeft: 2 }}>*</Text>
-                <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>（激活时必填，草稿可留空）</Text>
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <DepartmentSelect
-                  multiple
-                  value={deptIds}
-                  onChange={(v) => patch({ applicable_department_ids: (v as string[]) ?? [] })}
-                  placeholder="选择适用该方案的部门，部门发起的需求将使用此方案"
-                  style={{ width: '100%' }}
-                />
-              </div>
-              <Text type={isEmpty ? 'warning' : 'tertiary'} size="small" style={{ flexShrink: 0 }}>
-                已选 {deptCount} 个部门
-              </Text>
+          <div
+            className="scheme-builder-applicable-dept"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              padding: '12px 16px',
+              marginBottom: 12,
+              background: isEmpty ? 'var(--semi-color-warning-light-default)' : 'var(--semi-color-fill-0)',
+              border: isEmpty ? '1px solid var(--semi-color-warning-light-active)' : '1px solid transparent',
+              borderRadius: 8,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--semi-color-text-1)', fontWeight: 500, flexShrink: 0 }}>
+              <Building2 size={14} strokeWidth={2} />
+              <span>适用部门</span>
+              <Text type="danger" size="small" style={{ marginLeft: 2 }}>*</Text>
+              <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>（激活时必填，已被其他生效方案占用的部门不可选）</Text>
             </div>
-            {conflicts.length > 0 && (
-              <Banner
-                type="warning"
-                fullMode={false}
-                closeIcon={null}
-                style={{ marginBottom: 12 }}
-                description={
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
-                    <span style={{ marginRight: 4 }}>{conflicts.length} 个部门当前归属其他需求方案，保存后将改绑到本方案：</span>
-                    {conflicts.map((d) => (
-                      <Tag key={d} color="amber" type="light" size="small">
-                        {getDepartmentName(d)} ← 「{getSchemeById(occupied[d])?.name ?? '未知'}」
-                      </Tag>
-                    ))}
-                  </div>
-                }
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <DepartmentSelect
+                multiple
+                value={deptIds}
+                onChange={(v) => patch({ applicable_department_ids: (v as string[]) ?? [] })}
+                placeholder="选择适用该方案的部门，部门发起的需求将使用此方案"
+                style={{ width: '100%' }}
+                disabledOptions={disabledOptions}
               />
-            )}
-          </>
+            </div>
+            <Text type={isEmpty ? 'warning' : 'tertiary'} size="small" style={{ flexShrink: 0 }}>
+              已选 {deptCount} 个部门
+            </Text>
+          </div>
         );
       })()}
 
