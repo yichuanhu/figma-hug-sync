@@ -8,9 +8,12 @@ import {
   getBoundDepartmentCountMapByScheme,
   listDepartmentsByScheme,
   subscribeSchemeBindingChange,
+  getOccupiedDepartmentMapByScheme,
 } from '@/mocks/departmentSchemeBinding';
 import { getDepartmentName } from '@/mocks/departmentData';
 import EmptyState from '@/components/EmptyState';
+import DepartmentPicker from '@/components/DepartmentPicker';
+import { computeDeptDisabledOptions } from '@/pages/Requirements/_shared/computeDeptDisabledOptions';
 import {
   fetchSchemes,
   activateScheme,
@@ -18,6 +21,9 @@ import {
   deleteScheme,
   createSchemeDraft,
   cloneSchemeAsDraft,
+  updateSchemeApplicableDepartments,
+  getActiveSchemes,
+  getSchemeById,
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '../RequirementsWorkbench/types';
 import SchemeDetailDrawer from './components/SchemeDetailDrawer';
@@ -34,6 +40,9 @@ const RequirementsScheme = () => {
   const [detailScheme, setDetailScheme] = useState<RequirementScheme | null>(null);
   const [presetPickerVisible, setPresetPickerVisible] = useState(false);
   const [bindCountMap, setBindCountMap] = useState<Record<string, number>>(() => getBoundDepartmentCountMapByScheme());
+  const [deptEditScheme, setDeptEditScheme] = useState<RequirementScheme | null>(null);
+  const [deptEditValue, setDeptEditValue] = useState<string[]>([]);
+  const [deptEditSaving, setDeptEditSaving] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => subscribeSchemeBindingChange(() => setBindCountMap(getBoundDepartmentCountMapByScheme())), []);
@@ -98,6 +107,28 @@ const RequirementsScheme = () => {
       },
     });
   };
+
+  const openDeptEditor = (s: RequirementScheme) => {
+    setDeptEditScheme(s);
+    setDeptEditValue(s.applicable_department_ids ?? []);
+  };
+
+  const handleDeptEditSubmit = async () => {
+    if (!deptEditScheme) return;
+    setDeptEditSaving(true);
+    try {
+      await updateSchemeApplicableDepartments(deptEditScheme.id, deptEditValue);
+      Toast.success('适用部门已更新');
+      setDeptEditScheme(null);
+      load();
+    } catch (e) {
+      Toast.error((e as Error).message);
+    } finally {
+      setDeptEditSaving(false);
+    }
+  };
+
+
 
   const handleDelete = (s: RequirementScheme) => {
     Modal.confirm({
@@ -207,6 +238,9 @@ const RequirementsScheme = () => {
                         )}
                         <Dropdown.Item icon={<Copy size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
                           基于此创建副本
+                        </Dropdown.Item>
+                        <Dropdown.Item icon={<Building2 size={14} />} onClick={(e) => { e.stopPropagation(); openDeptEditor(s); }}>
+                          编辑适用部门
                         </Dropdown.Item>
                         {!s.is_preset && (
                           <Dropdown.Item icon={<Trash2 size={14} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(s); }}>
@@ -325,6 +359,40 @@ const RequirementsScheme = () => {
             </div>
           ))}
         </div>
+      </Modal>
+
+      {/* 编辑适用部门 */}
+      <Modal
+        title={`编辑适用部门${deptEditScheme ? ` — ${deptEditScheme.name}` : ''}`}
+        visible={!!deptEditScheme}
+        onCancel={() => setDeptEditScheme(null)}
+        onOk={handleDeptEditSubmit}
+        okText="保存"
+        cancelText={t('common.cancel')}
+        confirmLoading={deptEditSaving}
+        width={520}
+      >
+        {deptEditScheme && (() => {
+          const activeIds = getActiveSchemes().map((x) => x.id);
+          const disabledOptions = computeDeptDisabledOptions(
+            getOccupiedDepartmentMapByScheme(deptEditScheme.id, activeIds),
+            (ownerId) => getSchemeById(ownerId)?.name ?? '其他方案',
+          );
+          return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <Text type="tertiary" size="small">
+                已被其他生效方案占用的部门将不可选；选中父部门时会自动包含其所有子部门。
+              </Text>
+              <DepartmentPicker
+                value={deptEditValue}
+                onChange={(v) => setDeptEditValue(v ?? [])}
+                placeholder="请选择适用部门（可多选，选中父部门自动包含子部门）"
+                maxTagCount={6}
+                disabledOptions={disabledOptions}
+              />
+            </div>
+          );
+        })()}
       </Modal>
     </div>
   );

@@ -560,6 +560,27 @@ export const updateSchemeBuilder = async (
   return schemeStore.find((s) => s.id === id)!;
 };
 
+/**
+ * 单独更新「适用部门」字段。
+ * 与 updateSchemeBuilder 不同，此方法允许预设模版编辑（仅限此字段），
+ * 满足「预设模版可调整适用部门以适配各租户组织结构」的需求。
+ */
+export const updateSchemeApplicableDepartments = async (
+  id: string,
+  applicable_department_ids: string[],
+): Promise<RequirementScheme> => {
+  await new Promise((r) => setTimeout(r, 150));
+  const target = schemeStore.find((s) => s.id === id);
+  if (!target) throw new Error('模版不存在');
+  schemeStore = schemeStore.map((s) =>
+    s.id === id ? { ...s, applicable_department_ids, updated_at: new Date().toISOString() } : s,
+  );
+  bumpSchemeVersion();
+  return schemeStore.find((s) => s.id === id)!;
+};
+
+
+
 /** 通过 id 读取模版 */
 export const getSchemeById = (id: string): RequirementScheme | undefined =>
   schemeStore.find((s) => s.id === id);
