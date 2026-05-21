@@ -307,12 +307,11 @@ const SchemeBuilderPage = () => {
         const deptIds = draftScheme.applicable_department_ids ?? [];
         const deptCount = deptIds.length;
         const isEmpty = deptCount === 0;
-        const occupied = getOccupiedDepartmentMapByScheme(draftScheme.id);
-        const disabledOptions: Record<string, string> = {};
-        Object.entries(occupied).forEach(([deptId, ownerId]) => {
-          const ownerName = getSchemeById(ownerId)?.name ?? '其他方案';
-          disabledOptions[deptId] = `已绑定「${ownerName}」`;
-        });
+        const activeIds = getActiveSchemes().map((s) => s.id);
+        const disabledOptions = computeDeptDisabledOptions(
+          getOccupiedDepartmentMapByScheme(draftScheme.id, activeIds),
+          (ownerId) => getSchemeById(ownerId)?.name ?? '其他方案',
+        );
         return (
           <div
             className="scheme-builder-applicable-dept"
@@ -331,14 +330,16 @@ const SchemeBuilderPage = () => {
               <Building2 size={14} strokeWidth={2} />
               <span>适用部门</span>
               <Text type="danger" size="small" style={{ marginLeft: 2 }}>*</Text>
-              <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>（激活时必填，已被其他生效方案占用的部门不可选）</Text>
+              <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>
+                （激活时必填；已被其他生效方案占用的部门不可选；选中父部门自动包含子部门）
+              </Text>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <DepartmentSelect
                 multiple
                 value={deptIds}
                 onChange={(v) => patch({ applicable_department_ids: (v as string[]) ?? [] })}
-                placeholder="选择适用该方案的部门，部门发起的需求将使用此方案"
+                placeholder="选择适用该方案的部门（选中父部门自动包含其所有子部门）"
                 style={{ width: '100%' }}
                 disabledOptions={disabledOptions}
               />
