@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast } from '@douyinfe/semi-ui';
 import { Plus, Trash2, GripVertical, PowerOff } from 'lucide-react';
