@@ -17,7 +17,7 @@ import {
 } from '../../mockData';
 import ApproverListEditor from '../ApproverListEditor';
 import AssessmentBuilder from '@/pages/Requirements/RequirementsScheme/components/SchemeBuilder/AssessmentBuilder';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentPicker from '@/components/DepartmentPicker';
 import {
   setBindingsForTemplate,
   listDepartmentsByTemplate,
