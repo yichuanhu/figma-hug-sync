@@ -177,6 +177,13 @@
       color: var(--semi-color-text-2);
       margin-bottom: 10px;
     }
+
+    .canvas-section-title-with-action {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
   }
 
   .system-field-list {
@@ -206,6 +213,20 @@
     text-align: center;
     background: var(--semi-color-fill-0);
     border-radius: 8px;
+  }
+
+  .empty-fields-clickable {
+    cursor: pointer;
+    border: 1px dashed var(--semi-color-border);
+    transition: border-color 0.15s, background 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &:hover {
+      border-color: var(--semi-color-primary);
+      background: var(--semi-color-primary-light-default);
+    }
   }
 
   .field-card-list {

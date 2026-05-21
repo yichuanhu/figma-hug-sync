@@ -13,6 +13,7 @@ import {
   activateSchemeBuilder,
   setSchemeAsDefault,
   subscribeSchemeChange,
+  createSchemeDraft,
   SchemeError,
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '@/pages/Requirements/RequirementsWorkbench/types';
@@ -49,12 +50,30 @@ const resolveEditMode = (s: RequirementScheme): EditMode => {
   return 'custom_inactive';
 };
 
+const buildEmptyDraft = (): RequirementScheme => ({
+  id: '__new__',
+  code: `CUSTOM-${Date.now().toString(36).toUpperCase()}`,
+  name: '未命名模版',
+  version: '1.0.0',
+  description: undefined,
+  status: 'inactive',
+  is_preset: false,
+  is_draft: true,
+  custom_fields: [],
+  approval_flow: { levels: [] },
+  workflow_config: { template: 'simple', states: [], approvers: [], assessors: [] },
+  cost_config: { working_hours_per_day: 8, currency: 'CNY', default_rate: 500, rate_table_v2: [] },
+  created_at: new Date().toISOString(),
+  created_by: 'current-user',
+});
+
 const SchemeBuilderPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const initialScheme = id ? getSchemeById(id) ?? null : null;
-  const [savedScheme, setSavedScheme] = useState<RequirementScheme | null>(initialScheme);
+  const isNewMode = id === 'new';
+  const initialScheme = isNewMode ? buildEmptyDraft() : (id ? getSchemeById(id) ?? null : null);
+  const [savedScheme, setSavedScheme] = useState<RequirementScheme | null>(isNewMode ? null : initialScheme);
   const [draftScheme, setDraftScheme] = useState<RequirementScheme | null>(initialScheme);
   const [dirty, setDirty] = useState(false);
   const [editingName, setEditingName] = useState(false);
@@ -64,19 +83,19 @@ const SchemeBuilderPage = () => {
   const dirtyRef = useRef(false);
   dirtyRef.current = dirty;
 
-  const editMode: EditMode = useMemo(
-    () => (savedScheme ? resolveEditMode(savedScheme) : 'custom_inactive'),
-    [savedScheme],
-  );
+  const editMode: EditMode = useMemo(() => {
+    if (isNewMode) return 'custom_inactive';
+    return savedScheme ? resolveEditMode(savedScheme) : 'custom_inactive';
+  }, [savedScheme, isNewMode]);
   const isReadOnly = editMode === 'preset';
   const isFormReadOnly = editMode === 'preset' || editMode === 'custom_active';
   const showDeptBlock = editMode === 'custom_active' || editMode === 'custom_inactive';
-  const showTestDrive = editMode === 'tenant_default' || editMode === 'custom_inactive';
+  const showTestDrive = !isNewMode && (editMode === 'tenant_default' || editMode === 'custom_inactive');
   const canEditName = editMode === 'tenant_default' || editMode === 'custom_inactive';
 
   // 进入页面：解析方案并完成初始化（v15: 不再对已激活方案派生新版本，改为 custom_active 模式）
   useEffect(() => {
-    if (!id) return;
+    if (!id || isNewMode) return;
     (async () => {
       let s = getSchemeById(id);
       if (!s) {
@@ -99,10 +118,11 @@ const SchemeBuilderPage = () => {
         });
       }
     })();
-  }, [id, navigate, t]);
+  }, [id, navigate, t, isNewMode]);
 
   // 订阅外部 store 变化
   useEffect(() => {
+    if (isNewMode) return;
     return subscribeSchemeChange(() => {
       if (!id) return;
       const s = getSchemeById(id);
@@ -110,7 +130,7 @@ const SchemeBuilderPage = () => {
       setSavedScheme(s);
       if (!dirtyRef.current) setDraftScheme(s);
     });
-  }, [id]);
+  }, [id, isNewMode]);
 
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
@@ -156,6 +176,38 @@ const SchemeBuilderPage = () => {
     if (!draftScheme || isReadOnly) return;
     const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
     const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
+
+    // 新建模式：先 createSchemeDraft 落库，再用 updateSchemeBuilder 写入当前编辑内容
+    if (isNewMode) {
+      const fv = validateAllFields(draftScheme.custom_fields ?? []);
+      if (fv.hasError) {
+        Toast.error(`字段配置存在 ${fv.errorFieldKeys.length} 项问题，请先修正`);
+        return;
+      }
+      try {
+        const created = await createSchemeDraft({
+          name: draftScheme.name,
+          description: draftScheme.description,
+          version: draftScheme.version,
+        });
+        const updated = await updateSchemeBuilder(created.id, {
+          name: draftScheme.name,
+          description: draftScheme.description,
+          custom_fields: draftScheme.custom_fields,
+          value_assessment_model: draftScheme.value_assessment_model,
+          complexity_assessment_model: draftScheme.complexity_assessment_model,
+          workflow_config: draftScheme.workflow_config,
+          cost_config: draftScheme.cost_config,
+          approval_flow: draftScheme.approval_flow,
+          applicable_department_ids: selectedDeptIds,
+        });
+        setSchemeBindingsForScheme(updated.id, expandedDeptIds);
+        setDirty(false);
+        Toast.success(t('requirements.scheme.builder.savedDraft'));
+        navigate(`/requirements/scheme/builder/${updated.id}`, { replace: true });
+      } catch (e) { handleSchemeError(e); }
+      return;
+    }
 
     // custom_active：仅允许保存「适用部门」
     if (editMode === 'custom_active') {
@@ -264,6 +316,19 @@ const SchemeBuilderPage = () => {
   };
 
   const guardedNavigate = useCallback((to: string) => {
+    // 新建模式：如果只是初始未编辑，直接走；否则提示「放弃创建」
+    if (isNewMode) {
+      if (!dirty) { navigate(to); return; }
+      Modal.confirm({
+        title: '放弃创建？',
+        content: '此次新建的内容尚未保存，离开后将不保留。',
+        okText: '放弃',
+        cancelText: '继续编辑',
+        okButtonProps: { type: 'danger' },
+        onOk: () => { setDirty(false); navigate(to); },
+      });
+      return;
+    }
     if (!dirty) { navigate(to); return; }
     Modal.confirm({
       title: t('requirements.scheme.builder.leaveTitle'),
@@ -273,7 +338,9 @@ const SchemeBuilderPage = () => {
       okButtonProps: { type: 'danger' },
       onOk: () => { setDirty(false); navigate(to); },
     });
-  }, [dirty, navigate, t]);
+  }, [dirty, navigate, t, isNewMode]);
+
+  const handleCancel = () => guardedNavigate('/requirements/scheme');
 
   if (loading || !draftScheme) {
     return <div className="scheme-builder-loading"><Spin size="large" /></div>;
@@ -336,31 +403,33 @@ const SchemeBuilderPage = () => {
               {t('requirements.scheme.builder.testDrive')}
             </Button>
           )}
+          <Button onClick={handleCancel}>{t('common.cancel')}</Button>
           {!isReadOnly && (
             <Button
               icon={<Save size={16} strokeWidth={2} />}
-              theme={dirty ? 'solid' : 'light'}
-              type={dirty ? 'primary' : 'tertiary'}
+              theme={isNewMode || dirty ? 'solid' : 'light'}
+              type={isNewMode || dirty ? 'primary' : 'tertiary'}
               onClick={handleSaveDraft}
-              disabled={!dirty}
+              disabled={!isNewMode && !dirty}
             >
-              {editMode === 'custom_active' ? '保存' : t('requirements.scheme.builder.saveDraft')}
+              {isNewMode ? '保存草稿' : (editMode === 'custom_active' ? '保存' : t('requirements.scheme.builder.saveDraft'))}
             </Button>
           )}
-          {editMode === 'custom_inactive' && (
+          {!isNewMode && editMode === 'custom_inactive' && (
             <Tooltip content={hasBinding ? '有部门绑定的方案不能设为默认，请先清空适用部门' : ''} position="bottom">
               <Button icon={<Star size={16} strokeWidth={2} />} disabled={hasBinding} onClick={handleSetAsDefault}>
                 设为默认
               </Button>
             </Tooltip>
           )}
-          {editMode === 'custom_inactive' && (
+          {!isNewMode && editMode === 'custom_inactive' && (
             <Button icon={<CheckCircle size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleActivate}>
               {t('requirements.scheme.activate')}
             </Button>
           )}
         </Space>
       </div>
+
 
       {showDeptBlock && (() => {
         const deptIds = draftScheme.applicable_department_ids ?? [];
