@@ -110,13 +110,14 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
     showClear,
     maxTagCount,
     useNameAsValue = false,
+    disabledOptions,
   } = props as any;
 
   const { t } = useTranslation();
 
   const treeData = useMemo(
-    () => normalizeDepartmentTree(departmentTree, useNameAsValue),
-    [useNameAsValue],
+    () => normalizeDepartmentTree(departmentTree, useNameAsValue, disabledOptions),
+    [useNameAsValue, disabledOptions],
   );
 
   const dropdownWidth = useMemo(() => estimateMaxDropdownWidth(collectLabels(departmentTree)), []);
