@@ -44,9 +44,9 @@ const RequirementsScheme = () => {
     navigate(`/requirements/scheme/builder/${s.id}`);
   };
 
-  const handleCreateNew = async () => {
-    const draft = await createSchemeDraft({ name: '未命名模版', version: '1.0.0' });
-    navigate(`/requirements/scheme/builder/${draft.id}`);
+  const handleCreateNew = () => {
+    // 不预创建草稿：进入编辑页后由用户主动保存才落库
+    navigate('/requirements/scheme/builder/new');
   };
 
   const handleCloneFromPreset = async (sourceId: string) => {
