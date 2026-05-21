@@ -239,6 +239,9 @@ const RequirementsScheme = () => {
                         <Dropdown.Item icon={<Copy size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
                           基于此创建副本
                         </Dropdown.Item>
+                        <Dropdown.Item icon={<Building2 size={14} />} onClick={(e) => { e.stopPropagation(); openDeptEditor(s); }}>
+                          编辑适用部门
+                        </Dropdown.Item>
                         {!s.is_preset && (
                           <Dropdown.Item icon={<Trash2 size={14} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(s); }}>
                             {t('common.delete')}
