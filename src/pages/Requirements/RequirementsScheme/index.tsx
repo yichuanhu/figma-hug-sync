@@ -23,6 +23,7 @@ import {
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '../RequirementsWorkbench/types';
 import SchemeDetailDrawer from './components/SchemeDetailDrawer';
+import NewSchemeNameModal from './components/NewSchemeNameModal';
 import './index.less';
 
 const { Title, Text } = Typography;
