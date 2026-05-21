@@ -173,12 +173,13 @@ const DepartmentPicker = ({
         className={`dept-picker-row ${checked ? 'is-checked' : ''} ${disabledReason ? 'is-disabled' : ''}`}
         onClick={() => toggleNode(node)}
       >
-        <Checkbox
-          checked={checked}
-          disabled={!!disabledReason}
-          onChange={() => toggleNode(node)}
-          onClick={(e) => e.stopPropagation()}
-        />
+        <span onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+            checked={checked}
+            disabled={!!disabledReason}
+            onChange={() => toggleNode(node)}
+          />
+        </span>
         <span className="dept-picker-row-avatar">
           <Building2 size={14} strokeWidth={2} />
         </span>
