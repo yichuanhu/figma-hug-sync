@@ -156,7 +156,6 @@ const SchemeBuilderPage = () => {
         setDraftScheme(updated);
         setDirty(false);
         const v = validateScheme(updated.id);
-        setMissingTabs(v.missing);
         Toast.success(t('requirements.scheme.builder.savedDraft'));
         if (!v.ok) {
           Modal.warning({
