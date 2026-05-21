@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Banner, Input, Popover } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Clock, Pencil, Building2, AlertTriangle } from 'lucide-react';
-import { getDepartmentName } from '@/mocks/departmentData';
+import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Input } from '@douyinfe/semi-ui';
+import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Pencil, Building2 } from 'lucide-react';
+
 import {
   getSchemeById,
   updateSchemeBuilder,
@@ -16,11 +16,8 @@ import type { RequirementScheme } from '@/pages/Requirements/RequirementsWorkben
 import DepartmentSelect from '@/components/DepartmentSelect';
 import {
   setSchemeBindingsForScheme,
-  listDepartmentsByScheme,
-  previewSchemeBindings,
   getOccupiedDepartmentMapByScheme,
 } from '@/mocks/departmentSchemeBinding';
-import BindingConflictContent from '@/pages/Requirements/_shared/BindingConflictContent';
 import FormBuilder from './FormBuilder';
 import { validateAllFields } from './FormBuilder/validators';
 import WorkflowBuilder from './WorkflowBuilder';
@@ -173,30 +170,7 @@ const SchemeBuilderPage = () => {
       }
     };
 
-    // 冲突预检：若存在归属抢占，弹出二次确认
-    const conflicts = previewSchemeBindings(draftScheme.id, deptIds);
-    if (conflicts.length === 0) {
-      await doPersist();
-      return;
-    }
-    Modal.confirm({
-      title: '部门归属冲突',
-      icon: <AlertTriangle size={20} strokeWidth={2} style={{ color: 'var(--semi-color-warning)' }} />,
-      width: 520,
-      content: (
-        <BindingConflictContent
-          hint={`已选部门中有 ${conflicts.length} 个当前归属其他需求方案，保存后将改绑至本方案：`}
-          conflicts={conflicts.map((c) => ({
-            deptId: c.deptId,
-            prevOwnerName: getSchemeById(c.prevSchemeId)?.name ?? '未知方案',
-          }))}
-          actionLabel="改绑至本方案"
-        />
-      ),
-      okText: '确认改绑',
-      cancelText: t('common.cancel'),
-      onOk: doPersist,
-    });
+    await doPersist();
   };
 
   const handleActivate = () => {
@@ -210,38 +184,23 @@ const SchemeBuilderPage = () => {
       Toast.warning('请先选择「适用部门」，激活时至少选择 1 个部门');
       return;
     }
-    const conflicts = previewSchemeBindings(draftScheme.id, deptIds);
-    const doActivate = async () => {
-      try {
-        if (conflicts.length > 0) setSchemeBindingsForScheme(draftScheme.id, deptIds);
-        await activateSchemeBuilder(draftScheme.id);
-        Toast.success(t('requirements.scheme.activateSuccess'));
-        setDirty(false);
-        navigate('/requirements/scheme');
-      } catch (e) {
-        const err = e as Error & { missing?: string[] };
-        if (err.missing) setMissingTabs(err.missing);
-        Toast.error(err.message);
-      }
-    };
     Modal.confirm({
       title: t('requirements.scheme.builder.activateTitle'),
-      width: conflicts.length > 0 ? 520 : 416,
-      content: conflicts.length > 0 ? (
-        <BindingConflictContent
-          hint={`确认激活「${draftScheme.name}」？以下 ${conflicts.length} 个部门当前归属其他方案，激活后将一并改绑到本方案：`}
-          conflicts={conflicts.map((c) => ({
-            deptId: c.deptId,
-            prevOwnerName: getSchemeById(c.prevSchemeId)?.name ?? '未知方案',
-          }))}
-          actionLabel="改绑并激活"
-        />
-      ) : (
-        t('requirements.scheme.builder.activateContent', { name: draftScheme.name })
-      ),
+      content: t('requirements.scheme.builder.activateContent', { name: draftScheme.name }),
       okText: t('requirements.scheme.activate'),
       cancelText: t('common.cancel'),
-      onOk: doActivate,
+      onOk: async () => {
+        try {
+          await activateSchemeBuilder(draftScheme.id);
+          Toast.success(t('requirements.scheme.activateSuccess'));
+          setDirty(false);
+          navigate('/requirements/scheme');
+        } catch (e) {
+          const err = e as Error & { missing?: string[] };
+          if (err.missing) setMissingTabs(err.missing);
+          Toast.error(err.message);
+        }
+      },
     });
   };
 
@@ -344,60 +303,45 @@ const SchemeBuilderPage = () => {
         const deptCount = deptIds.length;
         const isEmpty = deptCount === 0;
         const occupied = getOccupiedDepartmentMapByScheme(draftScheme.id);
-        const conflicts = deptIds.filter((d) => occupied[d]);
+        const disabledOptions: Record<string, string> = {};
+        Object.entries(occupied).forEach(([deptId, ownerId]) => {
+          const ownerName = getSchemeById(ownerId)?.name ?? '其他方案';
+          disabledOptions[deptId] = `已绑定「${ownerName}」`;
+        });
         return (
-          <>
-            <div
-              className="scheme-builder-applicable-dept"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: '12px 16px',
-                marginBottom: conflicts.length > 0 ? 8 : 12,
-                background: isEmpty ? 'var(--semi-color-warning-light-default)' : 'var(--semi-color-fill-0)',
-                border: isEmpty ? '1px solid var(--semi-color-warning-light-active)' : '1px solid transparent',
-                borderRadius: 8,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--semi-color-text-1)', fontWeight: 500, flexShrink: 0 }}>
-                <Building2 size={14} strokeWidth={2} />
-                <span>适用部门</span>
-                <Text type="danger" size="small" style={{ marginLeft: 2 }}>*</Text>
-                <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>（激活时必填，草稿可留空）</Text>
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <DepartmentSelect
-                  multiple
-                  value={deptIds}
-                  onChange={(v) => patch({ applicable_department_ids: (v as string[]) ?? [] })}
-                  placeholder="选择适用该方案的部门，部门发起的需求将使用此方案"
-                  style={{ width: '100%' }}
-                />
-              </div>
-              <Text type={isEmpty ? 'warning' : 'tertiary'} size="small" style={{ flexShrink: 0 }}>
-                已选 {deptCount} 个部门
-              </Text>
+          <div
+            className="scheme-builder-applicable-dept"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              padding: '12px 16px',
+              marginBottom: 12,
+              background: isEmpty ? 'var(--semi-color-warning-light-default)' : 'var(--semi-color-fill-0)',
+              border: isEmpty ? '1px solid var(--semi-color-warning-light-active)' : '1px solid transparent',
+              borderRadius: 8,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--semi-color-text-1)', fontWeight: 500, flexShrink: 0 }}>
+              <Building2 size={14} strokeWidth={2} />
+              <span>适用部门</span>
+              <Text type="danger" size="small" style={{ marginLeft: 2 }}>*</Text>
+              <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>（激活时必填，已被其他生效方案占用的部门不可选）</Text>
             </div>
-            {conflicts.length > 0 && (
-              <Banner
-                type="warning"
-                fullMode={false}
-                closeIcon={null}
-                style={{ marginBottom: 12 }}
-                description={
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
-                    <span style={{ marginRight: 4 }}>{conflicts.length} 个部门当前归属其他需求方案，保存后将改绑到本方案：</span>
-                    {conflicts.map((d) => (
-                      <Tag key={d} color="amber" type="light" size="small">
-                        {getDepartmentName(d)} ← 「{getSchemeById(occupied[d])?.name ?? '未知'}」
-                      </Tag>
-                    ))}
-                  </div>
-                }
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <DepartmentSelect
+                multiple
+                value={deptIds}
+                onChange={(v) => patch({ applicable_department_ids: (v as string[]) ?? [] })}
+                placeholder="选择适用该方案的部门，部门发起的需求将使用此方案"
+                style={{ width: '100%' }}
+                disabledOptions={disabledOptions}
               />
-            )}
-          </>
+            </div>
+            <Text type={isEmpty ? 'warning' : 'tertiary'} size="small" style={{ flexShrink: 0 }}>
+              已选 {deptCount} 个部门
+            </Text>
+          </div>
         );
       })()}
 

@@ -11,6 +11,11 @@ interface DepartmentSelectBaseProps {
   /** Use department name as value instead of ID (for filter compatibility) */
   useNameAsValue?: boolean;
   showClear?: boolean;
+  /**
+   * 禁用的部门项：key 为部门 id，value 为禁用原因（如「已绑定到 xxx 模板」），
+   * 将作为后缀展示在下拉项右侧并将节点禁用，从源头避免冲突选择。
+   */
+  disabledOptions?: Record<string, string>;
 }
 
 interface SingleSelectProps extends DepartmentSelectBaseProps {
@@ -32,22 +37,37 @@ type DepartmentSelectProps = SingleSelectProps | MultiSelectProps;
 interface DepartmentTreeSelectNode {
   key: string;
   value: string;
-  label: string;
+  label: React.ReactNode;
+  disabled?: boolean;
   children?: DepartmentTreeSelectNode[];
 }
 
 const normalizeDepartmentTree = (
   nodes: DeptTreeNode[],
   useNameAsValue: boolean,
+  disabledOptions?: Record<string, string>,
 ): DepartmentTreeSelectNode[] =>
-  nodes.map((node) => ({
-    key: node.value,
-    value: useNameAsValue ? node.label : node.value,
-    label: node.label,
-    children: node.children
-      ? normalizeDepartmentTree(node.children, useNameAsValue)
-      : undefined,
-  }));
+  nodes.map((node) => {
+    const disabledReason = disabledOptions?.[node.value];
+    return {
+      key: node.value,
+      value: useNameAsValue ? node.label : node.value,
+      label: disabledReason ? (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, width: '100%' }}>
+          <span style={{ color: 'var(--semi-color-text-2)' }}>{node.label}</span>
+          <span style={{ fontSize: 12, color: 'var(--semi-color-warning)', flexShrink: 0 }}>
+            · {disabledReason}
+          </span>
+        </span>
+      ) : (
+        node.label
+      ),
+      disabled: !!disabledReason,
+      children: node.children
+        ? normalizeDepartmentTree(node.children, useNameAsValue, disabledOptions)
+        : undefined,
+    };
+  });
 
 /** Collect all labels from tree */
 const collectLabels = (nodes: DeptTreeNode[]): string[] => {
@@ -90,13 +110,14 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
     showClear,
     maxTagCount,
     useNameAsValue = false,
+    disabledOptions,
   } = props as any;
 
   const { t } = useTranslation();
 
   const treeData = useMemo(
-    () => normalizeDepartmentTree(departmentTree, useNameAsValue),
-    [useNameAsValue],
+    () => normalizeDepartmentTree(departmentTree, useNameAsValue, disabledOptions),
+    [useNameAsValue, disabledOptions],
   );
 
   const dropdownWidth = useMemo(() => estimateMaxDropdownWidth(collectLabels(departmentTree)), []);
