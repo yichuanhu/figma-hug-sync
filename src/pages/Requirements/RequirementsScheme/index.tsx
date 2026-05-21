@@ -40,6 +40,9 @@ const RequirementsScheme = () => {
   const [detailScheme, setDetailScheme] = useState<RequirementScheme | null>(null);
   const [presetPickerVisible, setPresetPickerVisible] = useState(false);
   const [bindCountMap, setBindCountMap] = useState<Record<string, number>>(() => getBoundDepartmentCountMapByScheme());
+  const [deptEditScheme, setDeptEditScheme] = useState<RequirementScheme | null>(null);
+  const [deptEditValue, setDeptEditValue] = useState<string[]>([]);
+  const [deptEditSaving, setDeptEditSaving] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => subscribeSchemeBindingChange(() => setBindCountMap(getBoundDepartmentCountMapByScheme())), []);
