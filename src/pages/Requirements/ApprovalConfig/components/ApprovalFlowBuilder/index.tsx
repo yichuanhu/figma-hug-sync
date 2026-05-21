@@ -10,6 +10,7 @@ import { Typography, Button, Input, Toast, Modal, Space, Tag, Spin, Tooltip } fr
 import { ChevronLeft, Save, CheckCircle, Pencil, Building2 } from 'lucide-react';
 import {
   getApprovalFlowById,
+  fetchApprovalFlows,
   updateApprovalFlow,
   activateApprovalFlow,
   type ApprovalFlowTemplate,
@@ -22,7 +23,8 @@ import {
   listDepartmentsByTemplate,
   getOccupiedDepartmentMap,
 } from '@/mocks/departmentApprovalFlowBinding';
-import { getDepartmentName } from '@/mocks/departmentData';
+import { getDepartmentName, expandDepartmentIdsWithDescendants } from '@/mocks/departmentData';
+import { computeDeptDisabledOptions } from '@/pages/Requirements/_shared/computeDeptDisabledOptions';
 import './index.less';
 
 const { Title } = Typography;
@@ -38,6 +40,7 @@ const ApprovalFlowBuilderPage = () => {
   const [dirty, setDirty] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
+  const [activeTemplateIds, setActiveTemplateIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -56,6 +59,10 @@ const ApprovalFlowBuilderPage = () => {
       assessors: f.assessors ?? [],
       approvers: f.approvers ?? [],
       applicable_department_ids: applicable,
+    });
+    // 拉取所有已激活模板（草稿态不占用部门）
+    fetchApprovalFlows().then((all) => {
+      setActiveTemplateIds(all.filter((x) => x.status === 'active').map((x) => x.id));
     });
     setLoading(false);
   }, [id, navigate]);
@@ -100,7 +107,9 @@ const ApprovalFlowBuilderPage = () => {
         return;
       }
     }
-    const deptIds = draft.applicable_department_ids ?? [];
+    const selectedDeptIds = draft.applicable_department_ids ?? [];
+    // R-04：选中父部门时自动展开所有子部门写入绑定
+    const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
     try {
       const updated = await updateApprovalFlow(draft.id, {
         name: draft.name,
@@ -110,9 +119,9 @@ const ApprovalFlowBuilderPage = () => {
         assessors: draft.assessors,
         value_model: draft.value_model,
         complexity_model: draft.complexity_model,
-        applicable_department_ids: deptIds,
+        applicable_department_ids: selectedDeptIds,
       });
-      setBindingsForTemplate(draft.id, deptIds);
+      setBindingsForTemplate(draft.id, expandedDeptIds);
       setDraft(updated);
       setDirty(false);
       Toast.success('已保存');
@@ -297,7 +306,7 @@ const ApprovalFlowBuilderPage = () => {
                     )}
                   </div>
                   <Typography.Text type="tertiary" size="small">
-                    已被其他生效审批流占用的部门将不可选。
+                    已被其他生效审批流占用的部门将不可选；选中父部门时会自动包含其所有子部门。
                   </Typography.Text>
                 </div>
                 <div className="approval-flow-section-card-body">
@@ -318,17 +327,12 @@ const ApprovalFlowBuilderPage = () => {
                       multiple
                       value={draft.applicable_department_ids ?? []}
                       onChange={(ids) => patch({ applicable_department_ids: ids })}
-                      placeholder="请选择适用部门（可多选）"
+                      placeholder="请选择适用部门（可多选，选中父部门自动包含子部门）"
                       maxTagCount={6}
-                      disabledOptions={(() => {
-                        const occupied = getOccupiedDepartmentMap(draft.id);
-                        const map: Record<string, string> = {};
-                        Object.entries(occupied).forEach(([deptId, ownerId]) => {
-                          const ownerName = getApprovalFlowById(ownerId)?.name ?? '其他审批流';
-                          map[deptId] = `已绑定「${ownerName}」`;
-                        });
-                        return map;
-                      })()}
+                      disabledOptions={computeDeptDisabledOptions(
+                        getOccupiedDepartmentMap(draft.id, activeTemplateIds),
+                        (ownerId) => getApprovalFlowById(ownerId)?.name ?? '其他审批流',
+                      )}
                     />
                   )}
                 </div>

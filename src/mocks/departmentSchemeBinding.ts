@@ -134,11 +134,20 @@ export const previewSchemeBindings = (schemeId: string, deptIds: string[]): Sche
   return items;
 };
 
-/** 返回 deptId -> 当前归属方案 id 的占用 map（可排除指定方案）。 */
-export const getOccupiedDepartmentMapByScheme = (excludeSchemeId?: string): Record<string, string> => {
+/**
+ * 返回 deptId -> 当前归属方案 id 的占用 map（可排除指定方案）。
+ * 传入 activeSchemeIds 时仅统计这些激活方案的绑定（草稿/未激活方案不占用部门）。
+ */
+export const getOccupiedDepartmentMapByScheme = (
+  excludeSchemeId?: string,
+  activeSchemeIds?: string[],
+): Record<string, string> => {
+  const activeSet = activeSchemeIds ? new Set(activeSchemeIds) : null;
   const map: Record<string, string> = {};
   cache.forEach((b) => {
-    if (b.scheme_id !== excludeSchemeId) map[b.department_id] = b.scheme_id;
+    if (b.scheme_id === excludeSchemeId) return;
+    if (activeSet && !activeSet.has(b.scheme_id)) return;
+    map[b.department_id] = b.scheme_id;
   });
   return map;
 };

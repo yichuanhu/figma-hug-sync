@@ -104,6 +104,41 @@ export const getDepartmentName = (id: string | null | undefined): string => {
   return departmentNameMap[id] || id;
 };
 
+/** 取某节点 + 所有子孙节点的 id 列表（含自身）。 */
+export const getDepartmentSubtreeIds = (deptId: string): string[] => {
+  const result: string[] = [];
+  const walk = (nodes: DeptTreeNode[], collecting: boolean): void => {
+    for (const n of nodes) {
+      const hit = collecting || n.value === deptId;
+      if (hit) result.push(n.value);
+      if (n.children) walk(n.children, hit);
+    }
+  };
+  walk(departmentTree, false);
+  return result.length ? result : [deptId];
+};
+
+/** 取某节点的所有祖先 id 列表（不含自身）。 */
+export const getDepartmentAncestorIds = (deptId: string): string[] => {
+  const path: string[] = [];
+  const dfs = (nodes: DeptTreeNode[], trail: string[]): boolean => {
+    for (const n of nodes) {
+      if (n.value === deptId) { path.push(...trail); return true; }
+      if (n.children && dfs(n.children, [...trail, n.value])) return true;
+    }
+    return false;
+  };
+  dfs(departmentTree, []);
+  return path;
+};
+
+/** 将一组部门 id 扩展为「自身 + 所有子孙」的并集（用于"选中父部门自动包含子部门"逻辑）。 */
+export const expandDepartmentIdsWithDescendants = (ids: string[]): string[] => {
+  const set = new Set<string>();
+  ids.forEach((id) => getDepartmentSubtreeIds(id).forEach((x) => set.add(x)));
+  return Array.from(set);
+};
+
 /** Mock current user info */
 export const MOCK_CURRENT_USER = {
   id: 'user-001',

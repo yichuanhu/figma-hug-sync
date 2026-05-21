@@ -6,6 +6,7 @@ import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Pencil, Building2 } 
 
 import {
   getSchemeById,
+  getActiveSchemes,
   updateSchemeBuilder,
   validateScheme,
   activateSchemeBuilder,
@@ -18,6 +19,8 @@ import {
   setSchemeBindingsForScheme,
   getOccupiedDepartmentMapByScheme,
 } from '@/mocks/departmentSchemeBinding';
+import { expandDepartmentIdsWithDescendants } from '@/mocks/departmentData';
+import { computeDeptDisabledOptions } from '@/pages/Requirements/_shared/computeDeptDisabledOptions';
 import FormBuilder from './FormBuilder';
 import { validateAllFields } from './FormBuilder/validators';
 import WorkflowBuilder from './WorkflowBuilder';
@@ -129,7 +132,9 @@ const SchemeBuilderPage = () => {
       setActiveTab('form');
       return;
     }
-    const deptIds = draftScheme.applicable_department_ids ?? [];
+    const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
+    // R-04：选中父部门时自动展开所有子部门写入绑定
+    const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
 
     const doPersist = async () => {
       try {
@@ -142,9 +147,9 @@ const SchemeBuilderPage = () => {
           workflow_config: draftScheme.workflow_config,
           cost_config: draftScheme.cost_config,
           approval_flow: draftScheme.approval_flow,
-          applicable_department_ids: deptIds,
+          applicable_department_ids: selectedDeptIds,
         });
-        setSchemeBindingsForScheme(draftScheme.id, deptIds);
+        setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
         setSavedScheme(updated);
         setDraftScheme(updated);
         setDirty(false);
@@ -302,12 +307,11 @@ const SchemeBuilderPage = () => {
         const deptIds = draftScheme.applicable_department_ids ?? [];
         const deptCount = deptIds.length;
         const isEmpty = deptCount === 0;
-        const occupied = getOccupiedDepartmentMapByScheme(draftScheme.id);
-        const disabledOptions: Record<string, string> = {};
-        Object.entries(occupied).forEach(([deptId, ownerId]) => {
-          const ownerName = getSchemeById(ownerId)?.name ?? '其他方案';
-          disabledOptions[deptId] = `已绑定「${ownerName}」`;
-        });
+        const activeIds = getActiveSchemes().map((s) => s.id);
+        const disabledOptions = computeDeptDisabledOptions(
+          getOccupiedDepartmentMapByScheme(draftScheme.id, activeIds),
+          (ownerId) => getSchemeById(ownerId)?.name ?? '其他方案',
+        );
         return (
           <div
             className="scheme-builder-applicable-dept"
@@ -326,14 +330,16 @@ const SchemeBuilderPage = () => {
               <Building2 size={14} strokeWidth={2} />
               <span>适用部门</span>
               <Text type="danger" size="small" style={{ marginLeft: 2 }}>*</Text>
-              <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>（激活时必填，已被其他生效方案占用的部门不可选）</Text>
+              <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>
+                （激活时必填；已被其他生效方案占用的部门不可选；选中父部门自动包含子部门）
+              </Text>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <DepartmentSelect
                 multiple
                 value={deptIds}
                 onChange={(v) => patch({ applicable_department_ids: (v as string[]) ?? [] })}
-                placeholder="选择适用该方案的部门，部门发起的需求将使用此方案"
+                placeholder="选择适用该方案的部门（选中父部门自动包含其所有子部门）"
                 style={{ width: '100%' }}
                 disabledOptions={disabledOptions}
               />

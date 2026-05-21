@@ -154,11 +154,20 @@ export const previewBindingsForTemplate = (templateId: string, deptIds: string[]
   return items;
 };
 
-/** 返回 deptId -> 当前归属模板 id 的占用 map（可排除指定模板）。 */
-export const getOccupiedDepartmentMap = (excludeTemplateId?: string): Record<string, string> => {
+/**
+ * 返回 deptId -> 当前归属模板 id 的占用 map（可排除指定模板）。
+ * 传入 activeTemplateIds 时仅统计这些激活模板的绑定（草稿/未激活模板不占用部门）。
+ */
+export const getOccupiedDepartmentMap = (
+  excludeTemplateId?: string,
+  activeTemplateIds?: string[],
+): Record<string, string> => {
+  const activeSet = activeTemplateIds ? new Set(activeTemplateIds) : null;
   const map: Record<string, string> = {};
   cache.forEach((b) => {
-    if (b.approval_flow_template_id !== excludeTemplateId) map[b.department_id] = b.approval_flow_template_id;
+    if (b.approval_flow_template_id === excludeTemplateId) return;
+    if (activeSet && !activeSet.has(b.approval_flow_template_id)) return;
+    map[b.department_id] = b.approval_flow_template_id;
   });
   return map;
 };
