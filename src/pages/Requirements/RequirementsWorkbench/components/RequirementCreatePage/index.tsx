@@ -569,42 +569,9 @@ const RequirementCreatePage = () => {
     );
   }
 
-  // v5：新建态时若当前部门未绑定方案，拦截并展示空态
-  if (!isEdit && !activeScheme) {
-    return (
-      <div className="requirement-create-page">
-        <div className="requirement-create-page-header">
-          <Button
-            icon={<ArrowLeft size={16} strokeWidth={2} />}
-            theme="borderless"
-            type="tertiary"
-            className="back-btn"
-            onClick={() => navigate('/requirements/list')}
-          />
-          <Title heading={3} className="title">{t('requirements.form.createTitle')}</Title>
-        </div>
-        <div style={{ padding: '40px 0' }}>
-          <EmptyState
-            variant="noData"
-            description="当前部门没有生效的需求模板"
-            footer={
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-                <Text type="tertiary" size="small">
-                  请联系管理员在「需求模板」中为「{getDepartmentName(MOCK_CURRENT_USER.department_id)}」配置适用方案
-                </Text>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <Button onClick={() => navigate('/requirements/list')}>返回需求列表</Button>
-                  <Button theme="solid" type="primary" onClick={() => navigate('/requirements/scheme')}>
-                    前往需求模板管理
-                  </Button>
-                </div>
-              </div>
-            }
-          />
-        </div>
-      </div>
-    );
-  }
+  // v3 (2026-05-21)：新建态下，是否需要在 Step 0 阻断"下一步/提交"
+  // 当用户已选部门但匹配不到激活方案时，需要展示"所选部门没有生效的需求模板"
+  const showNoSchemeForDept = !isEdit && !!departmentValue && !activeScheme;
 
   return (
     <div className="requirement-create-page">
