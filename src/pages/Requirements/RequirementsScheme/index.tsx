@@ -16,7 +16,6 @@ import {
   activateScheme,
   deactivateScheme,
   deleteScheme,
-  createSchemeDraft as _unusedCreateSchemeDraft,
   cloneSchemeAsDraft,
   setSchemeAsDefault,
   SchemeError,
