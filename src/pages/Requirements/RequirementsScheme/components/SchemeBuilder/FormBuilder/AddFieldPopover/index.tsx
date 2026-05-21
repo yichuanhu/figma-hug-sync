@@ -69,16 +69,18 @@ const AddFieldPopover = ({ onAdd }: Props) => {
   return (
     <Popover
       trigger="click"
-      position="top"
+      position="topLeft"
       visible={visible}
       onVisibleChange={setVisible}
       content={content}
       showArrow={false}
+      zIndex={1100}
+      getPopupContainer={() => document.body}
     >
       <Button
         className="add-field-btn"
-        theme="borderless"
-        type="tertiary"
+        theme="light"
+        type="primary"
         icon={<Plus size={16} strokeWidth={2} />}
         block
       >
