@@ -107,7 +107,9 @@ const ApprovalFlowBuilderPage = () => {
         return;
       }
     }
-    const deptIds = draft.applicable_department_ids ?? [];
+    const selectedDeptIds = draft.applicable_department_ids ?? [];
+    // R-04：选中父部门时自动展开所有子部门写入绑定
+    const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
     try {
       const updated = await updateApprovalFlow(draft.id, {
         name: draft.name,
@@ -117,9 +119,9 @@ const ApprovalFlowBuilderPage = () => {
         assessors: draft.assessors,
         value_model: draft.value_model,
         complexity_model: draft.complexity_model,
-        applicable_department_ids: deptIds,
+        applicable_department_ids: selectedDeptIds,
       });
-      setBindingsForTemplate(draft.id, deptIds);
+      setBindingsForTemplate(draft.id, expandedDeptIds);
       setDraft(updated);
       setDirty(false);
       Toast.success('已保存');
