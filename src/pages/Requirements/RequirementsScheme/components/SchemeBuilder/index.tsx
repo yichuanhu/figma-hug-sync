@@ -202,9 +202,7 @@ const SchemeBuilderPage = () => {
           setDirty(false);
           navigate('/requirements/scheme');
         } catch (e) {
-          const err = e as Error & { missing?: string[] };
-          if (err.missing) setMissingTabs(err.missing);
-          Toast.error(err.message);
+          Toast.error((e as Error).message);
         }
       },
     });
