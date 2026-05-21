@@ -177,6 +177,38 @@ const SchemeBuilderPage = () => {
     const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
     const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
 
+    // 新建模式：先 createSchemeDraft 落库，再用 updateSchemeBuilder 写入当前编辑内容
+    if (isNewMode) {
+      const fv = validateAllFields(draftScheme.custom_fields ?? []);
+      if (fv.hasError) {
+        Toast.error(`字段配置存在 ${fv.errorFieldKeys.length} 项问题，请先修正`);
+        return;
+      }
+      try {
+        const created = await createSchemeDraft({
+          name: draftScheme.name,
+          description: draftScheme.description,
+          version: draftScheme.version,
+        });
+        const updated = await updateSchemeBuilder(created.id, {
+          name: draftScheme.name,
+          description: draftScheme.description,
+          custom_fields: draftScheme.custom_fields,
+          value_assessment_model: draftScheme.value_assessment_model,
+          complexity_assessment_model: draftScheme.complexity_assessment_model,
+          workflow_config: draftScheme.workflow_config,
+          cost_config: draftScheme.cost_config,
+          approval_flow: draftScheme.approval_flow,
+          applicable_department_ids: selectedDeptIds,
+        });
+        setSchemeBindingsForScheme(updated.id, expandedDeptIds);
+        setDirty(false);
+        Toast.success(t('requirements.scheme.builder.savedDraft'));
+        navigate(`/requirements/scheme/builder/${updated.id}`, { replace: true });
+      } catch (e) { handleSchemeError(e); }
+      return;
+    }
+
     // custom_active：仅允许保存「适用部门」
     if (editMode === 'custom_active') {
       try {
