@@ -132,7 +132,9 @@ const SchemeBuilderPage = () => {
       setActiveTab('form');
       return;
     }
-    const deptIds = draftScheme.applicable_department_ids ?? [];
+    const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
+    // R-04：选中父部门时自动展开所有子部门写入绑定
+    const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
 
     const doPersist = async () => {
       try {
@@ -145,9 +147,9 @@ const SchemeBuilderPage = () => {
           workflow_config: draftScheme.workflow_config,
           cost_config: draftScheme.cost_config,
           approval_flow: draftScheme.approval_flow,
-          applicable_department_ids: deptIds,
+          applicable_department_ids: selectedDeptIds,
         });
-        setSchemeBindingsForScheme(draftScheme.id, deptIds);
+        setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
         setSavedScheme(updated);
         setDraftScheme(updated);
         setDirty(false);
