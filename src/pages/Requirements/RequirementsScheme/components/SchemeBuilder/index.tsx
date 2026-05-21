@@ -336,6 +336,7 @@ const SchemeBuilderPage = () => {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <DepartmentSelect
+                autoCascadeDescendants
                 multiple
                 value={deptIds}
                 onChange={(v) => patch({ applicable_department_ids: (v as string[]) ?? [] })}
