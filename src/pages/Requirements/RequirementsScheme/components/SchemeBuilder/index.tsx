@@ -45,10 +45,8 @@ const SchemeBuilderPage = () => {
   // draftScheme：本地编辑缓冲区
   const [draftScheme, setDraftScheme] = useState<RequirementScheme | null>(null);
   const [dirty, setDirty] = useState(false);
-  const [activeTab, setActiveTab] = useState<'form' | 'workflow'>('form');
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
-  const [missingTabs, setMissingTabs] = useState<string[]>([]);
   const [testDriveVisible, setTestDriveVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const forkedRef = useRef(false);
