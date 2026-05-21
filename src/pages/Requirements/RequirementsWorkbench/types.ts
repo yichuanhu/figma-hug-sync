@@ -439,6 +439,8 @@ export interface RequirementItem {
   /** 关联模版 */
   scheme_id?: string;
   scheme_version?: string;
+  /** v15: 方案配置快照（创建/编辑需求时按当时方案 config 写入；后续方案变更不影响该需求） */
+  scheme_config_snapshot?: Pick<RequirementScheme, 'id' | 'code' | 'name' | 'version' | 'custom_fields'>;
 
   title: string;
   description: string;
