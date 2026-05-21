@@ -17,7 +17,7 @@ import { Select, InputNumber, Banner } from '@douyinfe/semi-ui';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import EmptyState from '@/components/EmptyState';
 import { getSchemeIdByDepartment, subscribeSchemeBindingChange } from '@/mocks/departmentSchemeBinding';
-import { getDepartmentName } from '@/mocks/departmentData';
+import { getDepartmentName, getDepartmentAncestorIds } from '@/mocks/departmentData';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import {
