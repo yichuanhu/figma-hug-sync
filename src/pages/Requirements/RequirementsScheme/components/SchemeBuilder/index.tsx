@@ -8,6 +8,7 @@ import {
   getSchemeById,
   getActiveSchemes,
   updateSchemeBuilder,
+  updateSchemeApplicableDepartments,
   validateScheme,
   activateSchemeBuilder,
   forkActiveScheme,
@@ -42,7 +43,8 @@ const SchemeBuilderPage = () => {
   const { t } = useTranslation();
   // 同步初始化：若 store 已就绪（绝大多数情况），首次渲染即拿到方案，避免白屏 Spin
   const initialScheme = id ? getSchemeById(id) ?? null : null;
-  const initialNeedsFork = !!initialScheme && (initialScheme.is_preset || (initialScheme.status === 'active' && !initialScheme.is_draft));
+  // 预设模板：进入编辑页时不派生新版本，仅允许编辑「适用部门」
+  const initialNeedsFork = !!initialScheme && initialScheme.status === 'active' && !initialScheme.is_draft && !initialScheme.is_preset;
   // savedScheme：与 store 同步的最近一次持久化版本
   const [savedScheme, setSavedScheme] = useState<RequirementScheme | null>(initialNeedsFork ? null : initialScheme);
   // draftScheme：本地编辑缓冲区
@@ -52,6 +54,7 @@ const SchemeBuilderPage = () => {
   const [nameDraft, setNameDraft] = useState('');
   const [testDriveVisible, setTestDriveVisible] = useState(false);
   const [loading, setLoading] = useState(!initialScheme || initialNeedsFork);
+  const isPresetEdit = !!savedScheme?.is_preset;
   const forkedRef = useRef(false);
   const dirtyRef = useRef(false);
   dirtyRef.current = dirty;
@@ -71,11 +74,11 @@ const SchemeBuilderPage = () => {
         navigate('/requirements/scheme');
         return;
       }
-      if (s.is_preset || (s.status === 'active' && !s.is_draft && !forkedRef.current)) {
+      if (s.status === 'active' && !s.is_draft && !s.is_preset && !forkedRef.current) {
         forkedRef.current = true;
         Modal.confirm({
           title: t('requirements.scheme.builder.forkTitle'),
-          content: t(s.is_preset ? 'requirements.scheme.builder.forkPresetContent' : 'requirements.scheme.builder.forkActiveContent', { name: s.name }),
+          content: t('requirements.scheme.builder.forkActiveContent', { name: s.name }),
           okText: t('common.confirm'),
           cancelText: t('common.cancel'),
           onOk: async () => {
@@ -131,6 +134,25 @@ const SchemeBuilderPage = () => {
 
   const handleSaveDraft = async () => {
     if (!draftScheme) return;
+    // 预设模板：仅保存「适用部门」字段
+    if (isPresetEdit) {
+      const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
+      const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
+      try {
+        await updateSchemeApplicableDepartments(draftScheme.id, selectedDeptIds);
+        setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
+        const updated = getSchemeById(draftScheme.id);
+        if (updated) {
+          setSavedScheme(updated);
+          setDraftScheme(updated);
+        }
+        setDirty(false);
+        Toast.success('适用部门已更新');
+      } catch (e) {
+        Toast.error((e as Error).message);
+      }
+      return;
+    }
     // 字段配置联动校验拦截
     const fv = validateAllFields(draftScheme.custom_fields ?? []);
     if (fv.hasError) {
@@ -251,7 +273,7 @@ const SchemeBuilderPage = () => {
               onClick={() => guardedNavigate('/requirements/scheme')}
             />
           </Tooltip>
-          {editingName ? (
+          {editingName && !isPresetEdit ? (
             <Input
               autoFocus
               value={nameDraft}
@@ -273,21 +295,24 @@ const SchemeBuilderPage = () => {
             <Title
               heading={3}
               className="scheme-builder-header-title"
-              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
-              onClick={() => { setNameDraft(draftScheme.name); setEditingName(true); }}
+              style={{ cursor: isPresetEdit ? 'default' : 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+              onClick={isPresetEdit ? undefined : () => { setNameDraft(draftScheme.name); setEditingName(true); }}
             >
               {draftScheme.name}
-              <Pencil size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)' }} />
+              {!isPresetEdit && <Pencil size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)' }} />}
             </Title>
           )}
           <Text type="tertiary">v{draftScheme.version}</Text>
           {draftScheme.parent_id && <Tag color="blue" type="light" size="small">{t('requirements.scheme.builder.newVersionBadge')}</Tag>}
+          {isPresetEdit && <Tag color="blue" type="light" size="small">{t('requirements.scheme.preset')}</Tag>}
           {dirty && <Tag color="red" type="light" size="small">{t('requirements.scheme.builder.unsaved')}</Tag>}
         </div>
         <Space>
-          <Button icon={<Play size={16} strokeWidth={2} />} onClick={() => setTestDriveVisible(true)}>
-            {t('requirements.scheme.builder.testDrive')}
-          </Button>
+          {!isPresetEdit && (
+            <Button icon={<Play size={16} strokeWidth={2} />} onClick={() => setTestDriveVisible(true)}>
+              {t('requirements.scheme.builder.testDrive')}
+            </Button>
+          )}
           <Button
             icon={<Save size={16} strokeWidth={2} />}
             theme={dirty ? 'solid' : 'light'}
@@ -295,11 +320,13 @@ const SchemeBuilderPage = () => {
             onClick={handleSaveDraft}
             disabled={!dirty}
           >
-            {t('requirements.scheme.builder.saveDraft')}
+            {isPresetEdit ? '保存' : t('requirements.scheme.builder.saveDraft')}
           </Button>
-          <Button icon={<CheckCircle size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleActivate}>
-            {t('requirements.scheme.activate')}
-          </Button>
+          {!isPresetEdit && (
+            <Button icon={<CheckCircle size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleActivate}>
+              {t('requirements.scheme.activate')}
+            </Button>
+          )}
         </Space>
       </div>
 
@@ -342,7 +369,12 @@ const SchemeBuilderPage = () => {
       })()}
 
 
-      <div className="scheme-builder-body">
+      <div
+        className="scheme-builder-body"
+        style={isPresetEdit ? { pointerEvents: 'none', opacity: 0.7, userSelect: 'none' } : undefined}
+        aria-disabled={isPresetEdit}
+        title={isPresetEdit ? '预设模板的字段配置不可编辑，仅可修改适用部门' : undefined}
+      >
         <FormBuilder fields={draftScheme.custom_fields} onChange={(fields) => patch({ custom_fields: fields })} />
       </div>
 

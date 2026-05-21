@@ -225,7 +225,7 @@ const RequirementsScheme = () => {
                           </Dropdown.Item>
                         )}
                         {s.is_preset && (
-                          <Dropdown.Item icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); openDeptEditor(s); }}>
+                          <Dropdown.Item icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
                             {t('requirements.scheme.edit')}
                           </Dropdown.Item>
                         )}
