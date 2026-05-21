@@ -157,7 +157,7 @@ const SchemeBuilderPage = () => {
     const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
     const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
 
-    // custom_active：仅允许保存「适用部门」（已激活方案直接生效，写入绑定）
+    // custom_active：仅允许保存「适用部门」
     if (editMode === 'custom_active') {
       try {
         await updateSchemeApplicableDepartments(draftScheme.id, selectedDeptIds);
@@ -190,10 +190,8 @@ const SchemeBuilderPage = () => {
         // 默认方案不带适用部门
         applicable_department_ids: editMode === 'tenant_default' ? [] : selectedDeptIds,
       });
-      // 仅 active 方案占用部门；草稿方案只保存到方案对象，不写 department_scheme_binding。
-      // 这里兜底清理一次，避免历史脏数据导致草稿删除被拦截。
-      if (editMode === 'custom_inactive') {
-        setSchemeBindingsForScheme(draftScheme.id, []);
+      if (editMode !== 'tenant_default') {
+        setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
       }
       setSavedScheme(updated);
       setDraftScheme(updated);
