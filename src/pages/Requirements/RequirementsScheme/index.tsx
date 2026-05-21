@@ -283,7 +283,7 @@ const RequirementsScheme = () => {
               <Button icon={<Copy size={16} strokeWidth={2} />} onClick={() => setPresetPickerVisible(true)}>
                 {t('requirements.scheme.createBasedOnPreset')}
               </Button>
-              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleCreateNew}>
+              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setNewSchemeModalVisible(true)}>
                 {t('requirements.scheme.createNew')}
               </Button>
             </Space>
