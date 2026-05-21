@@ -160,28 +160,29 @@ const RequirementCreatePage = () => {
   const [bindingTick, setBindingTick] = useState(0);
   useEffect(() => subscribeSchemeBindingChange(() => setBindingTick((k) => k + 1)), []);
 
-  const autoMatchedSchemeId = useMemo(() => {
+  // v15: 三级 fallback —— 部门直接命中 → 祖先继承 → 租户默认方案
+  const schemeMatch = useMemo<{ id: string; source: 'department' | 'tenant_default' } | null>(() => {
     if (!departmentValue) return null;
     const direct = getSchemeIdByDepartment(departmentValue);
-    if (direct) return direct;
-    // 兜底：按祖先部门查找（防止"叶子部门未直接绑定但父部门已绑定且本应继承"的场景）
+    if (direct) return { id: direct, source: 'department' };
     const ancestors = getDepartmentAncestorIds(departmentValue);
     for (const a of ancestors) {
       const hit = getSchemeIdByDepartment(a);
-      if (hit) return hit;
+      if (hit) return { id: hit, source: 'department' };
     }
+    const def = getTenantDefaultScheme();
+    if (def) return { id: def.id, source: 'tenant_default' };
     return null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bindingTick, departmentValue]);
 
   const selectedSchemeId = useMemo<string | undefined>(() => {
     if (isEdit && editData?.scheme_id) return editData.scheme_id;
-    return autoMatchedSchemeId ?? undefined;
-  }, [isEdit, editData, autoMatchedSchemeId]);
+    return schemeMatch?.id;
+  }, [isEdit, editData, schemeMatch]);
 
   const activeScheme = useMemo(() => {
     if (selectedSchemeId) return getSchemeById(selectedSchemeId);
-    // 编辑历史需求时若 scheme_id 缺失，回退到 active scheme；新建无方案则返回 undefined（避免显示错误模版）
     return isEdit ? getActiveScheme() : undefined;
   }, [selectedSchemeId, isEdit]);
 
