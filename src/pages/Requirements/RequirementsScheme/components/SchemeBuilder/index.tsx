@@ -8,6 +8,7 @@ import {
   getSchemeById,
   getActiveSchemes,
   updateSchemeBuilder,
+  updateSchemeApplicableDepartments,
   validateScheme,
   activateSchemeBuilder,
   forkActiveScheme,
