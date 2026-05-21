@@ -302,8 +302,6 @@ const SchemeBuilderPage = () => {
 
       {(() => {
         const deptIds = draftScheme.applicable_department_ids ?? [];
-        const deptCount = deptIds.length;
-        const showWarning = deptCount === 0;
         const activeIds = getActiveSchemes().map((s) => s.id);
         const disabledOptions = computeDeptDisabledOptions(
           getOccupiedDepartmentMapByScheme(draftScheme.id, activeIds),
@@ -312,15 +310,7 @@ const SchemeBuilderPage = () => {
         return (
           <div
             className="approval-flow-section-card"
-            style={{
-              marginBottom: 16,
-              ...(showWarning
-                ? {
-                    background: 'var(--semi-color-warning-light-default)',
-                    borderColor: 'var(--semi-color-warning-light-active)',
-                  }
-                : undefined),
-            }}
+            style={{ marginBottom: 16 }}
           >
             <div className="approval-flow-section-card-header">
               <div className="approval-flow-section-card-title">
