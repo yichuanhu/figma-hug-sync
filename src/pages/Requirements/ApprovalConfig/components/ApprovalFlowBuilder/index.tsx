@@ -283,15 +283,8 @@ const ApprovalFlowBuilderPage = () => {
           {/* 适用部门：保存时同步写入 department_approval_flow_binding（business_type=REQUIREMENT） */}
           {(() => {
             const deptCount = (draft.applicable_department_ids ?? []).length;
-            const showWarning = !isView && deptCount === 0;
             return (
-              <div
-                className="approval-flow-section-card"
-                style={showWarning ? {
-                  background: 'var(--semi-color-warning-light-default)',
-                  borderColor: 'var(--semi-color-warning-light-active)',
-                } : undefined}
-              >
+              <div className="approval-flow-section-card">
                 <div className="approval-flow-section-card-header">
                   <div className="approval-flow-section-card-title">
                     <Building2 size={16} strokeWidth={2} />
