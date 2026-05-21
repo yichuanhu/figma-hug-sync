@@ -163,8 +163,9 @@ const FormBuilder = ({ fields, onChange }: Props) => {
 
         {/* 自定义字段 */}
         <div className="canvas-section">
-          <div className="canvas-section-title">
-            {t('requirements.scheme.builder.customFields')} ({fields.length})
+          <div className="canvas-section-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span>{t('requirements.scheme.builder.customFields')} ({fields.length})</span>
+            <AddFieldPopover onAdd={addField} />
           </div>
           {fields.length === 0 ? (
             <div className="empty-fields">
