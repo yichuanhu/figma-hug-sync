@@ -10,6 +10,7 @@ import { Typography, Button, Input, Toast, Modal, Space, Tag, Spin, Tooltip } fr
 import { ChevronLeft, Save, CheckCircle, Pencil, Building2 } from 'lucide-react';
 import {
   getApprovalFlowById,
+  fetchApprovalFlows,
   updateApprovalFlow,
   activateApprovalFlow,
   type ApprovalFlowTemplate,
@@ -22,7 +23,8 @@ import {
   listDepartmentsByTemplate,
   getOccupiedDepartmentMap,
 } from '@/mocks/departmentApprovalFlowBinding';
-import { getDepartmentName } from '@/mocks/departmentData';
+import { getDepartmentName, expandDepartmentIdsWithDescendants } from '@/mocks/departmentData';
+import { computeDeptDisabledOptions } from '@/pages/Requirements/_shared/computeDeptDisabledOptions';
 import './index.less';
 
 const { Title } = Typography;
