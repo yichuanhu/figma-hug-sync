@@ -40,6 +40,7 @@ const ApprovalFlowBuilderPage = () => {
   const [dirty, setDirty] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
+  const [activeTemplateIds, setActiveTemplateIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -58,6 +59,10 @@ const ApprovalFlowBuilderPage = () => {
       assessors: f.assessors ?? [],
       approvers: f.approvers ?? [],
       applicable_department_ids: applicable,
+    });
+    // 拉取所有已激活模板（草稿态不占用部门）
+    fetchApprovalFlows().then((all) => {
+      setActiveTemplateIds(all.filter((x) => x.status === 'active').map((x) => x.id));
     });
     setLoading(false);
   }, [id, navigate]);
