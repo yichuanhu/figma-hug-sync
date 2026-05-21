@@ -172,14 +172,11 @@ const WorkflowBuilder = ({
   const { t: _t } = useTranslation();
   const wf: WorkflowConfig = workflow ?? { template: 'simple', states: [], approvers: [], assessors: [] };
 
-  const approverEnabled = wf.approvers.length > 0;
   const assessorEnabled = wf.assessors.length > 0;
 
   // 缓存关闭前的配置，再次启用时恢复
-  const cachedApproversRef = useRef<WorkflowApprover[] | null>(null);
   const cachedAssessorsRef = useRef<WorkflowApprover[] | null>(null);
   const cachedAssessmentRef = useRef<{ value?: AssessmentModel; complexity?: AssessmentModel } | null>(null);
-  if (approverEnabled) cachedApproversRef.current = wf.approvers;
   if (assessorEnabled) {
     cachedAssessorsRef.current = wf.assessors;
     cachedAssessmentRef.current = { value: valueModel, complexity: complexityModel };
@@ -192,19 +189,6 @@ const WorkflowBuilder = ({
     onChange({ ...wf, template: computeTemplate(approvers, assessors), approvers, assessors });
   };
 
-  const handleToggleApprover = (next: boolean) => {
-    if (next) {
-      const restored = cachedApproversRef.current && cachedApproversRef.current.length > 0
-        ? cachedApproversRef.current
-        : buildWorkflowFromTemplate('simple').approvers;
-      updateLists(restored, wf.assessors);
-      Toast.success('已启用审批人配置');
-    } else {
-      cachedApproversRef.current = wf.approvers;
-      updateLists([], wf.assessors);
-      Toast.success('已关闭审批人配置');
-    }
-  };
 
   const handleToggleAssessor = (next: boolean) => {
     if (next) {
