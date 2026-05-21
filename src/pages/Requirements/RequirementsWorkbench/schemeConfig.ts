@@ -1,4 +1,11 @@
 import type { RequirementScheme } from './types';
+import {
+  setSchemeBindingsForScheme,
+  getOccupiedDepartmentMapByScheme,
+  fetchAllSchemeBindings,
+  getBoundDepartmentCountMapByScheme,
+} from '@/mocks/departmentSchemeBinding';
+import { expandDepartmentIdsWithDescendants } from '@/mocks/departmentData';
 
 /**
  * 内置预设模版 — 阶段 1 提供 3 个预设模版
