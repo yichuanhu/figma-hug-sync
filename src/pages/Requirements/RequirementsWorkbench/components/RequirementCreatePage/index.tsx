@@ -15,7 +15,7 @@ import {
 import { ArrowLeft, Plus, Trash2, Building2 } from 'lucide-react';
 import { Select, InputNumber, Banner } from '@douyinfe/semi-ui';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
-import EmptyState from '@/components/EmptyState';
+// EmptyState 不再使用：v3 改为在 Step 0 内联 Banner 提示
 import { getSchemeIdByDepartment, subscribeSchemeBindingChange } from '@/mocks/departmentSchemeBinding';
 import { getDepartmentName, getDepartmentAncestorIds } from '@/mocks/departmentData';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
