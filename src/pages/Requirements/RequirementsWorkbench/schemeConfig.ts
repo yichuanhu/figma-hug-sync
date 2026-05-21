@@ -476,7 +476,6 @@ import type { WorkflowConfig, CostConfig } from './types';
 
 /** 创建空白模版草稿 */
 export const createSchemeDraft = async (meta: { name: string; description?: string; version?: string }): Promise<RequirementScheme> => {
-  await new Promise((r) => setTimeout(r, 200));
   const id = `scheme-draft-${Date.now()}`;
   const code = `CUSTOM-${Date.now().toString(36).toUpperCase()}`;
   const draft: RequirementScheme = {
@@ -502,7 +501,6 @@ export const createSchemeDraft = async (meta: { name: string; description?: stri
 
 /** 基于已有模版克隆为草稿 */
 export const cloneSchemeAsDraft = async (sourceId: string, opts?: { name?: string; bumpVersion?: boolean }): Promise<RequirementScheme> => {
-  await new Promise((r) => setTimeout(r, 200));
   const src = schemeStore.find((s) => s.id === sourceId);
   if (!src) throw new Error('源模版不存在');
   const id = `scheme-draft-${Date.now()}`;
