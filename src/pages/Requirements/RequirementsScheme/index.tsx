@@ -430,6 +430,14 @@ const RequirementsScheme = () => {
           ))}
         </div>
       </Modal>
+
+      {/* 创建新模版 */}
+      <NewSchemeNameModal
+        visible={newSchemeModalVisible}
+        loading={creatingNewScheme}
+        onCancel={() => setNewSchemeModalVisible(false)}
+        onConfirm={handleConfirmCreateNew}
+      />
     </div>
   );
 };
