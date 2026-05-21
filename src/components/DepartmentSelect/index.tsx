@@ -21,6 +21,8 @@ interface DepartmentSelectBaseProps {
    * 取消父部门时，同步取消其所有子孙节点。
    */
   autoCascadeDescendants?: boolean;
+}
+
 
 interface SingleSelectProps extends DepartmentSelectBaseProps {
   multiple?: false;
