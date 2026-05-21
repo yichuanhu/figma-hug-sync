@@ -314,38 +314,22 @@ const ApprovalFlowBuilderPage = () => {
                       <Typography.Text type="tertiary">尚未配置适用部门</Typography.Text>
                     )
                   ) : (
-                    <>
-                      <DepartmentSelect
-                        multiple
-                        value={draft.applicable_department_ids ?? []}
-                        onChange={(ids) => patch({ applicable_department_ids: ids })}
-                        placeholder="请选择适用部门（可多选）"
-                        maxTagCount={6}
-                      />
-                      {(() => {
+                    <DepartmentSelect
+                      multiple
+                      value={draft.applicable_department_ids ?? []}
+                      onChange={(ids) => patch({ applicable_department_ids: ids })}
+                      placeholder="请选择适用部门（可多选）"
+                      maxTagCount={6}
+                      disabledOptions={(() => {
                         const occupied = getOccupiedDepartmentMap(draft.id);
-                        const conflicts = (draft.applicable_department_ids ?? []).filter((d) => occupied[d]);
-                        if (conflicts.length === 0) return null;
-                        return (
-                          <Banner
-                            type="warning"
-                            fullMode={false}
-                            closeIcon={null}
-                            style={{ marginTop: 12 }}
-                            description={
-                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
-                                <span style={{ marginRight: 4 }}>{conflicts.length} 个部门当前归属其他审批流，保存后将改绑到本模板：</span>
-                                {conflicts.map((d) => (
-                                  <Tag key={d} color="amber" type="light" size="small">
-                                    {getDepartmentName(d)} ← 「{getApprovalFlowById(occupied[d])?.name ?? '未知'}」
-                                  </Tag>
-                                ))}
-                              </div>
-                            }
-                          />
-                        );
+                        const map: Record<string, string> = {};
+                        Object.entries(occupied).forEach(([deptId, ownerId]) => {
+                          const ownerName = getApprovalFlowById(ownerId)?.name ?? '其他审批流';
+                          map[deptId] = `已绑定「${ownerName}」`;
+                        });
+                        return map;
                       })()}
-                    </>
+                    />
                   )}
                 </div>
               </div>
