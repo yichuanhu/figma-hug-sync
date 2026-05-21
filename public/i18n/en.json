@@ -922,7 +922,7 @@
         "incompleteTitle": "Template Incomplete",
         "incompleteHint": "Please complete the missing items below:",
         "activateTitle": "Activate Template",
-        "activateContent": "Activate template \"{{name}}\"? Other templates in this tenant will be deactivated.",
+        "activateContent": "Activate template \"{{name}}\"? Once activated, it will participate in scheme matching based on its applicable departments.",
         "activateNoApprovalNotice": "This template has no approval configured. Submitted requirements will skip approval & assessment and go directly to Pending Development.",
         "activateNoApprovalConfirm": "Continue activation?",
         "forkTitle": "Create New Version",
