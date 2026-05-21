@@ -17,7 +17,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     name: 'RPA 专业版模版',
     version: '1.0.0',
     description: '面向中大型企业的完整 RPA 需求评估模版，包含价值评估、复杂度评估及 3 级审批流。',
-    status: 'active',
+    status: 'inactive',
     is_preset: true,
     applicable_department_ids: [],
     meta: {
