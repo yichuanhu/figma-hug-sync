@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TreeSelect, Tooltip, Typography } from '@douyinfe/semi-ui';
-import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
+import { TreeSelect, Typography } from '@douyinfe/semi-ui';
+import { departmentTree, DeptTreeNode, getDepartmentSubtreeIds } from '@/mocks/departmentData';
 
 interface DepartmentSelectBaseProps {
   placeholder?: string;
