@@ -16,7 +16,11 @@ interface DepartmentSelectBaseProps {
    * 将作为后缀展示在下拉项右侧并将节点禁用，从源头避免冲突选择。
    */
   disabledOptions?: Record<string, string>;
-}
+  /**
+   * 多选时：选中父部门后，自动级联选中其所有子孙节点（已禁用的节点会被跳过）。
+   * 取消父部门时，同步取消其所有子孙节点。
+   */
+  autoCascadeDescendants?: boolean;
 
 interface SingleSelectProps extends DepartmentSelectBaseProps {
   multiple?: false;
