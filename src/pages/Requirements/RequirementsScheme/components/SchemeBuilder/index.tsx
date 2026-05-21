@@ -132,7 +132,6 @@ const SchemeBuilderPage = () => {
     const fv = validateAllFields(draftScheme.custom_fields ?? []);
     if (fv.hasError) {
       Toast.error(`字段配置存在 ${fv.errorFieldKeys.length} 项问题，请先修正`);
-      setActiveTab('form');
       return;
     }
     const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
