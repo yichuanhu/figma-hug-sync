@@ -350,34 +350,9 @@ const SchemeBuilderPage = () => {
 
 
       <div className="scheme-builder-body">
-        <Tabs
-          type="line"
-          activeKey={activeTab}
-          onChange={(k) => setActiveTab(k as typeof activeTab)}
-          keepDOM={false}
-        >
-          <TabPane
-            tab={<span>{t('requirements.scheme.builder.tabs.form')}{tabBadge('form')}</span>}
-            itemKey="form"
-          >
-            <FormBuilder fields={draftScheme.custom_fields} onChange={(fields) => patch({ custom_fields: fields })} />
-          </TabPane>
-          <TabPane
-            tab={<span>{t('requirements.scheme.builder.tabs.workflow')}{tabBadge('workflow')}{tabBadge('assessment')}</span>}
-            itemKey="workflow"
-          >
-            <WorkflowBuilder
-              workflow={draftScheme.workflow_config}
-              valueModel={draftScheme.value_assessment_model}
-              complexityModel={draftScheme.complexity_assessment_model}
-              fields={draftScheme.custom_fields}
-              onChange={(wf) => patch({ workflow_config: wf })}
-              onChangeAssessment={(value, complexity) => patch({ value_assessment_model: value, complexity_assessment_model: complexity })}
-              onClearAssessment={() => patch({ value_assessment_model: undefined, complexity_assessment_model: undefined })}
-            />
-          </TabPane>
-        </Tabs>
+        <FormBuilder fields={draftScheme.custom_fields} onChange={(fields) => patch({ custom_fields: fields })} />
       </div>
+
 
       <TestDriveModal
         visible={testDriveVisible}
