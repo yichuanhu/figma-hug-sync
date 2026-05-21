@@ -259,25 +259,6 @@ const WorkflowBuilder = ({
 
   return (
     <div className="workflow-builder">
-      {/* 审批人配置卡片 */}
-      <div className="workflow-section">
-        {renderCardHeader(
-          '审批人配置',
-          approverEnabled,
-          handleToggleApprover,
-          () => updateLists([...wf.approvers, makeApprover(wf.approvers.length + 1)], wf.assessors),
-        )}
-        {approverEnabled ? (
-          <ApproverList
-            list={wf.approvers}
-            emptyHint="暂无审批级，点击右上角添加"
-            onChange={(list) => updateLists(list, wf.assessors)}
-          />
-        ) : (
-          renderDisabledBody('已关闭审批人配置，需求提交后将跳过审批环节。开启后可配置审批级与审批方式。')
-        )}
-      </div>
-
       {/* 技术评估人配置卡片 */}
       <div className="workflow-section">
         {renderCardHeader(
