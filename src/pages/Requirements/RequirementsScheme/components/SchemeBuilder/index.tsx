@@ -355,14 +355,16 @@ const SchemeBuilderPage = () => {
                 已被其他生效方案占用的部门将不可选；选中父部门时会自动包含其所有子部门。
               </Text>
             </div>
-            <div className="approval-flow-section-card-body">
-              <DepartmentPicker
-                value={deptIds}
-                onChange={(v) => patch({ applicable_department_ids: v ?? [] })}
-                placeholder="请选择适用部门（可多选，选中父部门自动包含子部门）"
-                maxTagCount={6}
-                disabledOptions={disabledOptions}
-              />
+            <div className="approval-flow-section-card-body" style={{ padding: '4px 4px 0' }}>
+              <div style={{ maxWidth: 600 }}>
+                <DepartmentPicker
+                  value={deptIds}
+                  onChange={(v) => patch({ applicable_department_ids: v ?? [] })}
+                  placeholder="请选择适用部门（可多选，选中父部门自动包含子部门）"
+                  maxTagCount={6}
+                  disabledOptions={disabledOptions}
+                />
+              </div>
             </div>
           </div>
         );
