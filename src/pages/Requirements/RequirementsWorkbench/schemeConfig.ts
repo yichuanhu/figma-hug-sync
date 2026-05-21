@@ -347,7 +347,10 @@ const loadSchemes = (): RequirementScheme[] => {
       const mergedPresets = PRESET_SCHEMES.map((preset) => ({
         ...preset,
         status: storedPresetMap.get(preset.id)?.status ?? preset.status,
-        applicable_department_ids: storedPresetMap.get(preset.id)?.applicable_department_ids ?? preset.applicable_department_ids,
+        applicable_department_ids:
+          (storedPresetMap.get(preset.id)?.applicable_department_ids?.length ?? 0) > 0
+            ? storedPresetMap.get(preset.id)!.applicable_department_ids
+            : preset.applicable_department_ids,
       }));
       return [...storedNonPresets, ...mergedPresets];
     }
