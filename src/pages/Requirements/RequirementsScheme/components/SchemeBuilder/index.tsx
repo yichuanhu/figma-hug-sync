@@ -316,6 +316,19 @@ const SchemeBuilderPage = () => {
   };
 
   const guardedNavigate = useCallback((to: string) => {
+    // 新建模式：如果只是初始未编辑，直接走；否则提示「放弃创建」
+    if (isNewMode) {
+      if (!dirty) { navigate(to); return; }
+      Modal.confirm({
+        title: '放弃创建？',
+        content: '此次新建的内容尚未保存，离开后将不保留。',
+        okText: '放弃',
+        cancelText: '继续编辑',
+        okButtonProps: { type: 'danger' },
+        onOk: () => { setDirty(false); navigate(to); },
+      });
+      return;
+    }
     if (!dirty) { navigate(to); return; }
     Modal.confirm({
       title: t('requirements.scheme.builder.leaveTitle'),
@@ -325,7 +338,9 @@ const SchemeBuilderPage = () => {
       okButtonProps: { type: 'danger' },
       onOk: () => { setDirty(false); navigate(to); },
     });
-  }, [dirty, navigate, t]);
+  }, [dirty, navigate, t, isNewMode]);
+
+  const handleCancel = () => guardedNavigate('/requirements/scheme');
 
   if (loading || !draftScheme) {
     return <div className="scheme-builder-loading"><Spin size="large" /></div>;
