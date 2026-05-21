@@ -979,6 +979,14 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
     req_no: `REQ-2026-${String(mockRequirementData.length + 1).padStart(4, '0')}`,
     scheme_id: chosenScheme.id,
     scheme_version: chosenScheme.version,
+    // v15: 写入方案配置快照，保证历史需求不受后续方案编辑影响
+    scheme_config_snapshot: {
+      id: chosenScheme.id,
+      code: chosenScheme.code,
+      name: chosenScheme.name,
+      version: chosenScheme.version,
+      custom_fields: chosenScheme.custom_fields,
+    },
     title: values.title as string,
     description: (values.description as string) || '',
     owning_department_name: explicitDeptName || '',
