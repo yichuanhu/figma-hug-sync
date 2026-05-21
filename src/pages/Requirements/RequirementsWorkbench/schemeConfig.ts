@@ -139,7 +139,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     description: '适合中小型团队的精简 RPA 评估模版，仅 6 个核心字段、单一评估模型与单级审批。',
     status: 'inactive',
     is_preset: true,
-    applicable_department_ids: ['dept-marketing', 'dept-legal'],
+    applicable_department_ids: [],
     meta: {
       code: 'RPA-LITE',
       name: 'RPA 轻量版模版',
