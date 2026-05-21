@@ -1,4 +1,10 @@
 import type { RequirementScheme } from './types';
+import {
+  setSchemeBindingsForScheme,
+  getOccupiedDepartmentMapByScheme,
+  getBoundDepartmentCountMapByScheme,
+} from '@/mocks/departmentSchemeBinding';
+import { expandDepartmentIdsWithDescendants } from '@/mocks/departmentData';
 
 /**
  * 内置预设模版 — 阶段 1 提供 3 个预设模版
@@ -17,9 +23,9 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     name: 'RPA 专业版模版',
     version: '1.0.0',
     description: '面向中大型企业的完整 RPA 需求评估模版，包含价值评估、复杂度评估及 3 级审批流。',
-    status: 'active',
+    status: 'inactive',
     is_preset: true,
-    applicable_department_ids: ['dept-finance', 'dept-hr', 'dept-enterprise'],
+    applicable_department_ids: [],
     meta: {
       code: 'RPA-PRO',
       name: 'RPA 专业版模版',
@@ -139,7 +145,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     description: '适合中小型团队的精简 RPA 评估模版，仅 6 个核心字段、单一评估模型与单级审批。',
     status: 'inactive',
     is_preset: true,
-    applicable_department_ids: ['dept-marketing', 'dept-legal'],
+    applicable_department_ids: [],
     meta: {
       code: 'RPA-LITE',
       name: 'RPA 轻量版模版',
@@ -195,7 +201,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     description: '基于《RPA 统计表》模板设计的标准化需求采集模版，提交后跳过审批与评估，直接进入待开发状态。',
     status: 'inactive',
     is_preset: true,
-    applicable_department_ids: ['dept-ceo'],
+    applicable_department_ids: [],
     meta: {
       code: 'RPA-STAT',
       name: 'RPA 统计表标准模版',
@@ -254,7 +260,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     description: '专门针对 OCR/文档智能处理（ADP）类需求设计的模版，包含文档识别相关维度。',
     status: 'inactive',
     is_preset: true,
-    applicable_department_ids: ['dept-rd', 'dept-ai'],
+    applicable_department_ids: [],
     meta: {
       code: 'ADP-DOC',
       name: 'AI 文档处理模版',
@@ -333,8 +339,70 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
 
 const SCHEME_STORAGE_KEY = 'apa.requirements.schemes.v1';
 
+/** v15: 租户默认方案的来源预设 key */
+export const DEFAULT_PRESET_KEY = 'RPA-PRO';
+/** v15: 演示用——预设当前最新版本，若租户方案的 source_preset_version 落后于此值则显示「预设已更新」 */
+const PRESET_LATEST_VERSIONS: Record<string, string> = {
+  'RPA-PRO': '1.1.0', // 故意比预设里的 1.0.0 高，演示升级通知
+  'RPA-LITE': '1.0.0',
+  'RPA-STAT': '1.0.0',
+  'ADP-DOC': '1.0.0',
+};
+
+// ============= v15 错误码 =============
+export type SchemeErrorCode =
+  | 'SCHEME_NO_DEPARTMENT'
+  | 'SCHEME_DEPARTMENT_CONFLICT'
+  | 'SCHEME_BOUND_CANNOT_SET_DEFAULT'
+  | 'SCHEME_DEFAULT_CANNOT_ACTIVATE'
+  | 'SCHEME_DEFAULT_CANNOT_DELETE'
+  | 'SCHEME_DEFAULT_UNAVAILABLE'
+  | 'SCHEME_PRESET_READONLY'
+  | 'SCHEME_HAS_BINDING_CANNOT_DELETE'
+  | 'SCHEME_ACTIVE_CANNOT_DELETE'
+  | 'SCHEME_VALIDATION_FAILED'
+  | 'SCHEME_NOT_FOUND';
+
+export class SchemeError extends Error {
+  code: SchemeErrorCode;
+  details?: unknown;
+  constructor(code: SchemeErrorCode, message: string, details?: unknown) {
+    super(message);
+    this.code = code;
+    this.details = details;
+  }
+}
+
 const cloneSchemes = (list: RequirementScheme[]): RequirementScheme[] =>
   list.map((item) => ({ ...item }));
+
+/** v15: 从预设克隆出租户默认方案 */
+const buildTenantDefaultFromPreset = (presetKey: string): RequirementScheme | null => {
+  const preset = PRESET_SCHEMES.find((p) => p.code === presetKey);
+  if (!preset) return null;
+  return {
+    ...preset,
+    id: `scheme-tenant-default-${Date.now().toString(36)}`,
+    code: `TENANT-DEFAULT-${preset.code}`,
+    name: `${preset.name}（租户默认）`,
+    is_preset: false,
+    is_tenant_default: true,
+    status: 'active',
+    source_preset_key: preset.code,
+    source_preset_version: preset.version,
+    applicable_department_ids: [],
+    created_at: new Date().toISOString(),
+    created_by: 'system',
+  };
+};
+
+const ensureTenantDefault = (list: RequirementScheme[]): RequirementScheme[] => {
+  const hasDefault = list.some((s) => s.is_tenant_default && s.status === 'active');
+  if (hasDefault) return list;
+  const def = buildTenantDefaultFromPreset(DEFAULT_PRESET_KEY);
+  if (!def) return list;
+  return [def, ...list];
+};
 
 const loadSchemes = (): RequirementScheme[] => {
   try {
@@ -343,21 +411,14 @@ const loadSchemes = (): RequirementScheme[] => {
       const parsed = JSON.parse(raw) as RequirementScheme[];
       const presetIds = new Set(PRESET_SCHEMES.map((s) => s.id));
       const storedNonPresets = parsed.filter((s) => !presetIds.has(s.id));
-      const storedPresetMap = new Map(parsed.filter((s) => presetIds.has(s.id)).map((s) => [s.id, s]));
-      const mergedPresets = PRESET_SCHEMES.map((preset) => ({
-        ...preset,
-        status: storedPresetMap.get(preset.id)?.status ?? preset.status,
-        applicable_department_ids:
-          (storedPresetMap.get(preset.id)?.applicable_department_ids?.length ?? 0) > 0
-            ? storedPresetMap.get(preset.id)!.applicable_department_ids
-            : preset.applicable_department_ids,
-      }));
-      return [...storedNonPresets, ...mergedPresets];
+      // v15: 预设方案以代码内定义为准（不再允许通过 storage 修改 status / applicable_department_ids）
+      const merged = [...storedNonPresets, ...cloneSchemes(PRESET_SCHEMES)];
+      return ensureTenantDefault(merged);
     }
   } catch {
     /* noop */
   }
-  return cloneSchemes(PRESET_SCHEMES);
+  return ensureTenantDefault(cloneSchemes(PRESET_SCHEMES));
 };
 
 const saveSchemes = (list: RequirementScheme[]): void => {
@@ -393,17 +454,32 @@ const bumpSchemeVersion = (): void => {
   notifySchemeChange();
 };
 
+/** v15: 为方案附加运行时计算字段（preset_update_available） */
+const decorateRuntime = (s: RequirementScheme): RequirementScheme => {
+  if (s.is_preset || !s.source_preset_key) return s;
+  const latest = PRESET_LATEST_VERSIONS[s.source_preset_key];
+  if (latest && s.source_preset_version && latest > s.source_preset_version) {
+    return { ...s, preset_update_available: true };
+  }
+  return s;
+};
+
 export const fetchSchemes = async (keyword?: string): Promise<RequirementScheme[]> => {
   await new Promise((r) => setTimeout(r, 200));
-  let list = [...schemeStore];
+  let list = schemeStore.map(decorateRuntime);
   if (keyword?.trim()) {
     const kw = keyword.toLowerCase().trim();
     list = list.filter((s) => s.name.toLowerCase().includes(kw) || s.code.toLowerCase().includes(kw));
   }
-  // 激活的排在最前
+  // 排序：租户默认 → 已激活非预设 → 其它非预设 → 预设
   list.sort((a, b) => {
-    if (a.status === b.status) return a.is_preset === b.is_preset ? 0 : a.is_preset ? -1 : 1;
-    return a.status === 'active' ? -1 : 1;
+    const rank = (x: RequirementScheme) => {
+      if (x.is_tenant_default) return 0;
+      if (!x.is_preset && x.status === 'active') return 1;
+      if (!x.is_preset) return 2;
+      return 3;
+    };
+    return rank(a) - rank(b);
   });
   return list;
 };
@@ -416,20 +492,64 @@ export const getActiveScheme = (): RequirementScheme | undefined =>
 export const getActiveSchemes = (): RequirementScheme[] =>
   schemeStore.filter((s) => s.status === 'active');
 
-/** v4：激活某方案（不再互斥下线其它方案，允许多激活）。 */
+/** v15: 取当前租户默认方案 */
+export const getTenantDefaultScheme = (): RequirementScheme | undefined =>
+  schemeStore.find((s) => s.is_tenant_default && s.status === 'active');
+
+/** v15: 默认方案健康状态 */
+export type DefaultSchemeHealth = 'ok' | 'missing' | 'inactive' | 'multiple';
+export const getDefaultSchemeHealth = (): DefaultSchemeHealth => {
+  const defaults = schemeStore.filter((s) => s.is_tenant_default);
+  if (defaults.length === 0) return 'missing';
+  if (defaults.length > 1) return 'multiple';
+  return defaults[0].status === 'active' ? 'ok' : 'inactive';
+};
+
+/**
+ * v15: 激活某方案（非默认普通方案）。事务：
+ * - 校验非预设 / 非默认
+ * - 校验有适用部门
+ * - 展开子部门，校验部门未被其他激活方案占用
+ * - 写入 department_scheme_binding
+ * - status=active
+ */
 export const activateScheme = async (id: string): Promise<void> => {
   await new Promise((r) => setTimeout(r, 200));
+  const target = schemeStore.find((s) => s.id === id);
+  if (!target) throw new SchemeError('SCHEME_NOT_FOUND', '模版不存在');
+  if (target.is_preset) throw new SchemeError('SCHEME_PRESET_READONLY', '预设方案不可激活，请先复制为租户方案');
+  if (target.is_tenant_default) throw new SchemeError('SCHEME_DEFAULT_CANNOT_ACTIVATE', '默认方案不可手动激活');
+  const selected = target.applicable_department_ids ?? [];
+  if (selected.length === 0) throw new SchemeError('SCHEME_NO_DEPARTMENT', '请至少选择一个适用部门后再激活');
+  const expanded = expandDepartmentIdsWithDescendants(selected);
+  const activeIds = schemeStore.filter((s) => s.status === 'active' && s.id !== id && !s.is_tenant_default).map((s) => s.id);
+  const occupied = getOccupiedDepartmentMapByScheme(id, activeIds);
+  const conflicts = expanded.filter((d) => occupied[d]);
+  if (conflicts.length > 0) {
+    const ownerName = schemeStore.find((s) => s.id === occupied[conflicts[0]])?.name ?? '其他方案';
+    throw new SchemeError(
+      'SCHEME_DEPARTMENT_CONFLICT',
+      `部门已被方案「${ownerName}」占用，请调整适用部门`,
+      { conflicts },
+    );
+  }
+  setSchemeBindingsForScheme(id, expanded);
   schemeStore = schemeStore.map((s) =>
-    s.id === id ? { ...s, status: 'active' } : s,
+    s.id === id ? { ...s, status: 'active', is_draft: false, updated_at: new Date().toISOString() } : s,
   );
   bumpSchemeVersion();
 };
 
-/** v4：取消激活某方案；预设方案允许停用但不可删除。 */
+/** v15: 停用方案。预设/默认方案不可停用；其它方案停用时清空绑定。 */
 export const deactivateScheme = async (id: string): Promise<void> => {
   await new Promise((r) => setTimeout(r, 200));
+  const target = schemeStore.find((s) => s.id === id);
+  if (!target) throw new SchemeError('SCHEME_NOT_FOUND', '模版不存在');
+  if (target.is_preset) throw new SchemeError('SCHEME_PRESET_READONLY', '预设方案不参与激活/停用');
+  if (target.is_tenant_default) throw new SchemeError('SCHEME_DEFAULT_CANNOT_DELETE', '默认方案不可停用');
+  setSchemeBindingsForScheme(id, []);
   schemeStore = schemeStore.map((s) =>
-    s.id === id ? { ...s, status: 'inactive' } : s,
+    s.id === id ? { ...s, status: 'inactive', updated_at: new Date().toISOString() } : s,
   );
   bumpSchemeVersion();
 };
@@ -441,13 +561,54 @@ export const addScheme = async (scheme: RequirementScheme): Promise<RequirementS
   return scheme;
 };
 
+/** v15: 删除方案。仅允许非预设、非默认、非激活、无生效绑定。 */
 export const deleteScheme = async (id: string): Promise<void> => {
   await new Promise((r) => setTimeout(r, 200));
   const target = schemeStore.find((s) => s.id === id);
-  if (target?.is_preset) throw new Error('预设模版不可删除');
+  if (!target) throw new SchemeError('SCHEME_NOT_FOUND', '模版不存在');
+  if (target.is_preset) throw new SchemeError('SCHEME_PRESET_READONLY', '预设方案不可删除');
+  if (target.is_tenant_default) throw new SchemeError('SCHEME_DEFAULT_CANNOT_DELETE', '默认方案不可删除');
+  if (target.status === 'active') throw new SchemeError('SCHEME_ACTIVE_CANNOT_DELETE', '已激活方案不可删除，请先停用');
+  const bindingCount = getBoundDepartmentCountMapByScheme()[id] ?? 0;
+  if (bindingCount > 0) throw new SchemeError('SCHEME_HAS_BINDING_CANNOT_DELETE', `该方案被 ${bindingCount} 个部门使用，请先停用方案或调整适用部门`);
   schemeStore = schemeStore.filter((s) => s.id !== id);
   bumpSchemeVersion();
 };
+
+/**
+ * v15: 将一个未激活的草稿方案设为新的租户默认方案。
+ * - 要求目标方案：非预设、status=inactive、配置完整、无生效部门绑定
+ * - 事务：原默认 → is_tenant_default=false, status=inactive；新默认 → is_tenant_default=true, status=active
+ */
+export const setSchemeAsDefault = async (id: string): Promise<void> => {
+  await new Promise((r) => setTimeout(r, 200));
+  const target = schemeStore.find((s) => s.id === id);
+  if (!target) throw new SchemeError('SCHEME_NOT_FOUND', '模版不存在');
+  if (target.is_preset) throw new SchemeError('SCHEME_PRESET_READONLY', '预设方案不可设为默认');
+  if (target.is_tenant_default) return; // 已是默认
+  const bindingCount = getBoundDepartmentCountMapByScheme()[id] ?? 0;
+  if (bindingCount > 0) {
+    throw new SchemeError(
+      'SCHEME_BOUND_CANNOT_SET_DEFAULT',
+      '有部门绑定的方案不能直接设为默认方案，请创建或选择一个无部门绑定的方案',
+    );
+  }
+  const v = validateScheme(id);
+  if (!v.ok) throw new SchemeError('SCHEME_VALIDATION_FAILED', v.errors.join('；'));
+  const now = new Date().toISOString();
+  schemeStore = schemeStore.map((s) => {
+    if (s.id === id) return { ...s, is_tenant_default: true, status: 'active', is_draft: false, updated_at: now };
+    if (s.is_tenant_default) return { ...s, is_tenant_default: false, status: 'inactive', updated_at: now };
+    return s;
+  });
+  bumpSchemeVersion();
+};
+
+/** v15: 取方案对应源预设的最新版本号；用于展示预设升级差异 */
+export const getPresetLatestVersion = (presetKey: string | undefined): string | undefined =>
+  presetKey ? PRESET_LATEST_VERSIONS[presetKey] : undefined;
+
+
 
 /** 更新模版的审批流配置（预设模版不可更新） */
 export const updateSchemeApprovalFlow = async (
@@ -499,10 +660,10 @@ export const createSchemeDraft = async (meta: { name: string; description?: stri
   return draft;
 };
 
-/** 基于已有模版克隆为草稿 */
+/** 基于已有模版克隆为草稿；若源是平台预设则记录 source_preset_key/version */
 export const cloneSchemeAsDraft = async (sourceId: string, opts?: { name?: string; bumpVersion?: boolean }): Promise<RequirementScheme> => {
   const src = schemeStore.find((s) => s.id === sourceId);
-  if (!src) throw new Error('源模版不存在');
+  if (!src) throw new SchemeError('SCHEME_NOT_FOUND', '源模版不存在');
   const id = `scheme-draft-${Date.now()}`;
   const nextVersion = opts?.bumpVersion
     ? bumpVersionString(src.version)
@@ -516,7 +677,11 @@ export const cloneSchemeAsDraft = async (sourceId: string, opts?: { name?: strin
     status: 'inactive',
     is_preset: false,
     is_draft: true,
+    is_tenant_default: false,
     parent_id: src.id,
+    applicable_department_ids: [],
+    source_preset_key: src.is_preset ? src.code : src.source_preset_key,
+    source_preset_version: src.is_preset ? src.version : src.source_preset_version,
     created_at: new Date().toISOString(),
     updated_at: undefined,
   };
@@ -652,36 +817,22 @@ export const syncApprovalFlowFromWorkflow = (wf: WorkflowConfig): ApprovalLevelC
 
 import type { ApprovalLevelConfig } from './types';
 
-/** 激活模版（带校验） */
+/**
+ * v15: Builder 端激活入口 → 委托给 activateScheme（已包含完整事务：
+ * 校验适用部门非空、展开子部门、冲突校验、写入 department_scheme_binding、置 status=active）。
+ * 保留函数名以兼容 SchemeBuilder 调用。
+ */
 export const activateSchemeBuilder = async (id: string): Promise<RequirementScheme> => {
   const v = validateScheme(id);
-  if (!v.ok) {
-    const err = new Error(v.errors.join('；'));
-    (err as Error & { missing?: string[] }).missing = v.missing;
-    throw err;
-  }
-  // 同步 cost & workflow → 旧字段
-  const target = schemeStore.find((s) => s.id === id);
-  if (!target) throw new Error('模版不存在');
-  const patch: Partial<RequirementScheme> = {};
-  if (target.cost_config) patch.cost_config = syncCostConfigCompat(target.cost_config);
-  const wfDisabled = target.workflow_config?.template === 'none';
-  if (wfDisabled) {
-    // 无审批流：清空审批层级与评估模型，对齐 RPA-STAT 行为
-    patch.approval_flow = { levels: [] };
-    patch.value_assessment_model = undefined;
-    patch.complexity_assessment_model = undefined;
-  } else if (target.workflow_config) {
-    patch.approval_flow = { levels: syncApprovalFlowFromWorkflow(target.workflow_config) };
-  }
-  schemeStore = schemeStore.map((s) =>
-    s.id === id
-      ? { ...s, ...patch, status: 'active', is_draft: false, updated_at: new Date().toISOString() }
-      : { ...s, status: 'inactive' },
-  );
-  bumpSchemeVersion();
+  if (!v.ok) throw new SchemeError('SCHEME_VALIDATION_FAILED', v.errors.join('；'));
+  await activateScheme(id);
   return schemeStore.find((s) => s.id === id)!;
 };
+
+// 旧版 activate 实现已移除，统一由 activateScheme 承担（含部门绑定事务）。
+// syncCostConfigCompat / syncApprovalFlowFromWorkflow 仍保留供其他模块单独调用。
+void syncCostConfigCompat;
+void syncApprovalFlowFromWorkflow;
 
 /** Workflow 模板生成器 */
 export const buildWorkflowFromTemplate = (template: string): WorkflowConfig => {
