@@ -57,7 +57,12 @@ const SchemeBuilderPage = () => {
   useEffect(() => {
     if (!id) return;
     (async () => {
-      const s = getSchemeById(id);
+      // 容错：clone/create 后跳转过来时 store 偶发未就绪，等下一帧再重试一次
+      let s = getSchemeById(id);
+      if (!s) {
+        await new Promise((r) => setTimeout(r, 0));
+        s = getSchemeById(id);
+      }
       if (!s) {
         Toast.error(t('requirements.scheme.builder.notFound'));
         navigate('/requirements/scheme');
