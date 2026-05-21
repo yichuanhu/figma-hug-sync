@@ -818,8 +818,20 @@ export const syncApprovalFlowFromWorkflow = (wf: WorkflowConfig): ApprovalLevelC
 
 import type { ApprovalLevelConfig } from './types';
 
-/** 激活模版（带校验） */
+/**
+ * v15: Builder 端激活入口 → 委托给 activateScheme（已包含完整事务：
+ * 校验适用部门非空、展开子部门、冲突校验、写入 department_scheme_binding、置 status=active）。
+ * 保留函数名以兼容 SchemeBuilder 调用。
+ */
 export const activateSchemeBuilder = async (id: string): Promise<RequirementScheme> => {
+  const v = validateScheme(id);
+  if (!v.ok) throw new SchemeError('SCHEME_VALIDATION_FAILED', v.errors.join('；'));
+  await activateScheme(id);
+  return schemeStore.find((s) => s.id === id)!;
+};
+
+/** @deprecated 旧版 activate 实现，保留以避免外部引用断裂 */
+const _legacyActivateSchemeBuilder = async (id: string): Promise<RequirementScheme> => {
   const v = validateScheme(id);
   if (!v.ok) {
     const err = new Error(v.errors.join('；'));
