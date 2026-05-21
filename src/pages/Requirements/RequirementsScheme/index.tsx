@@ -23,6 +23,7 @@ import {
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '../RequirementsWorkbench/types';
 import SchemeDetailDrawer from './components/SchemeDetailDrawer';
+import NewSchemeNameModal from './components/NewSchemeNameModal';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -35,6 +36,8 @@ const RequirementsScheme = () => {
 
   const [detailScheme, setDetailScheme] = useState<RequirementScheme | null>(null);
   const [presetPickerVisible, setPresetPickerVisible] = useState(false);
+  const [newSchemeModalVisible, setNewSchemeModalVisible] = useState(false);
+  const [creatingNewScheme, setCreatingNewScheme] = useState(false);
   const [bindCountMap, setBindCountMap] = useState<Record<string, number>>(() => getBoundDepartmentCountMapByScheme());
   const navigate = useNavigate();
 
@@ -44,9 +47,15 @@ const RequirementsScheme = () => {
     navigate(`/requirements/scheme/builder/${s.id}`);
   };
 
-  const handleCreateNew = async () => {
-    const draft = await createSchemeDraft({ name: '未命名模版', version: '1.0.0' });
-    navigate(`/requirements/scheme/builder/${draft.id}`);
+  const handleConfirmCreateNew = async (values: { name: string; description?: string }) => {
+    setCreatingNewScheme(true);
+    try {
+      const draft = await createSchemeDraft({ name: values.name, description: values.description, version: '1.0.0' });
+      setNewSchemeModalVisible(false);
+      navigate(`/requirements/scheme/builder/${draft.id}`);
+    } finally {
+      setCreatingNewScheme(false);
+    }
   };
 
   const handleCloneFromPreset = async (sourceId: string) => {
@@ -274,7 +283,7 @@ const RequirementsScheme = () => {
               <Button icon={<Copy size={16} strokeWidth={2} />} onClick={() => setPresetPickerVisible(true)}>
                 {t('requirements.scheme.createBasedOnPreset')}
               </Button>
-              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleCreateNew}>
+              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setNewSchemeModalVisible(true)}>
                 {t('requirements.scheme.createNew')}
               </Button>
             </Space>
@@ -421,6 +430,14 @@ const RequirementsScheme = () => {
           ))}
         </div>
       </Modal>
+
+      {/* 创建新模版 */}
+      <NewSchemeNameModal
+        visible={newSchemeModalVisible}
+        loading={creatingNewScheme}
+        onCancel={() => setNewSchemeModalVisible(false)}
+        onConfirm={handleConfirmCreateNew}
+      />
     </div>
   );
 };
