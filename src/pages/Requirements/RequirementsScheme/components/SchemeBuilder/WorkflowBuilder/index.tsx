@@ -189,6 +189,16 @@ const WorkflowBuilder = ({
     onChange({ ...wf, template: computeTemplate(approvers, assessors), approvers, assessors });
   };
 
+  // 移除审批配置后：清理历史遗留的 approvers 数据
+  useEffect(() => {
+    if (wf.approvers.length > 0) {
+      updateLists([], wf.assessors);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
+
 
   const handleToggleAssessor = (next: boolean) => {
     if (next) {
