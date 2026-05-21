@@ -7,7 +7,7 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, ActivityRecord, DetailedAssessment, RequirementChangeLog } from '../../types';
 import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, withdrawRequirement, MOCK_CURRENT_USER_ID, useSchemeFlags, listChangeLogs } from '../../mockData';
-import { PRESET_SCHEMES } from '../../schemeConfig';
+import { PRESET_SCHEMES } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
 import { isPostProjectStatus, isDevelopmentOrAfterStatus } from '../../utils/fieldEditability';
 import ApprovalSection from './ApprovalSection';
