@@ -441,21 +441,17 @@ const RequirementCreatePage = () => {
 
   const handleSubmit = async () => {
     if (!formApi) return;
-    if (!selectedSchemeId) {
-      setCurrentStep(0);
-      Toast.warning('请选择需求方案');
-      return;
-    }
     if (!departmentValue) {
       setCurrentStep(0);
       Toast.warning(t('requirements.form.departmentRequired'));
       return;
     }
-    if (!ownerId) {
+    if (!isEdit && !selectedSchemeId) {
       setCurrentStep(0);
-      Toast.warning(t('common.ownerRequired'));
+      Toast.warning('所选部门没有生效的需求模板，无法创建需求');
       return;
     }
+    // owner_id 在草稿态可留空（STORY-003 v3）
     try {
       await formApi.validate();
     } catch (errors) {
