@@ -12,7 +12,6 @@ import {
   getApprovalFlowById,
   updateApprovalFlow,
   activateApprovalFlow,
-  listApprovalFlows,
   type ApprovalFlowTemplate,
 } from '../../mockData';
 import ApproverListEditor from '../ApproverListEditor';
@@ -21,6 +20,7 @@ import DepartmentSelect from '@/components/DepartmentSelect';
 import {
   setBindingsForTemplate,
   listDepartmentsByTemplate,
+  getOccupiedDepartmentMap,
 } from '@/mocks/departmentApprovalFlowBinding';
 import { getDepartmentName } from '@/mocks/departmentData';
 import './index.less';
