@@ -368,7 +368,16 @@ const RequirementCreatePage = () => {
     if (cleanedPositionCosts.length > 0) {
       form_data.position_costs = cleanedPositionCosts;
     }
-    const submitValues = { ...values, form_data, scheme_id: selectedSchemeId };
+    const submitValues = {
+      ...values,
+      form_data,
+      scheme_id: selectedSchemeId,
+      // v3 (2026-05-21)：传递 id 与解析后的 name；'department' 字段现承载 department_id
+      department: departmentValue,
+      department_id: departmentValue,
+      department_name: departmentValue ? getDepartmentName(departmentValue) : undefined,
+      owner_id: ownerId || undefined,
+    };
     Object.keys(form_data).forEach((k) => {
       if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
     });
