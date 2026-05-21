@@ -661,10 +661,10 @@ export const createSchemeDraft = async (meta: { name: string; description?: stri
   return draft;
 };
 
-/** 基于已有模版克隆为草稿 */
+/** 基于已有模版克隆为草稿；若源是平台预设则记录 source_preset_key/version */
 export const cloneSchemeAsDraft = async (sourceId: string, opts?: { name?: string; bumpVersion?: boolean }): Promise<RequirementScheme> => {
   const src = schemeStore.find((s) => s.id === sourceId);
-  if (!src) throw new Error('源模版不存在');
+  if (!src) throw new SchemeError('SCHEME_NOT_FOUND', '源模版不存在');
   const id = `scheme-draft-${Date.now()}`;
   const nextVersion = opts?.bumpVersion
     ? bumpVersionString(src.version)
@@ -678,7 +678,11 @@ export const cloneSchemeAsDraft = async (sourceId: string, opts?: { name?: strin
     status: 'inactive',
     is_preset: false,
     is_draft: true,
+    is_tenant_default: false,
     parent_id: src.id,
+    applicable_department_ids: [],
+    source_preset_key: src.is_preset ? src.code : src.source_preset_key,
+    source_preset_version: src.is_preset ? src.version : src.source_preset_version,
     created_at: new Date().toISOString(),
     updated_at: undefined,
   };
