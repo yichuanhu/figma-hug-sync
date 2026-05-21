@@ -13,6 +13,7 @@ import {
   activateSchemeBuilder,
   setSchemeAsDefault,
   subscribeSchemeChange,
+  createSchemeDraft,
   SchemeError,
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '@/pages/Requirements/RequirementsWorkbench/types';
