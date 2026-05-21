@@ -224,6 +224,11 @@ const RequirementsScheme = () => {
                             取消激活
                           </Dropdown.Item>
                         )}
+                        {s.is_preset && (
+                          <Dropdown.Item icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); openDeptEditor(s); }}>
+                            {t('requirements.scheme.edit')}
+                          </Dropdown.Item>
+                        )}
                         {!s.is_preset && s.status === 'active' && (
                           <Tooltip content={t('requirements.scheme.editDisabledTip')} position="left">
                             <Dropdown.Item icon={<Pencil size={14} />} disabled>
@@ -238,9 +243,6 @@ const RequirementsScheme = () => {
                         )}
                         <Dropdown.Item icon={<Copy size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
                           基于此创建副本
-                        </Dropdown.Item>
-                        <Dropdown.Item icon={<Building2 size={14} />} onClick={(e) => { e.stopPropagation(); openDeptEditor(s); }}>
-                          编辑适用部门
                         </Dropdown.Item>
                         {!s.is_preset && (
                           <Dropdown.Item icon={<Trash2 size={14} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(s); }}>
