@@ -403,31 +403,33 @@ const SchemeBuilderPage = () => {
               {t('requirements.scheme.builder.testDrive')}
             </Button>
           )}
+          <Button onClick={handleCancel}>{t('common.cancel')}</Button>
           {!isReadOnly && (
             <Button
               icon={<Save size={16} strokeWidth={2} />}
-              theme={dirty ? 'solid' : 'light'}
-              type={dirty ? 'primary' : 'tertiary'}
+              theme={isNewMode || dirty ? 'solid' : 'light'}
+              type={isNewMode || dirty ? 'primary' : 'tertiary'}
               onClick={handleSaveDraft}
-              disabled={!dirty}
+              disabled={!isNewMode && !dirty}
             >
-              {editMode === 'custom_active' ? '保存' : t('requirements.scheme.builder.saveDraft')}
+              {isNewMode ? '保存草稿' : (editMode === 'custom_active' ? '保存' : t('requirements.scheme.builder.saveDraft'))}
             </Button>
           )}
-          {editMode === 'custom_inactive' && (
+          {!isNewMode && editMode === 'custom_inactive' && (
             <Tooltip content={hasBinding ? '有部门绑定的方案不能设为默认，请先清空适用部门' : ''} position="bottom">
               <Button icon={<Star size={16} strokeWidth={2} />} disabled={hasBinding} onClick={handleSetAsDefault}>
                 设为默认
               </Button>
             </Tooltip>
           )}
-          {editMode === 'custom_inactive' && (
+          {!isNewMode && editMode === 'custom_inactive' && (
             <Button icon={<CheckCircle size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleActivate}>
               {t('requirements.scheme.activate')}
             </Button>
           )}
         </Space>
       </div>
+
 
       {showDeptBlock && (() => {
         const deptIds = draftScheme.applicable_department_ids ?? [];
