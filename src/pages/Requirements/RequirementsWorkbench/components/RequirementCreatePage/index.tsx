@@ -155,14 +155,24 @@ const RequirementCreatePage = () => {
     setDirty(true);
   };
 
-  // v5：按当前用户所属部门自动匹配方案
+  // v3 (2026-05-21)：按"用户在创建页选择的所属部门"自动匹配激活方案
+  // 若部门未直接绑定，回溯祖先部门尝试匹配（与 setSchemeBindingsForScheme 子部门展开规则呼应）
   const [bindingTick, setBindingTick] = useState(0);
   useEffect(() => subscribeSchemeBindingChange(() => setBindingTick((k) => k + 1)), []);
 
   const autoMatchedSchemeId = useMemo(() => {
-    return getSchemeIdByDepartment(MOCK_CURRENT_USER.department_id);
+    if (!departmentValue) return null;
+    const direct = getSchemeIdByDepartment(departmentValue);
+    if (direct) return direct;
+    // 兜底：按祖先部门查找（防止"叶子部门未直接绑定但父部门已绑定且本应继承"的场景）
+    const ancestors = getDepartmentAncestorIds(departmentValue);
+    for (const a of ancestors) {
+      const hit = getSchemeIdByDepartment(a);
+      if (hit) return hit;
+    }
+    return null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bindingTick]);
+  }, [bindingTick, departmentValue]);
 
   const selectedSchemeId = useMemo<string | undefined>(() => {
     if (isEdit && editData?.scheme_id) return editData.scheme_id;
@@ -171,8 +181,9 @@ const RequirementCreatePage = () => {
 
   const activeScheme = useMemo(() => {
     if (selectedSchemeId) return getSchemeById(selectedSchemeId);
-    return getActiveScheme();
-  }, [selectedSchemeId]);
+    // 编辑历史需求时若 scheme_id 缺失，回退到 active scheme；新建无方案则返回 undefined（避免显示错误模版）
+    return isEdit ? getActiveScheme() : undefined;
+  }, [selectedSchemeId, isEdit]);
 
   const priorityOptions = useMemo(
     () => [
