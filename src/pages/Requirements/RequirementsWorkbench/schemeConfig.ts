@@ -830,36 +830,10 @@ export const activateSchemeBuilder = async (id: string): Promise<RequirementSche
   return schemeStore.find((s) => s.id === id)!;
 };
 
-/** @deprecated 旧版 activate 实现，保留以避免外部引用断裂 */
-const _legacyActivateSchemeBuilder = async (id: string): Promise<RequirementScheme> => {
-  const v = validateScheme(id);
-  if (!v.ok) {
-    const err = new Error(v.errors.join('；'));
-    (err as Error & { missing?: string[] }).missing = v.missing;
-    throw err;
-  }
-  // 同步 cost & workflow → 旧字段
-  const target = schemeStore.find((s) => s.id === id);
-  if (!target) throw new Error('模版不存在');
-  const patch: Partial<RequirementScheme> = {};
-  if (target.cost_config) patch.cost_config = syncCostConfigCompat(target.cost_config);
-  const wfDisabled = target.workflow_config?.template === 'none';
-  if (wfDisabled) {
-    // 无审批流：清空审批层级与评估模型，对齐 RPA-STAT 行为
-    patch.approval_flow = { levels: [] };
-    patch.value_assessment_model = undefined;
-    patch.complexity_assessment_model = undefined;
-  } else if (target.workflow_config) {
-    patch.approval_flow = { levels: syncApprovalFlowFromWorkflow(target.workflow_config) };
-  }
-  schemeStore = schemeStore.map((s) =>
-    s.id === id
-      ? { ...s, ...patch, status: 'active', is_draft: false, updated_at: new Date().toISOString() }
-      : { ...s, status: 'inactive' },
-  );
-  bumpSchemeVersion();
-  return schemeStore.find((s) => s.id === id)!;
-};
+// 旧版 activate 实现已移除，统一由 activateScheme 承担（含部门绑定事务）。
+// syncCostConfigCompat / syncApprovalFlowFromWorkflow 仍保留供其他模块单独调用。
+void syncCostConfigCompat;
+void syncApprovalFlowFromWorkflow;
 
 /** Workflow 模板生成器 */
 export const buildWorkflowFromTemplate = (template: string): WorkflowConfig => {
