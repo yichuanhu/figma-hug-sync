@@ -122,6 +122,7 @@ const SchemeBuilderPage = () => {
 
   // 订阅外部 store 变化
   useEffect(() => {
+    if (isNewMode) return;
     return subscribeSchemeChange(() => {
       if (!id) return;
       const s = getSchemeById(id);
@@ -129,7 +130,7 @@ const SchemeBuilderPage = () => {
       setSavedScheme(s);
       if (!dirtyRef.current) setDraftScheme(s);
     });
-  }, [id]);
+  }, [id, isNewMode]);
 
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
