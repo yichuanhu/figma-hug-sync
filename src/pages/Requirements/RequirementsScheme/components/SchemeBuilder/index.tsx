@@ -369,7 +369,12 @@ const SchemeBuilderPage = () => {
       })()}
 
 
-      <div className="scheme-builder-body">
+      <div
+        className="scheme-builder-body"
+        style={isPresetEdit ? { pointerEvents: 'none', opacity: 0.7, userSelect: 'none' } : undefined}
+        aria-disabled={isPresetEdit}
+        title={isPresetEdit ? '预设模板的字段配置不可编辑，仅可修改适用部门' : undefined}
+      >
         <FormBuilder fields={draftScheme.custom_fields} onChange={(fields) => patch({ custom_fields: fields })} />
       </div>
 
