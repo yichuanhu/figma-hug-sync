@@ -325,9 +325,43 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
   },
 ];
 
-// ============= 内存模版存储（mock） =============
+// ============= 模版存储（mock） =============
 
-let schemeStore: RequirementScheme[] = [...PRESET_SCHEMES];
+const SCHEME_STORAGE_KEY = 'apa.requirements.schemes.v1';
+
+const cloneSchemes = (list: RequirementScheme[]): RequirementScheme[] =>
+  list.map((item) => ({ ...item }));
+
+const loadSchemes = (): RequirementScheme[] => {
+  try {
+    const raw = localStorage.getItem(SCHEME_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as RequirementScheme[];
+      const presetIds = new Set(PRESET_SCHEMES.map((s) => s.id));
+      const storedNonPresets = parsed.filter((s) => !presetIds.has(s.id));
+      const storedPresetMap = new Map(parsed.filter((s) => presetIds.has(s.id)).map((s) => [s.id, s]));
+      const mergedPresets = PRESET_SCHEMES.map((preset) => ({
+        ...preset,
+        status: storedPresetMap.get(preset.id)?.status ?? preset.status,
+        applicable_department_ids: storedPresetMap.get(preset.id)?.applicable_department_ids ?? preset.applicable_department_ids,
+      }));
+      return [...storedNonPresets, ...mergedPresets];
+    }
+  } catch {
+    /* noop */
+  }
+  return cloneSchemes(PRESET_SCHEMES);
+};
+
+const saveSchemes = (list: RequirementScheme[]): void => {
+  try {
+    localStorage.setItem(SCHEME_STORAGE_KEY, JSON.stringify(list));
+  } catch {
+    /* noop */
+  }
+};
+
+let schemeStore: RequirementScheme[] = loadSchemes();
 
 // ----- 订阅机制：模版变更时通知所有订阅者（用于 React 重渲染） -----
 const schemeSubscribers = new Set<() => void>();
@@ -348,6 +382,7 @@ let schemeVersion = 0;
 export const getSchemeVersion = (): number => schemeVersion;
 const bumpSchemeVersion = (): void => {
   schemeVersion += 1;
+  saveSchemes(schemeStore);
   notifySchemeChange();
 };
 
