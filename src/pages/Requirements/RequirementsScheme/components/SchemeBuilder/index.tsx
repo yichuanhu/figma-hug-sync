@@ -273,7 +273,7 @@ const SchemeBuilderPage = () => {
               onClick={() => guardedNavigate('/requirements/scheme')}
             />
           </Tooltip>
-          {editingName ? (
+          {editingName && !isPresetEdit ? (
             <Input
               autoFocus
               value={nameDraft}
@@ -295,21 +295,24 @@ const SchemeBuilderPage = () => {
             <Title
               heading={3}
               className="scheme-builder-header-title"
-              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
-              onClick={() => { setNameDraft(draftScheme.name); setEditingName(true); }}
+              style={{ cursor: isPresetEdit ? 'default' : 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+              onClick={isPresetEdit ? undefined : () => { setNameDraft(draftScheme.name); setEditingName(true); }}
             >
               {draftScheme.name}
-              <Pencil size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)' }} />
+              {!isPresetEdit && <Pencil size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)' }} />}
             </Title>
           )}
           <Text type="tertiary">v{draftScheme.version}</Text>
           {draftScheme.parent_id && <Tag color="blue" type="light" size="small">{t('requirements.scheme.builder.newVersionBadge')}</Tag>}
+          {isPresetEdit && <Tag color="blue" type="light" size="small">{t('requirements.scheme.preset')}</Tag>}
           {dirty && <Tag color="red" type="light" size="small">{t('requirements.scheme.builder.unsaved')}</Tag>}
         </div>
         <Space>
-          <Button icon={<Play size={16} strokeWidth={2} />} onClick={() => setTestDriveVisible(true)}>
-            {t('requirements.scheme.builder.testDrive')}
-          </Button>
+          {!isPresetEdit && (
+            <Button icon={<Play size={16} strokeWidth={2} />} onClick={() => setTestDriveVisible(true)}>
+              {t('requirements.scheme.builder.testDrive')}
+            </Button>
+          )}
           <Button
             icon={<Save size={16} strokeWidth={2} />}
             theme={dirty ? 'solid' : 'light'}
@@ -317,11 +320,13 @@ const SchemeBuilderPage = () => {
             onClick={handleSaveDraft}
             disabled={!dirty}
           >
-            {t('requirements.scheme.builder.saveDraft')}
+            {isPresetEdit ? '保存' : t('requirements.scheme.builder.saveDraft')}
           </Button>
-          <Button icon={<CheckCircle size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleActivate}>
-            {t('requirements.scheme.activate')}
-          </Button>
+          {!isPresetEdit && (
+            <Button icon={<CheckCircle size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleActivate}>
+              {t('requirements.scheme.activate')}
+            </Button>
+          )}
         </Space>
       </div>
 
