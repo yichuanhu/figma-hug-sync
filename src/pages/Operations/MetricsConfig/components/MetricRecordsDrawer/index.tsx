@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Tag, Table, Pagination, Spin, Banner } from '@douyinfe/semi-ui';
+import { Typography, Tag, Table, Pagination, Spin, Banner, Tooltip } from '@douyinfe/semi-ui';
 import ReactECharts from 'echarts-for-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import {
@@ -133,15 +133,20 @@ const MetricRecordsDrawer = ({ visible, metric, onClose }: Props) => {
     {
       title: t('metricsConfig.records.operator'),
       dataIndex: 'operator',
-      width: 120,
-      render: (v: string) => <Tag type="light" color="blue">{v}</Tag>,
+      width: 100,
+      render: () => (
+        <Tag type="light" color="blue">
+          {t('metricsConfig.records.op.UPDATE')}
+        </Tag>
+      ),
     },
     {
       title: t('metricsConfig.records.delta'),
       dataIndex: 'delta',
       width: 100,
-      render: (v: number, row: MetricRecord) => {
-        if (row.operator === 'LATEST' || row.operator === 'SET') return '-';
+      render: (v: number) => {
+        if (!metric) return '-';
+        if (metric.metricType === 'LATEST') return '-';
         return `+${v.toLocaleString()}`;
       },
     },
@@ -153,8 +158,18 @@ const MetricRecordsDrawer = ({ visible, metric, onClose }: Props) => {
         typeof v === 'number' ? v.toLocaleString() : v,
     },
     {
-      title: t('metricsConfig.records.executionId'),
-      dataIndex: 'executionId',
+      title: t('metricsConfig.records.flowName'),
+      dataIndex: 'flowName',
+      ellipsis: true,
+      render: (v: string, row: MetricRecord) => (
+        <Tooltip content={row.flowId} position="top">
+          <span>{v}</span>
+        </Tooltip>
+      ),
+    },
+    {
+      title: t('metricsConfig.records.taskId'),
+      dataIndex: 'taskId',
       width: 140,
       render: (v: string) => <Text code>{v}</Text>,
     },

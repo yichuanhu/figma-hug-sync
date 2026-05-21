@@ -1,12 +1,13 @@
 import type { CustomMetric, MetricRecord, MetricSnapshot } from './types';
 
-/** 预置 6 个指标 */
+/** 预置指标 */
 export const SEED_METRICS: CustomMetric[] = [
   {
     id: 'metric-order-count',
     code: 'ORDER_COUNT',
     displayName: '处理订单数',
     metricType: 'COUNTER',
+    stepValue: 1,
     unit: '笔',
     description: '统计处理完成的订单数',
     visible: true,
@@ -31,6 +32,7 @@ export const SEED_METRICS: CustomMetric[] = [
     code: 'REFUND_COUNT',
     displayName: '退款单数',
     metricType: 'COUNTER',
+    stepValue: 1,
     unit: '笔',
     description: '统计退款处理完成的单数',
     visible: true,
@@ -55,6 +57,7 @@ export const SEED_METRICS: CustomMetric[] = [
     code: 'CURR_STATUS',
     displayName: '当前批次状态',
     metricType: 'LATEST',
+    valueType: 'STRING',
     unit: '',
     description: '最新批次处理状态',
     visible: true,
@@ -67,6 +70,7 @@ export const SEED_METRICS: CustomMetric[] = [
     code: 'LAST_BATCH',
     displayName: '最近批次编号',
     metricType: 'LATEST',
+    valueType: 'STRING',
     unit: '',
     description: '最近一次发起的批次编号',
     visible: false,
@@ -74,7 +78,32 @@ export const SEED_METRICS: CustomMetric[] = [
     updatedAt: '2026-05-19T07:00:00Z',
     hasRecords: true,
   },
+  {
+    id: 'metric-last-duration',
+    code: 'LAST_DURATION',
+    displayName: '最近批次耗时',
+    metricType: 'LATEST',
+    valueType: 'DECIMAL',
+    unit: '分钟',
+    description: '最近一次批次处理总耗时',
+    visible: true,
+    createdAt: '2026-04-22T08:00:00Z',
+    updatedAt: '2026-05-19T11:00:00Z',
+    hasRecords: true,
+  },
 ];
+
+/** 流程名称池（与 flowId 一一对应循环取用） */
+const FLOW_POOL = [
+  { id: 'flow-001', name: '订单处理自动化流程' },
+  { id: 'flow-002', name: '发票开具流程' },
+  { id: 'flow-003', name: '退款审批流程' },
+  { id: 'flow-004', name: '成本核算流程' },
+  { id: 'flow-005', name: '批次调度流程' },
+  { id: 'flow-006', name: '数据同步流程' },
+];
+
+const pickFlow = (seed: number) => FLOW_POOL[seed % FLOW_POOL.length];
 
 /** 简单确定性随机 */
 const rand = (seed: number) => {
@@ -89,6 +118,9 @@ const isoDayOffset = (offset: number, hour = 10) => {
   return d.toISOString();
 };
 
+let TASK_SEQ = 1;
+const nextTaskId = () => `task-${String(TASK_SEQ++).padStart(4, '0')}`;
+
 /** 为 numeric 指标生成 30 天累计/计数历史；LATEST 指标生成最近 8 条状态变化 */
 const buildRecordsAndSnapshot = (
   metric: CustomMetric,
@@ -96,21 +128,25 @@ const buildRecordsAndSnapshot = (
   const records: MetricRecord[] = [];
   if (metric.metricType === 'COUNTER' || metric.metricType === 'ACCUMULATOR') {
     let running = 0;
+    let counter = 0;
     for (let i = 0; i < 30; i++) {
       const dailyTimes = Math.max(1, Math.floor(rand(metric.id.length + i) * 5) + 1);
       for (let j = 0; j < dailyTimes; j++) {
         const delta =
           metric.metricType === 'COUNTER'
-            ? 1
+            ? metric.stepValue ?? 1
             : Math.round(rand(i * 31 + j) * 800 + 100);
         running += delta;
+        const flow = pickFlow(counter++);
         records.push({
           id: `${metric.id}-rec-${i}-${j}`,
           metricId: metric.id,
-          executionId: `exec-${String(i * 10 + j).padStart(4, '0')}`,
+          flowId: flow.id,
+          flowName: flow.name,
+          taskId: nextTaskId(),
           delta,
           value: running,
-          operator: metric.metricType === 'COUNTER' ? 'INCREMENT' : 'ACCUMULATE',
+          operator: 'UPDATE',
           timestamp: isoDayOffset(i - 29, 9 + j),
         });
       }
@@ -126,17 +162,23 @@ const buildRecordsAndSnapshot = (
     };
   }
 
-  // LATEST：取最近 8 次状态值
-  const states = ['待开始', '处理中', '已完成', '部分失败', '已重试', '已完成'];
+  // LATEST：取最近 8 次值
+  const stringStates = ['待开始', '处理中', '已完成', '部分失败', '已重试', '已完成'];
   for (let i = 0; i < 8; i++) {
-    const value = states[i % states.length];
+    const value =
+      metric.valueType === 'DECIMAL'
+        ? Math.round((rand(i + metric.id.length) * 80 + 10) * 100) / 100
+        : stringStates[i % stringStates.length];
+    const flow = pickFlow(i);
     records.push({
       id: `${metric.id}-rec-${i}`,
       metricId: metric.id,
-      executionId: `exec-${String(8000 + i).padStart(4, '0')}`,
+      flowId: flow.id,
+      flowName: flow.name,
+      taskId: nextTaskId(),
       delta: 0,
       value,
-      operator: 'LATEST',
+      operator: 'UPDATE',
       timestamp: isoDayOffset(i - 7, 10),
     });
   }

@@ -108,6 +108,8 @@ export interface CreateMetricInput {
   code: string;
   displayName: string;
   metricType: MetricType;
+  stepValue?: number;
+  valueType?: 'DECIMAL' | 'STRING';
   unit?: string;
   description?: string;
   visible: boolean;
@@ -128,11 +130,19 @@ export const createMetric = async (
     throw new MetricServiceError('DUPLICATE_NAME', '展示名称已存在');
   }
   const now = new Date().toISOString();
+  const stepValue =
+    input.metricType === 'COUNTER'
+      ? Math.max(1, Math.floor(input.stepValue ?? 1))
+      : undefined;
+  const valueType =
+    input.metricType === 'LATEST' ? input.valueType ?? 'DECIMAL' : undefined;
   const newMetric: CustomMetric = {
     id: `metric-${Date.now()}`,
     code: input.code,
     displayName: input.displayName,
     metricType: input.metricType,
+    stepValue,
+    valueType,
     unit: input.unit,
     description: input.description,
     visible: input.visible,
@@ -143,7 +153,8 @@ export const createMetric = async (
   METRICS.unshift(newMetric);
   SNAPSHOTS.set(newMetric.id, {
     metricId: newMetric.id,
-    currentValue: newMetric.metricType === 'LATEST' ? '' : 0,
+    currentValue:
+      newMetric.metricType === 'LATEST' && valueType === 'STRING' ? '' : 0,
     lastUpdatedAt: now,
     version: 0,
   });
@@ -154,6 +165,8 @@ export const createMetric = async (
 export interface UpdateMetricInput {
   displayName?: string;
   metricType?: MetricType;
+  stepValue?: number;
+  valueType?: 'DECIMAL' | 'STRING';
   unit?: string;
   description?: string;
   visible?: boolean;
@@ -184,12 +197,27 @@ export const updateMetric = async (
     if (patch.unit !== undefined && patch.unit !== target.unit) {
       throw new MetricServiceError('TYPE_UNIT_LOCKED', '已有更新明细记录，unit 不可变更');
     }
+    if (patch.valueType && patch.valueType !== target.valueType) {
+      throw new MetricServiceError('TYPE_UNIT_LOCKED', '已有更新明细记录，值类型不可变更');
+    }
+    if (patch.stepValue !== undefined && patch.stepValue !== target.stepValue) {
+      throw new MetricServiceError('TYPE_UNIT_LOCKED', '已有更新明细记录，步进值不可变更');
+    }
   }
 
+  const finalType = patch.metricType ?? target.metricType;
   const updated: CustomMetric = {
     ...target,
     displayName: patch.displayName ?? target.displayName,
-    metricType: patch.metricType ?? target.metricType,
+    metricType: finalType,
+    stepValue:
+      finalType === 'COUNTER'
+        ? Math.max(1, Math.floor(patch.stepValue ?? target.stepValue ?? 1))
+        : undefined,
+    valueType:
+      finalType === 'LATEST'
+        ? patch.valueType ?? target.valueType ?? 'DECIMAL'
+        : undefined,
     unit: patch.unit ?? target.unit,
     description: patch.description ?? target.description,
     visible: patch.visible ?? target.visible,

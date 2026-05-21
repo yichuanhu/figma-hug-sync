@@ -4,7 +4,9 @@
 
 export type MetricType = 'COUNTER' | 'ACCUMULATOR' | 'LATEST';
 
-export type MetricOperator = 'SET' | 'INCREMENT' | 'ACCUMULATE' | 'LATEST';
+export type MetricValueType = 'DECIMAL' | 'STRING';
+
+export type MetricOperator = 'UPDATE' | 'SET' | 'INCREMENT' | 'ACCUMULATE' | 'LATEST';
 
 /** 指标配置（CustomMetric） */
 export interface CustomMetric {
@@ -12,12 +14,16 @@ export interface CustomMetric {
   code: string;
   displayName: string;
   metricType: MetricType;
+  /** 仅 COUNTER 使用，默认 1，正整数 */
+  stepValue?: number;
+  /** 仅 LATEST 使用，COUNTER/ACCUMULATOR 固定 DECIMAL */
+  valueType?: MetricValueType;
   unit?: string;
   description?: string;
   visible: boolean;
   createdAt: string;
   updatedAt: string;
-  /** 是否已产生历史记录（影响 type/unit 是否可改、是否可删） */
+  /** 是否已产生历史记录（影响 type/unit/stepValue/valueType 是否可改、是否可删） */
   hasRecords: boolean;
 }
 
@@ -33,7 +39,12 @@ export interface MetricSnapshot {
 export interface MetricRecord {
   id: string;
   metricId: string;
-  executionId: string;
+  /** 触发更新的流程 ID */
+  flowId: string;
+  /** 触发更新的流程名称（冗余展示用） */
+  flowName: string;
+  /** 触发更新的任务 ID */
+  taskId: string;
   delta: number;
   value: number | string;
   operator: MetricOperator;

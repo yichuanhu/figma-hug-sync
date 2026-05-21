@@ -15,6 +15,7 @@ import {
 import type {
   CustomMetricWithSnapshot,
   MetricType,
+  MetricValueType,
 } from '@/mocks/operationsMetrics/types';
 import { MetricServiceError } from '@/mocks/operationsMetrics/types';
 
@@ -29,6 +30,8 @@ interface FormValues {
   code: string;
   displayName: string;
   metricType: MetricType;
+  stepValue?: number;
+  valueType?: MetricValueType;
   unit?: string;
   description?: string;
   visible: boolean;
@@ -43,6 +46,7 @@ const TYPE_OPTIONS: { value: MetricType; labelKey: string }[] = [
 const MetricFormModal = ({ visible, editing, onClose, onSuccess }: Props) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [currentType, setCurrentType] = useState<MetricType>('COUNTER');
   const formApiRef = useRef<FormApi | null>(null);
   const isEdit = !!editing;
   const lockTypeUnit = !!editing?.hasRecords;
@@ -52,19 +56,23 @@ const MetricFormModal = ({ visible, editing, onClose, onSuccess }: Props) => {
         code: editing.code,
         displayName: editing.displayName,
         metricType: editing.metricType,
+        stepValue: editing.stepValue ?? 1,
+        valueType: editing.valueType ?? 'DECIMAL',
         unit: editing.unit,
         description: editing.description,
         visible: editing.visible,
       }
     : {
         metricType: 'COUNTER',
+        stepValue: 1,
+        valueType: 'DECIMAL',
         visible: true,
       };
 
-  // 切换 visible 时重置表单
   useEffect(() => {
     if (visible && formApiRef.current) {
       formApiRef.current.setValues(initialValues, { isOverride: true });
+      setCurrentType((initialValues.metricType as MetricType) ?? 'COUNTER');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, editing]);
@@ -76,6 +84,8 @@ const MetricFormModal = ({ visible, editing, onClose, onSuccess }: Props) => {
         await updateMetric(editing.id, {
           displayName: values.displayName,
           metricType: values.metricType,
+          stepValue: values.metricType === 'COUNTER' ? values.stepValue : undefined,
+          valueType: values.metricType === 'LATEST' ? values.valueType : undefined,
           unit: values.unit,
           description: values.description,
           visible: values.visible,
@@ -86,6 +96,9 @@ const MetricFormModal = ({ visible, editing, onClose, onSuccess }: Props) => {
           code: values.code,
           displayName: values.displayName,
           metricType: values.metricType,
+          stepValue: values.metricType === 'COUNTER' ? values.stepValue ?? 1 : undefined,
+          valueType:
+            values.metricType === 'LATEST' ? values.valueType ?? 'DECIMAL' : undefined,
           unit: values.unit,
           description: values.description,
           visible: values.visible ?? true,
@@ -123,6 +136,11 @@ const MetricFormModal = ({ visible, editing, onClose, onSuccess }: Props) => {
         labelPosition="top"
         initValues={initialValues}
         onSubmit={(v) => handleSubmit(v as FormValues)}
+        onValueChange={(vals) => {
+          if (vals.metricType && vals.metricType !== currentType) {
+            setCurrentType(vals.metricType as MetricType);
+          }
+        }}
         getFormApi={(api) => {
           formApiRef.current = api;
         }}
@@ -170,6 +188,34 @@ const MetricFormModal = ({ visible, editing, onClose, onSuccess }: Props) => {
             { required: true, message: t('metricsConfig.field.metricTypeRequired') },
           ]}
         />
+        {currentType === 'COUNTER' && (
+          <Form.InputNumber
+            field="stepValue"
+            label={t('metricsConfig.field.stepValue')}
+            placeholder={t('metricsConfig.field.stepValuePlaceholder')}
+            min={1}
+            precision={0}
+            disabled={lockTypeUnit}
+            style={{ width: '100%' }}
+            rules={[
+              { required: true, message: t('metricsConfig.field.stepValueRequired') },
+            ]}
+          />
+        )}
+        {currentType === 'LATEST' && (
+          <Form.Select
+            field="valueType"
+            label={t('metricsConfig.field.valueType')}
+            disabled={lockTypeUnit}
+            optionList={[
+              { value: 'DECIMAL', label: t('metricsConfig.valueType.DECIMAL') },
+              { value: 'STRING', label: t('metricsConfig.valueType.STRING') },
+            ]}
+            rules={[
+              { required: true, message: t('metricsConfig.field.valueTypeRequired') },
+            ]}
+          />
+        )}
         <Form.Input
           field="unit"
           label={t('metricsConfig.field.unit')}
