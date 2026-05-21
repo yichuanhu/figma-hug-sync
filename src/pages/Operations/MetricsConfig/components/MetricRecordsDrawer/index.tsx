@@ -160,7 +160,7 @@ const MetricRecordsDrawer = ({ visible, metric, onClose }: Props) => {
     {
       title: t('metricsConfig.records.flowName'),
       dataIndex: 'flowName',
-      ellipsis: { showTooltip: true },
+      ellipsis: true,
       render: (v: string, row: MetricRecord) => (
         <Tooltip content={row.flowId} position="top">
           <span>{v}</span>
