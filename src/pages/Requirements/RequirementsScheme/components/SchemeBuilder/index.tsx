@@ -170,30 +170,7 @@ const SchemeBuilderPage = () => {
       }
     };
 
-    // 冲突预检：若存在归属抢占，弹出二次确认
-    const conflicts = previewSchemeBindings(draftScheme.id, deptIds);
-    if (conflicts.length === 0) {
-      await doPersist();
-      return;
-    }
-    Modal.confirm({
-      title: '部门归属冲突',
-      icon: <AlertTriangle size={20} strokeWidth={2} style={{ color: 'var(--semi-color-warning)' }} />,
-      width: 520,
-      content: (
-        <BindingConflictContent
-          hint={`已选部门中有 ${conflicts.length} 个当前归属其他需求方案，保存后将改绑至本方案：`}
-          conflicts={conflicts.map((c) => ({
-            deptId: c.deptId,
-            prevOwnerName: getSchemeById(c.prevSchemeId)?.name ?? '未知方案',
-          }))}
-          actionLabel="改绑至本方案"
-        />
-      ),
-      okText: '确认改绑',
-      cancelText: t('common.cancel'),
-      onOk: doPersist,
-    });
+    await doPersist();
   };
 
   const handleActivate = () => {
@@ -207,38 +184,23 @@ const SchemeBuilderPage = () => {
       Toast.warning('请先选择「适用部门」，激活时至少选择 1 个部门');
       return;
     }
-    const conflicts = previewSchemeBindings(draftScheme.id, deptIds);
-    const doActivate = async () => {
-      try {
-        if (conflicts.length > 0) setSchemeBindingsForScheme(draftScheme.id, deptIds);
-        await activateSchemeBuilder(draftScheme.id);
-        Toast.success(t('requirements.scheme.activateSuccess'));
-        setDirty(false);
-        navigate('/requirements/scheme');
-      } catch (e) {
-        const err = e as Error & { missing?: string[] };
-        if (err.missing) setMissingTabs(err.missing);
-        Toast.error(err.message);
-      }
-    };
     Modal.confirm({
       title: t('requirements.scheme.builder.activateTitle'),
-      width: conflicts.length > 0 ? 520 : 416,
-      content: conflicts.length > 0 ? (
-        <BindingConflictContent
-          hint={`确认激活「${draftScheme.name}」？以下 ${conflicts.length} 个部门当前归属其他方案，激活后将一并改绑到本方案：`}
-          conflicts={conflicts.map((c) => ({
-            deptId: c.deptId,
-            prevOwnerName: getSchemeById(c.prevSchemeId)?.name ?? '未知方案',
-          }))}
-          actionLabel="改绑并激活"
-        />
-      ) : (
-        t('requirements.scheme.builder.activateContent', { name: draftScheme.name })
-      ),
+      content: t('requirements.scheme.builder.activateContent', { name: draftScheme.name }),
       okText: t('requirements.scheme.activate'),
       cancelText: t('common.cancel'),
-      onOk: doActivate,
+      onOk: async () => {
+        try {
+          await activateSchemeBuilder(draftScheme.id);
+          Toast.success(t('requirements.scheme.activateSuccess'));
+          setDirty(false);
+          navigate('/requirements/scheme');
+        } catch (e) {
+          const err = e as Error & { missing?: string[] };
+          if (err.missing) setMissingTabs(err.missing);
+          Toast.error(err.message);
+        }
+      },
     });
   };
 
