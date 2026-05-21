@@ -321,10 +321,18 @@ export interface RequirementScheme {
   version: string;
   description?: string;
   status: SchemeStatus;
-  /** 是否为内置预设（不可删除/编辑） */
+  /** 是否为内置预设（不可删除/编辑/激活/绑定部门） */
   is_preset: boolean;
   /** 是否为草稿（builder 增量字段） */
   is_draft?: boolean;
+  /** v15: 是否为租户默认方案；每租户唯一且 status=active；不写入部门绑定表 */
+  is_tenant_default?: boolean;
+  /** v15: 来源平台预设 key（基于预设复制时写入） */
+  source_preset_key?: string;
+  /** v15: 来源平台预设版本（基于预设复制时写入） */
+  source_preset_version?: string;
+  /** v15: 运行时计算字段——是否存在更新版本的源预设 */
+  preset_update_available?: boolean;
   /** 父模版 ID（AF2 复制激活模版时记录） */
   parent_id?: string;
   meta?: SchemeMeta;
