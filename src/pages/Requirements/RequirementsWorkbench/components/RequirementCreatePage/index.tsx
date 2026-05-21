@@ -15,9 +15,9 @@ import {
 import { ArrowLeft, Plus, Trash2, Building2 } from 'lucide-react';
 import { Select, InputNumber, Banner } from '@douyinfe/semi-ui';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
-import EmptyState from '@/components/EmptyState';
+// EmptyState 不再使用：v3 改为在 Step 0 内联 Banner 提示
 import { getSchemeIdByDepartment, subscribeSchemeBindingChange } from '@/mocks/departmentSchemeBinding';
-import { getDepartmentName } from '@/mocks/departmentData';
+import { getDepartmentName, getDepartmentAncestorIds } from '@/mocks/departmentData';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import {
@@ -155,14 +155,24 @@ const RequirementCreatePage = () => {
     setDirty(true);
   };
 
-  // v5：按当前用户所属部门自动匹配方案
+  // v3 (2026-05-21)：按"用户在创建页选择的所属部门"自动匹配激活方案
+  // 若部门未直接绑定，回溯祖先部门尝试匹配（与 setSchemeBindingsForScheme 子部门展开规则呼应）
   const [bindingTick, setBindingTick] = useState(0);
   useEffect(() => subscribeSchemeBindingChange(() => setBindingTick((k) => k + 1)), []);
 
   const autoMatchedSchemeId = useMemo(() => {
-    return getSchemeIdByDepartment(MOCK_CURRENT_USER.department_id);
+    if (!departmentValue) return null;
+    const direct = getSchemeIdByDepartment(departmentValue);
+    if (direct) return direct;
+    // 兜底：按祖先部门查找（防止"叶子部门未直接绑定但父部门已绑定且本应继承"的场景）
+    const ancestors = getDepartmentAncestorIds(departmentValue);
+    for (const a of ancestors) {
+      const hit = getSchemeIdByDepartment(a);
+      if (hit) return hit;
+    }
+    return null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bindingTick]);
+  }, [bindingTick, departmentValue]);
 
   const selectedSchemeId = useMemo<string | undefined>(() => {
     if (isEdit && editData?.scheme_id) return editData.scheme_id;
@@ -171,8 +181,9 @@ const RequirementCreatePage = () => {
 
   const activeScheme = useMemo(() => {
     if (selectedSchemeId) return getSchemeById(selectedSchemeId);
-    return getActiveScheme();
-  }, [selectedSchemeId]);
+    // 编辑历史需求时若 scheme_id 缺失，回退到 active scheme；新建无方案则返回 undefined（避免显示错误模版）
+    return isEdit ? getActiveScheme() : undefined;
+  }, [selectedSchemeId, isEdit]);
 
   const priorityOptions = useMemo(
     () => [
@@ -205,7 +216,7 @@ const RequirementCreatePage = () => {
       const formData = (editData.form_data ?? {}) as Record<string, unknown>;
       return {
         title: editData.title,
-        department: editData.owning_department_name,
+        department: editData.owning_department_id,
         priority: editData.priority,
         ...formData,
       };
@@ -227,7 +238,7 @@ const RequirementCreatePage = () => {
           return;
         }
         setEditData(item);
-        setDepartmentValue(item.owning_department_name);
+        setDepartmentValue(item.owning_department_id || undefined);
         setOwnerId(item.owner_id || MOCK_CURRENT_USER.id);
         // 还原岗位成本：优先 form_data.position_costs 数组；否则尝试从 position_level/position_cost 兼容
         const fd = (item.form_data ?? {}) as Record<string, unknown>;
@@ -293,18 +304,15 @@ const RequirementCreatePage = () => {
     try {
       if (fields.length > 0) await formApi.validate(fields);
       if (currentStep === 0) {
-        if (!selectedSchemeId) {
-          Toast.warning('请选择需求方案');
-          return false;
-        }
         if (!departmentValue) {
           Toast.warning(t('requirements.form.departmentRequired'));
           return false;
         }
-        if (!ownerId) {
-          Toast.warning(t('common.ownerRequired'));
+        if (!isEdit && !selectedSchemeId) {
+          Toast.warning('所选部门没有生效的需求模板，无法创建需求');
           return false;
         }
+        // owner_id 在草稿态可留空（STORY-003 v3 §3.1 Step 6）；仅在最终提交时若需求需要进入审批环节再校验
       }
       return true;
     } catch {
@@ -360,7 +368,16 @@ const RequirementCreatePage = () => {
     if (cleanedPositionCosts.length > 0) {
       form_data.position_costs = cleanedPositionCosts;
     }
-    const submitValues = { ...values, form_data, scheme_id: selectedSchemeId };
+    const submitValues = {
+      ...values,
+      form_data,
+      scheme_id: selectedSchemeId,
+      // v3 (2026-05-21)：传递 id 与解析后的 name；'department' 字段现承载 department_id
+      department: departmentValue,
+      department_id: departmentValue,
+      department_name: departmentValue ? getDepartmentName(departmentValue) : undefined,
+      owner_id: ownerId || undefined,
+    };
     Object.keys(form_data).forEach((k) => {
       if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
     });
@@ -433,21 +450,17 @@ const RequirementCreatePage = () => {
 
   const handleSubmit = async () => {
     if (!formApi) return;
-    if (!selectedSchemeId) {
-      setCurrentStep(0);
-      Toast.warning('请选择需求方案');
-      return;
-    }
     if (!departmentValue) {
       setCurrentStep(0);
       Toast.warning(t('requirements.form.departmentRequired'));
       return;
     }
-    if (!ownerId) {
+    if (!isEdit && !selectedSchemeId) {
       setCurrentStep(0);
-      Toast.warning(t('common.ownerRequired'));
+      Toast.warning('所选部门没有生效的需求模板，无法创建需求');
       return;
     }
+    // owner_id 在草稿态可留空（STORY-003 v3）
     try {
       await formApi.validate();
     } catch (errors) {
@@ -558,42 +571,9 @@ const RequirementCreatePage = () => {
     );
   }
 
-  // v5：新建态时若当前部门未绑定方案，拦截并展示空态
-  if (!isEdit && !activeScheme) {
-    return (
-      <div className="requirement-create-page">
-        <div className="requirement-create-page-header">
-          <Button
-            icon={<ArrowLeft size={16} strokeWidth={2} />}
-            theme="borderless"
-            type="tertiary"
-            className="back-btn"
-            onClick={() => navigate('/requirements/list')}
-          />
-          <Title heading={3} className="title">{t('requirements.form.createTitle')}</Title>
-        </div>
-        <div style={{ padding: '40px 0' }}>
-          <EmptyState
-            variant="noData"
-            description="当前部门没有生效的需求模板"
-            footer={
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-                <Text type="tertiary" size="small">
-                  请联系管理员在「需求模板」中为「{getDepartmentName(MOCK_CURRENT_USER.department_id)}」配置适用方案
-                </Text>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <Button onClick={() => navigate('/requirements/list')}>返回需求列表</Button>
-                  <Button theme="solid" type="primary" onClick={() => navigate('/requirements/scheme')}>
-                    前往需求模板管理
-                  </Button>
-                </div>
-              </div>
-            }
-          />
-        </div>
-      </div>
-    );
-  }
+  // v3 (2026-05-21)：新建态下，是否需要在 Step 0 阻断"下一步/提交"
+  // 当用户已选部门但匹配不到激活方案时，需要展示"所选部门没有生效的需求模板"
+  const showNoSchemeForDept = !isEdit && !!departmentValue && !activeScheme;
 
   return (
     <div className="requirement-create-page">
@@ -639,7 +619,7 @@ const RequirementCreatePage = () => {
           >
             {/* Step 0 */}
             <div style={{ display: currentStep === 0 ? 'block' : 'none' }}>
-              {activeScheme && (
+              {activeScheme && departmentValue && (
                 <Banner
                   type="info"
                   fullMode={false}
@@ -650,7 +630,7 @@ const RequirementCreatePage = () => {
                     <span>
                       使用方案：<strong>{activeScheme.name}</strong> · v{activeScheme.version}
                       <Text type="tertiary" size="small" style={{ marginLeft: 8 }}>
-                        （根据当前部门「{getDepartmentName(MOCK_CURRENT_USER.department_id)}」自动匹配）
+                        （根据所属部门「{getDepartmentName(departmentValue)}」自动匹配）
                       </Text>
                     </span>
                   }
@@ -676,11 +656,27 @@ const RequirementCreatePage = () => {
                     formApi?.setValue?.('department', v);
                     setDirty(true);
                   }}
-                  useNameAsValue
-                  placeholder={t('requirements.form.departmentPlaceholder')}
+                  placeholder={isEdit ? t('requirements.form.departmentPlaceholder') : '请先选择所属部门以匹配需求模板'}
                   disabled={isPostProjectEdit}
                 />
               </Form.Slot>
+              {showNoSchemeForDept && (
+                <div style={{ marginTop: -8, marginBottom: 16 }}>
+                  <Banner
+                    type="warning"
+                    fullMode={false}
+                    closeIcon={null}
+                    description={
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        <span>所选部门没有生效的需求模板</span>
+                        <Text type="tertiary" size="small">
+                          请联系管理员在「需求模板」中为「{getDepartmentName(departmentValue)}」配置适用方案，或选择其他已绑定方案的部门
+                        </Text>
+                      </div>
+                    }
+                  />
+                </div>
+              )}
               <Form.Slot label={{ text: t('requirements.form.requirementOwnerLabel'), required: true }}>
                 <OwnerSearchSelect
                   value={ownerId}
@@ -829,7 +825,12 @@ const RequirementCreatePage = () => {
             </Button>
           )}
           {currentStep < lastFormStep && (
-            <Button theme="solid" type="primary" onClick={handleNext}>
+            <Button
+              theme="solid"
+              type="primary"
+              onClick={handleNext}
+              disabled={currentStep === 0 && showNoSchemeForDept}
+            >
               下一步
             </Button>
           )}

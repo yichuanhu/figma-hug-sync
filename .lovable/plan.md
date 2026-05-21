@@ -1,73 +1,74 @@
-## 目标
+## 当前理解
 
-对照 `story-010-OC-CUSTOM-METRICS-3.md` 调整自定义业务指标模块，覆盖三个变更点。
+附件 9 个 Story 已部分对齐：
+- 方案/审批流模板的「适用部门」字段、部门→方案/审批流绑定表、`round` 字段、`PublishChangePanel`、`ChangeLogTab`、`DevSchemeDocsTab`、分类标签、可见性等关键能力**代码中已存在**。
+- 但部分 v3（2026-05-21）/ v5（2026-05-20）的细节交互可能尚未完全落地。
 
----
-
-## 1. 类型与 Mock 数据层（src/mocks/operationsMetrics）
-
-### types.ts
-- `CustomMetric` 新增：
-  - `stepValue?: number`（仅 COUNTER 使用，默认 1，整数）
-  - `valueType?: 'DECIMAL' | 'STRING'`（仅 LATEST 使用，COUNTER/ACCUMULATOR 固定 DECIMAL）
-- `MetricRecord`：
-  - 删除 `executionId`
-  - 新增 `flowId: string`、`flowName: string`、`taskId: string`
-- `MetricOperator`：按文档统一为 `'UPDATE'`（保留旧值以兼容渲染）
-
-### mockData.ts
-- SEED_METRICS：为 COUNTER 增加 `stepValue`（默认 1，给 `ORDER_COUNT` 设置示例 1，`REFUND_COUNT` 设置 1）；为 LATEST 增加 `valueType`（`CURR_STATUS` = STRING，`LAST_BATCH` = STRING；新增一个 Decimal 示例如"最新批次耗时"= DECIMAL 便于演示）。
-- `buildRecordsAndSnapshot` 生成记录时：
-  - 移除 `executionId`
-  - 写入 `flowId`（如 `flow-001`…）、`flowName`（如 `订单处理流程` 等中文名，构造一个流程名池循环取）、`taskId`（如 `task-0001`…）
-  - COUNTER 的 `delta` 改用 metric.stepValue（默认 1）
-  - `operator` 统一写 `'UPDATE'`
-
-### service.ts
-- `CreateMetricInput` / `UpdateMetricInput` 新增 `stepValue?`、`valueType?` 字段，按类型校验：
-  - COUNTER：`stepValue` 必填正整数，默认 1；`valueType` 忽略
-  - LATEST：`valueType` 必填（DECIMAL/STRING），默认 DECIMAL；`stepValue` 忽略
-  - ACCUMULATOR：两个字段均忽略
-- `createMetric` 透传新字段；初始 snapshot 当 LATEST + STRING 时 `currentValue=''`，DECIMAL 时 `0`。
-- `updateMetric` 透传 `stepValue`/`valueType`（同样在 hasRecords=true 时锁定 `valueType`，与 type/unit 同级锁）。
+因此本次工作是**系统性差异比对 + 增量修正**，而非从零构建。建议按交付价值分 3 个批次推进，每批结束都可以独立验收。
 
 ---
 
-## 2. 新建/编辑表单（MetricFormModal）
+## 批次 1 — 需求创建与方案匹配（STORY-003 v3 / STORY-013 v5）
 
-- `metricType` 切换时联动显示：
-  - COUNTER：显示「步进值」`Form.InputNumber`，`min=1`、`precision=0`、默认 `1`，必填
-  - LATEST：显示「值类型」`Form.Select`（Decimal / String），默认 Decimal，必填
-  - ACCUMULATOR：两个字段都不显示
-- 字段顺序按线框：代码 → 展示名称 → 指标类型 → 步进值/值类型 → 单位 → 描述 → 可见
-- 编辑且 hasRecords 时，`stepValue` 与 `valueType` 一并禁用（与 type/unit 锁定一致）
-- i18n key 新增：`metricsConfig.field.stepValue`、`stepValuePlaceholder`、`stepValueRequired`、`field.valueType`、`valueType.DECIMAL`、`valueType.STRING`、`field.valueTypeRequired`（中/英两份）
+**目标**：「先选部门 → 自动匹配激活方案 → 渲染表单 / 提示无模板」链路对齐文档。
 
----
-
-## 3. 历史明细抽屉（MetricRecordsDrawer）
-
-- 表格列调整为：时间 / 操作 / 增量 / 更新后值 / **流程名称**（render `flowName`，hover tooltip 显示 flowId）/ **任务 ID**（render `taskId`）
-- 删除「执行 ID」列；移除 i18n `records.executionId`
-- 新增 i18n：`records.flowName`、`records.taskId`
-- 增量列 COUNTER 显示 `+stepValue`（直接用 record.delta，已是步进值）
-- 更新后值列：LATEST + STRING 直接渲染字符串、DECIMAL 用 `toLocaleString()`
+待核对/调整项：
+- `RequirementCreatePage`：当前实现是"基于 `MOCK_CURRENT_USER.department_id`"匹配，需改为**用户在创建页内手动选择 `department_id`** 后再触发方案匹配；切换部门重新匹配；未绑定时阻止进入表单。
+- 阻止文案与跳转：保留"所选部门没有生效的需求模板"，按钮文案与文档一致。
+- 校验：`department_id` 必填、`owner_id` 可空保存草稿。
+- "适用部门"在方案构建器中：**激活时必填，保存草稿可留空**；**已被其它激活方案绑定的部门置灰** + tooltip。
+- Toast 文案、错误码 `SCHEME_NO_DEPARTMENT` 与 5.2 R-06 对齐。
 
 ---
 
-## 4. 业务成果看板引用确认
+## 批次 2 — 审批流模板 + 审批/评估跳过链路（STORY-016 v5 / STORY-006 v3 / STORY-007 v3）
 
-- 仅 `BusinessOutcomes` 列表/卡片可能读取 metric 的 `currentValue`，不涉及 record 字段变更，无需改动；但会快速 grep 确认没有引用 `executionId`。
+**目标**：审批流模板"适用部门"行为对齐；提交时按 `requirement.department_id` 查找绑定，未绑定直接跳到「待开发」。
+
+待核对/调整项：
+- `ApprovalFlowBuilder`：「适用部门」激活时必填、被其它激活模板绑定的部门置灰、保存时原子同步 `department_approval_flow_binding`。
+- 模板列表「激活」按钮校验：审批级 ≥1 / 评估人 ≥1（启用时） / 适用部门 ≥1，错误提示文案对齐。
+- 模板列表删除：被部门绑定的激活模板禁用并 hover 提示「该模板被 N 个部门绑定」。
+- 需求提交逻辑（`mockData.ts` 中 `submitRequirement`）：
+  - 通过 `requirement.department_id → department_approval_flow_binding` 查找模板；
+  - 命中 → 写快照、进入 `PENDING_APPROVAL`；
+  - 未命中 → 跳过审批和评估，状态直接置 `PENDING_PROJECT`（待开发）。
+- 评估侧：若快照中 `assessment_enabled=false` 或无评估人，自动跳过评估。
 
 ---
 
-## 文件改动清单
+## 批次 3 — 生命周期 / 双步编辑 / 分类 / 可见性（STORY-009 / 014 / 015 / 017 / 018）
 
-- `src/mocks/operationsMetrics/types.ts`
-- `src/mocks/operationsMetrics/mockData.ts`
-- `src/mocks/operationsMetrics/service.ts`
-- `src/pages/Operations/MetricsConfig/components/MetricFormModal/index.tsx`
-- `src/pages/Operations/MetricsConfig/components/MetricRecordsDrawer/index.tsx`
-- `public/i18n/zh-CN.json`、`public/i18n/en.json`
+**目标**：补齐已有但 v3/v4 细则未完全跟进的部分，并核对可见性。
 
-确认后进入实现。
+待核对/调整项：
+- **STORY-009**：「待开发 → 开发中」触发器统一为"从需求详情创建首个流程"。当前 `mockData` 中 `linkProject` 会迁移到开发中，需要确认/补充"创建首个流程"路径同样触发；
+- **STORY-014**：发布变更弹窗去除 `INFO_ONLY / DEV_IMPACT` 区分（统一 `CHANGE`），`changed_fields` JSONB，FYI 通知不打红点；
+- **STORY-015**：开发方案文档上传/删除权限限定关联工作空间成员；上传成功 FYI 通知文案；
+- **STORY-017**：创建/编辑表单底部分类区域；存在适用键时提交必选 ≥1；草稿可空；审批后只读；
+- **STORY-018**：列表/详情/变更日志/文档查看统一遵循可见性（部门成员 / 部门管理员 / 工作空间成员 / 创建人）。
+
+---
+
+## 文件涉及面（预估）
+
+```
+批次 1：
+  src/pages/Requirements/RequirementsWorkbench/components/RequirementCreatePage/index.tsx
+  src/pages/Requirements/RequirementsScheme/components/SchemeBuilder/index.tsx
+  src/mocks/departmentSchemeBinding.ts
+批次 2：
+  src/pages/Requirements/ApprovalConfig/index.tsx
+  src/pages/Requirements/ApprovalConfig/components/ApprovalFlowBuilder/index.tsx
+  src/pages/Requirements/RequirementsWorkbench/mockData.ts
+  src/mocks/departmentApprovalFlowBinding.ts
+批次 3：
+  src/pages/Requirements/RequirementsWorkbench/components/{PublishChangePanel,ChangeLogTab,DevSchemeDocsTab,RequirementDetailDrawer}/...
+  src/pages/Requirements/RequirementsWorkbench/mockData.ts
+```
+
+---
+
+## 下一步
+
+确认后我会从**批次 1** 开始，每批完成后停下来由你 review，再开下一批。如果你希望某一批优先（或只做某一批），告诉我即可。

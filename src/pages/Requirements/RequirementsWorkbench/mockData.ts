@@ -968,6 +968,12 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
   const chosenScheme =
     (chosenSchemeId && (getSchemeById(chosenSchemeId) || PRESET_SCHEMES.find((s) => s.id === chosenSchemeId))) ||
     activeScheme;
+  // v3 (2026-05-21)：优先使用显式 department_id / department_name
+  const explicitDeptId = (values.department_id as string | undefined)
+    ?? (values.department as string | undefined);
+  const explicitDeptName = (values.department_name as string | undefined)
+    ?? explicitDeptId;
+  const explicitOwnerId = (values.owner_id as string | undefined) || ''; // 可空草稿
   const newItem: RequirementItem = {
     id: generateUUID(),
     req_no: `REQ-2026-${String(mockRequirementData.length + 1).padStart(4, '0')}`,
@@ -975,10 +981,10 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
     scheme_version: chosenScheme.version,
     title: values.title as string,
     description: (values.description as string) || '',
-    owning_department_name: values.department as string,
-    owning_department_id: 'dept-new',
-    owner_id: 'user-001',
-    owner_name: creator.name,
+    owning_department_name: explicitDeptName || '',
+    owning_department_id: explicitDeptId || '',
+    owner_id: explicitOwnerId,
+    owner_name: explicitOwnerId ? creator.name : '',
     creatorId: 'user-001',
     creatorName: creator.name,
     creatorDepartment: creator.department,
@@ -1015,11 +1021,16 @@ export const updateRequirement = async (id: string, values: Record<string, unkno
   const { baseline, cost, form_data } = incomingFormData
     ? extractBaselineAndCost(incomingFormData)
     : { baseline: cur.baselineFormData, cost: cur.costEstimate, form_data: cur.form_data };
+  const explicitDeptId = (values.department_id as string | undefined)
+    ?? (values.department as string | undefined);
+  const explicitDeptName = (values.department_name as string | undefined);
   mockRequirementData[index] = {
     ...cur,
     title: values.title as string,
     description: (values.description as string) || cur.description,
-    owning_department_name: (values.department as string) || cur.owning_department_name,
+    owning_department_id: explicitDeptId || cur.owning_department_id,
+    owning_department_name: explicitDeptName || cur.owning_department_name,
+    owner_id: (values.owner_id as string | undefined) ?? cur.owner_id,
     priority: (values.priority as RequirementPriority) || cur.priority,
     contactInfo: (values.contactInfo as string) || '',
     expectedLaunchDate: values.expectedLaunchDate
