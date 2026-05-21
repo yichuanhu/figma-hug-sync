@@ -14,7 +14,7 @@ import {
   subscribeSchemeChange,
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '@/pages/Requirements/RequirementsWorkbench/types';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentPicker from '@/components/DepartmentPicker';
 import {
   setSchemeBindingsForScheme,
   getOccupiedDepartmentMapByScheme,
