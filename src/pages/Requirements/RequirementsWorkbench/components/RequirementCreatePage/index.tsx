@@ -631,7 +631,9 @@ const RequirementCreatePage = () => {
                     <span>
                       使用方案：<strong>{activeScheme.name}</strong> · v{activeScheme.version}
                       <Text type="tertiary" size="small" style={{ marginLeft: 8 }}>
-                        （根据所属部门「{getDepartmentName(departmentValue)}」自动匹配）
+                        {schemeMatch?.source === 'tenant_default'
+                          ? `（所属部门「${getDepartmentName(departmentValue)}」未配置专属方案，使用租户默认方案）`
+                          : `（根据所属部门「${getDepartmentName(departmentValue)}」自动匹配）`}
                       </Text>
                     </span>
                   }
