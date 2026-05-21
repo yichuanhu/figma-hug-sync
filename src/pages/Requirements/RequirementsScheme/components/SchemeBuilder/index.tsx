@@ -43,7 +43,8 @@ const SchemeBuilderPage = () => {
   const { t } = useTranslation();
   // 同步初始化：若 store 已就绪（绝大多数情况），首次渲染即拿到方案，避免白屏 Spin
   const initialScheme = id ? getSchemeById(id) ?? null : null;
-  const initialNeedsFork = !!initialScheme && (initialScheme.is_preset || (initialScheme.status === 'active' && !initialScheme.is_draft));
+  // 预设模板：进入编辑页时不派生新版本，仅允许编辑「适用部门」
+  const initialNeedsFork = !!initialScheme && initialScheme.status === 'active' && !initialScheme.is_draft && !initialScheme.is_preset;
   // savedScheme：与 store 同步的最近一次持久化版本
   const [savedScheme, setSavedScheme] = useState<RequirementScheme | null>(initialNeedsFork ? null : initialScheme);
   // draftScheme：本地编辑缓冲区
@@ -53,6 +54,7 @@ const SchemeBuilderPage = () => {
   const [nameDraft, setNameDraft] = useState('');
   const [testDriveVisible, setTestDriveVisible] = useState(false);
   const [loading, setLoading] = useState(!initialScheme || initialNeedsFork);
+  const isPresetEdit = !!savedScheme?.is_preset;
   const forkedRef = useRef(false);
   const dirtyRef = useRef(false);
   dirtyRef.current = dirty;
