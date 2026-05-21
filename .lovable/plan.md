@@ -1,59 +1,61 @@
-## Phase 2：方案列表页改造
+## Phase 3：方案编辑页改造
 
-基于 v15 需求和已完成的 Phase 1（数据模型 + 服务层），本阶段聚焦于 `src/pages/Requirements/RequirementsScheme/index.tsx` 列表页的改造。
+聚焦 `src/pages/Requirements/RequirementsScheme/components/SchemeBuilder/index.tsx` 与 `FormBuilder/`，让编辑页严格匹配 v15 的三类方案行为。
 
-### 1. 默认方案状态横幅
+### 1. 方案类型分支（替换现有 `isPresetEdit` 单一开关）
 
-在列表顶部新增 Banner 区域，展示当前租户默认方案信息：
-
-- 显示默认方案名称、来源（如"基于预制方案 RPA-PRO v1.0.0 初始化"）
-- 若 `preset_update_available=true`，显示"预制方案有新版本 v1.1.0 可更新"提示（仅提示，不强制）
-- 提供"查看默认方案"快捷入口
-
-我的意见：这个部分有点too much了， 对于需要配置方案的用户来说，默认方案只是兜底，不需要这么大张旗鼓的展示；
-
-### 2. 按钮可见性矩阵（严格遵循 §10.3）
-
-重构每行操作下拉菜单，按方案类型分别渲染：
+引入 `editMode`：
 
 ```text
-方案类型              | 可见操作
----------------------|----------------------------------
-预制方案 (is_preset) | 查看（只读）
-租户默认 (default)   | 编辑、查看
-自定义-草稿/停用     | 编辑、启用、设为默认、删除
-自定义-启用          | 编辑（仅适用部门）、停用、查看
+preset           → 完全只读（含适用部门）。隐藏所有保存/激活按钮。
+tenant_default   → 全字段可编辑；不展示「适用部门」区块；不可设为默认（已是默认）；不可停用/激活。
+custom_active    → 仅允许编辑「适用部门」（与当前预设的限制行为一致），保存即同步绑定。
+custom_inactive  → 全字段可编辑 + 「适用部门」可编辑 + 启用按钮 + 「设为默认」按钮（若无部门绑定）。
 ```
 
-- 移除当前混在一起的"编辑适用部门" Modal 入口（统一进编辑页）
-- 删除按钮在有绑定/已启用/默认/预制时禁用并 Tooltip 说明原因
+### 2. 头部按钮区按 editMode 渲染
 
-### 3. 列表列调整
+| editMode | 试运行 | 保存 | 设为默认 | 启用 |
+|---|---|---|---|---|
+| preset | — | — | — | — |
+| tenant_default | ✓ | ✓ | — | — |
+| custom_active | — | ✓（仅适用部门） | — | — |
+| custom_inactive | ✓ | ✓ | ✓（无绑定时） | ✓ |
 
-- "适用部门"列：显示部门数量（如"3 个部门"），Hover Popover 展示完整列表；预制方案显示"—"
-- 新增"来源"列或在名称旁标签：`预制` / `默认` / `自定义`
-- 状态列：预制固定显示"只读"，默认方案显示"默认"标签
+「设为默认」复用 Phase 1 的 `setSchemeAsDefault`，复用 Phase 2 的 `SchemeError` 统一提示。
 
-### 4. 操作交互
+### 3. 适用部门区块显隐
 
-- **启用**：调用 `activateScheme`，捕获 `SchemeError` 各错误码（`SCHEME_NO_DEPARTMENT` / `SCHEME_DEPARTMENT_CONFLICT` 等），用 Toast/Modal 提示并引导（冲突时列出冲突部门）
-- **停用**：调用 `deactivateScheme`，二次确认提示"将清空部门绑定"
-- **设为默认**：Modal 确认，调用 `setSchemeAsDefault`
-- **删除**：调用 `deleteScheme`，捕获禁止删除原因
+- `tenant_default`：完全隐藏「适用部门」卡片（默认方案是兜底，不参与部门匹配）
+- `preset`：隐藏（预设只读，且不参与绑定）
+- `custom_active` / `custom_inactive`：保留现有卡片
 
-### 5. 移除独立的"编辑适用部门" Modal
+### 4. 表单主体只读规则
 
-当前 `SchemeBuilder` 外层的 `DepartmentPicker` 弹窗入口移除，所有部门修改进入编辑页统一处理（与 Phase 3 衔接）。
+- `preset`：整页只读遮罩（保留当前 `pointer-events: none + opacity 0.7`），名称不可编辑
+- `custom_active`：表单主体也加只读遮罩，仅顶部适用部门可改；移除"试运行"
+- 其它：维持可编辑
+
+### 5. SchemeError 统一接入
+
+`handleActivate` 内捕获 `SchemeError`：
+- `SCHEME_DEPARTMENT_CONFLICT` → Modal 列出冲突部门
+- `SCHEME_NO_DEPARTMENT` → Toast 引导
+- 其它 → Toast.warning
+
+### 6. 进入逻辑调整
+
+- 移除当前"已激活非预设自动派生新版本"的 `forkActiveScheme` 弹窗（v15 已激活方案进入是编辑适用部门，不再派生）
+- 改为：若 `status=active && !is_draft && !is_preset && !is_tenant_default` → 直接进入 `custom_active` 模式
+
+### 不在本阶段（推迟到 Phase 3.5 / Phase 4）
+
+- FormBuilder 8 个系统固定字段锁定区（影响面大，单独迭代）
+- 字段配置 Modal 简化为 4 Tab（独立 UX 重构）
+- 创建需求时方案匹配（Phase 4）
 
 ### 涉及文件
 
-- `src/pages/Requirements/RequirementsScheme/index.tsx`（主要）
-- 可能新增：`components/DefaultSchemeBanner/index.tsx`
-- 可能新增：`components/SchemeActionMenu/index.tsx`（按类型渲染按钮）
+- `src/pages/Requirements/RequirementsScheme/components/SchemeBuilder/index.tsx`
 
-### 不在本阶段
-
-- 编辑页内部改造（Phase 3）
-- 创建需求时方案匹配（Phase 4）
-
-确认后开始执行 Phase 2。
+确认后开始执行 Phase 3。

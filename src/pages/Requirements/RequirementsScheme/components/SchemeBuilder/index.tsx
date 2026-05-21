@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Toast, Modal, Space, Tag, Spin, Tooltip, Input } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, Play, CheckCircle, Pencil, Building2 } from 'lucide-react';
+import { ChevronLeft, Save, Play, CheckCircle, Pencil, Building2, Star } from 'lucide-react';
 
 import {
   getSchemeById,
@@ -11,16 +11,18 @@ import {
   updateSchemeApplicableDepartments,
   validateScheme,
   activateSchemeBuilder,
-  forkActiveScheme,
+  setSchemeAsDefault,
   subscribeSchemeChange,
+  SchemeError,
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '@/pages/Requirements/RequirementsWorkbench/types';
 import DepartmentPicker from '@/components/DepartmentPicker';
 import {
   setSchemeBindingsForScheme,
   getOccupiedDepartmentMapByScheme,
+  getBoundDepartmentCountMapByScheme,
 } from '@/mocks/departmentSchemeBinding';
-import { expandDepartmentIdsWithDescendants } from '@/mocks/departmentData';
+import { getDepartmentName, expandDepartmentIdsWithDescendants } from '@/mocks/departmentData';
 import { computeDeptDisabledOptions } from '@/pages/Requirements/_shared/computeDeptDisabledOptions';
 import FormBuilder from './FormBuilder';
 import { validateAllFields } from './FormBuilder/validators';
@@ -37,33 +39,45 @@ const formatTime = (iso?: string) => {
   return `${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 };
 
+/** v15 编辑模式 */
+type EditMode = 'preset' | 'tenant_default' | 'custom_active' | 'custom_inactive';
+
+const resolveEditMode = (s: RequirementScheme): EditMode => {
+  if (s.is_preset) return 'preset';
+  if (s.is_tenant_default) return 'tenant_default';
+  if (s.status === 'active') return 'custom_active';
+  return 'custom_inactive';
+};
+
 const SchemeBuilderPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  // 同步初始化：若 store 已就绪（绝大多数情况），首次渲染即拿到方案，避免白屏 Spin
   const initialScheme = id ? getSchemeById(id) ?? null : null;
-  // 预设模板：进入编辑页时不派生新版本，仅允许编辑「适用部门」
-  const initialNeedsFork = !!initialScheme && initialScheme.status === 'active' && !initialScheme.is_draft && !initialScheme.is_preset;
-  // savedScheme：与 store 同步的最近一次持久化版本
-  const [savedScheme, setSavedScheme] = useState<RequirementScheme | null>(initialNeedsFork ? null : initialScheme);
-  // draftScheme：本地编辑缓冲区
-  const [draftScheme, setDraftScheme] = useState<RequirementScheme | null>(initialNeedsFork ? null : initialScheme);
+  const [savedScheme, setSavedScheme] = useState<RequirementScheme | null>(initialScheme);
+  const [draftScheme, setDraftScheme] = useState<RequirementScheme | null>(initialScheme);
   const [dirty, setDirty] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
   const [testDriveVisible, setTestDriveVisible] = useState(false);
-  const [loading, setLoading] = useState(!initialScheme || initialNeedsFork);
-  const isPresetEdit = !!savedScheme?.is_preset;
-  const forkedRef = useRef(false);
+  const [loading, setLoading] = useState(!initialScheme);
   const dirtyRef = useRef(false);
   dirtyRef.current = dirty;
 
-  // 进入页面：若是已激活模版/预设，先派生新版本
+  const editMode: EditMode = useMemo(
+    () => (savedScheme ? resolveEditMode(savedScheme) : 'custom_inactive'),
+    [savedScheme],
+  );
+  const isReadOnly = editMode === 'preset';
+  const isFormReadOnly = editMode === 'preset' || editMode === 'custom_active';
+  const showDeptBlock = editMode === 'custom_active' || editMode === 'custom_inactive';
+  const showTestDrive = editMode === 'tenant_default' || editMode === 'custom_inactive';
+  const canEditName = editMode === 'tenant_default' || editMode === 'custom_inactive';
+
+  // 进入页面：解析方案并完成初始化（v15: 不再对已激活方案派生新版本，改为 custom_active 模式）
   useEffect(() => {
     if (!id) return;
     (async () => {
-      // 容错：clone/create 后跳转过来时 store 偶发未就绪，等下一帧再重试一次
       let s = getSchemeById(id);
       if (!s) {
         await new Promise((r) => setTimeout(r, 0));
@@ -72,21 +86,6 @@ const SchemeBuilderPage = () => {
       if (!s) {
         Toast.error(t('requirements.scheme.builder.notFound'));
         navigate('/requirements/scheme');
-        return;
-      }
-      if (s.status === 'active' && !s.is_draft && !s.is_preset && !forkedRef.current) {
-        forkedRef.current = true;
-        Modal.confirm({
-          title: t('requirements.scheme.builder.forkTitle'),
-          content: t('requirements.scheme.builder.forkActiveContent', { name: s.name }),
-          okText: t('common.confirm'),
-          cancelText: t('common.cancel'),
-          onOk: async () => {
-            const draft = await forkActiveScheme(s.id);
-            navigate(`/requirements/scheme/builder/${draft.id}`, { replace: true });
-          },
-          onCancel: () => navigate('/requirements/scheme'),
-        });
         return;
       }
       setSavedScheme(s);
@@ -102,26 +101,20 @@ const SchemeBuilderPage = () => {
     })();
   }, [id, navigate, t]);
 
-  // 订阅外部 store 变化（仅同步 savedScheme，不覆盖未保存的本地编辑）
+  // 订阅外部 store 变化
   useEffect(() => {
     return subscribeSchemeChange(() => {
       if (!id) return;
       const s = getSchemeById(id);
       if (!s) return;
       setSavedScheme(s);
-      if (!dirtyRef.current) {
-        setDraftScheme(s);
-      }
+      if (!dirtyRef.current) setDraftScheme(s);
     });
   }, [id]);
 
-  // 离开浏览器/标签页前提醒
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      if (dirtyRef.current) {
-        e.preventDefault();
-        e.returnValue = '';
-      }
+      if (dirtyRef.current) { e.preventDefault(); e.returnValue = ''; }
     };
     window.addEventListener('beforeunload', handler);
     return () => window.removeEventListener('beforeunload', handler);
@@ -132,80 +125,98 @@ const SchemeBuilderPage = () => {
     setDirty(true);
   }, []);
 
+  /** 统一 SchemeError → Toast/Modal */
+  const handleSchemeError = (e: unknown) => {
+    if (e instanceof SchemeError) {
+      if (e.code === 'SCHEME_DEPARTMENT_CONFLICT') {
+        const conflicts = (e.details as { conflicts?: string[] } | undefined)?.conflicts ?? [];
+        Modal.error({
+          title: '存在部门冲突',
+          content: (
+            <div>
+              <div style={{ marginBottom: 8 }}>{e.message}</div>
+              {conflicts.length > 0 && (
+                <Text type="tertiary" size="small">
+                  冲突部门：{conflicts.slice(0, 5).map(getDepartmentName).join('、')}
+                  {conflicts.length > 5 ? ` 等 ${conflicts.length} 个` : ''}
+                </Text>
+              )}
+            </div>
+          ),
+        });
+      } else {
+        Toast.warning(e.message);
+      }
+    } else {
+      Toast.error((e as Error).message ?? '操作失败');
+    }
+  };
+
   const handleSaveDraft = async () => {
-    if (!draftScheme) return;
-    // 预设模板：仅保存「适用部门」字段
-    if (isPresetEdit) {
-      const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
-      const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
+    if (!draftScheme || isReadOnly) return;
+    const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
+    const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
+
+    // custom_active：仅允许保存「适用部门」
+    if (editMode === 'custom_active') {
       try {
         await updateSchemeApplicableDepartments(draftScheme.id, selectedDeptIds);
         setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
         const updated = getSchemeById(draftScheme.id);
-        if (updated) {
-          setSavedScheme(updated);
-          setDraftScheme(updated);
-        }
+        if (updated) { setSavedScheme(updated); setDraftScheme(updated); }
         setDirty(false);
         Toast.success('适用部门已更新');
-      } catch (e) {
-        Toast.error((e as Error).message);
-      }
+      } catch (e) { handleSchemeError(e); }
       return;
     }
-    // 字段配置联动校验拦截
+
+    // tenant_default / custom_inactive：完整保存
     const fv = validateAllFields(draftScheme.custom_fields ?? []);
     if (fv.hasError) {
       Toast.error(`字段配置存在 ${fv.errorFieldKeys.length} 项问题，请先修正`);
       return;
     }
-    const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
-    // R-04：选中父部门时自动展开所有子部门写入绑定
-    const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
 
-    const doPersist = async () => {
-      try {
-        const updated = await updateSchemeBuilder(draftScheme.id, {
-          name: draftScheme.name,
-          description: draftScheme.description,
-          custom_fields: draftScheme.custom_fields,
-          value_assessment_model: draftScheme.value_assessment_model,
-          complexity_assessment_model: draftScheme.complexity_assessment_model,
-          workflow_config: draftScheme.workflow_config,
-          cost_config: draftScheme.cost_config,
-          approval_flow: draftScheme.approval_flow,
-          applicable_department_ids: selectedDeptIds,
-        });
+    try {
+      const updated = await updateSchemeBuilder(draftScheme.id, {
+        name: draftScheme.name,
+        description: draftScheme.description,
+        custom_fields: draftScheme.custom_fields,
+        value_assessment_model: draftScheme.value_assessment_model,
+        complexity_assessment_model: draftScheme.complexity_assessment_model,
+        workflow_config: draftScheme.workflow_config,
+        cost_config: draftScheme.cost_config,
+        approval_flow: draftScheme.approval_flow,
+        // 默认方案不带适用部门
+        applicable_department_ids: editMode === 'tenant_default' ? [] : selectedDeptIds,
+      });
+      if (editMode !== 'tenant_default') {
         setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
-        setSavedScheme(updated);
-        setDraftScheme(updated);
-        setDirty(false);
-        const v = validateScheme(updated.id);
-        Toast.success(t('requirements.scheme.builder.savedDraft'));
-        if (!v.ok) {
-          Modal.warning({
-            title: t('requirements.scheme.builder.incompleteTitle'),
-            content: (
-              <div>
-                <div style={{ marginBottom: 8 }}>{t('requirements.scheme.builder.incompleteHint')}</div>
-                <ul style={{ paddingLeft: 18, margin: 0 }}>
-                  {v.errors.map((e, i) => <li key={i} style={{ color: 'var(--semi-color-warning)' }}>{e}</li>)}
-                </ul>
-              </div>
-            ),
-            okText: t('common.confirm'),
-          });
-        }
-      } catch (e) {
-        Toast.error((e as Error).message);
       }
-    };
-
-    await doPersist();
+      setSavedScheme(updated);
+      setDraftScheme(updated);
+      setDirty(false);
+      const v = validateScheme(updated.id);
+      Toast.success(t('requirements.scheme.builder.savedDraft'));
+      if (!v.ok) {
+        Modal.warning({
+          title: t('requirements.scheme.builder.incompleteTitle'),
+          content: (
+            <div>
+              <div style={{ marginBottom: 8 }}>{t('requirements.scheme.builder.incompleteHint')}</div>
+              <ul style={{ paddingLeft: 18, margin: 0 }}>
+                {v.errors.map((e, i) => <li key={i} style={{ color: 'var(--semi-color-warning)' }}>{e}</li>)}
+              </ul>
+            </div>
+          ),
+          okText: t('common.confirm'),
+        });
+      }
+    } catch (e) { handleSchemeError(e); }
   };
 
   const handleActivate = () => {
-    if (!draftScheme) return;
+    if (!draftScheme || editMode !== 'custom_inactive') return;
     if (dirty) {
       Toast.warning(t('requirements.scheme.builder.activateDirty'));
       return;
@@ -226,40 +237,49 @@ const SchemeBuilderPage = () => {
           Toast.success(t('requirements.scheme.activateSuccess'));
           setDirty(false);
           navigate('/requirements/scheme');
-        } catch (e) {
-          Toast.error((e as Error).message);
-        }
+        } catch (e) { handleSchemeError(e); }
+      },
+    });
+  };
+
+  const handleSetAsDefault = () => {
+    if (!draftScheme || editMode !== 'custom_inactive') return;
+    if (dirty) {
+      Toast.warning('请先保存当前修改后再设为默认');
+      return;
+    }
+    Modal.confirm({
+      title: '设为默认方案？',
+      content: `将「${draftScheme.name}」设为新的租户默认方案。原默认方案会被自动停用，无部门绑定的方案才能设为默认。`,
+      okText: '设为默认',
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        try {
+          await setSchemeAsDefault(draftScheme.id);
+          Toast.success('已设为默认方案');
+          navigate('/requirements/scheme');
+        } catch (e) { handleSchemeError(e); }
       },
     });
   };
 
   const guardedNavigate = useCallback((to: string) => {
-    if (!dirty) {
-      navigate(to);
-      return;
-    }
+    if (!dirty) { navigate(to); return; }
     Modal.confirm({
       title: t('requirements.scheme.builder.leaveTitle'),
       content: t('requirements.scheme.builder.leaveContent'),
       okText: t('requirements.scheme.builder.leaveOk'),
       cancelText: t('requirements.scheme.builder.leaveCancel'),
       okButtonProps: { type: 'danger' },
-      onOk: () => {
-        setDirty(false);
-        navigate(to);
-      },
+      onOk: () => { setDirty(false); navigate(to); },
     });
   }, [dirty, navigate, t]);
-
-
-
-
-
-
 
   if (loading || !draftScheme) {
     return <div className="scheme-builder-loading"><Spin size="large" /></div>;
   }
+
+  const hasBinding = (getBoundDepartmentCountMapByScheme()[draftScheme.id] ?? 0) > 0;
 
   return (
     <div className="scheme-builder">
@@ -273,7 +293,7 @@ const SchemeBuilderPage = () => {
               onClick={() => guardedNavigate('/requirements/scheme')}
             />
           </Tooltip>
-          {editingName && !isPresetEdit ? (
+          {editingName && canEditName ? (
             <Input
               autoFocus
               value={nameDraft}
@@ -295,34 +315,46 @@ const SchemeBuilderPage = () => {
             <Title
               heading={3}
               className="scheme-builder-header-title"
-              style={{ cursor: isPresetEdit ? 'default' : 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
-              onClick={isPresetEdit ? undefined : () => { setNameDraft(draftScheme.name); setEditingName(true); }}
+              style={{ cursor: canEditName ? 'pointer' : 'default', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+              onClick={canEditName ? () => { setNameDraft(draftScheme.name); setEditingName(true); } : undefined}
             >
               {draftScheme.name}
-              {!isPresetEdit && <Pencil size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)' }} />}
+              {canEditName && <Pencil size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)' }} />}
             </Title>
           )}
           <Text type="tertiary">v{draftScheme.version}</Text>
-          {draftScheme.parent_id && <Tag color="blue" type="light" size="small">{t('requirements.scheme.builder.newVersionBadge')}</Tag>}
-          {isPresetEdit && <Tag color="blue" type="light" size="small">{t('requirements.scheme.preset')}</Tag>}
+          {editMode === 'preset' && <Tag color="blue" type="light" size="small">{t('requirements.scheme.preset')}</Tag>}
+          {editMode === 'tenant_default' && (
+            <Tag color="violet" type="light" size="small" prefixIcon={<Star size={12} strokeWidth={2} />}>默认</Tag>
+          )}
+          {editMode === 'custom_active' && <Tag color="green" type="light" size="small">已启用</Tag>}
           {dirty && <Tag color="red" type="light" size="small">{t('requirements.scheme.builder.unsaved')}</Tag>}
         </div>
         <Space>
-          {!isPresetEdit && (
+          {showTestDrive && (
             <Button icon={<Play size={16} strokeWidth={2} />} onClick={() => setTestDriveVisible(true)}>
               {t('requirements.scheme.builder.testDrive')}
             </Button>
           )}
-          <Button
-            icon={<Save size={16} strokeWidth={2} />}
-            theme={dirty ? 'solid' : 'light'}
-            type={dirty ? 'primary' : 'tertiary'}
-            onClick={handleSaveDraft}
-            disabled={!dirty}
-          >
-            {isPresetEdit ? '保存' : t('requirements.scheme.builder.saveDraft')}
-          </Button>
-          {!isPresetEdit && (
+          {!isReadOnly && (
+            <Button
+              icon={<Save size={16} strokeWidth={2} />}
+              theme={dirty ? 'solid' : 'light'}
+              type={dirty ? 'primary' : 'tertiary'}
+              onClick={handleSaveDraft}
+              disabled={!dirty}
+            >
+              {editMode === 'custom_active' ? '保存' : t('requirements.scheme.builder.saveDraft')}
+            </Button>
+          )}
+          {editMode === 'custom_inactive' && (
+            <Tooltip content={hasBinding ? '有部门绑定的方案不能设为默认，请先清空适用部门' : ''} position="bottom">
+              <Button icon={<Star size={16} strokeWidth={2} />} disabled={hasBinding} onClick={handleSetAsDefault}>
+                设为默认
+              </Button>
+            </Tooltip>
+          )}
+          {editMode === 'custom_inactive' && (
             <Button icon={<CheckCircle size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleActivate}>
               {t('requirements.scheme.activate')}
             </Button>
@@ -330,7 +362,7 @@ const SchemeBuilderPage = () => {
         </Space>
       </div>
 
-      {(() => {
+      {showDeptBlock && (() => {
         const deptIds = draftScheme.applicable_department_ids ?? [];
         const activeIds = getActiveSchemes().map((s) => s.id);
         const disabledOptions = computeDeptDisabledOptions(
@@ -338,10 +370,7 @@ const SchemeBuilderPage = () => {
           (ownerId) => getSchemeById(ownerId)?.name ?? '其他方案',
         );
         return (
-          <div
-            className="approval-flow-section-card"
-            style={{ marginBottom: 16 }}
-          >
+          <div className="approval-flow-section-card" style={{ marginBottom: 16 }}>
             <div className="approval-flow-section-card-header">
               <div className="approval-flow-section-card-title">
                 <Building2 size={16} strokeWidth={2} />
@@ -370,16 +399,18 @@ const SchemeBuilderPage = () => {
         );
       })()}
 
-
       <div
         className="scheme-builder-body"
-        style={isPresetEdit ? { pointerEvents: 'none', opacity: 0.7, userSelect: 'none' } : undefined}
-        aria-disabled={isPresetEdit}
-        title={isPresetEdit ? '预设模板的字段配置不可编辑，仅可修改适用部门' : undefined}
+        style={isFormReadOnly ? { pointerEvents: 'none', opacity: 0.7, userSelect: 'none' } : undefined}
+        aria-disabled={isFormReadOnly}
+        title={
+          editMode === 'preset' ? '预设方案完全只读，请基于预设创建副本后再修改' :
+          editMode === 'custom_active' ? '已启用方案的字段配置不可修改，仅可调整适用部门；如需修改请先停用方案' :
+          undefined
+        }
       >
         <FormBuilder fields={draftScheme.custom_fields} onChange={(fields) => patch({ custom_fields: fields })} />
       </div>
-
 
       <TestDriveModal
         visible={testDriveVisible}
