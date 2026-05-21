@@ -254,7 +254,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     description: '专门针对 OCR/文档智能处理（ADP）类需求设计的模版，包含文档识别相关维度。',
     status: 'inactive',
     is_preset: true,
-    applicable_department_ids: ['dept-rd', 'dept-ai'],
+    applicable_department_ids: [],
     meta: {
       code: 'ADP-DOC',
       name: 'AI 文档处理模版',
