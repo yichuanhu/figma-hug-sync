@@ -74,11 +74,11 @@ const SchemeBuilderPage = () => {
         navigate('/requirements/scheme');
         return;
       }
-      if (s.is_preset || (s.status === 'active' && !s.is_draft && !forkedRef.current)) {
+      if (s.status === 'active' && !s.is_draft && !s.is_preset && !forkedRef.current) {
         forkedRef.current = true;
         Modal.confirm({
           title: t('requirements.scheme.builder.forkTitle'),
-          content: t(s.is_preset ? 'requirements.scheme.builder.forkPresetContent' : 'requirements.scheme.builder.forkActiveContent', { name: s.name }),
+          content: t('requirements.scheme.builder.forkActiveContent', { name: s.name }),
           okText: t('common.confirm'),
           cancelText: t('common.cancel'),
           onOk: async () => {
