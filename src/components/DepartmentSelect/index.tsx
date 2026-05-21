@@ -37,22 +37,37 @@ type DepartmentSelectProps = SingleSelectProps | MultiSelectProps;
 interface DepartmentTreeSelectNode {
   key: string;
   value: string;
-  label: string;
+  label: React.ReactNode;
+  disabled?: boolean;
   children?: DepartmentTreeSelectNode[];
 }
 
 const normalizeDepartmentTree = (
   nodes: DeptTreeNode[],
   useNameAsValue: boolean,
+  disabledOptions?: Record<string, string>,
 ): DepartmentTreeSelectNode[] =>
-  nodes.map((node) => ({
-    key: node.value,
-    value: useNameAsValue ? node.label : node.value,
-    label: node.label,
-    children: node.children
-      ? normalizeDepartmentTree(node.children, useNameAsValue)
-      : undefined,
-  }));
+  nodes.map((node) => {
+    const disabledReason = disabledOptions?.[node.value];
+    return {
+      key: node.value,
+      value: useNameAsValue ? node.label : node.value,
+      label: disabledReason ? (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, width: '100%' }}>
+          <span style={{ color: 'var(--semi-color-text-2)' }}>{node.label}</span>
+          <span style={{ fontSize: 12, color: 'var(--semi-color-warning)', flexShrink: 0 }}>
+            · {disabledReason}
+          </span>
+        </span>
+      ) : (
+        node.label
+      ),
+      disabled: !!disabledReason,
+      children: node.children
+        ? normalizeDepartmentTree(node.children, useNameAsValue, disabledOptions)
+        : undefined,
+    };
+  });
 
 /** Collect all labels from tree */
 const collectLabels = (nodes: DeptTreeNode[]): string[] => {
