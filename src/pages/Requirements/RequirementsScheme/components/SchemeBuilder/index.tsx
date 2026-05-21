@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Input } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Pencil, Building2 } from 'lucide-react';
+import { Typography, Button, Toast, Modal, Space, Tag, Spin, Tooltip, Input } from '@douyinfe/semi-ui';
+import { ChevronLeft, Save, Play, CheckCircle, Pencil, Building2 } from 'lucide-react';
 
 import {
   getSchemeById,
@@ -23,7 +23,6 @@ import { expandDepartmentIdsWithDescendants } from '@/mocks/departmentData';
 import { computeDeptDisabledOptions } from '@/pages/Requirements/_shared/computeDeptDisabledOptions';
 import FormBuilder from './FormBuilder';
 import { validateAllFields } from './FormBuilder/validators';
-import WorkflowBuilder from './WorkflowBuilder';
 import TestDriveModal from './TestDriveModal';
 import './index.less';
 import '@/pages/Requirements/ApprovalConfig/components/ApprovalFlowBuilder/index.less';
@@ -46,10 +45,8 @@ const SchemeBuilderPage = () => {
   // draftScheme：本地编辑缓冲区
   const [draftScheme, setDraftScheme] = useState<RequirementScheme | null>(null);
   const [dirty, setDirty] = useState(false);
-  const [activeTab, setActiveTab] = useState<'form' | 'workflow'>('form');
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
-  const [missingTabs, setMissingTabs] = useState<string[]>([]);
   const [testDriveVisible, setTestDriveVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const forkedRef = useRef(false);
@@ -60,7 +57,12 @@ const SchemeBuilderPage = () => {
   useEffect(() => {
     if (!id) return;
     (async () => {
-      const s = getSchemeById(id);
+      // 容错：clone/create 后跳转过来时 store 偶发未就绪，等下一帧再重试一次
+      let s = getSchemeById(id);
+      if (!s) {
+        await new Promise((r) => setTimeout(r, 0));
+        s = getSchemeById(id);
+      }
       if (!s) {
         Toast.error(t('requirements.scheme.builder.notFound'));
         navigate('/requirements/scheme');
@@ -130,7 +132,6 @@ const SchemeBuilderPage = () => {
     const fv = validateAllFields(draftScheme.custom_fields ?? []);
     if (fv.hasError) {
       Toast.error(`字段配置存在 ${fv.errorFieldKeys.length} 项问题，请先修正`);
-      setActiveTab('form');
       return;
     }
     const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
@@ -155,7 +156,6 @@ const SchemeBuilderPage = () => {
         setDraftScheme(updated);
         setDirty(false);
         const v = validateScheme(updated.id);
-        setMissingTabs(v.missing);
         Toast.success(t('requirements.scheme.builder.savedDraft'));
         if (!v.ok) {
           Modal.warning({
@@ -202,9 +202,7 @@ const SchemeBuilderPage = () => {
           setDirty(false);
           navigate('/requirements/scheme');
         } catch (e) {
-          const err = e as Error & { missing?: string[] };
-          if (err.missing) setMissingTabs(err.missing);
-          Toast.error(err.message);
+          Toast.error((e as Error).message);
         }
       },
     });
@@ -228,9 +226,8 @@ const SchemeBuilderPage = () => {
     });
   }, [dirty, navigate, t]);
 
-  const tabBadge = (key: string) => missingTabs.includes(key)
-    ? <AlertCircle size={14} style={{ color: 'var(--semi-color-danger)', marginLeft: 4 }} />
-    : null;
+
+
 
 
 
@@ -305,8 +302,6 @@ const SchemeBuilderPage = () => {
 
       {(() => {
         const deptIds = draftScheme.applicable_department_ids ?? [];
-        const deptCount = deptIds.length;
-        const showWarning = deptCount === 0;
         const activeIds = getActiveSchemes().map((s) => s.id);
         const disabledOptions = computeDeptDisabledOptions(
           getOccupiedDepartmentMapByScheme(draftScheme.id, activeIds),
@@ -315,15 +310,7 @@ const SchemeBuilderPage = () => {
         return (
           <div
             className="approval-flow-section-card"
-            style={{
-              marginBottom: 16,
-              ...(showWarning
-                ? {
-                    background: 'var(--semi-color-warning-light-default)',
-                    borderColor: 'var(--semi-color-warning-light-active)',
-                  }
-                : undefined),
-            }}
+            style={{ marginBottom: 16 }}
           >
             <div className="approval-flow-section-card-header">
               <div className="approval-flow-section-card-title">
@@ -353,34 +340,9 @@ const SchemeBuilderPage = () => {
 
 
       <div className="scheme-builder-body">
-        <Tabs
-          type="line"
-          activeKey={activeTab}
-          onChange={(k) => setActiveTab(k as typeof activeTab)}
-          keepDOM={false}
-        >
-          <TabPane
-            tab={<span>{t('requirements.scheme.builder.tabs.form')}{tabBadge('form')}</span>}
-            itemKey="form"
-          >
-            <FormBuilder fields={draftScheme.custom_fields} onChange={(fields) => patch({ custom_fields: fields })} />
-          </TabPane>
-          <TabPane
-            tab={<span>{t('requirements.scheme.builder.tabs.workflow')}{tabBadge('workflow')}{tabBadge('assessment')}</span>}
-            itemKey="workflow"
-          >
-            <WorkflowBuilder
-              workflow={draftScheme.workflow_config}
-              valueModel={draftScheme.value_assessment_model}
-              complexityModel={draftScheme.complexity_assessment_model}
-              fields={draftScheme.custom_fields}
-              onChange={(wf) => patch({ workflow_config: wf })}
-              onChangeAssessment={(value, complexity) => patch({ value_assessment_model: value, complexity_assessment_model: complexity })}
-              onClearAssessment={() => patch({ value_assessment_model: undefined, complexity_assessment_model: undefined })}
-            />
-          </TabPane>
-        </Tabs>
+        <FormBuilder fields={draftScheme.custom_fields} onChange={(fields) => patch({ custom_fields: fields })} />
       </div>
+
 
       <TestDriveModal
         visible={testDriveVisible}
