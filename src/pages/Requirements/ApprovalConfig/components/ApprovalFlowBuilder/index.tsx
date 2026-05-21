@@ -323,9 +323,7 @@ const ApprovalFlowBuilderPage = () => {
                       <Typography.Text type="tertiary">尚未配置适用部门</Typography.Text>
                     )
                   ) : (
-                    <DepartmentSelect
-                      autoCascadeDescendants
-                      multiple
+                    <DepartmentPicker
                       value={draft.applicable_department_ids ?? []}
                       onChange={(ids) => patch({ applicable_department_ids: ids })}
                       placeholder="请选择适用部门（可多选，选中父部门自动包含子部门）"
