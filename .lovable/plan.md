@@ -1,61 +1,54 @@
-## Phase 3：方案编辑页改造
+## Phase 4：创建需求方案匹配 + 配置快照
 
-聚焦 `src/pages/Requirements/RequirementsScheme/components/SchemeBuilder/index.tsx` 与 `FormBuilder/`，让编辑页严格匹配 v15 的三类方案行为。
+让创建需求时按 v15 §匹配规则解析方案，并把方案配置快照写入需求记录，保证历史需求不受方案后续编辑影响。
 
-### 1. 方案类型分支（替换现有 `isPresetEdit` 单一开关）
+### 1. 匹配规则（`RequirementCreatePage`）
 
-引入 `editMode`：
+替换当前 `autoMatchedSchemeId` 的单层匹配为三级 fallback：
 
 ```text
-preset           → 完全只读（含适用部门）。隐藏所有保存/激活按钮。
-tenant_default   → 全字段可编辑；不展示「适用部门」区块；不可设为默认（已是默认）；不可停用/激活。
-custom_active    → 仅允许编辑「适用部门」（与当前预设的限制行为一致），保存即同步绑定。
-custom_inactive  → 全字段可编辑 + 「适用部门」可编辑 + 启用按钮 + 「设为默认」按钮（若无部门绑定）。
+1) department_scheme_binding 直接命中（按部门）
+2) 祖先部门命中（继承）
+3) 租户默认方案 getTenantDefaultScheme()
+4) 都没有 → null（理论上不会发生，因 Phase 1 已保证默认存在）
 ```
 
-### 2. 头部按钮区按 editMode 渲染
+引入 `schemeMatchSource: 'department' | 'tenant_default' | null` 用于驱动 Banner 文案。
 
-| editMode | 试运行 | 保存 | 设为默认 | 启用 |
-|---|---|---|---|---|
-| preset | — | — | — | — |
-| tenant_default | ✓ | ✓ | — | — |
-| custom_active | — | ✓（仅适用部门） | — | — |
-| custom_inactive | ✓ | ✓ | ✓（无绑定时） | ✓ |
+### 2. Banner 文案
 
-「设为默认」复用 Phase 1 的 `setSchemeAsDefault`，复用 Phase 2 的 `SchemeError` 统一提示。
+| 匹配来源 | Banner |
+|---|---|
+| `department` | info：`使用方案：<name> v<version> （根据所属部门「X」自动匹配）` |
+| `tenant_default` | info：`使用方案：<name> v<version> （所属部门未配置专属方案，使用租户默认方案）` |
+| `null` | 保留现有 warning Banner（仅在异常时出现） |
 
-### 3. 适用部门区块显隐
+由于默认方案兜底，`showNoSchemeForDept` 实际不会触发，但保留作为防御。
 
-- `tenant_default`：完全隐藏「适用部门」卡片（默认方案是兜底，不参与部门匹配）
-- `preset`：隐藏（预设只读，且不参与绑定）
-- `custom_active` / `custom_inactive`：保留现有卡片
+### 3. 配置快照（`mockData.ts → createRequirement`）
 
-### 4. 表单主体只读规则
+在写入 `newItem` 时追加：
 
-- `preset`：整页只读遮罩（保留当前 `pointer-events: none + opacity 0.7`），名称不可编辑
-- `custom_active`：表单主体也加只读遮罩，仅顶部适用部门可改；移除"试运行"
-- 其它：维持可编辑
+```ts
+scheme_config_snapshot: {
+  id: chosenScheme.id,
+  code: chosenScheme.code,
+  name: chosenScheme.name,
+  version: chosenScheme.version,
+  custom_fields: chosenScheme.custom_fields,
+}
+```
 
-### 5. SchemeError 统一接入
+类型 `RequirementItem.scheme_config_snapshot` 在 Phase 1 已就位。
 
-`handleActivate` 内捕获 `SchemeError`：
-- `SCHEME_DEPARTMENT_CONFLICT` → Modal 列出冲突部门
-- `SCHEME_NO_DEPARTMENT` → Toast 引导
-- 其它 → Toast.warning
+### 4. 不动的事项
 
-### 6. 进入逻辑调整
-
-- 移除当前"已激活非预设自动派生新版本"的 `forkActiveScheme` 弹窗（v15 已激活方案进入是编辑适用部门，不再派生）
-- 改为：若 `status=active && !is_draft && !is_preset && !is_tenant_default` → 直接进入 `custom_active` 模式
-
-### 不在本阶段（推迟到 Phase 3.5 / Phase 4）
-
-- FormBuilder 8 个系统固定字段锁定区（影响面大，单独迭代）
-- 字段配置 Modal 简化为 4 Tab（独立 UX 重构）
-- 创建需求时方案匹配（Phase 4）
+- 编辑历史需求继续优先用 `editData.scheme_id`，不会因部门变更切换方案
+- 详情抽屉读取顺序：`scheme_config_snapshot` → `scheme_id`（本期保持现状，后续可单独优化）
 
 ### 涉及文件
 
-- `src/pages/Requirements/RequirementsScheme/components/SchemeBuilder/index.tsx`
+- `src/pages/Requirements/RequirementsWorkbench/components/RequirementCreatePage/index.tsx`
+- `src/pages/Requirements/RequirementsWorkbench/mockData.ts`
 
-确认后开始执行 Phase 3。
+确认后开始执行 Phase 4。
