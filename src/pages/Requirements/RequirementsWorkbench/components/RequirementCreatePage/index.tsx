@@ -238,7 +238,7 @@ const RequirementCreatePage = () => {
           return;
         }
         setEditData(item);
-        setDepartmentValue(item.owning_department_name);
+        setDepartmentValue(item.owning_department_id || undefined);
         setOwnerId(item.owner_id || MOCK_CURRENT_USER.id);
         // 还原岗位成本：优先 form_data.position_costs 数组；否则尝试从 position_level/position_cost 兼容
         const fd = (item.form_data ?? {}) as Record<string, unknown>;
