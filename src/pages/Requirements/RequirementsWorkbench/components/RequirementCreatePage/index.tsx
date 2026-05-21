@@ -825,7 +825,12 @@ const RequirementCreatePage = () => {
             </Button>
           )}
           {currentStep < lastFormStep && (
-            <Button theme="solid" type="primary" onClick={handleNext}>
+            <Button
+              theme="solid"
+              type="primary"
+              onClick={handleNext}
+              disabled={currentStep === 0 && showNoSchemeForDept}
+            >
               下一步
             </Button>
           )}
