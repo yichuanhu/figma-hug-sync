@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Input } from '@douyinfe/semi-ui';
 import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Pencil, Building2 } from 'lucide-react';
-import { getDepartmentName } from '@/mocks/departmentData';
+
 import {
   getSchemeById,
   updateSchemeBuilder,
