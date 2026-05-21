@@ -569,8 +569,8 @@ export const deleteScheme = async (id: string): Promise<void> => {
   if (target.is_preset) throw new SchemeError('SCHEME_PRESET_READONLY', '预设方案不可删除');
   if (target.is_tenant_default) throw new SchemeError('SCHEME_DEFAULT_CANNOT_DELETE', '默认方案不可删除');
   if (target.status === 'active') throw new SchemeError('SCHEME_ACTIVE_CANNOT_DELETE', '已激活方案不可删除，请先停用');
-  const bindingCount = getBoundDepartmentCountMapByScheme()[id] ?? 0;
-  if (bindingCount > 0) throw new SchemeError('SCHEME_HAS_BINDING_CANNOT_DELETE', `该方案被 ${bindingCount} 个部门使用，请先停用方案或调整适用部门`);
+  // 防御层：未激活方案不应占用部门绑定；若历史脏数据残留，先清理再删除
+  setSchemeBindingsForScheme(id, []);
   schemeStore = schemeStore.filter((s) => s.id !== id);
   bumpSchemeVersion();
 };
