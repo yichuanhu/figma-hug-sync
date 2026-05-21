@@ -19,6 +19,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     description: '面向中大型企业的完整 RPA 需求评估模版，包含价值评估、复杂度评估及 3 级审批流。',
     status: 'active',
     is_preset: true,
+    applicable_department_ids: ['dept-finance', 'dept-hr', 'dept-enterprise'],
     meta: {
       code: 'RPA-PRO',
       name: 'RPA 专业版模版',
