@@ -19,6 +19,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     description: '面向中大型企业的完整 RPA 需求评估模版，包含价值评估、复杂度评估及 3 级审批流。',
     status: 'active',
     is_preset: true,
+    applicable_department_ids: ['dept-finance', 'dept-hr', 'dept-enterprise'],
     meta: {
       code: 'RPA-PRO',
       name: 'RPA 专业版模版',
@@ -138,6 +139,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     description: '适合中小型团队的精简 RPA 评估模版，仅 6 个核心字段、单一评估模型与单级审批。',
     status: 'inactive',
     is_preset: true,
+    applicable_department_ids: ['dept-marketing', 'dept-legal'],
     meta: {
       code: 'RPA-LITE',
       name: 'RPA 轻量版模版',
@@ -193,6 +195,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     description: '基于《RPA 统计表》模板设计的标准化需求采集模版，提交后跳过审批与评估，直接进入待开发状态。',
     status: 'inactive',
     is_preset: true,
+    applicable_department_ids: ['dept-ceo'],
     meta: {
       code: 'RPA-STAT',
       name: 'RPA 统计表标准模版',
@@ -251,6 +254,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     description: '专门针对 OCR/文档智能处理（ADP）类需求设计的模版，包含文档识别相关维度。',
     status: 'inactive',
     is_preset: true,
+    applicable_department_ids: ['dept-rd', 'dept-ai'],
     meta: {
       code: 'ADP-DOC',
       name: 'AI 文档处理模版',
@@ -343,7 +347,10 @@ const loadSchemes = (): RequirementScheme[] => {
       const mergedPresets = PRESET_SCHEMES.map((preset) => ({
         ...preset,
         status: storedPresetMap.get(preset.id)?.status ?? preset.status,
-        applicable_department_ids: storedPresetMap.get(preset.id)?.applicable_department_ids ?? preset.applicable_department_ids,
+        applicable_department_ids:
+          (storedPresetMap.get(preset.id)?.applicable_department_ids?.length ?? 0) > 0
+            ? storedPresetMap.get(preset.id)!.applicable_department_ids
+            : preset.applicable_department_ids,
       }));
       return [...storedNonPresets, ...mergedPresets];
     }
