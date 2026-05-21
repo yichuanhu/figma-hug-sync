@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Banner, Input, Popover } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Clock, Pencil, Building2, AlertTriangle } from 'lucide-react';
+import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Input } from '@douyinfe/semi-ui';
+import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Pencil, Building2 } from 'lucide-react';
 import { getDepartmentName } from '@/mocks/departmentData';
 import {
   getSchemeById,
@@ -16,11 +16,8 @@ import type { RequirementScheme } from '@/pages/Requirements/RequirementsWorkben
 import DepartmentSelect from '@/components/DepartmentSelect';
 import {
   setSchemeBindingsForScheme,
-  listDepartmentsByScheme,
-  previewSchemeBindings,
   getOccupiedDepartmentMapByScheme,
 } from '@/mocks/departmentSchemeBinding';
-import BindingConflictContent from '@/pages/Requirements/_shared/BindingConflictContent';
 import FormBuilder from './FormBuilder';
 import { validateAllFields } from './FormBuilder/validators';
 import WorkflowBuilder from './WorkflowBuilder';
