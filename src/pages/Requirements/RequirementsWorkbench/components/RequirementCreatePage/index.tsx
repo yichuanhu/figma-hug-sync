@@ -304,18 +304,15 @@ const RequirementCreatePage = () => {
     try {
       if (fields.length > 0) await formApi.validate(fields);
       if (currentStep === 0) {
-        if (!selectedSchemeId) {
-          Toast.warning('请选择需求方案');
-          return false;
-        }
         if (!departmentValue) {
           Toast.warning(t('requirements.form.departmentRequired'));
           return false;
         }
-        if (!ownerId) {
-          Toast.warning(t('common.ownerRequired'));
+        if (!isEdit && !selectedSchemeId) {
+          Toast.warning('所选部门没有生效的需求模板，无法创建需求');
           return false;
         }
+        // owner_id 在草稿态可留空（STORY-003 v3 §3.1 Step 6）；仅在最终提交时若需求需要进入审批环节再校验
       }
       return true;
     } catch {
