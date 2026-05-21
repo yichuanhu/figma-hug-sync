@@ -1,88 +1,47 @@
-## 背景
 
-当前「审批流模板」和「需求方案」都允许多选适用部门，并约定「一个部门同时只能绑定一个生效模板/方案」。现在的实现是**保存时静默覆盖**——只弹一个 Toast「N 个部门已从其他模板改绑至本模板」，用户既看不到是哪些部门、原来归属哪个模板，也无法在选择时提前感知冲突。激活后另一个原本绑定该部门的模板还会继续显示「适用 N 个部门」，但运行时已经被抢走，体验割裂。
+## 问题定位
 
-## 优化目标
+| # | 问题 | 复现路径 | 根因 |
+|---|------|---------|------|
+| 1 | 基于模板创建后偶发 "模板不存在" Toast | `RequirementsScheme` → 基于模板创建 → 选模板 → 跳 `SchemeBuilder` | `SchemeBuilder` 进入时立即 `getSchemeById(id)`，找不到就直接 `Toast.error + navigate`，对刚 `clone`/`create` 完跳转过来的 draft 没有重试容错；个别场景（StrictMode 双 mount、订阅触发的 reload）下读不到就会误报。 |
+| 2 | 需求模板编辑页仍有 "评估配置" Tab | `/requirements/scheme/builder/:id` | 上一轮只把 `审批配置` 改名为 `评估配置`，Tab 仍在；用户要求评估能力一并下沉/移除。 |
+| 3 | 需求模板 "适用部门" 块背景仍是黄色 | 同上 | `SchemeBuilder/index.tsx` 在 `deptCount === 0` 时设置 `background: warning-light-default`，与审批配置视图风格不一致。 |
 
-让"部门抢占"这件事在**选择 → 保存 → 激活**三个时机都是显式、可见、可撤销的。
+## 改动方案
 
-## 方案
+### 1. `SchemeBuilder/index.tsx` —— 模板加载稳健性 + 去掉黄底 + 移除评估 Tab
 
-### 1. 选择时即时提示（前置感知）
+- **加载稳健性**：把首次 `useEffect` 里 `if (!s)` 的处理从 "立即 toast + navigate" 改为 "轮询 1 帧 + 一次重试"。
+  - 思路：用 `requestAnimationFrame` 或 `setTimeout(0)` 再读一次 `getSchemeById(id)`；仍找不到才 toast + navigate。
+  - 顺手把 `subscribeSchemeChange` 回调里的 `if (!s) return;` 保留（已有），无需 toast。
+- **去黄底**：移除 `applicable_department_ids.length === 0` 时给 `.approval-flow-section-card` 注入的 `background / borderColor` 内联样式；仅保留卡片本身边框与标题区 `*` 红色星标 + "（激活时必填，草稿可留空）" 提示，与 ApprovalConfig 默认（非编辑态）一致。
+- **移除评估配置 Tab**：
+  - 删除 `<Tabs>` 中 `itemKey="workflow"` 的 `TabPane`；不再渲染 `WorkflowBuilder`、`AssessmentBuilder` 相关组件。
+  - 删除 `Tabs` 包裹本身，直接渲染表单 (`FormBuilder`)；若后续仍需多 tab 可保留 `Tabs`，但此次仅一个 `form` tab 时使用单页面布局更干净。
+  - 移除 `activeTab` state、`tabBadge('workflow' | 'assessment')` 逻辑、`workflow` / `assessment` 的 `missingTabs` 处理。
+  - `patch(...)` 调用清理 `workflow_config / value_assessment_model / complexity_assessment_model` 等已不再编辑的字段写入。
+- **保存逻辑**：`updateSchemeBuilder` 调用时不再传 `workflow_config / value_assessment_model / complexity_assessment_model`（这些字段保持初始 draft 中的空/默认值即可）。
+- **import 清理**：移除 `WorkflowBuilder`、未使用的 `AlertCircle`、`Tabs/TabPane` 等导入；保留 `Building2`、`DepartmentPicker` 等。
 
-`DepartmentSelect` 在审批流 / 方案构建器里增加 `occupiedMap` 入参：
+### 2. `RequirementsWorkbench/schemeConfig.ts` & 校验
 
-```ts
-occupiedMap: Record<deptId, { ownerId: string; ownerName: string; ownerType: 'scheme' | 'flow' }>
-```
+- `validateScheme` 中已经把 workflow/assessment 设为可选，不需要再改。
+- 不动 `WorkflowBuilder` 文件本身（其他位置如 `ApprovalConfig` 仍可能引用 `buildWorkflowFromTemplate`，保持兼容）。
 
-- 已被其他**生效**模板占用的部门，在下拉项右侧渲染一个浅琥珀色小标签 `已绑定：xxx 模板`
-- 选中后，已选区在该 Tag 右侧追加 `⚠ 将从「xxx」改绑` 的内联提示（hover Popover 显示完整说明）
-- 部门未被任何模板占用时无任何额外样式，保持干净
+### 3. i18n 清理
 
-数据来源：构建器加载时调用 `listAllBindings()` + 过滤掉当前模板自身，构造 map 传入。
+- `public/i18n/zh-CN.json` & `public/i18n/en.json`：
+  - 保留 `requirements.scheme.builder.tabs.form`；
+  - 不再展示 `tabs.workflow` / `tabs.assessment`，可保留 key 防止误删引用。
+  - `requirements.scheme.builder.notFound` 文案保留。
 
-### 2. 保存时显式冲突确认（替代静默覆盖）
+## 变更文件清单
 
-`handleSave` 在调用 `setBindingsForTemplate / setSchemeBindingsForScheme` 前**先 dry-run**：
+- `src/pages/Requirements/RequirementsScheme/components/SchemeBuilder/index.tsx`（核心：去 Tab / 去黄底 / 加重试容错）
 
-新增 mock 方法 `previewBindingsForTemplate(templateId, deptIds): { overridden: Array<{ deptId, deptName, prevTemplateId, prevTemplateName }> }`，不写入只计算。
+## 验收
 
-- 若 `overridden.length === 0` → 直接保存，Toast 成功
-- 若 `> 0` → 弹 `Modal.confirm`，标题「部门归属冲突」，内容用一个紧凑的两列表格：
-
-  ```text
-  部门              原归属               操作
-  数据仓库部        数据类需求模板        将改绑到本模板
-  财务部           财务审批流 v2         将改绑到本模板
-  ```
-
-  底部副文案：「确认后，原模板对这些部门的绑定将被解除」。按钮：`确认改绑` / `取消`
-
-### 3. 激活时二次校验（防并发抢占）
-
-`handleActivate` 在 `Modal.confirm` 的 `content` 里增加一行：
-
-- 通过 `getActiveTemplatesBindingDepartments(deptIds, excludeId)` 检查所选部门当前在**其他已启用模板**下是否仍有归属
-- 有冲突时把弹窗扩展成同样的"冲突表格 + 改绑提示"，文案改为「启用后将自动抢占以下部门的绑定」
-- 没冲突时保持现在的简短确认
-
-> 这一步处理"保存到激活之间另一个管理员把部门绑走"的边界情况，演示价值也大。
-
-### 4. 列表页的"被抢占"状态展示
-
-`ApprovalConfig` 和 `RequirementsScheme` 卡片底部的"适用 N 个部门"Tag，hover Popover 内：
-
-- 每个部门名后面，如果该部门**当前实际归属已不是本模板**（即 `getBindingByDepartment(deptId) !== currentId`），追加灰色小字 `（已被「xxx」接管）` 并把该项整体置灰
-- 卡片底部 Tag 文案改为 `适用 N · 生效 M`（M < N 时变琥珀色），让管理员一眼看到"我选了 5 个部门但只有 3 个真正在用我"
-
-### 5. 文案与 i18n
-
-新增 key：
-- `requirements.binding.conflictTitle` = "部门归属冲突"
-- `requirements.binding.conflictHint` = "确认后，原模板对这些部门的绑定将被解除"
-- `requirements.binding.preempted` = "已被「{{name}}」接管"
-- `requirements.binding.willRebind` = "将从「{{name}}」改绑"
-
-## 技术改造点
-
-```text
-src/
-├─ mocks/
-│  ├─ departmentApprovalFlowBinding.ts   [+previewBindingsForTemplate, +getActiveOwnersMap]
-│  └─ departmentSchemeBinding.ts          [+previewSchemeBindings, +getActiveOwnersMap]
-├─ components/DepartmentSelect/index.tsx  [+occupiedMap prop, renderSelectedItem/renderOptionItem]
-└─ pages/Requirements/
-   ├─ ApprovalConfig/
-   │  ├─ index.tsx                        [卡片 Tag: 适用 N · 生效 M + Popover 灰显被抢占项]
-   │  └─ components/ApprovalFlowBuilder/  [接占用 map + dry-run + 冲突 Modal + 激活二次校验]
-   └─ RequirementsScheme/
-      ├─ index.tsx                        [同上卡片改造]
-      └─ components/SchemeBuilder/        [同上构建器改造]
-```
-
-## 待确认
-
-1. 冲突 Modal 的默认按钮是 `取消` 还是 `确认改绑`？倾向**默认取消**，避免误操作。
-2. 列表卡片是否要把"被抢占"的部门数单独显示一个红色徽标（更醒目），还是只在 Popover 内灰显（更克制）？倾向后者。
-3. 是否需要在「需求模板」和「审批流模板」之间也做冲突提示？目前两类绑定互相独立、互不冲突，**不做**。
+1. 进入 `/requirements/scheme`，点 "基于模板创建" 选任意模板 → 应进入 builder 页且**不会出现 "模板不存在" Toast**；快速点 "+ 新建模板" 也一样。
+2. Builder 页顶部 "适用部门" 卡片：**背景为白色 / `--semi-color-bg-0`**（即使未选部门），保留红色 `*` 与 "（激活时必填，草稿可留空）" 提示。
+3. Builder 页**只剩一个"表单"区域**，不再有 `表单 / 评估配置` Tab 切换。
+4. 保存 / 激活流程不受影响（评估字段保持空）。

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Input } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Pencil, Building2 } from 'lucide-react';
+import { Typography, Button, Toast, Modal, Space, Tag, Spin, Tooltip, Input } from '@douyinfe/semi-ui';
+import { ChevronLeft, Save, Play, CheckCircle, Pencil, Building2 } from 'lucide-react';
 
 import {
   getSchemeById,
@@ -23,7 +23,6 @@ import { expandDepartmentIdsWithDescendants } from '@/mocks/departmentData';
 import { computeDeptDisabledOptions } from '@/pages/Requirements/_shared/computeDeptDisabledOptions';
 import FormBuilder from './FormBuilder';
 import { validateAllFields } from './FormBuilder/validators';
-import WorkflowBuilder from './WorkflowBuilder';
 import TestDriveModal from './TestDriveModal';
 import './index.less';
 import '@/pages/Requirements/ApprovalConfig/components/ApprovalFlowBuilder/index.less';
