@@ -26,6 +26,7 @@ import { validateAllFields } from './FormBuilder/validators';
 import WorkflowBuilder from './WorkflowBuilder';
 import TestDriveModal from './TestDriveModal';
 import './index.less';
+import '@/pages/Requirements/ApprovalConfig/components/ApprovalFlowBuilder/index.less';
 
 const { Title, Text } = Typography;
 
