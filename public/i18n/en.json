@@ -920,7 +920,7 @@
         "tabs": {
           "form": "Form",
           "assessment": "Assessment",
-          "workflow": "Approval Configuration",
+          "workflow": "Assessment Configuration",
           "cost": "Cost"
         },
         "fieldType": {
