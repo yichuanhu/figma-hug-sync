@@ -360,6 +360,40 @@ const RequirementsScheme = () => {
           ))}
         </div>
       </Modal>
+
+      {/* 编辑适用部门 */}
+      <Modal
+        title={`编辑适用部门${deptEditScheme ? ` — ${deptEditScheme.name}` : ''}`}
+        visible={!!deptEditScheme}
+        onCancel={() => setDeptEditScheme(null)}
+        onOk={handleDeptEditSubmit}
+        okText="保存"
+        cancelText={t('common.cancel')}
+        confirmLoading={deptEditSaving}
+        width={520}
+      >
+        {deptEditScheme && (() => {
+          const activeIds = getActiveSchemes().map((x) => x.id);
+          const disabledOptions = computeDeptDisabledOptions(
+            getOccupiedDepartmentMapByScheme(deptEditScheme.id, activeIds),
+            (ownerId) => getSchemeById(ownerId)?.name ?? '其他方案',
+          );
+          return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <Text type="tertiary" size="small">
+                已被其他生效方案占用的部门将不可选；选中父部门时会自动包含其所有子部门。
+              </Text>
+              <DepartmentPicker
+                value={deptEditValue}
+                onChange={(v) => setDeptEditValue(v ?? [])}
+                placeholder="请选择适用部门（可多选，选中父部门自动包含子部门）"
+                maxTagCount={6}
+                disabledOptions={disabledOptions}
+              />
+            </div>
+          );
+        })()}
+      </Modal>
     </div>
   );
 };
