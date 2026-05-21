@@ -2,7 +2,6 @@ import type { RequirementScheme } from './types';
 import {
   setSchemeBindingsForScheme,
   getOccupiedDepartmentMapByScheme,
-  fetchAllSchemeBindings,
   getBoundDepartmentCountMapByScheme,
 } from '@/mocks/departmentSchemeBinding';
 import { expandDepartmentIdsWithDescendants } from '@/mocks/departmentData';
