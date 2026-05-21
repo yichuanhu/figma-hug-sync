@@ -306,7 +306,7 @@ const SchemeBuilderPage = () => {
       {(() => {
         const deptIds = draftScheme.applicable_department_ids ?? [];
         const deptCount = deptIds.length;
-        const isEmpty = deptCount === 0;
+        const showWarning = deptCount === 0;
         const activeIds = getActiveSchemes().map((s) => s.id);
         const disabledOptions = computeDeptDisabledOptions(
           getOccupiedDepartmentMapByScheme(draftScheme.id, activeIds),
@@ -314,37 +314,39 @@ const SchemeBuilderPage = () => {
         );
         return (
           <div
-            className="scheme-builder-applicable-dept"
+            className="approval-flow-section-card"
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              padding: '12px 16px',
-              marginBottom: 12,
-              background: isEmpty ? 'var(--semi-color-warning-light-default)' : 'var(--semi-color-fill-0)',
-              border: isEmpty ? '1px solid var(--semi-color-warning-light-active)' : '1px solid transparent',
-              borderRadius: 8,
+              marginBottom: 16,
+              ...(showWarning
+                ? {
+                    background: 'var(--semi-color-warning-light-default)',
+                    borderColor: 'var(--semi-color-warning-light-active)',
+                  }
+                : undefined),
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--semi-color-text-1)', fontWeight: 500, flexShrink: 0 }}>
-              <Building2 size={14} strokeWidth={2} />
-              <span>适用部门</span>
-              <Text type="danger" size="small" style={{ marginLeft: 2 }}>*</Text>
-              <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>
-                （激活时必填；已被其他生效方案占用的部门不可选；选中父部门自动包含子部门）
+            <div className="approval-flow-section-card-header">
+              <div className="approval-flow-section-card-title">
+                <Building2 size={16} strokeWidth={2} />
+                <span>适用部门</span>
+                <Text type="danger" size="small" style={{ marginLeft: 2 }}>*</Text>
+                <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>
+                  （激活时必填，草稿可留空）
+                </Text>
+              </div>
+              <Text type="tertiary" size="small">
+                已被其他生效方案占用的部门将不可选；选中父部门时会自动包含其所有子部门。
               </Text>
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="approval-flow-section-card-body">
               <DepartmentPicker
                 value={deptIds}
                 onChange={(v) => patch({ applicable_department_ids: v ?? [] })}
-                placeholder="选择适用该方案的部门（选中父部门自动包含其所有子部门）"
+                placeholder="请选择适用部门（可多选，选中父部门自动包含子部门）"
+                maxTagCount={6}
                 disabledOptions={disabledOptions}
               />
             </div>
-            <Text type={isEmpty ? 'warning' : 'tertiary'} size="small" style={{ flexShrink: 0 }}>
-              已选 {deptCount} 个部门
-            </Text>
           </div>
         );
       })()}
