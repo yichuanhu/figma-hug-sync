@@ -297,7 +297,7 @@ const ApprovalFlowBuilderPage = () => {
                     )}
                   </div>
                   <Typography.Text type="tertiary" size="small">
-                    同一部门同时被多个模板选中时，最新保存的将覆盖之前的绑定。
+                    已被其他生效审批流占用的部门将不可选。
                   </Typography.Text>
                 </div>
                 <div className="approval-flow-section-card-body">
