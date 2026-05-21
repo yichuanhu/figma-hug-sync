@@ -18,7 +18,7 @@ import {
   deleteScheme,
   createSchemeDraft,
   cloneSchemeAsDraft,
-} from '../RequirementsWorkbench/schemeConfig';
+} from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '../RequirementsWorkbench/types';
 import SchemeDetailDrawer from './components/SchemeDetailDrawer';
 import './index.less';
