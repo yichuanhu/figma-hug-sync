@@ -31,7 +31,7 @@ import {
   publishChange,
   deleteRequirement,
 } from '../../mockData';
-import { getSchemeById } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
+import { getSchemeById, getTenantDefaultScheme } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type {
   SchemeField,
   SchemeFieldDependsOn,
