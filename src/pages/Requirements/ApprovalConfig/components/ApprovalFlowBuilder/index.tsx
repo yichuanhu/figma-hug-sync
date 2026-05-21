@@ -306,7 +306,7 @@ const ApprovalFlowBuilderPage = () => {
                     )}
                   </div>
                   <Typography.Text type="tertiary" size="small">
-                    已被其他生效审批流占用的部门将不可选。
+                    已被其他生效审批流占用的部门将不可选；选中父部门时会自动包含其所有子部门。
                   </Typography.Text>
                 </div>
                 <div className="approval-flow-section-card-body">
@@ -327,17 +327,12 @@ const ApprovalFlowBuilderPage = () => {
                       multiple
                       value={draft.applicable_department_ids ?? []}
                       onChange={(ids) => patch({ applicable_department_ids: ids })}
-                      placeholder="请选择适用部门（可多选）"
+                      placeholder="请选择适用部门（可多选，选中父部门自动包含子部门）"
                       maxTagCount={6}
-                      disabledOptions={(() => {
-                        const occupied = getOccupiedDepartmentMap(draft.id);
-                        const map: Record<string, string> = {};
-                        Object.entries(occupied).forEach(([deptId, ownerId]) => {
-                          const ownerName = getApprovalFlowById(ownerId)?.name ?? '其他审批流';
-                          map[deptId] = `已绑定「${ownerName}」`;
-                        });
-                        return map;
-                      })()}
+                      disabledOptions={computeDeptDisabledOptions(
+                        getOccupiedDepartmentMap(draft.id, activeTemplateIds),
+                        (ownerId) => getApprovalFlowById(ownerId)?.name ?? '其他审批流',
+                      )}
                     />
                   )}
                 </div>
