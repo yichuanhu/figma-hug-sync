@@ -216,7 +216,7 @@ const RequirementCreatePage = () => {
       const formData = (editData.form_data ?? {}) as Record<string, unknown>;
       return {
         title: editData.title,
-        department: editData.owning_department_name,
+        department: editData.owning_department_id,
         priority: editData.priority,
         ...formData,
       };
