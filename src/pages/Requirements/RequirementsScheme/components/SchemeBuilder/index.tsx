@@ -14,7 +14,7 @@ import {
   subscribeSchemeChange,
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '@/pages/Requirements/RequirementsWorkbench/types';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentPicker from '@/components/DepartmentPicker';
 import {
   setSchemeBindingsForScheme,
   getOccupiedDepartmentMapByScheme,
@@ -335,13 +335,10 @@ const SchemeBuilderPage = () => {
               </Text>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <DepartmentSelect
-                autoCascadeDescendants
-                multiple
+              <DepartmentPicker
                 value={deptIds}
-                onChange={(v) => patch({ applicable_department_ids: (v as string[]) ?? [] })}
+                onChange={(v) => patch({ applicable_department_ids: v ?? [] })}
                 placeholder="选择适用该方案的部门（选中父部门自动包含其所有子部门）"
-                style={{ width: '100%' }}
                 disabledOptions={disabledOptions}
               />
             </div>
