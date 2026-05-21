@@ -324,6 +324,7 @@ const ApprovalFlowBuilderPage = () => {
                     )
                   ) : (
                     <DepartmentSelect
+                      autoCascadeDescendants
                       multiple
                       value={draft.applicable_department_ids ?? []}
                       onChange={(ids) => patch({ applicable_department_ids: ids })}

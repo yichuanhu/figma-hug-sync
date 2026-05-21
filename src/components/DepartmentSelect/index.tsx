@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TreeSelect, Tooltip, Typography } from '@douyinfe/semi-ui';
-import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
+import { TreeSelect, Typography } from '@douyinfe/semi-ui';
+import { departmentTree, DeptTreeNode, getDepartmentSubtreeIds } from '@/mocks/departmentData';
 
 interface DepartmentSelectBaseProps {
   placeholder?: string;
@@ -16,7 +16,13 @@ interface DepartmentSelectBaseProps {
    * 将作为后缀展示在下拉项右侧并将节点禁用，从源头避免冲突选择。
    */
   disabledOptions?: Record<string, string>;
+  /**
+   * 多选时：选中父部门后，自动级联选中其所有子孙节点（已禁用的节点会被跳过）。
+   * 取消父部门时，同步取消其所有子孙节点。
+   */
+  autoCascadeDescendants?: boolean;
 }
+
 
 interface SingleSelectProps extends DepartmentSelectBaseProps {
   multiple?: false;
@@ -111,6 +117,7 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
     maxTagCount,
     useNameAsValue = false,
     disabledOptions,
+    autoCascadeDescendants = false,
   } = props as any;
 
   const { t } = useTranslation();
@@ -122,10 +129,43 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
 
   const dropdownWidth = useMemo(() => estimateMaxDropdownWidth(collectLabels(departmentTree)), []);
 
+  // 维护上一次 value，用于多选级联场景下计算新增/移除的部门，再扩展为整棵子树。
+  const prevValueRef = useRef<string[]>(Array.isArray(value) ? value : []);
+
+  const handleChange = (val: any) => {
+    if (multiple && autoCascadeDescendants && !useNameAsValue) {
+      const next = new Set<string>(Array.isArray(val) ? val : []);
+      const prev = new Set<string>(prevValueRef.current ?? []);
+      const isDisabled = (id: string) => !!disabledOptions?.[id];
+
+      // 新增的节点：递归加入子孙
+      next.forEach((id) => {
+        if (!prev.has(id)) {
+          getDepartmentSubtreeIds(id).forEach((sub) => {
+            if (!isDisabled(sub)) next.add(sub);
+          });
+        }
+      });
+      // 移除的节点：递归移除子孙
+      prev.forEach((id) => {
+        if (!next.has(id)) {
+          getDepartmentSubtreeIds(id).forEach((sub) => next.delete(sub));
+        }
+      });
+
+      const finalArr = Array.from(next);
+      prevValueRef.current = finalArr;
+      onChange?.(finalArr as any);
+      return;
+    }
+    if (multiple) prevValueRef.current = Array.isArray(val) ? val : [];
+    onChange?.(val as any);
+  };
+
   return (
     <TreeSelect
       value={value}
-      onChange={(val) => onChange?.(val as any)}
+      onChange={handleChange}
       treeData={treeData}
       placeholder={placeholder || t('common.owningDepartmentPlaceholder')}
       disabled={disabled}
