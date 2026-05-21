@@ -108,6 +108,28 @@ const RequirementsScheme = () => {
     });
   };
 
+  const openDeptEditor = (s: RequirementScheme) => {
+    setDeptEditScheme(s);
+    setDeptEditValue(s.applicable_department_ids ?? []);
+  };
+
+  const handleDeptEditSubmit = async () => {
+    if (!deptEditScheme) return;
+    setDeptEditSaving(true);
+    try {
+      await updateSchemeApplicableDepartments(deptEditScheme.id, deptEditValue);
+      Toast.success('适用部门已更新');
+      setDeptEditScheme(null);
+      load();
+    } catch (e) {
+      Toast.error((e as Error).message);
+    } finally {
+      setDeptEditSaving(false);
+    }
+  };
+
+
+
   const handleDelete = (s: RequirementScheme) => {
     Modal.confirm({
       title: t('requirements.scheme.deleteTitle'),
