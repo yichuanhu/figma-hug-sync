@@ -134,6 +134,25 @@ const SchemeBuilderPage = () => {
 
   const handleSaveDraft = async () => {
     if (!draftScheme) return;
+    // 预设模板：仅保存「适用部门」字段
+    if (isPresetEdit) {
+      const selectedDeptIds = draftScheme.applicable_department_ids ?? [];
+      const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
+      try {
+        await updateSchemeApplicableDepartments(draftScheme.id, selectedDeptIds);
+        setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
+        const updated = getSchemeById(draftScheme.id);
+        if (updated) {
+          setSavedScheme(updated);
+          setDraftScheme(updated);
+        }
+        setDirty(false);
+        Toast.success('适用部门已更新');
+      } catch (e) {
+        Toast.error((e as Error).message);
+      }
+      return;
+    }
     // 字段配置联动校验拦截
     const fv = validateAllFields(draftScheme.custom_fields ?? []);
     if (fv.hasError) {
