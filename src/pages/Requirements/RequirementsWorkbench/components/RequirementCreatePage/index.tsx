@@ -617,7 +617,7 @@ const RequirementCreatePage = () => {
           >
             {/* Step 0 */}
             <div style={{ display: currentStep === 0 ? 'block' : 'none' }}>
-              {activeScheme && (
+              {activeScheme && departmentValue && (
                 <Banner
                   type="info"
                   fullMode={false}
@@ -628,7 +628,7 @@ const RequirementCreatePage = () => {
                     <span>
                       使用方案：<strong>{activeScheme.name}</strong> · v{activeScheme.version}
                       <Text type="tertiary" size="small" style={{ marginLeft: 8 }}>
-                        （根据当前部门「{getDepartmentName(MOCK_CURRENT_USER.department_id)}」自动匹配）
+                        （根据所属部门「{getDepartmentName(departmentValue)}」自动匹配）
                       </Text>
                     </span>
                   }
@@ -654,11 +654,27 @@ const RequirementCreatePage = () => {
                     formApi?.setValue?.('department', v);
                     setDirty(true);
                   }}
-                  useNameAsValue
-                  placeholder={t('requirements.form.departmentPlaceholder')}
+                  placeholder={isEdit ? t('requirements.form.departmentPlaceholder') : '请先选择所属部门以匹配需求模板'}
                   disabled={isPostProjectEdit}
                 />
               </Form.Slot>
+              {showNoSchemeForDept && (
+                <div style={{ marginTop: -8, marginBottom: 16 }}>
+                  <Banner
+                    type="warning"
+                    fullMode={false}
+                    closeIcon={null}
+                    description={
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        <span>所选部门没有生效的需求模板</span>
+                        <Text type="tertiary" size="small">
+                          请联系管理员在「需求模板」中为「{getDepartmentName(departmentValue)}」配置适用方案，或选择其他已绑定方案的部门
+                        </Text>
+                      </div>
+                    }
+                  />
+                </div>
+              )}
               <Form.Slot label={{ text: t('requirements.form.requirementOwnerLabel'), required: true }}>
                 <OwnerSearchSelect
                   value={ownerId}
