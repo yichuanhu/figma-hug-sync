@@ -228,16 +228,25 @@
       "displayNameRequired": "请输入指标名称",
       "metricType": "指标类型",
       "metricTypeRequired": "请选择指标类型",
+      "stepValue": "步进值",
+      "stepValuePlaceholder": "每次更新累加的整数值",
+      "stepValueRequired": "请输入步进值",
+      "valueType": "值类型",
+      "valueTypeRequired": "请选择值类型",
       "unit": "单位",
       "unitPlaceholder": "如 单、元、%（可选）",
       "description": "描述",
       "descriptionPlaceholder": "简要说明该指标的业务含义（可选）",
       "visible": "在业务成果看板展示"
     },
+    "valueType": {
+      "DECIMAL": "数值 (Decimal)",
+      "STRING": "字符串 (String)"
+    },
     "err": {
       "duplicateCode": "该指标编码已存在",
       "duplicateName": "该指标名称已存在",
-      "typeUnitLocked": "已有历史数据，无法修改类型或单位",
+      "typeUnitLocked": "已有历史数据，无法修改类型、单位、步进值或值类型",
       "network": "网络异常，请稍后重试"
     },
     "records": {
@@ -252,8 +261,10 @@
       "operator": "操作",
       "delta": "变化量",
       "value": "结果值",
-      "executionId": "执行 ID",
+      "flowName": "流程名称",
+      "taskId": "任务 ID",
       "op": {
+        "UPDATE": "更新",
         "SET": "设置",
         "INCREMENT": "累加",
         "ACCUMULATE": "累计",

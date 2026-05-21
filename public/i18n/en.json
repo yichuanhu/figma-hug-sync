@@ -271,16 +271,25 @@
       "displayNameRequired": "Please enter display name",
       "metricType": "Metric Type",
       "metricTypeRequired": "Please select a metric type",
+      "stepValue": "Step Value",
+      "stepValuePlaceholder": "Integer added on every update",
+      "stepValueRequired": "Please enter the step value",
+      "valueType": "Value Type",
+      "valueTypeRequired": "Please select a value type",
       "unit": "Unit",
       "unitPlaceholder": "e.g. orders, USD, % (optional)",
       "description": "Description",
       "descriptionPlaceholder": "Brief business meaning of this metric (optional)",
       "visible": "Show on Business Outcomes dashboard"
     },
+    "valueType": {
+      "DECIMAL": "Decimal",
+      "STRING": "String"
+    },
     "err": {
       "duplicateCode": "This metric code already exists",
       "duplicateName": "This display name already exists",
-      "typeUnitLocked": "Type and unit cannot be modified once records exist",
+      "typeUnitLocked": "Type, unit, step value or value type cannot be modified once records exist",
       "network": "Network error, please try again later"
     },
     "records": {
@@ -295,8 +304,10 @@
       "operator": "Operation",
       "delta": "Delta",
       "value": "Value",
-      "executionId": "Execution ID",
+      "flowName": "Flow Name",
+      "taskId": "Task ID",
       "op": {
+        "UPDATE": "Update",
         "SET": "Set",
         "INCREMENT": "Increment",
         "ACCUMULATE": "Accumulate",
