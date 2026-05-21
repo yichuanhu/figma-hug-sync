@@ -11,6 +11,11 @@ interface DepartmentSelectBaseProps {
   /** Use department name as value instead of ID (for filter compatibility) */
   useNameAsValue?: boolean;
   showClear?: boolean;
+  /**
+   * 禁用的部门项：key 为部门 id，value 为禁用原因（如「已绑定到 xxx 模板」），
+   * 将作为后缀展示在下拉项右侧并将节点禁用，从源头避免冲突选择。
+   */
+  disabledOptions?: Record<string, string>;
 }
 
 interface SingleSelectProps extends DepartmentSelectBaseProps {
