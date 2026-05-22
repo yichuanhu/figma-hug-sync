@@ -151,38 +151,39 @@ const BusinessOutcomes = () => {
     }],
   }), [data.volumeTrend]);
 
-  // ============ Time saved: 趋势 + 累计 (双系列) ============
+  // ============ Time saved: 累计曲线 ============
   const hoursOption = useMemo(() => ({
     tooltip: { ...TOOLTIP, trigger: 'axis' },
-    legend: {
-      bottom: 0, itemWidth: 12, itemHeight: 12, textStyle: { fontSize: 12, color: '#6B7280' },
-      data: [t('operations.businessOutcomes.hoursSaved'), t('operations.businessOutcomes.cumulativeCurve')],
-    },
-    grid: { left: 56, right: 56, top: 20, bottom: 44 },
+    grid: { left: 56, right: 16, top: 20, bottom: 32 },
     xAxis: {
-      type: 'category', data: data.timeSavedTrend.map(d => d.month),
+      type: 'category', data: data.timeSavedTrend.map(d => d.month), boundaryGap: false,
       axisLabel: { fontSize: 11, color: '#9CA3AF' },
       axisLine: { lineStyle: { color: '#E5E7EB' } },
       axisTick: { show: false },
     },
-    yAxis: [
-      { type: 'value', axisLabel: { fontSize: 11, color: '#9CA3AF' }, axisLine: { show: false }, splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } } },
-      { type: 'value', axisLabel: { fontSize: 11, color: '#9CA3AF' }, axisLine: { show: false }, splitLine: { show: false } },
-    ],
+    yAxis: {
+      type: 'value',
+      axisLabel: { fontSize: 11, color: '#9CA3AF' },
+      axisLine: { show: false },
+      splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
+    },
     series: [
       {
-        name: t('operations.businessOutcomes.hoursSaved'),
-        type: 'bar', barMaxWidth: 24, yAxisIndex: 0,
-        data: data.timeSavedTrend.map(d => d.hours),
-        itemStyle: { color: COLORS.success, borderRadius: [4, 4, 0, 0] },
-      },
-      {
         name: t('operations.businessOutcomes.cumulativeCurve'),
-        type: 'line', smooth: true, yAxisIndex: 1,
+        type: 'line', smooth: true,
         data: data.timeSavedTrend.map(d => d.cumulative ?? 0),
         symbol: 'circle', symbolSize: 6,
         lineStyle: { width: 2.5, color: COLORS.primary },
         itemStyle: { color: COLORS.primary },
+        areaStyle: {
+          color: {
+            type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: 'rgba(59,130,246,0.25)' },
+              { offset: 1, color: 'rgba(59,130,246,0)' },
+            ],
+          },
+        },
       },
     ],
   }), [data.timeSavedTrend, t]);
@@ -214,44 +215,6 @@ const BusinessOutcomes = () => {
     }],
   }), [data.departmentOutcomes, t]);
 
-  // ============ Trend analysis: 双 Y 轴 业务增长率 vs 工时节省 ============
-  const trendAnalysisOption = useMemo(() => ({
-    tooltip: { ...TOOLTIP, trigger: 'axis' },
-    legend: {
-      bottom: 0, itemWidth: 16, itemHeight: 3, textStyle: { fontSize: 12, color: '#6B7280' },
-      data: [t('operations.businessOutcomes.growthRateSeries'), t('operations.businessOutcomes.hoursSavedSeries')],
-    },
-    grid: { left: 56, right: 56, top: 24, bottom: 44 },
-    xAxis: {
-      type: 'category', data: data.growthVsHours.map(d => d.month), boundaryGap: false,
-      axisLabel: { fontSize: 11, color: '#9CA3AF' },
-      axisLine: { lineStyle: { color: '#E5E7EB' } }, axisTick: { show: false },
-    },
-    yAxis: [
-      { type: 'value', name: t('operations.businessOutcomes.growthRateAxis'),
-        nameTextStyle: { fontSize: 11, color: '#9CA3AF' },
-        axisLabel: { formatter: '{value}%', fontSize: 11, color: '#9CA3AF' },
-        axisLine: { show: false }, splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } } },
-      { type: 'value', name: t('operations.businessOutcomes.hoursSavedAxis'),
-        nameTextStyle: { fontSize: 11, color: '#9CA3AF' },
-        axisLabel: { fontSize: 11, color: '#9CA3AF' },
-        axisLine: { show: false }, splitLine: { show: false } },
-    ],
-    series: [
-      {
-        name: t('operations.businessOutcomes.growthRateSeries'), type: 'line',
-        smooth: true, yAxisIndex: 0, symbol: 'circle', symbolSize: 6,
-        data: data.growthVsHours.map(d => d.growthRate),
-        lineStyle: { width: 2.5, color: COLORS.primary }, itemStyle: { color: COLORS.primary },
-      },
-      {
-        name: t('operations.businessOutcomes.hoursSavedSeries'), type: 'line',
-        smooth: true, yAxisIndex: 1, symbol: 'circle', symbolSize: 6,
-        data: data.growthVsHours.map(d => d.hoursSaved),
-        lineStyle: { width: 2.5, color: COLORS.success }, itemStyle: { color: COLORS.success },
-      },
-    ],
-  }), [data.growthVsHours, t]);
 
   // ============ FEAT-023 预估准确率散点图 ============
   const accuracyScatterOption = useMemo(() => {
@@ -521,15 +484,8 @@ const BusinessOutcomes = () => {
         </div>
       </div>
 
-      {/* 5. 趋势分析: 双 Y 轴折线 */}
-      <div className="dashboard-card">
-        <div className="dashboard-card-header">
-          <span className="dashboard-card-title">
-            <MetricLabel label={t('operations.businessOutcomes.trendAnalysisTitle')} tip={t('operations.businessOutcomes.tips.growthVsHours')} size="medium" />
-          </span>
-        </div>
-        <ReactECharts option={trendAnalysisOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
-      </div>
+
+
 
       {/* 6. FEAT-023 开发产能仪表盘: 6 KPI + 散点 + 时间线 */}
       <div className="dashboard-card">
