@@ -157,7 +157,7 @@ const DepartmentPicker = ({
     const checked = isChecked(node.value);
     const disabledReason = disabledOptions?.[node.value];
     const ancestorSelected = parents.some((p) => draft.includes(p.value));
-    const drillDisabled = ancestorSelected;
+    const drillDisabled = ancestorSelected || checked;
     const drill = hasChildren && !searchResults && (
       drillDisabled ? (
         <Tooltip content="已选择上级部门，下级将自动包含">
