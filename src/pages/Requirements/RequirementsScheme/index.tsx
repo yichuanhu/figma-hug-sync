@@ -447,6 +447,8 @@ const RequirementsScheme = () => {
         onClose={() => setDetailScheme(null)}
         onNavigate={(s) => setDetailScheme(s)}
         onActivate={handleActivate}
+        onSetDefault={(s) => { setDetailScheme(null); handleSetAsDefault(s); }}
+        hasBinding={detailScheme ? (bindCountMap[detailScheme.id] ?? 0) > 0 : false}
         onDelete={(s) => { setDetailScheme(null); handleDelete(s); }}
       />
 
