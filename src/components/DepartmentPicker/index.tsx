@@ -10,7 +10,7 @@
  * Props 兼容多选 DepartmentSelect：value / onChange / disabledOptions / placeholder / disabled。
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Modal, Input, Checkbox, Typography } from '@douyinfe/semi-ui';
+import { Modal, Input, Checkbox, Typography, Tooltip } from '@douyinfe/semi-ui';
 import { Building2, ChevronRight, X, ChevronDown, Search } from 'lucide-react';
 import {
   departmentTree,
