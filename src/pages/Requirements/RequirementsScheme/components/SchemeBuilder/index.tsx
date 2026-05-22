@@ -240,7 +240,7 @@ const SchemeBuilderPage = () => {
         });
         setSchemeBindingsForScheme(updated.id, expandedDeptIds);
         setDirty(false);
-        Toast.success(t("requirements.scheme.builder.savedDraft"));
+        Toast.success("已保存");
         navigate(`/requirements/scheme/builder/${updated.id}`, { replace: true });
       } catch (e) {
         handleSchemeError(e);
@@ -549,11 +549,7 @@ const SchemeBuilderPage = () => {
               onClick={handleSaveDraft}
               disabled={!isNewMode && !dirty}
             >
-              {isNewMode
-                ? "保存草稿"
-                : editMode === "custom_active"
-                  ? "保存"
-                  : t("requirements.scheme.builder.saveDraft")}
+              {isNewMode || editMode === "custom_active" ? "保存" : t("requirements.scheme.builder.saveDraft")}
             </Button>
           )}
           {!isNewMode && editMode === "custom_inactive" && (
@@ -604,7 +600,7 @@ const SchemeBuilderPage = () => {
                     *
                   </Text>
                   <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>
-                    （激活时必填，草稿可留空）
+                    （激活时必填，可稍后填写）
                   </Text>
                 </div>
                 <Text type="tertiary" size="small">
