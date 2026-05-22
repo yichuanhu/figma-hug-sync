@@ -1,37 +1,14 @@
 import type {
-  RoiMetrics,
   ResourceOverviewData,
   RequirementOverviewData,
   RoiTrendPoint,
   DepartmentRoiItem,
   RequirementRoiItem,
-  RequirementRoiDetail,
-  DepartmentRoiDetail,
-  ProjectRoiDetail,
   ResourceEfficiencyData,
   BusinessOutcomesData,
 } from './types';
-import { getCostList } from './CostManagement/mockData';
 
-// 总投入成本 = 成本管理中所有成本类型的累计支出之和
-const getTotalInvestmentFromCostStore = (): number => {
-  const types = ['PROJECT', 'LICENSE', 'INFRASTRUCTURE', 'THIRD_PARTY', 'TRAINING', 'OTHER'] as const;
-  return types.reduce((sum, t) => sum + getCostList(t).reduce((s, r) => s + r.amount, 0), 0);
-};
 
-export const mockRoiMetrics: RoiMetrics = {
-  totalSavedCost: 1247800,
-  robotUtilization: 85.2,
-  activeRequirements: 127,
-  totalAutomationHours: 12580,
-  totalInvestmentCost: 823500,
-  savedCostTrend: 12.3,
-  utilizationTrend: -2.8,
-  requirementsTrend: 8,
-  automationHoursTrend: 1240,
-  // 回本周期 = 总投入 / 月均节约; 这里模拟 6.5 个月; null 表示无法计算
-  paybackMonths: 6.5,
-};
 
 export const mockResourceOverview: ResourceOverviewData = {
   interactiveOnline: 5,
@@ -93,33 +70,6 @@ export const mockProjects = [
   { value: 'proj-003', label: 'HR Digital Transformation' },
 ];
 
-// ROI Analysis Mock Data
-export const mockRequirementRoiDetails: RequirementRoiDetail[] = [
-  { id: 'req-001', name: 'Invoice Auto-Recognition & Entry', department: 'Finance', roi: 512, investmentCost: 45000, savedCost: 275400, status: 'running' },
-  { id: 'req-002', name: 'Order Auto-Processing & Dispatch', department: 'Operations', roi: 348, investmentCost: 62000, savedCost: 277760, status: 'running' },
-  { id: 'req-003', name: 'Expense Report Auto-Approval', department: 'Finance', roi: 283, investmentCost: 38000, savedCost: 145540, status: 'running' },
-  { id: 'req-004', name: 'Payroll Auto-Calculation', department: 'Human Resources', roi: 221, investmentCost: 55000, savedCost: 176550, status: 'running' },
-  { id: 'req-005', name: 'Contract Clause Auto-Review', department: 'Legal', roi: 176, investmentCost: 72000, savedCost: 198720, status: 'running' },
-  { id: 'req-006', name: 'Customer Data Sync & Cleansing', department: 'IT', roi: 158, investmentCost: 48000, savedCost: 123840, status: 'completed' },
-  { id: 'req-007', name: 'Inventory Auto-Replenishment', department: 'Operations', roi: 134, investmentCost: 41000, savedCost: 95940, status: 'running' },
-  { id: 'req-008', name: 'Employee Onboarding Automation', department: 'Human Resources', roi: 112, investmentCost: 35000, savedCost: 74200, status: 'developing' },
-  { id: 'req-009', name: 'Tax Filing Auto-Submission', department: 'Finance', roi: 95, investmentCost: 58000, savedCost: 113100, status: 'completed' },
-  { id: 'req-010', name: 'Compliance Document Generation', department: 'Legal', roi: 67, investmentCost: 32000, savedCost: 53440, status: 'developing' },
-];
-
-export const mockDepartmentRoiDetails: DepartmentRoiDetail[] = [
-  { department: 'Finance', investmentCost: 141000, savedCost: 534040, roi: 279, requirementCount: 3, robotCount: 8, trend: [120, 180, 220, 260, 279] },
-  { department: 'Operations', investmentCost: 103000, savedCost: 373700, roi: 263, requirementCount: 2, robotCount: 6, trend: [80, 140, 190, 240, 263] },
-  { department: 'Human Resources', investmentCost: 90000, savedCost: 250750, roi: 179, requirementCount: 2, robotCount: 4, trend: [50, 90, 130, 160, 179] },
-  { department: 'Legal', investmentCost: 104000, savedCost: 252160, roi: 142, requirementCount: 2, robotCount: 3, trend: [30, 60, 95, 125, 142] },
-  { department: 'IT', investmentCost: 48000, savedCost: 123840, roi: 158, requirementCount: 1, robotCount: 2, trend: [40, 70, 110, 140, 158] },
-];
-
-export const mockProjectRoiDetails: ProjectRoiDetail[] = [
-  { projectName: 'Financial Automation', status: 'running', investmentCost: 141000, savedCost: 534040, roi: 279, requirementCount: 3 },
-  { projectName: 'Operational Efficiency', status: 'running', investmentCost: 103000, savedCost: 373700, roi: 263, requirementCount: 2 },
-  { projectName: 'HR Digital Transformation', status: 'running', investmentCost: 90000, savedCost: 250750, roi: 179, requirementCount: 2 },
-];
 
 // Resource Efficiency Mock Data
 export const mockResourceEfficiency: ResourceEfficiencyData = {
@@ -354,7 +304,6 @@ export const mockBusinessTypes = [
 
 import type {
   BusinessOutcomesFilter,
-  RoiAnalysisFilter,
   ResourceEfficiencyFilter,
 } from './types';
 
@@ -510,69 +459,6 @@ export function getBusinessOutcomes(
   return data;
 }
 
-// =============== ROI 分析 ===============
-export interface RoiAnalysisDerived {
-  metrics: RoiMetrics;
-  requirements: RequirementRoiDetail[];
-  departments: DepartmentRoiDetail[];
-  projects: ProjectRoiDetail[];
-}
-
-export function getRoiAnalysis(filter: RoiAnalysisFilter, seed = 0): RoiAnalysisDerived {
-  const rng = seededRng((seed || 1) ^ hashStr(JSON.stringify(filter)));
-  const timeScale = TIME_RANGE_SCALE[filter.timeRange] ?? 1;
-  const multiScale = (selectedCount: number, total: number, base: number) => {
-    if (selectedCount <= 0 || selectedCount >= total) return 1;
-    return base + (1 - base) * (selectedCount / total);
-  };
-  const deptTotal = mockDepartments.filter(d => d.value !== 'all').length;
-  const projTotal = mockProjects.filter(p => p.value !== 'all').length;
-  const clsTotal = mockClassifications.filter(c => c.value !== 'all').length;
-  const deptScale = multiScale(filter.departments.length, deptTotal, 0.3);
-  const projScale = multiScale(filter.projects.length, projTotal, 0.4);
-  const clsScale = multiScale(filter.classifications.length, clsTotal, 0.5);
-  const totalScale = timeScale * deptScale * projScale * clsScale;
-
-  const metrics = scaleDeep(clone(mockRoiMetrics), totalScale, rng);
-  // 总投入成本以「成本管理」全部成本之和为准，不随筛选/缩放变化
-  metrics.totalInvestmentCost = getTotalInvestmentFromCostStore();
-
-  let requirements = clone(mockRequirementRoiDetails);
-  let departments = clone(mockDepartmentRoiDetails);
-  let projects = clone(mockProjectRoiDetails);
-
-  if (filter.departments.length > 0) {
-    const deptLabels = filter.departments
-      .map(v => mockDepartments.find(d => d.value === v)?.label?.toLowerCase())
-      .filter(Boolean) as string[];
-    if (deptLabels.length > 0) {
-      requirements = requirements.filter(r => deptLabels.some(l => r.department.toLowerCase().includes(l)));
-      departments = departments.filter(d => deptLabels.some(l => d.department.toLowerCase().includes(l)));
-    }
-  }
-  if (filter.projects.length > 0) {
-    const projLabels = filter.projects
-      .map(v => mockProjects.find(p => p.value === v)?.label?.toLowerCase())
-      .filter(Boolean) as string[];
-    if (projLabels.length > 0) {
-      projects = projects.filter(p => projLabels.some(l => p.projectName.toLowerCase().includes(l)));
-    }
-  }
-  if (filter.classifications.length > 0) {
-    const clsLabels = filter.classifications
-      .map(v => mockClassifications.find(c => c.value === v)?.label?.toLowerCase())
-      .filter(Boolean) as string[];
-    if (clsLabels.length > 0) {
-      requirements = requirements.filter(r => clsLabels.some(l => r.department.toLowerCase().includes(l)));
-    }
-  }
-
-  requirements = scaleDeep(requirements, totalScale, rng);
-  departments = scaleDeep(departments, totalScale, rng);
-  projects = scaleDeep(projects, totalScale, rng);
-
-  return { metrics, requirements, departments, projects };
-}
 
 // =============== 资源效能 ===============
 export function getResourceEfficiency(
