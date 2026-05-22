@@ -205,7 +205,11 @@ const DepartmentPicker = ({
           )}
         </span>
         {disabledReason && (
-          <span className="dept-picker-row-reason">· {disabledReason}</span>
+          <Tooltip content={disabledReason} position="top">
+            <span className="dept-picker-row-lock" onClick={(e) => e.stopPropagation()}>
+              <Lock size={12} strokeWidth={2} />
+            </span>
+          </Tooltip>
         )}
         {drill}
       </div>
