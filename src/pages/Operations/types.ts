@@ -1,18 +1,5 @@
 // 运营中心数据类型定义
 
-// ROI 指标
-export interface RoiMetrics {
-  totalSavedCost: number;        // 总节约成本
-  robotUtilization: number;      // 机器人利用率 (%)
-  activeRequirements: number;    // 活跃需求数
-  totalAutomationHours: number;  // 累计自动化时数
-  totalInvestmentCost: number;   // 总投入成本
-  savedCostTrend: number;        // 节约成本环比 (%)
-  utilizationTrend: number;      // 利用率环比 (%)
-  requirementsTrend: number;     // 需求环比变化
-  automationHoursTrend: number;  // 自动化时数环比变化
-  paybackMonths: number | null;  // 回本周期(月);为 null 表示「N/A」
-}
 
 // 资源概览
 export interface ResourceOverviewData {
@@ -62,46 +49,6 @@ export interface RequirementRoiItem {
 }
 
 
-// ROI Analysis - 需求维度详情
-export interface RequirementRoiDetail {
-  id: string;
-  name: string;
-  department: string;
-  roi: number;
-  investmentCost: number;
-  savedCost: number;
-  status: string;
-}
-
-// ROI Analysis - 部门维度详情
-export interface DepartmentRoiDetail {
-  department: string;
-  investmentCost: number;
-  savedCost: number;
-  roi: number;
-  requirementCount: number;
-  robotCount: number;
-  trend: number[];
-}
-
-// ROI Analysis - 项目维度详情
-export interface ProjectRoiDetail {
-  projectName: string;
-  status: string;
-  investmentCost: number;
-  savedCost: number;
-  roi: number;
-  requirementCount: number;
-}
-
-// ROI Analysis 筛选条件
-export interface RoiAnalysisFilter {
-  timeRange: string;
-  departments: string[];       // 部门多选(空数组=全部)
-  projects: string[];          // 项目多选(空数组=全部)
-  timeDimension: string;       // cumulative/today/week/month/custom
-  classifications: string[];   // 分类多选(空数组=全部)
-}
 
 // 筛选条件
 export interface DashboardFilter {

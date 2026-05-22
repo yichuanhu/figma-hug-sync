@@ -32,7 +32,7 @@ const ResourceEfficiency = () => {
       setSeed(Date.now() & 0xffffffff);
       setUpdatedAt(new Date());
       setLoading(false);
-      Toast.success(t('operations.roiAnalysis.refreshed'));
+      Toast.success(t('operations.resourceEfficiency.refreshed'));
     }, 600);
   };
 

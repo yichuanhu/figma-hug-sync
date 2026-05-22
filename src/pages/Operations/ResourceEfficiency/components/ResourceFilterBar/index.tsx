@@ -67,7 +67,7 @@ const ResourceFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
             onChange={(val) => onFilterChange({ ...filter, status: val as string })} style={{ width: 120 }} />
         </div>
         <div className="resource-filter-item">
-          <span className="resource-filter-label">{t('operations.roiAnalysis.timeDimension')}</span>
+          <span className="resource-filter-label">{t('operations.resourceEfficiency.timeDimension')}</span>
           <Select value={filter.timeDimension} optionList={timeDimensionOptions}
             onChange={(val) => onFilterChange({ ...filter, timeDimension: val as string })} style={{ width: 120 }} />
         </div>

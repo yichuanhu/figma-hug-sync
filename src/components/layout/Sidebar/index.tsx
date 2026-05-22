@@ -7,7 +7,7 @@ import { UserInfoDropdown } from '../UserInfoDropdown';
 import NotificationDrawer from '../NotificationDrawer';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
 import { useApprovalPendingCount } from '@/pages/SharingCenter/shared/useApprovalPendingCount';
-import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, Building2, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Columns3Cog, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, Gauge, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, NotepadTextDashed, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, TrendingUp, Users, Wallet, Workflow, Wrench } from 'lucide-react';
+import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, Building2, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Columns3Cog, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, Gauge, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, NotepadTextDashed, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, Users, Wallet, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -288,7 +288,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'dataAnalysis', labelKey: 'sidebar.dataAnalysis', isGroupLabel: true },
     { key: 'resourceEfficiency', labelKey: 'sidebar.resourceEfficiency', icon: <Activity size={18} strokeWidth={2} />, path: '/operations/resource-efficiency' },
     { key: 'businessOutcomes', labelKey: 'sidebar.businessOutcomes', icon: <Target size={18} strokeWidth={2} />, path: '/operations/business-outcomes' },
-    { key: 'roiAnalysis', labelKey: 'sidebar.roiAnalysis', icon: <TrendingUp size={18} strokeWidth={2} />, path: '/operations/roi-analysis' },
     // 运营管理 - 分组标题
     { key: 'operationsManagement', labelKey: 'sidebar.operationsManagement', isGroupLabel: true },
     { key: 'metricsConfig', labelKey: 'sidebar.metricsConfig', icon: <Gauge size={18} strokeWidth={2} />, path: '/operations/metrics-config' },
@@ -397,9 +396,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     }
     if (pathname.startsWith('/requirements/scheme')) {
       return 'requirementsScheme';
-    }
-    if (pathname === '/operations/roi-analysis') {
-      return 'roiAnalysis';
     }
     if (pathname === '/operations/resource-efficiency') {
       return 'resourceEfficiency';
