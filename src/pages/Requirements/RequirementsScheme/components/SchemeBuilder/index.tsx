@@ -309,9 +309,8 @@ const SchemeBuilderPage = () => {
         // 默认方案不带适用部门
         applicable_department_ids: editMode === 'tenant_default' ? [] : selectedDeptIds,
       });
-      if (editMode !== 'tenant_default') {
-        setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
-      }
+      // 未激活方案（custom_inactive）保存草稿不写绑定表
+
       setSavedScheme(updated);
       setDraftScheme(updated);
       setDirty(false);
