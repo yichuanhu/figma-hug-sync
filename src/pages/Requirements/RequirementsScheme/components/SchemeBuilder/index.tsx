@@ -447,7 +447,7 @@ const SchemeBuilderPage = () => {
     [dirty, navigate, t, isNewMode],
   );
 
-  const handleCancel = () => guardedNavigate("/requirements/scheme");
+  
 
   if (loading || !draftScheme) {
     return (
