@@ -250,6 +250,9 @@ const DepartmentPicker = ({
               onChange={setKeyword}
               showClear
             />
+            <Typography.Text type="tertiary" size="small" style={{ display: 'block', marginTop: 8 }}>
+              激活方案时，所选部门的下级部门将自动包含在生效绑定中
+            </Typography.Text>
             {!searchResults && (
               <div className="dept-picker-breadcrumb">
                 <span
