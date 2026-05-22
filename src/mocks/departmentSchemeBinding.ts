@@ -7,8 +7,8 @@
  * 数据契约与 department_approval_flow_binding 完全对齐，便于运行时统一处理。
  */
 
-const STORAGE_KEY = 'apa.requirements.deptSchemeBinding.v1';
-const BUSINESS_TYPE = 'REQUIREMENT';
+const STORAGE_KEY = "apa.requirements.deptSchemeBinding.v2";
+const BUSINESS_TYPE = "REQUIREMENT";
 
 export interface DepartmentSchemeBinding {
   department_id: string;
@@ -24,25 +24,24 @@ export interface DepartmentSchemeBinding {
  * - dept-finance / dept-hr → RPA 轻量版
  * 其余部门未绑定（创建需求时会被拦截）。
  */
-const defaultBindings: DepartmentSchemeBinding[] = [
-  { department_id: 'dept-apa-product', business_type: BUSINESS_TYPE, scheme_id: 'scheme-rpa-pro',  updated_at: '2026-01-01T09:00:00Z', updated_by: '当前用户' },
-  { department_id: 'dept-product',     business_type: BUSINESS_TYPE, scheme_id: 'scheme-rpa-pro',  updated_at: '2026-01-01T09:00:00Z', updated_by: '当前用户' },
-  { department_id: 'dept-fe',          business_type: BUSINESS_TYPE, scheme_id: 'scheme-rpa-pro',  updated_at: '2026-01-01T09:00:00Z', updated_by: '当前用户' },
-  { department_id: 'dept-be',          business_type: BUSINESS_TYPE, scheme_id: 'scheme-rpa-pro',  updated_at: '2026-01-01T09:00:00Z', updated_by: '当前用户' },
-  { department_id: 'dept-finance',     business_type: BUSINESS_TYPE, scheme_id: 'scheme-rpa-lite', updated_at: '2026-01-01T09:00:00Z', updated_by: '当前用户' },
-  { department_id: 'dept-hr',          business_type: BUSINESS_TYPE, scheme_id: 'scheme-rpa-lite', updated_at: '2026-01-01T09:00:00Z', updated_by: '当前用户' },
-];
+const defaultBindings: DepartmentSchemeBinding[] = [];
 
 const load = (): DepartmentSchemeBinding[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw) as DepartmentSchemeBinding[];
-  } catch { /* noop */ }
+  } catch {
+    /* noop */
+  }
   return defaultBindings;
 };
 
 const save = (list: DepartmentSchemeBinding[]) => {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch { /* noop */ }
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  } catch {
+    /* noop */
+  }
 };
 
 let cache: DepartmentSchemeBinding[] = load();
@@ -67,7 +66,9 @@ export const listDepartmentsByScheme = (schemeId: string): string[] =>
 /** schemeId -> bound dept count */
 export const getBoundDepartmentCountMapByScheme = (): Record<string, number> => {
   const map: Record<string, number> = {};
-  cache.forEach((b) => { map[b.scheme_id] = (map[b.scheme_id] ?? 0) + 1; });
+  cache.forEach((b) => {
+    map[b.scheme_id] = (map[b.scheme_id] ?? 0) + 1;
+  });
   return map;
 };
 
@@ -109,7 +110,7 @@ export const setSchemeBindingsForScheme = (schemeId: string, deptIds: string[]):
       business_type: BUSINESS_TYPE,
       scheme_id: schemeId,
       updated_at: now,
-      updated_by: '当前用户',
+      updated_by: "当前用户",
     });
   });
 
@@ -122,7 +123,10 @@ export const setSchemeBindingsForScheme = (schemeId: string, deptIds: string[]):
 export const fetchAllSchemeBindings = (): DepartmentSchemeBinding[] => [...cache];
 
 /** Dry-run：仅计算会被抢占的部门，不写入。 */
-export interface SchemeBindingConflictItem { deptId: string; prevSchemeId: string; }
+export interface SchemeBindingConflictItem {
+  deptId: string;
+  prevSchemeId: string;
+}
 export const previewSchemeBindings = (schemeId: string, deptIds: string[]): SchemeBindingConflictItem[] => {
   const items: SchemeBindingConflictItem[] = [];
   deptIds.forEach((deptId) => {
