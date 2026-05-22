@@ -537,7 +537,7 @@ const SchemeBuilderPage = () => {
                 <DepartmentPicker
                   value={deptIds}
                   onChange={(v) => patch({ applicable_department_ids: v ?? [] })}
-                  placeholder=""请选择适用部门（可多选，仅保存显式选择；激活时展开子部门）""
+                  placeholder=请选择适用部门（可多选，仅保存显式选择；激活时展开子部门）""
                   maxTagCount={6}
                   disabledOptions={disabledOptions}
                 />
