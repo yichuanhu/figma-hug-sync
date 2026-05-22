@@ -549,11 +549,7 @@ const SchemeBuilderPage = () => {
               onClick={handleSaveDraft}
               disabled={!isNewMode && !dirty}
             >
-              {isNewMode
-                ? "保存草稿"
-                : editMode === "custom_active"
-                  ? "保存"
-                  : t("requirements.scheme.builder.saveDraft")}
+              {isNewMode || editMode === "custom_active" ? "保存" : t("requirements.scheme.builder.saveDraft")}
             </Button>
           )}
           {!isNewMode && editMode === "custom_inactive" && (
