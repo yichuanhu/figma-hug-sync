@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Toast, Modal, Space, Tag, Spin, Tooltip, Input } from '@douyinfe/semi-ui';
+import { Typography, Button, Toast, Modal, Space, Tag, Spin, Tooltip, Input, Banner } from '@douyinfe/semi-ui';
 import { ChevronLeft, Save, Play, CheckCircle, Pencil, Building2, Star } from 'lucide-react';
 
 import {
   getSchemeById,
   getActiveSchemes,
   updateSchemeBuilder,
-  updateSchemeApplicableDepartments,
+  
   validateScheme,
   activateSchemeBuilder,
   setSchemeAsDefault,
@@ -69,13 +69,36 @@ const buildEmptyDraft = (): RequirementScheme => ({
 
 const SchemeBuilderPage = () => {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const presetSourceId = searchParams.get('preset');
   const navigate = useNavigate();
   const { t } = useTranslation();
   const isNewMode = id === 'new';
-  const initialScheme = isNewMode ? buildEmptyDraft() : (id ? getSchemeById(id) ?? null : null);
+
+  const buildDraftFromPreset = useCallback((sourceId: string): RequirementScheme | null => {
+    const src = getSchemeById(sourceId);
+    if (!src) return null;
+    const draft = buildEmptyDraft();
+    return {
+      ...draft,
+      name: `${src.name}（副本）`,
+      description: src.description,
+      custom_fields: src.custom_fields ? src.custom_fields.map((f) => ({ ...f })) : [],
+      value_assessment_model: src.value_assessment_model,
+      complexity_assessment_model: src.complexity_assessment_model,
+      workflow_config: src.workflow_config,
+      cost_config: src.cost_config,
+      approval_flow: src.approval_flow,
+      source_preset_key: src.is_preset ? src.code : src.source_preset_key,
+    };
+  }, []);
+
+  const initialScheme = isNewMode
+    ? (presetSourceId ? (buildDraftFromPreset(presetSourceId) ?? buildEmptyDraft()) : buildEmptyDraft())
+    : (id ? getSchemeById(id) ?? null : null);
   const [savedScheme, setSavedScheme] = useState<RequirementScheme | null>(isNewMode ? null : initialScheme);
   const [draftScheme, setDraftScheme] = useState<RequirementScheme | null>(initialScheme);
-  const [dirty, setDirty] = useState(false);
+  const [dirty, setDirty] = useState(isNewMode && !!presetSourceId);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
   const [testDriveVisible, setTestDriveVisible] = useState(false);
@@ -88,10 +111,10 @@ const SchemeBuilderPage = () => {
     return savedScheme ? resolveEditMode(savedScheme) : 'custom_inactive';
   }, [savedScheme, isNewMode]);
   const isReadOnly = editMode === 'preset';
-  const isFormReadOnly = editMode === 'preset' || editMode === 'custom_active';
+  const isFormReadOnly = editMode === 'preset';
   const showDeptBlock = editMode === 'custom_active' || editMode === 'custom_inactive';
-  const showTestDrive = !isNewMode && (editMode === 'tenant_default' || editMode === 'custom_inactive');
-  const canEditName = editMode === 'tenant_default' || editMode === 'custom_inactive';
+  const showTestDrive = !isNewMode && (editMode === 'tenant_default' || editMode === 'custom_inactive' || editMode === 'custom_active');
+  const canEditName = editMode === 'tenant_default' || editMode === 'custom_inactive' || editMode === 'custom_active';
 
   // 进入页面：解析方案并完成初始化（v15: 不再对已激活方案派生新版本，改为 custom_active 模式）
   useEffect(() => {
@@ -164,6 +187,8 @@ const SchemeBuilderPage = () => {
             </div>
           ),
         });
+      } else if (['SCHEME_BOUND_CANNOT_SET_DEFAULT', 'SCHEME_DEFAULT_CANNOT_ACTIVATE', 'SCHEME_DEFAULT_UNAVAILABLE'].includes(e.code)) {
+        Modal.error({ title: '操作不允许', content: e.message });
       } else {
         Toast.warning(e.message);
       }
@@ -200,6 +225,7 @@ const SchemeBuilderPage = () => {
           cost_config: draftScheme.cost_config,
           approval_flow: draftScheme.approval_flow,
           applicable_department_ids: selectedDeptIds,
+          source_preset_key: draftScheme.source_preset_key,
         });
         setSchemeBindingsForScheme(updated.id, expandedDeptIds);
         setDirty(false);
@@ -209,15 +235,56 @@ const SchemeBuilderPage = () => {
       return;
     }
 
-    // custom_active：仅允许保存「适用部门」
+    // custom_active：完整保存 + 部门冲突校验（与激活相同）
     if (editMode === 'custom_active') {
+      const fv = validateAllFields(draftScheme.custom_fields ?? []);
+      if (fv.hasError) {
+        Toast.error(`字段配置存在 ${fv.errorFieldKeys.length} 项问题，请先修正`);
+        return;
+      }
+      if (selectedDeptIds.length === 0) {
+        Toast.warning('请至少选择一个适用部门');
+        return;
+      }
+      // 部门冲突校验（排除自身与租户默认方案）
+      const activeIds = getActiveSchemes()
+        .filter((s) => s.id !== draftScheme.id && !s.is_tenant_default)
+        .map((s) => s.id);
+      const occupied = getOccupiedDepartmentMapByScheme(draftScheme.id, activeIds);
+      const conflicts = expandedDeptIds.filter((d) => occupied[d]);
+      if (conflicts.length > 0) {
+        const ownerName = getSchemeById(occupied[conflicts[0]])?.name ?? '其他方案';
+        Modal.error({
+          title: '存在部门冲突',
+          content: (
+            <div>
+              <div style={{ marginBottom: 8 }}>部门已被方案「{ownerName}」占用，请调整适用部门</div>
+              <Text type="tertiary" size="small">
+                冲突部门：{conflicts.slice(0, 5).map(getDepartmentName).join('、')}
+                {conflicts.length > 5 ? ` 等 ${conflicts.length} 个` : ''}
+              </Text>
+            </div>
+          ),
+        });
+        return;
+      }
       try {
-        await updateSchemeApplicableDepartments(draftScheme.id, selectedDeptIds);
+        const updated = await updateSchemeBuilder(draftScheme.id, {
+          name: draftScheme.name,
+          description: draftScheme.description,
+          custom_fields: draftScheme.custom_fields,
+          value_assessment_model: draftScheme.value_assessment_model,
+          complexity_assessment_model: draftScheme.complexity_assessment_model,
+          workflow_config: draftScheme.workflow_config,
+          cost_config: draftScheme.cost_config,
+          approval_flow: draftScheme.approval_flow,
+          applicable_department_ids: selectedDeptIds,
+        });
         setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
-        const updated = getSchemeById(draftScheme.id);
-        if (updated) { setSavedScheme(updated); setDraftScheme(updated); }
+        setSavedScheme(updated);
+        setDraftScheme(updated);
         setDirty(false);
-        Toast.success('适用部门已更新');
+        Toast.success('已保存');
       } catch (e) { handleSchemeError(e); }
       return;
     }
@@ -430,6 +497,18 @@ const SchemeBuilderPage = () => {
         </Space>
       </div>
 
+      {editMode === 'custom_active' && (
+        <Banner
+          type="info"
+          description="正在编辑已激活方案，保存后将直接覆盖配置，适用部门变更会同步生效绑定"
+          fullMode={false}
+          closeIcon={null}
+          style={{ marginBottom: 12 }}
+        />
+      )}
+
+
+
 
       {showDeptBlock && (() => {
         const deptIds = draftScheme.applicable_department_ids ?? [];
@@ -474,7 +553,6 @@ const SchemeBuilderPage = () => {
         aria-disabled={isFormReadOnly}
         title={
           editMode === 'preset' ? '预设方案完全只读，请基于预设创建副本后再修改' :
-          editMode === 'custom_active' ? '已启用方案的字段配置不可修改，仅可调整适用部门；如需修改请先停用方案' :
           undefined
         }
       >
