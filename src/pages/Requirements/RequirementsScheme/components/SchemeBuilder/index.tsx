@@ -447,7 +447,7 @@ const SchemeBuilderPage = () => {
     [dirty, navigate, t, isNewMode],
   );
 
-  const handleCancel = () => guardedNavigate("/requirements/scheme");
+  
 
   if (loading || !draftScheme) {
     return (
@@ -540,7 +540,7 @@ const SchemeBuilderPage = () => {
               {t("requirements.scheme.builder.testDrive")}
             </Button>
           )}
-          <Button onClick={handleCancel}>{t("common.cancel")}</Button>
+          
           {!isReadOnly && (
             <Button
               icon={<Save size={16} strokeWidth={2} />}
