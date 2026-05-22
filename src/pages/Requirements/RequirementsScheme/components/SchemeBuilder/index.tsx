@@ -227,7 +227,7 @@ const SchemeBuilderPage = () => {
           applicable_department_ids: selectedDeptIds,
           source_preset_key: draftScheme.source_preset_key,
         });
-        // 草稿不写绑定表，仅保存显式选择的 applicable_department_ids
+        setSchemeBindingsForScheme(updated.id, expandedDeptIds);
         setDirty(false);
         Toast.success(t('requirements.scheme.builder.savedDraft'));
         navigate(`/requirements/scheme/builder/${updated.id}`, { replace: true });
@@ -309,8 +309,9 @@ const SchemeBuilderPage = () => {
         // 默认方案不带适用部门
         applicable_department_ids: editMode === 'tenant_default' ? [] : selectedDeptIds,
       });
-      // 未激活方案（custom_inactive）保存草稿不写绑定表
-
+      if (editMode !== 'tenant_default') {
+        setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
+      }
       setSavedScheme(updated);
       setDraftScheme(updated);
       setDirty(false);
@@ -528,7 +529,7 @@ const SchemeBuilderPage = () => {
                 </Text>
               </div>
               <Text type="tertiary" size="small">
-                已被其他生效方案占用的部门将不可选；选中父部门时会自动包含其所有子部门。
+                已被其他生效方案占用的部门将不可选；这里只保存显式选择的部门，激活时系统会按当前部门树展开子部门并写入生效绑定。
               </Text>
             </div>
             <div className="approval-flow-section-card-body" style={{ padding: '4px 4px 0' }}>
@@ -536,7 +537,7 @@ const SchemeBuilderPage = () => {
                 <DepartmentPicker
                   value={deptIds}
                   onChange={(v) => patch({ applicable_department_ids: v ?? [] })}
-                  placeholder="请选择适用部门（可多选，选中父部门自动包含子部门）"
+                  placeholder=""请选择适用部门（可多选，仅保存显式选择；激活时展开子部门）""
                   maxTagCount={6}
                   disabledOptions={disabledOptions}
                 />

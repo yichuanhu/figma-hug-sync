@@ -29,26 +29,32 @@
 // ============= 9 状态生命周期 =============
 
 export type RequirementStatus =
-  | 'DRAFT'              // 草稿
-  | 'PENDING_APPROVAL'   // 待审批
-  | 'PENDING_ASSESSMENT' // 待评估
-  | 'PENDING_PROJECT'    // 待开发（v4 重命名；枚举值暂保留以兼容历史 mock 数据）
-  | 'DEVELOPING'         // 开发中
-  | 'LAUNCHED'           // 已上线
-  | 'OFFLINE'            // 已下线
-  | 'REJECTED'           // 已驳回
-  | 'WITHDRAWN';         // 已撤回
+  | "DRAFT" // 草稿
+  | "PENDING_APPROVAL" // 待审批
+  | "PENDING_ASSESSMENT" // 待评估
+  | "PENDING_PROJECT" // 待开发（v4 重命名；枚举值暂保留以兼容历史 mock 数据）
+  | "DEVELOPING" // 开发中
+  | "LAUNCHED" // 已上线
+  | "OFFLINE" // 已下线
+  | "REJECTED" // 已驳回
+  | "WITHDRAWN"; // 已撤回
 
 /** 旧状态别名（兼容旧组件读取，不再用于新逻辑） */
 export type LegacyRequirementStatus =
-  | 'PENDING' | 'APPROVED' | 'ASSESSING' | 'DEVELOPED' | 'RUNNING' | 'STOPPED' | 'ARCHIVED';
+  | "PENDING"
+  | "APPROVED"
+  | "ASSESSING"
+  | "DEVELOPED"
+  | "RUNNING"
+  | "STOPPED"
+  | "ARCHIVED";
 
-export type RequirementPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+export type RequirementPriority = "LOW" | "MEDIUM" | "HIGH";
 
 // ============= 旧版本兼容类型（保留供旧 detail drawer / wizard 读取，新代码勿用） =============
 
-export type ArtifactType = 'PROCESS' | 'ADP_APP' | 'AGENT' | 'HUMAN_COLLAB';
-export type AssessmentConclusion = 'PASSED' | 'CONDITIONAL' | 'FAILED';
+export type ArtifactType = "PROCESS" | "ADP_APP" | "AGENT" | "HUMAN_COLLAB";
+export type AssessmentConclusion = "PASSED" | "CONDITIONAL" | "FAILED";
 
 export interface RequirementArtifact {
   id: string;
@@ -92,21 +98,21 @@ export interface TechnicalAssessment {
 // ============= Scheme 字段类型 =============
 
 export type SchemeFieldType =
-  | 'text'
-  | 'textarea'
-  | 'number'
-  | 'percentage'
-  | 'select'
-  | 'multi_select'
-  | 'radio'
-  | 'checkbox'
-  | 'checkbox_group'
-  | 'date'
-  | 'file_upload'
-  | 'rich_text'
-  | 'calculation'
-  | 'user_select'
-  | 'department_select';
+  | "text"
+  | "textarea"
+  | "number"
+  | "percentage"
+  | "select"
+  | "multi_select"
+  | "radio"
+  | "checkbox"
+  | "checkbox_group"
+  | "date"
+  | "file_upload"
+  | "rich_text"
+  | "calculation"
+  | "user_select"
+  | "department_select";
 
 export interface SchemeFieldOption {
   label: string;
@@ -120,7 +126,7 @@ export interface SchemeFieldDependsOn {
   /** 依赖的其它字段 key */
   field: string;
   /** 比较操作符 */
-  operator: 'eq' | 'ne' | 'in' | 'not_in' | 'gt' | 'lt' | 'gte' | 'lte';
+  operator: "eq" | "ne" | "in" | "not_in" | "gt" | "lt" | "gte" | "lte";
   /** 比较值 */
   value: string | number | boolean | Array<string | number>;
 }
@@ -155,7 +161,7 @@ export interface SchemeField {
   /** 单位（数值/百分比） */
   unit?: string;
   /** 字段宽度（用于在 Modal grid 容器中横向占比）；默认 full */
-  ui_width?: 'small' | 'medium' | 'large' | 'full';
+  ui_width?: "small" | "medium" | "large" | "full";
   /** 选项数据来源（如 'cost_config.rate_table'），select 类型时优先于 options */
   source?: string;
   /** 显示格式：精度等 */
@@ -184,7 +190,7 @@ export interface AssessmentDimension {
   expression?: string;
   description?: string;
   /** 维度类型：自动计算 / 手动打分（builder 增量字段） */
-  dimension_type?: 'auto_calculated' | 'manual_score';
+  dimension_type?: "auto_calculated" | "manual_score";
   /** 自动计算时引用的源字段映射（builder 增量字段） */
   source_fields?: Record<string, string>;
   /** 该维度的得分档位（builder 增量字段，可选） */
@@ -195,7 +201,7 @@ export interface AssessmentModel {
   /** 评估模型代号 */
   key: string;
   /** 评估类型 */
-  type: 'value' | 'complexity';
+  type: "value" | "complexity";
   label: string;
   description?: string;
   dimensions: AssessmentDimension[];
@@ -205,9 +211,9 @@ export interface AssessmentModel {
 
 // ============= 审批流配置 =============
 
-export type ApproverType = 'user' | 'role' | 'department';
+export type ApproverType = "user" | "role" | "department";
 
-export type ApprovalLevelMode = 'any_one' | 'all' | 'majority';
+export type ApprovalLevelMode = "any_one" | "all" | "majority";
 
 export interface ApprovalLevelConfig {
   order: number;
@@ -257,8 +263,8 @@ export interface CostConfig {
 // ============= 工作流配置（Builder 用） =============
 
 /** 第一期允许的审批人/评估人类型 */
-export type WorkflowApproverType = 'department_leader' | 'specific_users' | 'role';
-export type WorkflowApprovalMode = 'any_one' | 'all' | 'majority';
+export type WorkflowApproverType = "department_leader" | "specific_users" | "role";
+export type WorkflowApprovalMode = "any_one" | "all" | "majority";
 
 export interface WorkflowApprover {
   id: string;
@@ -288,7 +294,7 @@ export interface WorkflowState {
   name: string;
   initial?: boolean;
   /** 是否绑定审批人/评估人配置 */
-  role?: 'approval' | 'assessment' | 'normal';
+  role?: "approval" | "assessment" | "normal";
   transitions: WorkflowTransition[];
 }
 
@@ -303,7 +309,7 @@ export interface WorkflowConfig {
 
 // ============= Scheme（模版）主结构 =============
 
-export type SchemeStatus = 'active' | 'inactive';
+export type SchemeStatus = "active" | "inactive";
 
 export interface SchemeMeta {
   code: string;
@@ -341,7 +347,7 @@ export interface RequirementScheme {
   workflow_config?: WorkflowConfig;
   /** 原始 YAML 内容（用于查看） */
   raw_yaml?: string;
-  /** v5: 适用部门（多选）。保存方案时同步写入 department_scheme_binding。 */
+  /** 适用部门草稿选择。保存草稿时仅写入本字段；激活或保存已激活方案时才展开子部门并同步 department_scheme_binding。 */
   applicable_department_ids?: string[];
   created_at: string;
   created_by?: string;
@@ -360,7 +366,7 @@ export interface SchemeVersion {
 
 // ============= 审批 / 评估 / 版本 / 关联 =============
 
-export type ApprovalActionStatus = 'pending' | 'approved' | 'rejected';
+export type ApprovalActionStatus = "pending" | "approved" | "rejected";
 
 /** [活动记录] 单条审批操作记录（按层级 × 审批人留痕，不属于需求本体）。 */
 export interface ApprovalRecord {
@@ -381,7 +387,7 @@ export interface ApprovalRecord {
 export interface AssessmentRecord {
   id: string;
   requirement_id: string;
-  type: 'value' | 'complexity';
+  type: "value" | "complexity";
   assessor_id: string;
   assessor_name: string;
   /** 各维度打分原值 */
@@ -408,10 +414,10 @@ export interface RequirementVersion {
 
 export interface LinkedEntity {
   id: string;
-  type: 'workspace' | 'process' | 'project';
+  type: "workspace" | "process" | "project";
   name: string;
   /** 关联流程的运行状态 */
-  status?: 'developing' | 'launched' | 'offline';
+  status?: "developing" | "launched" | "offline";
   link?: string;
 }
 
@@ -436,7 +442,7 @@ export interface RequirementItem {
   scheme_id?: string;
   scheme_version?: string;
   /** v15: 方案配置快照（创建/编辑需求时按当时方案 config 写入；后续方案变更不影响该需求） */
-  scheme_config_snapshot?: Pick<RequirementScheme, 'id' | 'code' | 'name' | 'version' | 'custom_fields'>;
+  scheme_config_snapshot?: Pick<RequirementScheme, "id" | "code" | "name" | "version" | "custom_fields">;
 
   title: string;
   description: string;
@@ -484,7 +490,7 @@ export interface RequirementItem {
   round?: number;
 
   // ===== 旧字段（兼容旧弹窗与抽屉，新代码请勿使用） =====
-  involvedTech?: ('UI_AUTOMATION' | 'ADP')[];
+  involvedTech?: ("UI_AUTOMATION" | "ADP")[];
   assessment?: TechnicalAssessment;
   artifacts?: RequirementArtifact[];
 
@@ -519,7 +525,7 @@ export interface AssessmentDimensionScore {
   score: AssessmentScore;
   note?: string;
 }
-export type AssessmentConclusionV2 = 'RECOMMEND' | 'CAUTION' | 'REJECT';
+export type AssessmentConclusionV2 = "RECOMMEND" | "CAUTION" | "REJECT";
 export interface DetailedAssessment {
   valueDimensions: AssessmentDimensionScore[];
   complexityDimensions: AssessmentDimensionScore[];
@@ -598,11 +604,11 @@ export interface VersionSnapshot {
 }
 
 // ============= Story-006 多级审批 =============
-export type ApprovalFlowMode = 'any_one' | 'all' | 'majority';
+export type ApprovalFlowMode = "any_one" | "all" | "majority";
 export interface ApprovalFlowApprover {
   id: string;
   name: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  status: "PENDING" | "APPROVED" | "REJECTED";
   comment?: string;
   actedAt?: string;
 }
@@ -618,7 +624,7 @@ export interface MultiLevelApprovalConfig {
 }
 
 // ============= 审批历史留痕 =============
-export type ApprovalHistoryAction = 'approve' | 'reject' | 'withdraw' | 'resubmit';
+export type ApprovalHistoryAction = "approve" | "reject" | "withdraw" | "resubmit";
 /** [活动记录] 审批动作流水（approve/reject/withdraw/resubmit），不属于需求本体。 */
 export interface ApprovalHistoryEntry {
   id: string;
@@ -633,7 +639,7 @@ export interface ApprovalHistoryEntry {
   /** STORY-006：所属审批轮次（与 ApprovalRecord.round 同步） */
   round?: number;
 }
-export type LinkedProcessStatus = 'DEVELOPING' | 'TESTING' | 'PENDING' | 'ONLINE' | 'FAILED';
+export type LinkedProcessStatus = "DEVELOPING" | "TESTING" | "PENDING" | "ONLINE" | "FAILED";
 export interface LinkedProcess {
   id: string;
   name: string;
@@ -669,7 +675,7 @@ export interface RequirementEffortSummary {
 // ============= 活动记录（兼容旧组件） =============
 
 /** [活动记录] 活动事件类型枚举（用于动态时间线聚合视图）。 */
-export type ActivityType = 'status_change' | 'approval' | 'assessment' | 'comment' | 'created';
+export type ActivityType = "status_change" | "approval" | "assessment" | "comment" | "created";
 
 /** [活动记录] 聚合的活动事件（把审批/评估/状态变更/评论统一成一条时间线项），不属于需求本体。 */
 export interface ActivityRecord {
@@ -690,7 +696,7 @@ export interface RequirementQueryParams {
   size: number;
   keyword: string;
   sort_by: string;
-  sort_order: 'asc' | 'desc';
+  sort_order: "asc" | "desc";
   statusFilter?: string[];
   departmentFilter?: string[];
   priorityFilter?: string[];
@@ -709,11 +715,7 @@ export interface RequirementListResponse {
 // ============= STORY-014 / STORY-015 立项后变更 =============
 
 /** 变更日志类型枚举（'CONTENT' 为旧版默认） */
-export type RequirementChangeType =
-  | 'CONTENT'
-  | 'RESUBMIT'
-  | 'DEV_SCHEME_DOC_UPLOADED'
-  | 'DEV_SCHEME_DOC_DELETED';
+export type RequirementChangeType = "CONTENT" | "RESUBMIT" | "DEV_SCHEME_DOC_UPLOADED" | "DEV_SCHEME_DOC_DELETED";
 
 /** 变更日志条目（仅记录变更说明，不再包含字段对比与开发响应） */
 export interface RequirementChangeLog {
@@ -732,7 +734,7 @@ export interface RequirementChangeLog {
 
 // ============= STORY-015 开发方案文档 =============
 
-export type DevSchemeDocFileType = 'PDF' | 'DOCX' | 'MD';
+export type DevSchemeDocFileType = "PDF" | "DOCX" | "MD";
 
 /** 单个开发方案文档版本 */
 export interface RequirementDevSchemeDoc {
@@ -756,17 +758,17 @@ export interface RequirementDevSchemeDoc {
 
 /** 错误码（与后端 API 对齐，UI 转译为对应 i18n 文案） */
 export type DevSchemeDocErrorCode =
-  | 'DEV_SCHEME_DOC_INVALID_STATE'
-  | 'DEV_SCHEME_DOC_UNSUPPORTED_TYPE'
-  | 'DEV_SCHEME_DOC_FILE_TOO_LARGE'
-  | 'DEV_SCHEME_DOC_NOT_WORKSPACE_MEMBER';
+  | "DEV_SCHEME_DOC_INVALID_STATE"
+  | "DEV_SCHEME_DOC_UNSUPPORTED_TYPE"
+  | "DEV_SCHEME_DOC_FILE_TOO_LARGE"
+  | "DEV_SCHEME_DOC_NOT_WORKSPACE_MEMBER";
 
 /** 草稿（按 `${requirementId}::${userId}` 隔离） */
 export interface RequirementDraft {
   requirementId: string;
   userId: string;
   /** 与 RequirementItem 同结构的可编辑子集 */
-  patch: Partial<Pick<RequirementItem, 'title' | 'description' | 'priority' | 'form_data'>>;
+  patch: Partial<Pick<RequirementItem, "title" | "description" | "priority" | "form_data">>;
   updatedAt: string;
   baseUpdatedAt: string;
 }
