@@ -402,9 +402,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/operations/business-outcomes') {
       return 'businessOutcomes';
     }
-    if (pathname === '/operations/cost-management') {
-      return 'costManagement';
-    }
     if (pathname === '/operations/metrics-config') {
       return 'metricsConfig';
     }
