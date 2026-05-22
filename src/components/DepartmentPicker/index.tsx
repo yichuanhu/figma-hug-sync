@@ -198,7 +198,7 @@ const DepartmentPicker = ({
         </span>
         <span className="dept-picker-row-name">
           {node.label}
-          {parents.length > 0 && (
+          {parents.length > 0 && searchResults && (
             <Typography.Text type="tertiary" size="small" style={{ marginLeft: 8 }}>
               {parents.map((p) => p.label).join(' / ')}
             </Typography.Text>
