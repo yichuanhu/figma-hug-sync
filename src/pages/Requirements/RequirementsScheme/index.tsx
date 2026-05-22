@@ -367,52 +367,8 @@ const RequirementsScheme = () => {
                 </Text>
                 <div className="scheme-card-footer">
                   <Tag size="small" color="grey" type="light">{s.custom_fields.length} 字段</Tag>
-                  {s.is_preset ? (
+                  {s.is_preset && (
                     <Tag size="small" color="grey" type="light">只读</Tag>
-                  ) : (
-                    <Popover
-                      position="top"
-                      showArrow
-                      content={(() => {
-                        const selected = s.applicable_department_ids ?? [];
-                        const effective = new Set(listDepartmentsByScheme(s.id));
-                        return (
-                          <div style={{ maxWidth: 280, padding: '4px 0', display: 'flex', flexDirection: 'column', gap: 4 }}>
-                            {selected.map((id) => {
-                              const isEffective = effective.has(id);
-                              return (
-                                <div key={id} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                  <Text size="small" type={isEffective ? 'primary' : 'tertiary'} style={{ textDecoration: isEffective ? 'none' : 'line-through' }}>
-                                    {getDepartmentName(id)}
-                                  </Text>
-                                  {!isEffective && (
-                                    <Text size="small" type="tertiary">（已被其他方案接管）</Text>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        );
-                      })()}
-                    >
-                      {(() => {
-                        const selected = (s.applicable_department_ids ?? []).length;
-                        const effective = bindCountMap[s.id] ?? 0;
-                        const hasDrift = effective < selected;
-                        return (
-                          <Tag
-                            size="small"
-                            color={hasDrift ? 'amber' : 'violet'}
-                            type="light"
-                            prefixIcon={<Building2 size={12} strokeWidth={2} />}
-                            onClick={(e) => e.stopPropagation()}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            {hasDrift ? `适用 ${selected} · 生效 ${effective}` : `适用 ${selected} 个部门`}
-                          </Tag>
-                        );
-                      })()}
-                    </Popover>
                   )}
                 </div>
               </div>
