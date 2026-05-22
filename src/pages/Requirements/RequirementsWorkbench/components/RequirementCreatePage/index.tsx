@@ -1,25 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import {
-  Typography,
-  Steps,
-  Button,
-  Form,
-  Toast,
-  Modal,
-  Tag,
-  Spin,
-  useFormState,
-} from '@douyinfe/semi-ui';
-import { ArrowLeft, Plus, Trash2, Building2 } from 'lucide-react';
-import { Select, InputNumber, Banner } from '@douyinfe/semi-ui';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Typography, Steps, Button, Form, Toast, Modal, Tag, Spin, useFormState } from "@douyinfe/semi-ui";
+import { ArrowLeft, Plus, Trash2, Building2 } from "lucide-react";
+import { Select, InputNumber, Banner } from "@douyinfe/semi-ui";
+import DepartmentSearchSelect from "@/components/DepartmentSearchSelect";
 // EmptyState 不再使用：v3 改为在 Step 0 内联 Banner 提示
-import { getSchemeIdByDepartment, subscribeSchemeBindingChange } from '@/mocks/departmentSchemeBinding';
-import { getDepartmentName, getDepartmentAncestorIds } from '@/mocks/departmentData';
-import OwnerSearchSelect from '@/components/OwnerSearchSelect';
-import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
+import { getSchemeIdByDepartment, subscribeSchemeBindingChange } from "@/mocks/departmentSchemeBinding";
+import { getDepartmentName } from "@/mocks/departmentData";
+import OwnerSearchSelect from "@/components/OwnerSearchSelect";
+import { MOCK_CURRENT_USER } from "@/mocks/departmentData";
 import {
   createRequirement,
   updateRequirement,
@@ -30,32 +20,24 @@ import {
   discardDraft,
   publishChange,
   deleteRequirement,
-} from '../../mockData';
-import { getSchemeById, getTenantDefaultScheme } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
-import type {
-  SchemeField,
-  SchemeFieldDependsOn,
-  RequirementItem,
-  RequirementDraft,
-} from '../../types';
-import { isPostProjectStatus } from '../../utils/fieldEditability';
-import { isClassificationEditable } from '../../utils/classificationEditable';
-import SchemeFieldRenderer from '../SchemeFieldRenderer';
-import PublishChangePanel, { ERROR_MAP } from '../PublishChangePanel';
+} from "../../mockData";
+import { getSchemeById, getTenantDefaultScheme } from "@/pages/Requirements/RequirementsWorkbench/schemeConfig";
+import type { SchemeField, SchemeFieldDependsOn, RequirementItem, RequirementDraft } from "../../types";
+import { isPostProjectStatus } from "../../utils/fieldEditability";
+import { isClassificationEditable } from "../../utils/classificationEditable";
+import SchemeFieldRenderer from "../SchemeFieldRenderer";
+import PublishChangePanel, { ERROR_MAP } from "../PublishChangePanel";
 import ClassificationTagsField, {
   type ClassificationValueMap,
   type ClassificationLoadStatus,
-} from '@/components/ClassificationTagsField';
-import {
-  assignEntityClassifications,
-  removeEntityClassifications,
-} from '@/mocks/classification/service';
-import './index.less';
+} from "@/components/ClassificationTagsField";
+import { assignEntityClassifications, removeEntityClassifications } from "@/mocks/classification/service";
+import "./index.less";
 
 const { Title, Text } = Typography;
 
 const STEP_FIELDS: Array<string[]> = [
-  ['title', 'department', 'owner', 'priority'],
+  ["title", "department", "owner", "priority"],
   [],
   [],
   [], // Step 3: 分类标签
@@ -68,7 +50,7 @@ const SchemeFieldsRenderer = ({
   costConfig,
 }: {
   fields: SchemeField[];
-  costConfig?: import('../../types').CostConfig;
+  costConfig?: import("../../types").CostConfig;
 }) => {
   const formState = useFormState();
   const values = (formState.values ?? {}) as Record<string, unknown>;
@@ -77,15 +59,24 @@ const SchemeFieldsRenderer = ({
     const current = values[dep.field];
     const target = dep.value;
     switch (dep.operator) {
-      case 'eq': return current === target;
-      case 'ne': return current !== target;
-      case 'in': return Array.isArray(target) && (target as Array<string | number>).includes(current as string | number);
-      case 'not_in': return Array.isArray(target) && !(target as Array<string | number>).includes(current as string | number);
-      case 'gt': return Number(current) > Number(target);
-      case 'lt': return Number(current) < Number(target);
-      case 'gte': return Number(current) >= Number(target);
-      case 'lte': return Number(current) <= Number(target);
-      default: return true;
+      case "eq":
+        return current === target;
+      case "ne":
+        return current !== target;
+      case "in":
+        return Array.isArray(target) && (target as Array<string | number>).includes(current as string | number);
+      case "not_in":
+        return Array.isArray(target) && !(target as Array<string | number>).includes(current as string | number);
+      case "gt":
+        return Number(current) > Number(target);
+      case "lt":
+        return Number(current) < Number(target);
+      case "gte":
+        return Number(current) >= Number(target);
+      case "lte":
+        return Number(current) <= Number(target);
+      default:
+        return true;
     }
   };
 
@@ -128,7 +119,7 @@ const RequirementCreatePage = () => {
   // 草稿 / 发布变更 状态
   const [hasDraft, setHasDraft] = useState(false);
   const [draftLoadedAt, setDraftLoadedAt] = useState<string | null>(null);
-  const [publishReason, setPublishReason] = useState('');
+  const [publishReason, setPublishReason] = useState("");
 
   const updatePositionCost = (idx: number, patch: Partial<{ level: string; cost: number }>) => {
     setPositionCosts((prev) => prev.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
@@ -145,8 +136,7 @@ const RequirementCreatePage = () => {
 
   // ============ 分类标签状态 ============
   const [classificationValue, setClassificationValue] = useState<ClassificationValueMap>({});
-  const [classificationStatus, setClassificationStatus] =
-    useState<ClassificationLoadStatus>('loading');
+  const [classificationStatus, setClassificationStatus] = useState<ClassificationLoadStatus>("loading");
   const [forceClsError, setForceClsError] = useState(false);
   const classificationEditable = isClassificationEditable(editData?.status);
   const handleClassificationChange = (next: ClassificationValueMap) => {
@@ -161,17 +151,13 @@ const RequirementCreatePage = () => {
   useEffect(() => subscribeSchemeBindingChange(() => setBindingTick((k) => k + 1)), []);
 
   // v15: 三级 fallback —— 部门直接命中 → 祖先继承 → 租户默认方案
-  const schemeMatch = useMemo<{ id: string; source: 'department' | 'tenant_default' } | null>(() => {
+  const schemeMatch = useMemo<{ id: string; source: "department" | "tenant_default" } | null>(() => {
     if (!departmentValue) return null;
     const direct = getSchemeIdByDepartment(departmentValue);
-    if (direct) return { id: direct, source: 'department' };
-    const ancestors = getDepartmentAncestorIds(departmentValue);
-    for (const a of ancestors) {
-      const hit = getSchemeIdByDepartment(a);
-      if (hit) return { id: hit, source: 'department' };
-    }
+    if (direct) return { id: direct, source: "department" };
+
     const def = getTenantDefaultScheme();
-    if (def) return { id: def.id, source: 'tenant_default' };
+    if (def) return { id: def.id, source: "tenant_default" };
     return null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bindingTick, departmentValue]);
@@ -188,29 +174,35 @@ const RequirementCreatePage = () => {
 
   const priorityOptions = useMemo(
     () => [
-      { value: 'HIGH', label: t('requirements.priority.high') },
-      { value: 'MEDIUM', label: t('requirements.priority.medium') },
-      { value: 'LOW', label: t('requirements.priority.low') },
+      { value: "HIGH", label: t("requirements.priority.high") },
+      { value: "MEDIUM", label: t("requirements.priority.medium") },
+      { value: "LOW", label: t("requirements.priority.low") },
     ],
     [t],
   );
 
-  const positionLevelOptions = useMemo(() => [
-    { value: 'JUNIOR', label: '初级' },
-    { value: 'INTERMEDIATE', label: '中级' },
-    { value: 'SENIOR', label: '高级' },
-    { value: 'EXPERT', label: '专家' },
-  ], []);
+  const positionLevelOptions = useMemo(
+    () => [
+      { value: "JUNIOR", label: "初级" },
+      { value: "INTERMEDIATE", label: "中级" },
+      { value: "SENIOR", label: "高级" },
+      { value: "EXPERT", label: "专家" },
+    ],
+    [],
+  );
 
-  const executionFrequencyOptions = useMemo(() => [
-    { value: 'DAILY', label: '每天' },
-    { value: 'WEEKLY', label: '每周' },
-    { value: 'MONTHLY', label: '每月' },
-    { value: 'QUARTERLY', label: '每季度' },
-    { value: 'YEARLY', label: '每年' },
-  ], []);
+  const executionFrequencyOptions = useMemo(
+    () => [
+      { value: "DAILY", label: "每天" },
+      { value: "WEEKLY", label: "每周" },
+      { value: "MONTHLY", label: "每月" },
+      { value: "QUARTERLY", label: "每季度" },
+      { value: "YEARLY", label: "每年" },
+    ],
+    [],
+  );
 
-  const OPTIONAL_FORM_KEYS = ['execution_frequency', 'single_duration'] as const;
+  const OPTIONAL_FORM_KEYS = ["execution_frequency", "single_duration"] as const;
 
   const baseInitialValues = useMemo(() => {
     if (isEdit && editData) {
@@ -222,7 +214,7 @@ const RequirementCreatePage = () => {
         ...formData,
       };
     }
-    return { priority: 'MEDIUM' as const };
+    return { priority: "MEDIUM" as const };
   }, [isEdit, editData]);
 
   /** 加载需求 + 草稿 */
@@ -234,8 +226,8 @@ const RequirementCreatePage = () => {
         const item = await getRequirementById(editId);
         if (cancelled) return;
         if (!item) {
-          Toast.error('需求不存在或已被删除');
-          navigate('/requirements/list', { replace: true });
+          Toast.error("需求不存在或已被删除");
+          navigate("/requirements/list", { replace: true });
           return;
         }
         setEditData(item);
@@ -247,7 +239,9 @@ const RequirementCreatePage = () => {
         if (Array.isArray(arr) && arr.length > 0) {
           setPositionCosts(arr.map((r) => ({ level: r?.level, cost: r?.cost })));
         } else if (fd.position_level || fd.position_cost) {
-          setPositionCosts([{ level: fd.position_level as string | undefined, cost: fd.position_cost as number | undefined }]);
+          setPositionCosts([
+            { level: fd.position_level as string | undefined, cost: fd.position_cost as number | undefined },
+          ]);
         }
 
         // 立项后：尝试加载草稿合并
@@ -259,8 +253,8 @@ const RequirementCreatePage = () => {
             setDraftLoadedAt(draft.updatedAt);
             // 草稿覆盖
             setTimeout(() => {
-              if (patch.title !== undefined) formApi?.setValue?.('title', patch.title);
-              if (patch.priority !== undefined) formApi?.setValue?.('priority', patch.priority);
+              if (patch.title !== undefined) formApi?.setValue?.("title", patch.title);
+              if (patch.priority !== undefined) formApi?.setValue?.("priority", patch.priority);
               if (patch.form_data) {
                 Object.entries(patch.form_data).forEach(([k, v]) => formApi?.setValue?.(k, v));
                 const da = (patch.form_data as Record<string, unknown>).position_costs as
@@ -287,16 +281,16 @@ const RequirementCreatePage = () => {
   const handleBack = () => {
     if (dirtyRef.current) {
       Modal.confirm({
-        title: '确认离开？',
-        content: '当前已填写的内容将不会保存。',
-        okText: '离开',
-        cancelText: '继续编辑',
-        okButtonProps: { type: 'danger' },
-        onOk: () => navigate('/requirements/list'),
+        title: "确认离开？",
+        content: "当前已填写的内容将不会保存。",
+        okText: "离开",
+        cancelText: "继续编辑",
+        okButtonProps: { type: "danger" },
+        onOk: () => navigate("/requirements/list"),
       });
       return;
     }
-    navigate('/requirements/list');
+    navigate("/requirements/list");
   };
 
   const validateCurrentStep = async (): Promise<boolean> => {
@@ -306,11 +300,11 @@ const RequirementCreatePage = () => {
       if (fields.length > 0) await formApi.validate(fields);
       if (currentStep === 0) {
         if (!departmentValue) {
-          Toast.warning(t('requirements.form.departmentRequired'));
+          Toast.warning(t("requirements.form.departmentRequired"));
           return false;
         }
         if (!isEdit && !selectedSchemeId) {
-          Toast.warning('所选部门没有生效的需求模板，无法创建需求');
+          Toast.warning("所选部门没有生效的需求模板，无法创建需求");
           return false;
         }
         // owner_id 在草稿态可留空（STORY-003 v3 §3.1 Step 6）；仅在最终提交时若需求需要进入审批环节再校验
@@ -337,8 +331,8 @@ const RequirementCreatePage = () => {
   const handlePrev = () => setCurrentStep((s) => Math.max(0, s - 1));
 
   const locateFirstError = (errorFields: string[]) => {
-    const step0 = new Set(['title', 'department', 'owner', 'priority']);
-    const step1 = new Set(['execution_frequency', 'single_duration']);
+    const step0 = new Set(["title", "department", "owner", "priority"]);
+    const step1 = new Set(["execution_frequency", "single_duration"]);
     let target = 2;
     const first = errorFields[0];
     if (first) {
@@ -347,15 +341,15 @@ const RequirementCreatePage = () => {
     }
     setCurrentStep(target);
     setTimeout(() => {
-      const el = document.querySelector('.requirement-create-page .semi-form-field-error-message');
-      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const el = document.querySelector(".requirement-create-page .semi-form-field-error-message");
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 100);
   };
 
   /** 收集表单值 → submitValues / patch 通用 */
   const buildSubmitValues = () => {
     const values = (formApi?.getValues?.() ?? {}) as Record<string, unknown>;
-    const systemKeys = new Set(['title', 'department', 'priority']);
+    const systemKeys = new Set(["title", "department", "priority"]);
     const form_data: Record<string, unknown> = {};
     activeScheme?.custom_fields.forEach((f) => {
       if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
@@ -364,7 +358,7 @@ const RequirementCreatePage = () => {
       if (values[k] !== undefined) form_data[k] = values[k];
     });
     const cleanedPositionCosts = positionCosts
-      .filter((r) => r.level !== undefined || (typeof r.cost === 'number' && !Number.isNaN(r.cost)))
+      .filter((r) => r.level !== undefined || (typeof r.cost === "number" && !Number.isNaN(r.cost)))
       .map((r) => ({ level: r.level, cost: r.cost }));
     if (cleanedPositionCosts.length > 0) {
       form_data.position_costs = cleanedPositionCosts;
@@ -386,11 +380,11 @@ const RequirementCreatePage = () => {
   };
 
   /** 立项后构造 patch */
-  const buildPatch = (): RequirementDraft['patch'] => {
+  const buildPatch = (): RequirementDraft["patch"] => {
     const { values, form_data } = buildSubmitValues();
     return {
       title: values.title as string | undefined,
-      priority: values.priority as RequirementItem['priority'] | undefined,
+      priority: values.priority as RequirementItem["priority"] | undefined,
       form_data,
     };
   };
@@ -400,13 +394,13 @@ const RequirementCreatePage = () => {
     try {
       setSavingDraft(true);
       await saveDraft(editData.id, buildPatch());
-      Toast.success('草稿已保存');
+      Toast.success("草稿已保存");
       setHasDraft(true);
       setDraftLoadedAt(new Date().toISOString());
       dirtyRef.current = false;
-      navigate('/requirements/list');
+      navigate("/requirements/list");
     } catch {
-      Toast.error('草稿保存失败');
+      Toast.error("草稿保存失败");
     } finally {
       setSavingDraft(false);
     }
@@ -417,32 +411,29 @@ const RequirementCreatePage = () => {
     await discardDraft(editData.id);
     setHasDraft(false);
     setDraftLoadedAt(null);
-    Toast.success('草稿已丢弃');
+    Toast.success("草稿已丢弃");
   };
 
   const validateClassification = (): boolean => {
     if (!classificationEditable) return true;
-    if (classificationStatus === 'error') {
-      Toast.error('分类标签加载失败，请稍后重试');
+    if (classificationStatus === "error") {
+      Toast.error("分类标签加载失败，请稍后重试");
       setCurrentStep(3);
       return false;
     }
-    if (classificationStatus === 'loading') {
-      Toast.info('分类标签加载中，请稍候');
+    if (classificationStatus === "loading") {
+      Toast.info("分类标签加载中，请稍候");
       return false;
     }
-    if (classificationStatus === 'empty') return true; // AF1：无适用分类键
+    if (classificationStatus === "empty") return true; // AF1：无适用分类键
     // ready 态：合计至少 1 个
-    const total = Object.values(classificationValue).reduce(
-      (sum, ids) => sum + (ids?.length ?? 0),
-      0,
-    );
+    const total = Object.values(classificationValue).reduce((sum, ids) => sum + (ids?.length ?? 0), 0);
     if (total === 0) {
       setForceClsError(true);
       setCurrentStep(3);
       setTimeout(() => {
-        const el = document.querySelector('[data-classification-anchor]');
-        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const el = document.querySelector("[data-classification-anchor]");
+        el?.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 100);
       return false;
     }
@@ -453,19 +444,19 @@ const RequirementCreatePage = () => {
     if (!formApi) return;
     if (!departmentValue) {
       setCurrentStep(0);
-      Toast.warning(t('requirements.form.departmentRequired'));
+      Toast.warning(t("requirements.form.departmentRequired"));
       return;
     }
     if (!isEdit && !selectedSchemeId) {
       setCurrentStep(0);
-      Toast.warning('所选部门没有生效的需求模板，无法创建需求');
+      Toast.warning("所选部门没有生效的需求模板，无法创建需求");
       return;
     }
     // owner_id 在草稿态可留空（STORY-003 v3）
     try {
       await formApi.validate();
     } catch (errors) {
-      const fields = errors && typeof errors === 'object' ? Object.keys(errors as Record<string, unknown>) : [];
+      const fields = errors && typeof errors === "object" ? Object.keys(errors as Record<string, unknown>) : [];
       locateFirstError(fields);
       return;
     }
@@ -499,12 +490,12 @@ const RequirementCreatePage = () => {
       } else {
         const created = await createRequirement(submitValues);
         // mockData.createRequirement 返回创建的 RequirementItem
-        entityId = (created as RequirementItem)?.id ?? '';
+        entityId = (created as RequirementItem)?.id ?? "";
       }
       // 保存分类
-      if (classificationStatus === 'ready') {
+      if (classificationStatus === "ready") {
         try {
-          await assignEntityClassifications('requirement', entityId, buildAssignmentPayload());
+          await assignEntityClassifications("requirement", entityId, buildAssignmentPayload());
         } catch {
           // 回滚需求创建
           if (!isEdit && entityId) {
@@ -513,18 +504,16 @@ const RequirementCreatePage = () => {
             } catch {
               /* ignore */
             }
-            removeEntityClassifications('requirement', entityId);
+            removeEntityClassifications("requirement", entityId);
           }
-          Toast.error('需求创建失败：分类标签保存异常，请稍后重试');
+          Toast.error("需求创建失败：分类标签保存异常，请稍后重试");
           return;
         }
       }
-      Toast.success(
-        isEdit ? t('requirements.form.editSuccess') : t('requirements.form.createSuccess'),
-      );
-      navigate('/requirements/list');
+      Toast.success(isEdit ? t("requirements.form.editSuccess") : t("requirements.form.createSuccess"));
+      navigate("/requirements/list");
     } catch {
-      Toast.error(t('requirements.form.submitError'));
+      Toast.error(t("requirements.form.submitError"));
     } finally {
       setSubmitting(false);
     }
@@ -533,7 +522,7 @@ const RequirementCreatePage = () => {
   const handlePublish = async () => {
     if (!editData) return;
     if (publishReason.trim().length < 10) {
-      Toast.warning('变更说明至少 10 个字符');
+      Toast.warning("变更说明至少 10 个字符");
       return;
     }
     setSubmitting(true);
@@ -543,29 +532,29 @@ const RequirementCreatePage = () => {
         patch: buildPatch(),
         reason: publishReason.trim(),
       });
-      Toast.success('变更已发布');
+      Toast.success("变更已发布");
       setHasDraft(false);
-      navigate('/requirements/list');
+      navigate("/requirements/list");
     } catch (e) {
-      const code = (e as Error)?.message ?? '';
-      Toast.error(ERROR_MAP[code] || `发布失败: ${code || '未知错误'}`);
+      const code = (e as Error)?.message ?? "";
+      Toast.error(ERROR_MAP[code] || `发布失败: ${code || "未知错误"}`);
     } finally {
       setSubmitting(false);
     }
   };
 
-  const draftHintTime = draftLoadedAt
-    ? draftLoadedAt.replace('T', ' ').substring(5, 16)
-    : '';
+  const draftHintTime = draftLoadedAt ? draftLoadedAt.replace("T", " ").substring(5, 16) : "";
 
   const titleText = isEdit
-    ? (isPostProjectEdit ? '变更需求' : t('requirements.form.editTitle'))
-    : t('requirements.form.createTitle');
+    ? isPostProjectEdit
+      ? "变更需求"
+      : t("requirements.form.editTitle")
+    : t("requirements.form.createTitle");
 
   if (editLoading) {
     return (
       <div className="requirement-create-page">
-        <div style={{ padding: 80, textAlign: 'center' }}>
+        <div style={{ padding: 80, textAlign: "center" }}>
           <Spin />
         </div>
       </div>
@@ -591,7 +580,7 @@ const RequirementCreatePage = () => {
         </Title>
         {isPostProjectEdit && hasDraft && (
           <Tag size="small" color="orange" style={{ marginLeft: 8 }}>
-            {`已加载草稿${draftHintTime ? ` · ${draftHintTime}` : ''}`}
+            {`已加载草稿${draftHintTime ? ` · ${draftHintTime}` : ""}`}
           </Tag>
         )}
       </div>
@@ -602,12 +591,9 @@ const RequirementCreatePage = () => {
           <Steps.Step title="岗位与执行成本" description="人力级别、成本、执行频率、时长" />
           <Steps.Step title="需求详情" description="按模版填写业务字段" />
           <Steps.Step title="分类标签" description="按业务维度打标，便于后续筛选" />
-          {isPostProjectEdit && (
-            <Steps.Step title="发布变更" description="填写变更说明并发布" />
-          )}
+          {isPostProjectEdit && <Steps.Step title="发布变更" description="填写变更说明并发布" />}
         </Steps>
       </div>
-
 
       <div className="requirement-create-page-content">
         <div className="form-card">
@@ -616,10 +602,10 @@ const RequirementCreatePage = () => {
             initValues={baseInitialValues}
             getFormApi={setFormApi}
             onValueChange={() => setDirty(true)}
-            key={editData?.id || 'create'}
+            key={editData?.id || "create"}
           >
             {/* Step 0 */}
-            <div style={{ display: currentStep === 0 ? 'block' : 'none' }}>
+            <div style={{ display: currentStep === 0 ? "block" : "none" }}>
               {activeScheme && departmentValue && (
                 <Banner
                   type="info"
@@ -631,7 +617,7 @@ const RequirementCreatePage = () => {
                     <span>
                       使用方案：<strong>{activeScheme.name}</strong> · v{activeScheme.version}
                       <Text type="tertiary" size="small" style={{ marginLeft: 8 }}>
-                        {schemeMatch?.source === 'tenant_default'
+                        {schemeMatch?.source === "tenant_default"
                           ? `（所属部门「${getDepartmentName(departmentValue)}」未配置专属方案，使用租户默认方案）`
                           : `（根据所属部门「${getDepartmentName(departmentValue)}」自动匹配）`}
                       </Text>
@@ -641,25 +627,25 @@ const RequirementCreatePage = () => {
               )}
               <Form.Input
                 field="title"
-                label={t('requirements.form.titleLabel')}
-                placeholder={t('requirements.form.titlePlaceholder')}
-                trigger={['blur', 'change']}
+                label={t("requirements.form.titleLabel")}
+                placeholder={t("requirements.form.titlePlaceholder")}
+                trigger={["blur", "change"]}
                 rules={[
-                  { required: true, message: t('requirements.form.titleRequired') },
-                  { max: 200, message: t('requirements.form.titleMaxLength') },
+                  { required: true, message: t("requirements.form.titleRequired") },
+                  { max: 200, message: t("requirements.form.titleMaxLength") },
                 ]}
                 maxLength={200}
                 showClear
               />
-              <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
+              <Form.Slot label={{ text: t("common.owningDepartment"), required: true }}>
                 <DepartmentSearchSelect
                   value={departmentValue}
                   onChange={(v) => {
                     setDepartmentValue(v);
-                    formApi?.setValue?.('department', v);
+                    formApi?.setValue?.("department", v);
                     setDirty(true);
                   }}
-                  placeholder={isEdit ? t('requirements.form.departmentPlaceholder') : '请先选择所属部门以匹配需求模板'}
+                  placeholder={isEdit ? t("requirements.form.departmentPlaceholder") : "请先选择所属部门以匹配需求模板"}
                   disabled={isPostProjectEdit}
                 />
               </Form.Slot>
@@ -670,17 +656,18 @@ const RequirementCreatePage = () => {
                     fullMode={false}
                     closeIcon={null}
                     description={
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                         <span>所选部门没有生效的需求模板</span>
                         <Text type="tertiary" size="small">
-                          请联系管理员在「需求模板」中为「{getDepartmentName(departmentValue)}」配置适用方案，或选择其他已绑定方案的部门
+                          请联系管理员在「需求模板」中为「{getDepartmentName(departmentValue)}
+                          」配置适用方案，或选择其他已绑定方案的部门
                         </Text>
                       </div>
                     }
                   />
                 </div>
               )}
-              <Form.Slot label={{ text: t('requirements.form.requirementOwnerLabel'), required: true }}>
+              <Form.Slot label={{ text: t("requirements.form.requirementOwnerLabel"), required: true }}>
                 <OwnerSearchSelect
                   value={ownerId}
                   onChange={(v) => {
@@ -692,16 +679,16 @@ const RequirementCreatePage = () => {
               </Form.Slot>
               <Form.Select
                 field="priority"
-                label={`${t('requirements.fields.priority')}${t('requirements.form.optionalSuffix')}`}
-                placeholder={t('requirements.form.priorityPlaceholder')}
+                label={`${t("requirements.fields.priority")}${t("requirements.form.optionalSuffix")}`}
+                placeholder={t("requirements.form.priorityPlaceholder")}
                 optionList={priorityOptions}
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
               />
             </div>
 
             {/* Step 1 */}
-            <div style={{ display: currentStep === 1 ? 'block' : 'none' }}>
-              <Form.Slot label={{ text: '岗位级别与成本' }}>
+            <div style={{ display: currentStep === 1 ? "block" : "none" }}>
+              <Form.Slot label={{ text: "岗位级别与成本" }}>
                 <div className="position-cost-list">
                   {positionCosts.map((row, idx) => (
                     <div key={idx} className="position-cost-row">
@@ -717,7 +704,11 @@ const RequirementCreatePage = () => {
                         placeholder="请输入岗位成本"
                         value={row.cost}
                         onChange={(v) => updatePositionCost(idx, { cost: v as number })}
-                        suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8, whiteSpace: 'nowrap' }}>元/人天</span>}
+                        suffix={
+                          <span style={{ color: "var(--semi-color-text-2)", paddingRight: 8, whiteSpace: "nowrap" }}>
+                            元/人天
+                          </span>
+                        }
                         min={0}
                         precision={2}
                         hideButtons
@@ -737,7 +728,7 @@ const RequirementCreatePage = () => {
                     theme="borderless"
                     type="primary"
                     onClick={addPositionCost}
-                    style={{ alignSelf: 'flex-start', paddingLeft: 0 }}
+                    style={{ alignSelf: "flex-start", paddingLeft: 0 }}
                   >
                     添加岗位
                   </Button>
@@ -749,27 +740,26 @@ const RequirementCreatePage = () => {
                 placeholder="请选择执行频率"
                 optionList={executionFrequencyOptions}
                 showClear
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
               />
               <Form.InputNumber
                 field="single_duration"
                 label="单次时长"
                 placeholder="请输入"
-                suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8, whiteSpace: 'nowrap' }}>分钟</span>}
+                suffix={
+                  <span style={{ color: "var(--semi-color-text-2)", paddingRight: 8, whiteSpace: "nowrap" }}>分钟</span>
+                }
                 min={0}
                 precision={0}
                 hideButtons
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
               />
             </div>
 
             {/* Step 2 */}
-            <div style={{ display: currentStep === 2 ? 'block' : 'none' }}>
+            <div style={{ display: currentStep === 2 ? "block" : "none" }}>
               {activeScheme && activeScheme.custom_fields.length > 0 ? (
-                <SchemeFieldsRenderer
-                  fields={activeScheme.custom_fields}
-                  costConfig={activeScheme.cost_config}
-                />
+                <SchemeFieldsRenderer fields={activeScheme.custom_fields} costConfig={activeScheme.cost_config} />
               ) : (
                 <Text type="tertiary">当前模版未配置自定义字段，可直接提交。</Text>
               )}
@@ -777,7 +767,7 @@ const RequirementCreatePage = () => {
           </Form>
 
           {/* Step 3：分类标签 */}
-          <div style={{ display: currentStep === 3 ? 'block' : 'none' }}>
+          <div style={{ display: currentStep === 3 ? "block" : "none" }}>
             <ClassificationTagsField
               entityType="requirement"
               entityId={editData?.id}
@@ -791,24 +781,14 @@ const RequirementCreatePage = () => {
           </div>
 
           {/* Step 3: 发布变更（仅立项后编辑） */}
-          {isPublishStep && editData && (
-            <PublishChangePanel
-              reason={publishReason}
-              onReasonChange={setPublishReason}
-            />
-          )}
+          {isPublishStep && editData && <PublishChangePanel reason={publishReason} onReasonChange={setPublishReason} />}
         </div>
       </div>
 
       <div className="requirement-create-page-footer">
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: "flex", gap: 8 }}>
           {isPostProjectEdit && !isPublishStep && (
-            <Button
-              theme="borderless"
-              type="tertiary"
-              loading={savingDraft}
-              onClick={handleSaveDraft}
-            >
+            <Button theme="borderless" type="tertiary" loading={savingDraft} onClick={handleSaveDraft}>
               保存草稿
             </Button>
           )}
@@ -818,9 +798,9 @@ const RequirementCreatePage = () => {
             </Button>
           )}
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: "flex", gap: 8 }}>
           <Button onClick={handleBack} disabled={submitting}>
-            {t('common.cancel')}
+            {t("common.cancel")}
           </Button>
           {currentStep > 0 && (
             <Button onClick={handlePrev} disabled={submitting}>
@@ -843,12 +823,11 @@ const RequirementCreatePage = () => {
               type="primary"
               loading={submitting}
               disabled={
-                classificationEditable &&
-                (classificationStatus === 'error' || classificationStatus === 'loading')
+                classificationEditable && (classificationStatus === "error" || classificationStatus === "loading")
               }
               onClick={handleSubmit}
             >
-              {isPostProjectEdit ? '下一步：发布变更' : (isEdit ? t('common.save') : t('common.create'))}
+              {isPostProjectEdit ? "下一步：发布变更" : isEdit ? t("common.save") : t("common.create")}
             </Button>
           )}
           {isPublishStep && (
