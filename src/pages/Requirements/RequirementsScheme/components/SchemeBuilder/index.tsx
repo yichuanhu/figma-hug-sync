@@ -8,7 +8,7 @@ import {
   getSchemeById,
   getActiveSchemes,
   updateSchemeBuilder,
-  updateSchemeApplicableDepartments,
+  
   validateScheme,
   activateSchemeBuilder,
   setSchemeAsDefault,
@@ -497,6 +497,18 @@ const SchemeBuilderPage = () => {
         </Space>
       </div>
 
+      {editMode === 'custom_active' && (
+        <Banner
+          type="info"
+          description="正在编辑已激活方案，保存后将直接覆盖配置，适用部门变更会同步生效绑定"
+          fullMode={false}
+          closeIcon={null}
+          style={{ marginBottom: 12 }}
+        />
+      )}
+
+
+
 
       {showDeptBlock && (() => {
         const deptIds = draftScheme.applicable_department_ids ?? [];
@@ -541,7 +553,6 @@ const SchemeBuilderPage = () => {
         aria-disabled={isFormReadOnly}
         title={
           editMode === 'preset' ? '预设方案完全只读，请基于预设创建副本后再修改' :
-          editMode === 'custom_active' ? '已启用方案的字段配置不可修改，仅可调整适用部门；如需修改请先停用方案' :
           undefined
         }
       >
