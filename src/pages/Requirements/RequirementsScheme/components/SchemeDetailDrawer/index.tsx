@@ -188,6 +188,16 @@ const SchemeDetailDrawer = ({
                 <Text>{scheme.description || '-'}</Text>
                 <Text className="label">{t('common.createdAt')}</Text>
                 <Text>{scheme.created_at}</Text>
+                <Text className="label">适用部门</Text>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {(() => {
+                    const deptIds = listDepartmentsByScheme(scheme.id);
+                    if (deptIds.length === 0) return <Text type="tertiary">-</Text>;
+                    return deptIds.map((id) => (
+                      <Tag key={id} color="violet" type="light" size="small">{getDepartmentName(id)}</Tag>
+                    ));
+                  })()}
+                </div>
               </div>
             </div>
           </TabPane>
