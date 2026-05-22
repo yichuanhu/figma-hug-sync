@@ -687,7 +687,7 @@ export const updateSchemeBuilder = async (
     'name' | 'description' | 'version' | 'custom_fields' |
     'value_assessment_model' | 'complexity_assessment_model' |
     'workflow_config' | 'cost_config' | 'approval_flow' |
-    'applicable_department_ids'
+    'applicable_department_ids' | 'source_preset_key'
   >>,
 ): Promise<RequirementScheme> => {
   await new Promise((r) => setTimeout(r, 150));
