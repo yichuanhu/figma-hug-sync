@@ -227,7 +227,7 @@ const SchemeBuilderPage = () => {
           applicable_department_ids: selectedDeptIds,
           source_preset_key: draftScheme.source_preset_key,
         });
-        setSchemeBindingsForScheme(updated.id, expandedDeptIds);
+        // 草稿不写绑定表，仅保存显式选择的 applicable_department_ids
         setDirty(false);
         Toast.success(t('requirements.scheme.builder.savedDraft'));
         navigate(`/requirements/scheme/builder/${updated.id}`, { replace: true });
