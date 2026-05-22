@@ -267,7 +267,7 @@ const RequirementsScheme = () => {
 
   const renderSourceTag = (s: RequirementScheme) => {
     if (s.is_preset) return <Tag color="blue" type="light" size="small">预制</Tag>;
-    if (s.is_tenant_default) return <Tag color="violet" type="light" size="small" prefixIcon={<Star size={12} strokeWidth={2} />}>默认</Tag>;
+    if (s.is_tenant_default) return <Tag color="amber" type="light" size="small" prefixIcon={<Star size={12} strokeWidth={2} />}>默认</Tag>;
     return null;
   };
 
