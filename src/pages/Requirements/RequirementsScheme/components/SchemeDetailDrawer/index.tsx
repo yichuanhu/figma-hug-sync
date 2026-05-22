@@ -60,29 +60,30 @@ const SchemeDetailDrawer = ({
         size="small"
         disabled={hasBinding}
         onClick={() => onSetDefault?.(scheme)}
-      >
-        设为默认
-      </Button>
+      />
     ) : null;
 
     return (
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
         {canActivate && (
-          <Button
-            icon={<CheckCircle size={16} strokeWidth={2} />}
-            theme="borderless"
-            type="tertiary"
-            size="small"
-            onClick={() => onActivate(scheme)}
-          >
-            {t('requirements.scheme.activate')}
-          </Button>
+          <Tooltip content={t('requirements.scheme.activate')} position="bottom">
+            <Button
+              icon={<CheckCircle size={16} strokeWidth={2} />}
+              theme="borderless"
+              type="tertiary"
+              size="small"
+              onClick={() => onActivate(scheme)}
+            />
+          </Tooltip>
         )}
-        {setDefaultBtn && (hasBinding ? (
-          <Tooltip content="有部门绑定的方案不能设为默认，请先清空适用部门" position="bottom">
+        {setDefaultBtn && (
+          <Tooltip
+            content={hasBinding ? '有部门绑定的方案不能设为默认，请先清空适用部门' : '设为默认'}
+            position="bottom"
+          >
             <span style={{ display: 'inline-flex' }}>{setDefaultBtn}</span>
           </Tooltip>
-        ) : setDefaultBtn)}
+        )}
       </span>
     );
   }, [scheme, onActivate, onSetDefault, hasBinding, t]);
