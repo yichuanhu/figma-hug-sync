@@ -1,61 +1,6 @@
 // 运营中心数据类型定义
 
 
-// 资源概览
-export interface ResourceOverviewData {
-  interactiveOnline: number;     // 人机交互在线数
-  interactiveTotal: number;      // 人机交互授权数
-  unattendedOnline: number;      // 无人值守在线数
-  unattendedTotal: number;       // 无人值守授权数
-  todayTasks: number;            // 今日任务量
-  totalTasks: number;            // 累计任务量
-  todayRunMinutes: number;       // 今日运行时长(分钟)
-  totalRunMinutes: number;       // 累计运行时长(分钟)
-}
-
-// 需求概览
-export interface RequirementOverviewData {
-  developing: number;            // 开发中
-  completed: number;             // 已完成
-  running: number;               // 运行中
-  total: number;                 // 历史总数
-}
-
-// ROI 趋势数据点
-export interface RoiTrendPoint {
-  month: string;
-  roi: number;                   // ROI%
-  investmentCost: number;        // 投入成本
-  savedCost: number;             // 节约成本
-}
-
-// 部门 ROI 排行
-export interface DepartmentRoiItem {
-  rank: number;
-  department: string;
-  investmentCost: number;
-  savedCost: number;
-  roi: number;
-  trend: number[];               // 迷你趋势数据
-}
-
-// 需求 ROI 排行
-export interface RequirementRoiItem {
-  rank: number;
-  requirementName: string;
-  department: string;
-  roi: number;
-  status: string;
-}
-
-
-
-// 筛选条件
-export interface DashboardFilter {
-  timeRange: string;
-  department: string;
-  project: string;
-}
 
 // 资源效能 - 机器人详情
 export interface RobotDetail {
