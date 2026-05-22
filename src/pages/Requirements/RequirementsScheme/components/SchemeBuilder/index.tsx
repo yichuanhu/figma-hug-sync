@@ -240,7 +240,7 @@ const SchemeBuilderPage = () => {
         });
         setSchemeBindingsForScheme(updated.id, expandedDeptIds);
         setDirty(false);
-        Toast.success(t("requirements.scheme.builder.savedDraft"));
+        Toast.success("已保存");
         navigate(`/requirements/scheme/builder/${updated.id}`, { replace: true });
       } catch (e) {
         handleSchemeError(e);
