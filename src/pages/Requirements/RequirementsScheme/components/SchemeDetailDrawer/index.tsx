@@ -17,6 +17,8 @@ interface Props {
   onNavigate: (s: RequirementScheme) => void;
   onActivate: (s: RequirementScheme) => void;
   onDelete: (s: RequirementScheme) => void;
+  onSetDefault?: (s: RequirementScheme) => void;
+  hasBinding?: boolean;
 }
 
 const SchemeDetailDrawer = ({
@@ -27,6 +29,8 @@ const SchemeDetailDrawer = ({
   onNavigate,
   onActivate,
   onDelete,
+  onSetDefault,
+  hasBinding = false,
 }: Props) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('basic');
@@ -42,20 +46,46 @@ const SchemeDetailDrawer = ({
 
   const extraActions = useMemo(() => {
     if (!scheme) return null;
-    const canActivate = !scheme.is_preset && !scheme.is_tenant_default && scheme.status !== 'active';
-    if (!canActivate) return null;
-    return (
+    const isCustom = !scheme.is_preset && !scheme.is_tenant_default;
+    const canActivate = isCustom && scheme.status !== 'active';
+    const canSetDefault = isCustom && !!onSetDefault;
+    if (!canActivate && !canSetDefault) return null;
+
+    const setDefaultBtn = canSetDefault ? (
       <Button
-        icon={<CheckCircle size={16} strokeWidth={2} />}
+        key="set-default"
+        icon={<Star size={16} strokeWidth={2} />}
         theme="borderless"
         type="tertiary"
         size="small"
-        onClick={() => onActivate(scheme)}
+        disabled={hasBinding}
+        onClick={() => onSetDefault?.(scheme)}
       >
-        {t('requirements.scheme.activate')}
+        设为默认
       </Button>
+    ) : null;
+
+    return (
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+        {canActivate && (
+          <Button
+            icon={<CheckCircle size={16} strokeWidth={2} />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            onClick={() => onActivate(scheme)}
+          >
+            {t('requirements.scheme.activate')}
+          </Button>
+        )}
+        {setDefaultBtn && (hasBinding ? (
+          <Tooltip content="有部门绑定的方案不能设为默认，请先清空适用部门" position="bottom">
+            <span style={{ display: 'inline-flex' }}>{setDefaultBtn}</span>
+          </Tooltip>
+        ) : setDefaultBtn)}
+      </span>
     );
-  }, [scheme, onActivate, t]);
+  }, [scheme, onActivate, onSetDefault, hasBinding, t]);
 
   const deleteAction = useMemo(() => {
     if (!scheme || scheme.is_preset || scheme.is_tenant_default) return null;
