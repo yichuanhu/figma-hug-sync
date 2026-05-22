@@ -21,6 +21,7 @@ import {
   setSchemeBindingsForScheme,
   getOccupiedDepartmentMapByScheme,
   getBoundDepartmentCountMapByScheme,
+  seedSampleBindingsIfEmpty,
 } from "@/mocks/departmentSchemeBinding";
 import { getDepartmentName, expandDepartmentIdsWithDescendants } from "@/mocks/departmentData";
 import { computeDeptDisabledOptions } from "@/pages/Requirements/_shared/computeDeptDisabledOptions";
