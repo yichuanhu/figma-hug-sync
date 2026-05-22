@@ -187,6 +187,8 @@ const SchemeBuilderPage = () => {
             </div>
           ),
         });
+      } else if (['SCHEME_BOUND_CANNOT_SET_DEFAULT', 'SCHEME_DEFAULT_CANNOT_ACTIVATE', 'SCHEME_DEFAULT_UNAVAILABLE'].includes(e.code)) {
+        Modal.error({ title: '操作不允许', content: e.message });
       } else {
         Toast.warning(e.message);
       }
@@ -223,6 +225,7 @@ const SchemeBuilderPage = () => {
           cost_config: draftScheme.cost_config,
           approval_flow: draftScheme.approval_flow,
           applicable_department_ids: selectedDeptIds,
+          source_preset_key: draftScheme.source_preset_key,
         });
         setSchemeBindingsForScheme(updated.id, expandedDeptIds);
         setDirty(false);
@@ -232,15 +235,56 @@ const SchemeBuilderPage = () => {
       return;
     }
 
-    // custom_active：仅允许保存「适用部门」
+    // custom_active：完整保存 + 部门冲突校验（与激活相同）
     if (editMode === 'custom_active') {
+      const fv = validateAllFields(draftScheme.custom_fields ?? []);
+      if (fv.hasError) {
+        Toast.error(`字段配置存在 ${fv.errorFieldKeys.length} 项问题，请先修正`);
+        return;
+      }
+      if (selectedDeptIds.length === 0) {
+        Toast.warning('请至少选择一个适用部门');
+        return;
+      }
+      // 部门冲突校验（排除自身与租户默认方案）
+      const activeIds = getActiveSchemes()
+        .filter((s) => s.id !== draftScheme.id && !s.is_tenant_default)
+        .map((s) => s.id);
+      const occupied = getOccupiedDepartmentMapByScheme(draftScheme.id, activeIds);
+      const conflicts = expandedDeptIds.filter((d) => occupied[d]);
+      if (conflicts.length > 0) {
+        const ownerName = getSchemeById(occupied[conflicts[0]])?.name ?? '其他方案';
+        Modal.error({
+          title: '存在部门冲突',
+          content: (
+            <div>
+              <div style={{ marginBottom: 8 }}>部门已被方案「{ownerName}」占用，请调整适用部门</div>
+              <Text type="tertiary" size="small">
+                冲突部门：{conflicts.slice(0, 5).map(getDepartmentName).join('、')}
+                {conflicts.length > 5 ? ` 等 ${conflicts.length} 个` : ''}
+              </Text>
+            </div>
+          ),
+        });
+        return;
+      }
       try {
-        await updateSchemeApplicableDepartments(draftScheme.id, selectedDeptIds);
+        const updated = await updateSchemeBuilder(draftScheme.id, {
+          name: draftScheme.name,
+          description: draftScheme.description,
+          custom_fields: draftScheme.custom_fields,
+          value_assessment_model: draftScheme.value_assessment_model,
+          complexity_assessment_model: draftScheme.complexity_assessment_model,
+          workflow_config: draftScheme.workflow_config,
+          cost_config: draftScheme.cost_config,
+          approval_flow: draftScheme.approval_flow,
+          applicable_department_ids: selectedDeptIds,
+        });
         setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
-        const updated = getSchemeById(draftScheme.id);
-        if (updated) { setSavedScheme(updated); setDraftScheme(updated); }
+        setSavedScheme(updated);
+        setDraftScheme(updated);
         setDirty(false);
-        Toast.success('适用部门已更新');
+        Toast.success('已保存');
       } catch (e) { handleSchemeError(e); }
       return;
     }
