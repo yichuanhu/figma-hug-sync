@@ -222,6 +222,10 @@ const SchemeBuilderPage = () => {
         Toast.error(`字段配置存在 ${fv.errorFieldKeys.length} 项问题，请先修正`);
         return;
       }
+      if (selectedDeptIds.length === 0) {
+        Toast.warning("请至少选择一个适用部门");
+        return;
+      }
       try {
         const created = await createSchemeDraft({
           name: draftScheme.name,
@@ -646,12 +650,9 @@ const SchemeBuilderPage = () => {
                   <Text type="danger" size="small" style={{ marginLeft: 2 }}>
                     *
                   </Text>
-                  <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>
-                    （激活时必填，可稍后填写）
-                  </Text>
                 </div>
                 <Text type="tertiary" size="small">
-                  已被其他生效方案占用的部门将不可选；这里只保存显式选择的部门，激活时系统会按当前部门树展开子部门并写入生效绑定。
+                  已被其他生效方案占用的部门将不可选；激活时系统会按当前部门树展开子部门并写入生效绑定。
                 </Text>
               </div>
               <div className="approval-flow-section-card-body" style={{ padding: "4px 4px 0" }}>
