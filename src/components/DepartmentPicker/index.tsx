@@ -197,13 +197,6 @@ const DepartmentPicker = ({
         )}
       </div>
     );
-    if (hasChildren && !disabledReason) {
-      return (
-        <Tooltip key={node.value} content="下级部门将被同时授权" position="top" mouseEnterDelay={400}>
-          {row}
-        </Tooltip>
-      );
-    }
     return row;
   };
 
