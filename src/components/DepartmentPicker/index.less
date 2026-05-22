@@ -186,6 +186,11 @@
       padding: 2px 4px;
       border-radius: 4px;
       &:hover { background: var(--semi-color-primary-light-hover); }
+      &.is-disabled {
+        color: var(--semi-color-disabled-text);
+        cursor: not-allowed;
+        &:hover { background: transparent; }
+      }
     }
   }
 
