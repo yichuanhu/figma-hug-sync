@@ -122,6 +122,26 @@ export const setSchemeBindingsForScheme = (schemeId: string, deptIds: string[]):
 
 export const fetchAllSchemeBindings = (): DepartmentSchemeBinding[] => [...cache];
 
+/**
+ * 如果当前没有任何绑定，则用传入的 schemeId 给若干示例部门做种子绑定，
+ * 便于在「适用部门」选择器中演示「已被其他激活方案占用」的禁用态。
+ * 仅当 cache 为空时生效，幂等安全。
+ */
+export const seedSampleBindingsIfEmpty = (schemeId: string, sampleDeptIds: string[]): void => {
+  if (cache.length > 0) return;
+  if (!schemeId || sampleDeptIds.length === 0) return;
+  const now = new Date().toISOString();
+  cache = sampleDeptIds.map((deptId) => ({
+    department_id: deptId,
+    business_type: BUSINESS_TYPE,
+    scheme_id: schemeId,
+    updated_at: now,
+    updated_by: "system",
+  }));
+  save(cache);
+  notify();
+};
+
 /** Dry-run：仅计算会被抢占的部门，不写入。 */
 export interface SchemeBindingConflictItem {
   deptId: string;
