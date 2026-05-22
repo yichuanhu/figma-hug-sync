@@ -600,7 +600,7 @@ const SchemeBuilderPage = () => {
                     *
                   </Text>
                   <Text type="tertiary" size="small" style={{ marginLeft: 4, fontWeight: 400 }}>
-                    （激活时必填，草稿可留空）
+                    （激活时必填，可稍后填写）
                   </Text>
                 </div>
                 <Text type="tertiary" size="small">
