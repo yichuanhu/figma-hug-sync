@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Input, Tag, Toast, Modal, Dropdown, Row, Col, Space, Tooltip, Popover } from '@douyinfe/semi-ui';
+import { Typography, Button, Input, Tag, Toast, Modal, Dropdown, Row, Col, Space, Tooltip, Popover, Banner } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, CheckCircle, Eye, Trash2, Pencil, Plus, Copy, Building2, Star, PowerOff } from 'lucide-react';
 import {
@@ -16,8 +16,9 @@ import {
   activateScheme,
   deactivateScheme,
   deleteScheme,
-  cloneSchemeAsDraft,
   setSchemeAsDefault,
+  validateScheme,
+  getDefaultSchemeHealth,
   SchemeError,
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '../RequirementsWorkbench/types';
@@ -30,6 +31,7 @@ const RequirementsScheme = () => {
   const { t } = useTranslation();
   const [keyword, setKeyword] = useState('');
   const [schemes, setSchemes] = useState<RequirementScheme[]>([]);
+  const [stats, setStats] = useState<{ hasPresets: boolean; hasTenantSchemes: boolean }>({ hasPresets: false, hasTenantSchemes: false });
   const [loading, setLoading] = useState(true);
 
   const [detailScheme, setDetailScheme] = useState<RequirementScheme | null>(null);
@@ -44,20 +46,26 @@ const RequirementsScheme = () => {
   };
 
   const handleCreateNew = () => {
-    // 不预创建草稿：进入编辑页后由用户主动保存才落库
     navigate('/requirements/scheme/builder/new');
   };
 
-  const handleCloneFromPreset = async (sourceId: string) => {
-    const draft = await cloneSchemeAsDraft(sourceId);
+  const handleCloneFromPreset = (sourceId: string) => {
     setPresetPickerVisible(false);
-    navigate(`/requirements/scheme/builder/${draft.id}`);
+    navigate(`/requirements/scheme/builder/new?preset=${encodeURIComponent(sourceId)}`);
   };
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      setSchemes(await fetchSchemes(keyword));
+      const [filtered, all] = await Promise.all([
+        fetchSchemes(keyword),
+        fetchSchemes(''),
+      ]);
+      setSchemes(filtered);
+      setStats({
+        hasPresets: all.some((s) => s.is_preset),
+        hasTenantSchemes: all.some((s) => !s.is_preset),
+      });
     } finally {
       setLoading(false);
     }
@@ -65,7 +73,17 @@ const RequirementsScheme = () => {
 
   useEffect(() => { load(); }, [load]);
 
-  /** 统一错误处理：SchemeError → Toast/Modal 友好提示 */
+  const defaultHealth = getDefaultSchemeHealth();
+  const defaultHealthMessage = (() => {
+    switch (defaultHealth) {
+      case 'missing': return '租户默认方案缺失，请基于预设新建一份并设为默认';
+      case 'inactive': return '租户默认方案当前未激活，请尽快恢复';
+      case 'multiple': return '检测到存在多个默认方案，请联系管理员核实';
+      default: return '';
+    }
+  })();
+
+  /** 统一错误处理：SchemeError → Modal/Toast */
   const runWithSchemeErrors = async (fn: () => Promise<void>): Promise<boolean> => {
     try {
       await fn();
@@ -88,6 +106,8 @@ const RequirementsScheme = () => {
               </div>
             ),
           });
+        } else if (['SCHEME_BOUND_CANNOT_SET_DEFAULT', 'SCHEME_DEFAULT_CANNOT_ACTIVATE', 'SCHEME_DEFAULT_UNAVAILABLE'].includes(e.code)) {
+          Modal.error({ title: '操作不允许', content: e.message });
         } else {
           Toast.warning(e.message);
         }
@@ -99,12 +119,6 @@ const RequirementsScheme = () => {
   };
 
   const handleActivate = (s: RequirementScheme) => {
-    const deptCount = (s.applicable_department_ids ?? []).length;
-    if (deptCount === 0) {
-      Toast.warning('请先在模版中配置「适用部门」，激活时至少选择 1 个部门');
-      goEdit(s);
-      return;
-    }
     Modal.confirm({
       title: t('requirements.scheme.activateTitle'),
       content: t('requirements.scheme.activateContent', { name: s.name }),
@@ -158,10 +172,9 @@ const RequirementsScheme = () => {
     });
   };
 
-  /** v15 §10.3 按钮可见性矩阵：根据方案类型渲染操作菜单 */
+  /** 操作菜单 */
   const renderActionMenu = (s: RequirementScheme) => {
     const items: React.ReactNode[] = [];
-    // 查看（所有类型）
     items.push(
       <Dropdown.Item key="view" icon={<Eye size={14} />} onClick={(e) => { e.stopPropagation(); setDetailScheme(s); }}>
         {t('common.viewDetail')}
@@ -169,12 +182,10 @@ const RequirementsScheme = () => {
     );
 
     if (s.is_preset) {
-      // 预制方案：仅可查看
       return <Dropdown.Menu>{items}</Dropdown.Menu>;
     }
 
     if (s.is_tenant_default) {
-      // 租户默认：编辑、查看
       items.unshift(
         <Dropdown.Item key="edit" icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
           {t('requirements.scheme.edit')}
@@ -185,10 +196,9 @@ const RequirementsScheme = () => {
 
     // 自定义方案
     if (s.status === 'active') {
-      // 启用中：编辑（仅适用部门，由编辑页约束）、停用、查看
       items.unshift(
         <Dropdown.Item key="edit" icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
-          编辑适用部门
+          {t('requirements.scheme.edit')}
         </Dropdown.Item>,
       );
       items.push(
@@ -197,17 +207,37 @@ const RequirementsScheme = () => {
         </Dropdown.Item>,
       );
     } else {
-      // 草稿/停用：编辑、启用、设为默认、删除
       items.unshift(
         <Dropdown.Item key="edit" icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
           {t('requirements.scheme.edit')}
         </Dropdown.Item>,
       );
-      items.push(
-        <Dropdown.Item key="activate" icon={<CheckCircle size={14} />} onClick={(e) => { e.stopPropagation(); handleActivate(s); }}>
+
+      // 启用 - 区分原因 Tooltip
+      const hasDepartment = (s.applicable_department_ids ?? []).length > 0;
+      const validation = validateScheme(s.id);
+      const canActivate = hasDepartment && validation.ok;
+      const activateReason = !hasDepartment ? '请先在编辑页配置适用部门'
+        : !validation.ok ? '请先完善字段配置' : '';
+      const activateItem = (
+        <Dropdown.Item
+          key="activate"
+          icon={<CheckCircle size={14} />}
+          disabled={!canActivate}
+          onClick={(e) => { e.stopPropagation(); if (canActivate) handleActivate(s); }}
+        >
           {t('requirements.scheme.activate')}
-        </Dropdown.Item>,
+        </Dropdown.Item>
       );
+      items.push(
+        canActivate ? activateItem : (
+          <Tooltip key="activate-tip" content={activateReason} position="left">
+            <span style={{ display: 'block' }}>{activateItem}</span>
+          </Tooltip>
+        ),
+      );
+
+      // 设为默认
       const hasBinding = (bindCountMap[s.id] ?? 0) > 0;
       const setDefaultItem = (
         <Dropdown.Item
@@ -222,10 +252,11 @@ const RequirementsScheme = () => {
       items.push(
         hasBinding ? (
           <Tooltip key="set-default-tip" content="有部门绑定的方案不能设为默认，请先清空适用部门" position="left">
-            {setDefaultItem}
+            <span style={{ display: 'block' }}>{setDefaultItem}</span>
           </Tooltip>
         ) : setDefaultItem,
       );
+
       items.push(
         <Dropdown.Item key="delete" icon={<Trash2 size={14} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(s); }}>
           {t('common.delete')}
@@ -241,6 +272,8 @@ const RequirementsScheme = () => {
     if (s.is_tenant_default) return <Tag color="violet" type="light" size="small" prefixIcon={<Star size={12} strokeWidth={2} />}>默认</Tag>;
     return null;
   };
+
+  const filteredTenantSchemes = schemes.filter((s) => !s.is_preset);
 
   return (
     <div className="requirements-scheme">
@@ -270,9 +303,17 @@ const RequirementsScheme = () => {
           </Col>
           <Col>
             <Space>
-              <Button icon={<Copy size={16} strokeWidth={2} />} onClick={() => setPresetPickerVisible(true)}>
-                {t('requirements.scheme.createBasedOnPreset')}
-              </Button>
+              <Tooltip content={!stats.hasPresets ? '平台预设方案不可用，请联系管理员' : ''} position="bottom">
+                <span style={{ display: 'inline-block' }}>
+                  <Button
+                    icon={<Copy size={16} strokeWidth={2} />}
+                    disabled={!stats.hasPresets}
+                    onClick={() => setPresetPickerVisible(true)}
+                  >
+                    {t('requirements.scheme.createBasedOnPreset')}
+                  </Button>
+                </span>
+              </Tooltip>
               <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleCreateNew}>
                 {t('requirements.scheme.createNew')}
               </Button>
@@ -281,9 +322,25 @@ const RequirementsScheme = () => {
         </Row>
       </div>
 
+      {defaultHealth !== 'ok' && (
+        <Banner
+          type="danger"
+          description={defaultHealthMessage}
+          fullMode={false}
+          closeIcon={null}
+          style={{ marginBottom: 12 }}
+        />
+      )}
+
       <div className="requirements-scheme-content">
-        {!loading && schemes.length === 0 ? (
-          <EmptyState variant="noData" description={t('requirements.scheme.empty')} />
+        {!loading && filteredTenantSchemes.length === 0 ? (
+          !stats.hasPresets ? (
+            <EmptyState variant="error" description="平台预设方案不可用，请联系管理员" />
+          ) : !stats.hasTenantSchemes ? (
+            <EmptyState variant="noData" description="暂无租户方案，可基于预设创建" />
+          ) : (
+            <EmptyState variant="noData" description="未找到匹配的租户方案" />
+          )
         ) : (
           <div className="requirements-scheme-grid">
             {schemes.map((s) => (
@@ -295,15 +352,10 @@ const RequirementsScheme = () => {
                 <div className="scheme-card-header">
                   <div className="scheme-card-title-row">
                     <Text strong ellipsis={{ showTooltip: true }} style={{ fontSize: 16 }}>{s.name}</Text>
-                    {s.status === 'active' && !s.is_preset && (
+                    {s.status === 'active' && !s.is_preset && !s.is_tenant_default && (
                       <Tag color="green" type="solid" size="small">{t('requirements.scheme.active')}</Tag>
                     )}
                     {renderSourceTag(s)}
-                    {s.preset_update_available && (
-                      <Tooltip content="该方案对应的预制模版有新版本">
-                        <Tag color="amber" type="light" size="small">预制可更新</Tag>
-                      </Tooltip>
-                    )}
                   </div>
                   <Dropdown trigger="click" clickToHide position="bottomRight" render={renderActionMenu(s)}>
                     <Button icon={<Ellipsis size={16} />} theme="borderless" size="small" onClick={(e) => e.stopPropagation()} />
