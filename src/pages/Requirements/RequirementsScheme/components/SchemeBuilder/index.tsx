@@ -655,7 +655,6 @@ const SchemeBuilderPage = () => {
                   已被其他生效方案占用的部门将不可选；激活时系统会按当前部门树展开子部门并写入生效绑定。
                 </Text>
               </div>
-              </div>
               <div className="approval-flow-section-card-body" style={{ padding: "4px 4px 0" }}>
                 <div style={{ maxWidth: 600 }}>
                   <DepartmentPicker
