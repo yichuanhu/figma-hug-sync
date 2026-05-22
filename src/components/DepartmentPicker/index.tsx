@@ -301,7 +301,7 @@ const DepartmentPicker = ({
               ) : currentLevel.length === 0 ? (
                 <div className="dept-picker-empty">暂无下级部门</div>
               ) : (
-                currentLevel.map((n) => renderRow(n))
+                currentLevel.map((n) => renderRow(n, pathStack))
               )}
             </div>
           </div>
