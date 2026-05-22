@@ -104,6 +104,8 @@ const SchemeBuilderPage = () => {
   const [dirty, setDirty] = useState(isNewMode && !!presetSourceId);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
+  const [editingDesc, setEditingDesc] = useState(false);
+  const [descDraft, setDescDraft] = useState("");
   const [testDriveVisible, setTestDriveVisible] = useState(false);
   const [loading, setLoading] = useState(!initialScheme);
   const dirtyRef = useRef(false);
