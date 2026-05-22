@@ -104,6 +104,8 @@ const SchemeBuilderPage = () => {
   const [dirty, setDirty] = useState(isNewMode && !!presetSourceId);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
+  const [editingDesc, setEditingDesc] = useState(false);
+  const [descDraft, setDescDraft] = useState("");
   const [testDriveVisible, setTestDriveVisible] = useState(false);
   const [loading, setLoading] = useState(!initialScheme);
   const dirtyRef = useRef(false);
@@ -570,6 +572,51 @@ const SchemeBuilderPage = () => {
             </Button>
           )}
         </Space>
+      </div>
+
+      <div className="scheme-builder-description">
+        {editingDesc && canEditName ? (
+          <Input
+            autoFocus
+            value={descDraft}
+            onChange={setDescDraft}
+            onBlur={() => {
+              const v = (descDraft || "").trim();
+              if (v !== (draftScheme.description ?? "")) patch({ description: v || undefined });
+              setEditingDesc(false);
+            }}
+            onEnterPress={() => {
+              const v = (descDraft || "").trim();
+              if (v !== (draftScheme.description ?? "")) patch({ description: v || undefined });
+              setEditingDesc(false);
+            }}
+            maxLength={200}
+            placeholder="请输入模板描述"
+            style={{ maxWidth: 600 }}
+          />
+        ) : (
+          <div
+            className="scheme-builder-description-display"
+            style={{ cursor: canEditName ? "pointer" : "default" }}
+            onClick={
+              canEditName
+                ? () => {
+                    setDescDraft(draftScheme.description ?? "");
+                    setEditingDesc(true);
+                  }
+                : undefined
+            }
+          >
+            {draftScheme.description ? (
+              <Text type="secondary">{draftScheme.description}</Text>
+            ) : (
+              <Text type="tertiary">{canEditName ? "点击添加模板描述" : "暂无描述"}</Text>
+            )}
+            {canEditName && (
+              <Pencil size={12} strokeWidth={2} style={{ color: "var(--semi-color-text-2)", marginLeft: 6 }} />
+            )}
+          </div>
+        )}
       </div>
 
       {editMode === "custom_active" && (
