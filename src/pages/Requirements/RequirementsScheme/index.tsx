@@ -213,12 +213,10 @@ const RequirementsScheme = () => {
         </Dropdown.Item>,
       );
 
-      // 启用 - 区分原因 Tooltip
-      const hasDepartment = (s.applicable_department_ids ?? []).length > 0;
+      // 启用 - 仅按字段完整性判断
       const validation = validateScheme(s.id);
-      const canActivate = hasDepartment && validation.ok;
-      const activateReason = !hasDepartment ? '请先在编辑页配置适用部门'
-        : !validation.ok ? '请先完善字段配置' : '';
+      const canActivate = validation.ok;
+      const activateReason = !validation.ok ? '请先完善字段配置' : '';
       const activateItem = (
         <Dropdown.Item
           key="activate"
