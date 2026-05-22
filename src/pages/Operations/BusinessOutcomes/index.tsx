@@ -151,38 +151,39 @@ const BusinessOutcomes = () => {
     }],
   }), [data.volumeTrend]);
 
-  // ============ Time saved: 趋势 + 累计 (双系列) ============
+  // ============ Time saved: 累计曲线 ============
   const hoursOption = useMemo(() => ({
     tooltip: { ...TOOLTIP, trigger: 'axis' },
-    legend: {
-      bottom: 0, itemWidth: 12, itemHeight: 12, textStyle: { fontSize: 12, color: '#6B7280' },
-      data: [t('operations.businessOutcomes.hoursSaved'), t('operations.businessOutcomes.cumulativeCurve')],
-    },
-    grid: { left: 56, right: 56, top: 20, bottom: 44 },
+    grid: { left: 56, right: 16, top: 20, bottom: 32 },
     xAxis: {
-      type: 'category', data: data.timeSavedTrend.map(d => d.month),
+      type: 'category', data: data.timeSavedTrend.map(d => d.month), boundaryGap: false,
       axisLabel: { fontSize: 11, color: '#9CA3AF' },
       axisLine: { lineStyle: { color: '#E5E7EB' } },
       axisTick: { show: false },
     },
-    yAxis: [
-      { type: 'value', axisLabel: { fontSize: 11, color: '#9CA3AF' }, axisLine: { show: false }, splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } } },
-      { type: 'value', axisLabel: { fontSize: 11, color: '#9CA3AF' }, axisLine: { show: false }, splitLine: { show: false } },
-    ],
+    yAxis: {
+      type: 'value',
+      axisLabel: { fontSize: 11, color: '#9CA3AF' },
+      axisLine: { show: false },
+      splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
+    },
     series: [
       {
-        name: t('operations.businessOutcomes.hoursSaved'),
-        type: 'bar', barMaxWidth: 24, yAxisIndex: 0,
-        data: data.timeSavedTrend.map(d => d.hours),
-        itemStyle: { color: COLORS.success, borderRadius: [4, 4, 0, 0] },
-      },
-      {
         name: t('operations.businessOutcomes.cumulativeCurve'),
-        type: 'line', smooth: true, yAxisIndex: 1,
+        type: 'line', smooth: true,
         data: data.timeSavedTrend.map(d => d.cumulative ?? 0),
         symbol: 'circle', symbolSize: 6,
         lineStyle: { width: 2.5, color: COLORS.primary },
         itemStyle: { color: COLORS.primary },
+        areaStyle: {
+          color: {
+            type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: 'rgba(59,130,246,0.25)' },
+              { offset: 1, color: 'rgba(59,130,246,0)' },
+            ],
+          },
+        },
       },
     ],
   }), [data.timeSavedTrend, t]);
