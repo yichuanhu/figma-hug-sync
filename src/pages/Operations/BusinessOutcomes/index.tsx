@@ -215,44 +215,6 @@ const BusinessOutcomes = () => {
     }],
   }), [data.departmentOutcomes, t]);
 
-  // ============ Trend analysis: 双 Y 轴 业务增长率 vs 工时节省 ============
-  const trendAnalysisOption = useMemo(() => ({
-    tooltip: { ...TOOLTIP, trigger: 'axis' },
-    legend: {
-      bottom: 0, itemWidth: 16, itemHeight: 3, textStyle: { fontSize: 12, color: '#6B7280' },
-      data: [t('operations.businessOutcomes.growthRateSeries'), t('operations.businessOutcomes.hoursSavedSeries')],
-    },
-    grid: { left: 56, right: 56, top: 24, bottom: 44 },
-    xAxis: {
-      type: 'category', data: data.growthVsHours.map(d => d.month), boundaryGap: false,
-      axisLabel: { fontSize: 11, color: '#9CA3AF' },
-      axisLine: { lineStyle: { color: '#E5E7EB' } }, axisTick: { show: false },
-    },
-    yAxis: [
-      { type: 'value', name: t('operations.businessOutcomes.growthRateAxis'),
-        nameTextStyle: { fontSize: 11, color: '#9CA3AF' },
-        axisLabel: { formatter: '{value}%', fontSize: 11, color: '#9CA3AF' },
-        axisLine: { show: false }, splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } } },
-      { type: 'value', name: t('operations.businessOutcomes.hoursSavedAxis'),
-        nameTextStyle: { fontSize: 11, color: '#9CA3AF' },
-        axisLabel: { fontSize: 11, color: '#9CA3AF' },
-        axisLine: { show: false }, splitLine: { show: false } },
-    ],
-    series: [
-      {
-        name: t('operations.businessOutcomes.growthRateSeries'), type: 'line',
-        smooth: true, yAxisIndex: 0, symbol: 'circle', symbolSize: 6,
-        data: data.growthVsHours.map(d => d.growthRate),
-        lineStyle: { width: 2.5, color: COLORS.primary }, itemStyle: { color: COLORS.primary },
-      },
-      {
-        name: t('operations.businessOutcomes.hoursSavedSeries'), type: 'line',
-        smooth: true, yAxisIndex: 1, symbol: 'circle', symbolSize: 6,
-        data: data.growthVsHours.map(d => d.hoursSaved),
-        lineStyle: { width: 2.5, color: COLORS.success }, itemStyle: { color: COLORS.success },
-      },
-    ],
-  }), [data.growthVsHours, t]);
 
   // ============ FEAT-023 预估准确率散点图 ============
   const accuracyScatterOption = useMemo(() => {
