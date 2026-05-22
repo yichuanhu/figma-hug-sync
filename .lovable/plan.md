@@ -1,40 +1,45 @@
-## 背景
+## 运营中心全局审查报告
 
-运营中心已先后移除 ROI 深度分析、成本管理两个模块。现需清理仍残留于 mock 数据和 i18n 词条中、不再被任何代码引用的死代码。
+### 现存模块（健康）
+- `ResourceEfficiency` 资源效能监控 → `/operations/resource-efficiency`
+- `BusinessOutcomes` 业务成果看板 → `/operations/business-outcomes`
+- `MetricsConfig` 业务指标配置 → `/operations/metrics-config`（使用顶层 `metricsConfig.*` 词条，独立完整）
+- `PlatformOperations` 平台运营 → `/operations/platform-operations`（i18n 完全匹配，无冗余）
+- 侧边栏分组：`dataAnalysis` / `operationsManagement`（均在使用）
 
-## 审查结论
+### 发现的问题
 
-### 1. `src/pages/Operations/mockData.ts` 死导出
-仅被本文件内部声明、外部无任何引用：
-- `mockResourceOverview`
-- `mockRequirementOverview`
-- `mockRoiTrend`
-- `mockDepartmentRoi`
-- `mockRequirementRoi`
+#### 1. 缺失的 i18n 键（真实 Bug，上一轮 ROI 模块清理时遗留）
+`ResourceEfficiency` 代码引用了以下键，但 zh-CN / en 均未声明，导致页面显示原始 key 字符串：
 
-以及文件顶部对应的 type-only import：`ResourceOverviewData / RequirementOverviewData / RoiTrendPoint / DepartmentRoiItem / RequirementRoiItem`。
+| 引用位置 | 缺失键 |
+|---|---|
+| `ResourceEfficiency/index.tsx:35` Toast | `operations.resourceEfficiency.refreshed` |
+| `components/ResourceFilterBar/index.tsx:70` | `operations.resourceEfficiency.timeDimension` |
 
-### 2. `src/pages/Operations/types.ts` 死类型
-外部无引用，可删除：
-- `ResourceOverviewData`
-- `RequirementOverviewData`
-- `RoiTrendPoint`
-- `DepartmentRoiItem`
-- `RequirementRoiItem`
-- `DashboardFilter`
+需补回：
+- zh-CN: `refreshed: "数据已刷新"`, `timeDimension: "时间维度"`
+- en: `refreshed: "Data refreshed"`, `timeDimension: "Time Dimension"`
 
-保留：`ResourceEfficiencyData / ResourceEfficiencyFilter / BusinessOutcomesData / BusinessOutcomesFilter / RobotDetail / TaskExecutionStats / UtilizationTrendPoint / GroupUtilization / SuccessRateTrendPoint / Funnel/DevCapacity/Requirement* 等业务成果看板相关类型`（仍在使用）。
+#### 2. 未使用的 i18n 键（死键，可清理）
 
-### 3. i18n 词条死键（`public/i18n/zh-CN.json` 与 `public/i18n/en.json` 同步处理）
+**`operations.resourceEfficiency` 删除 16 项**：
+`avgExecutionTime, busyTopTitle, failedProcessTopTitle, idleTopTitle, interactiveOnlineLicense, minutesUnit, noTask, onlineLicense, rank, robotType, successRateToday, successRateTotal, topN, trendLabel, typeDistribution, unattendedOnlineLicense`
 
-- `operations.comingSoon`：全代码库无引用，删除。
-- `operations.dashboard.*`：仅以下子键仍被使用，其余删除：
-  - 保留：`timeRange / department / selectAll / thisMonth / lastMonth / thisQuarter / thisYear / allTime / count / todayTasks / totalTasks / todayRuntime / totalRuntime / hours / minutes`
-  - 删除：`title / project / coreMetrics / totalSavedCost / robotUtilization / activeRequirements / totalAutomationHours / totalInvestmentCost / resourceOverview / interactiveRobot / unattendedRobot / onlineAuth / tenThousandHours / requirementOverview / requirementDeveloping / requirementCompleted / requirementRunning / requirementTotal / roiTrend / roiPercent / investmentCostLabel / savedCostLabel / amountUnit / tenThousandUnit / deptRoiRanking / reqRoiRanking / rank / departmentName / requirementName / trendLabel / statusRunning / statusCompleted / statusDeveloping`
+**`operations.businessOutcomes` 删除 33 项**：
+`avgCycleDaysProcess, avgCycleDaysRequirement, capacityProcessGroup, capacityRequirementGroup, capacityTitle, capacityTrend, costSaved, departmentTitle, developerCountProcess, developerCountRequirement, growthRateAxis, growthRateSeries, hoursSavedAxis, hoursSavedSeries, hoursTrendTitle, monthlyDeliveredProcess, monthlyDeliveredRequirement, progress, rankEmpty, rankFilterPlaceholder, rankSortAsc, rankSortDesc, requirementCount, runningCount, todayVolume, totalVolume, trendAnalysisTitle, trendProcess, trendRequirement, typeShareTitle, volumeGrowthMoM, volumeRankingTitle, volumeTrendTitle`
 
-> 备注：`sidebar.roiAnalysis`、`sidebar.costManagement` 在上轮已删除，无残留。`operations.dashboard` 本身因仍有引用而保留为节点，仅删除其无用子键。
+> 检索方法：对每个键名做全代码库 `rg` 引用扫描；动态拼接键（如 `status${...}` / `statusWorking`）已计入实际使用。
 
-### 4. 验证
-- 构建无报错（类型导入也已同步收敛）
-- `rg "mockRoiTrend|mockDepartmentRoi|mockRequirementRoi|mockResourceOverview|mockRequirementOverview|DashboardFilter|operations\.comingSoon"` 应无残留
-- 资源效能、业务成果看板、平台运营、指标配置页面文案完整显示
+#### 3. 现状保留项（不动）
+- **`src/App.tsx`** 中三条遗留重定向（`/operations/dashboard`、`/operations/roi-analysis`、`/operations/cost-management` → `business-outcomes`）：保留以兼容旧书签链接。
+- **`operations.dashboard.*` 命名空间**：虽语义为旧"仪表盘"，但其中 15 个子键被 `ResourceEfficiency` 与 `BusinessOutcomes` 共用（时间范围/今日累计等），属共享词条，不重命名以免大面积改动。
+- `mockData.ts` / `types.ts`：上一轮已清理完毕，无残留。
+
+### 实施步骤
+1. 修改 `public/i18n/zh-CN.json` 与 `public/i18n/en.json`：
+   - 在 `operations.resourceEfficiency` 下新增 `refreshed`、`timeDimension`
+   - 删除上文列出的 16 + 33 项未使用键
+2. 验证：
+   - 资源效能监控页：点击刷新 Toast 文案正确显示；筛选栏"时间维度"标签显示正常
+   - `rg "operations\.(resourceEfficiency|businessOutcomes)\."` 与 i18n 文件对账无新增 missing
