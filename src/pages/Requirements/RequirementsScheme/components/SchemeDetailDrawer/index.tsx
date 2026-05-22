@@ -5,6 +5,8 @@ import { CheckCircle, Trash2, Star } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { RequirementScheme, SchemeField } from '@/pages/Requirements/RequirementsWorkbench/types';
 import SchemeFieldRenderer from '@/pages/Requirements/RequirementsWorkbench/components/SchemeFieldRenderer';
+import { listDepartmentsByScheme } from '@/mocks/departmentSchemeBinding';
+import { getDepartmentName } from '@/mocks/departmentData';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -186,6 +188,16 @@ const SchemeDetailDrawer = ({
                 <Text>{scheme.description || '-'}</Text>
                 <Text className="label">{t('common.createdAt')}</Text>
                 <Text>{scheme.created_at}</Text>
+                <Text className="label">适用部门</Text>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {(() => {
+                    const deptIds = listDepartmentsByScheme(scheme.id);
+                    if (deptIds.length === 0) return <Text type="tertiary">-</Text>;
+                    return deptIds.map((id) => (
+                      <Tag key={id} color="violet" type="light" size="small">{getDepartmentName(id)}</Tag>
+                    ));
+                  })()}
+                </div>
               </div>
             </div>
           </TabPane>
