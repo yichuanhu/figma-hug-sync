@@ -222,6 +222,10 @@ const SchemeBuilderPage = () => {
         Toast.error(`字段配置存在 ${fv.errorFieldKeys.length} 项问题，请先修正`);
         return;
       }
+      if (selectedDeptIds.length === 0) {
+        Toast.warning("请至少选择一个适用部门");
+        return;
+      }
       try {
         const created = await createSchemeDraft({
           name: draftScheme.name,
