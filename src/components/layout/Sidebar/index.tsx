@@ -288,7 +288,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'dataAnalysis', labelKey: 'sidebar.dataAnalysis', isGroupLabel: true },
     { key: 'resourceEfficiency', labelKey: 'sidebar.resourceEfficiency', icon: <Activity size={18} strokeWidth={2} />, path: '/operations/resource-efficiency' },
     { key: 'businessOutcomes', labelKey: 'sidebar.businessOutcomes', icon: <Target size={18} strokeWidth={2} />, path: '/operations/business-outcomes' },
-    { key: 'roiAnalysis', labelKey: 'sidebar.roiAnalysis', icon: <TrendingUp size={18} strokeWidth={2} />, path: '/operations/roi-analysis' },
     // 运营管理 - 分组标题
     { key: 'operationsManagement', labelKey: 'sidebar.operationsManagement', isGroupLabel: true },
     { key: 'metricsConfig', labelKey: 'sidebar.metricsConfig', icon: <Gauge size={18} strokeWidth={2} />, path: '/operations/metrics-config' },
@@ -397,9 +396,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     }
     if (pathname.startsWith('/requirements/scheme')) {
       return 'requirementsScheme';
-    }
-    if (pathname === '/operations/roi-analysis') {
-      return 'roiAnalysis';
     }
     if (pathname === '/operations/resource-efficiency') {
       return 'resourceEfficiency';

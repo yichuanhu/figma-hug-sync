@@ -54,7 +54,6 @@ import PersonalCenter from "@/pages/PersonalCenter";
 import EmptyStatePreview from "@/pages/DevPreview/EmptyStatePreview";
 import EmptyStateOptionsPreview from "@/pages/DevPreview/EmptyStateOptionsPreview";
 // Operations
-import ROIAnalysis from "@/pages/Operations/ROIAnalysis";
 import ResourceEfficiency from "@/pages/Operations/ResourceEfficiency";
 import BusinessOutcomes from "@/pages/Operations/BusinessOutcomes";
 import MetricsConfig from "@/pages/Operations/MetricsConfig";
@@ -188,7 +187,7 @@ const App = () => {
           <Route path="/requirements/projects" element={<RequirementsProjects />} />
           <Route path="/operations" element={<Navigate to="/operations/business-outcomes" replace />} />
           <Route path="/operations/dashboard" element={<Navigate to="/operations/business-outcomes" replace />} />
-          <Route path="/operations/roi-analysis" element={<ROIAnalysis />} />
+          <Route path="/operations/roi-analysis" element={<Navigate to="/operations/business-outcomes" replace />} />
           <Route path="/operations/resource-efficiency" element={<ResourceEfficiency />} />
           <Route path="/operations/business-outcomes" element={<BusinessOutcomes />} />
           <Route path="/operations/metrics-config" element={<MetricsConfig />} />
