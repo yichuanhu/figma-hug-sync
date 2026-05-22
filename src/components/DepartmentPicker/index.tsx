@@ -11,7 +11,7 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import { Modal, Input, Checkbox, Typography, Tooltip } from '@douyinfe/semi-ui';
-import { Building2, ChevronRight, X, ChevronDown, Search } from 'lucide-react';
+import { Building2, ChevronRight, X, ChevronDown, Search, Lock } from 'lucide-react';
 import {
   departmentTree,
   getDepartmentName,
@@ -205,7 +205,11 @@ const DepartmentPicker = ({
           )}
         </span>
         {disabledReason && (
-          <span className="dept-picker-row-reason">· {disabledReason}</span>
+          <Tooltip content={disabledReason} position="top">
+            <span className="dept-picker-row-lock" onClick={(e) => e.stopPropagation()}>
+              <Lock size={12} strokeWidth={2} />
+            </span>
+          </Tooltip>
         )}
         {drill}
       </div>
