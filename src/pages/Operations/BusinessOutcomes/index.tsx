@@ -484,15 +484,8 @@ const BusinessOutcomes = () => {
         </div>
       </div>
 
-      {/* 5. 趋势分析: 双 Y 轴折线 */}
-      <div className="dashboard-card">
-        <div className="dashboard-card-header">
-          <span className="dashboard-card-title">
-            <MetricLabel label={t('operations.businessOutcomes.trendAnalysisTitle')} tip={t('operations.businessOutcomes.tips.growthVsHours')} size="medium" />
-          </span>
-        </div>
-        <ReactECharts option={trendAnalysisOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
-      </div>
+
+
 
       {/* 6. FEAT-023 开发产能仪表盘: 6 KPI + 散点 + 时间线 */}
       <div className="dashboard-card">
