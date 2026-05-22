@@ -10,12 +10,11 @@
  * Props 兼容多选 DepartmentSelect：value / onChange / disabledOptions / placeholder / disabled。
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Modal, Input, Checkbox, Tooltip, Typography } from '@douyinfe/semi-ui';
+import { Modal, Input, Checkbox, Typography } from '@douyinfe/semi-ui';
 import { Building2, ChevronRight, X, ChevronDown, Search } from 'lucide-react';
 import {
   departmentTree,
   getDepartmentName,
-  getDepartmentSubtreeIds,
   type DeptTreeNode,
 } from '@/mocks/departmentData';
 import './index.less';
@@ -130,25 +129,15 @@ const DepartmentPicker = ({
 
   const toggleNode = (node: DeptTreeNode) => {
     if (isDisabled(node.value)) return;
-    const subtree = getDepartmentSubtreeIds(node.value);
+    // 只 toggle 当前节点本身；子部门的展开仅在激活/保存已激活方案时由系统计算
     const next = new Set(draft);
-    if (isChecked(node.value)) {
-      // 取消：移除自身 + 子孙
-      subtree.forEach((id) => next.delete(id));
-    } else {
-      // 选中：加入自身 + 未禁用的子孙
-      subtree.forEach((id) => {
-        if (!isDisabled(id)) next.add(id);
-      });
-    }
+    if (isChecked(node.value)) next.delete(node.value);
+    else next.add(node.value);
     setDraft(Array.from(next));
   };
 
   const removeFromDraft = (id: string) => {
-    const subtree = getDepartmentSubtreeIds(id);
-    const next = new Set(draft);
-    subtree.forEach((x) => next.delete(x));
-    setDraft(Array.from(next));
+    setDraft(draft.filter((x) => x !== id));
   };
 
   const handleConfirm = () => {
@@ -207,13 +196,6 @@ const DepartmentPicker = ({
         )}
       </div>
     );
-    if (hasChildren && !disabledReason) {
-      return (
-        <Tooltip key={node.value} content="下级部门将被同时授权" position="top" mouseEnterDelay={400}>
-          {row}
-        </Tooltip>
-      );
-    }
     return row;
   };
 
@@ -267,6 +249,9 @@ const DepartmentPicker = ({
               onChange={setKeyword}
               showClear
             />
+            <Typography.Text type="tertiary" size="small" style={{ display: 'block', marginTop: 8 }}>
+              激活方案时，所选部门的下级部门将自动包含在生效绑定中
+            </Typography.Text>
             {!searchResults && (
               <div className="dept-picker-breadcrumb">
                 <span

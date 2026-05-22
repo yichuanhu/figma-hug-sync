@@ -227,7 +227,7 @@ const SchemeBuilderPage = () => {
           applicable_department_ids: selectedDeptIds,
           source_preset_key: draftScheme.source_preset_key,
         });
-        setSchemeBindingsForScheme(updated.id, expandedDeptIds);
+        // 草稿不写绑定表，仅保存显式选择的 applicable_department_ids
         setDirty(false);
         Toast.success(t('requirements.scheme.builder.savedDraft'));
         navigate(`/requirements/scheme/builder/${updated.id}`, { replace: true });
@@ -309,9 +309,8 @@ const SchemeBuilderPage = () => {
         // 默认方案不带适用部门
         applicable_department_ids: editMode === 'tenant_default' ? [] : selectedDeptIds,
       });
-      if (editMode !== 'tenant_default') {
-        setSchemeBindingsForScheme(draftScheme.id, expandedDeptIds);
-      }
+      // 未激活方案（custom_inactive）保存草稿不写绑定表
+
       setSavedScheme(updated);
       setDraftScheme(updated);
       setDirty(false);
