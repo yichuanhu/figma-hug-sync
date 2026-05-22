@@ -156,6 +156,30 @@ const DepartmentPicker = ({
     const hasChildren = !!node.children && node.children.length > 0;
     const checked = isChecked(node.value);
     const disabledReason = disabledOptions?.[node.value];
+    const ancestorSelected = parents.some((p) => draft.includes(p.value));
+    const drillDisabled = ancestorSelected;
+    const drill = hasChildren && !searchResults && (
+      drillDisabled ? (
+        <Tooltip content="已选择上级部门，下级将自动包含">
+          <span
+            className="dept-picker-row-drill is-disabled"
+            onClick={(e) => e.stopPropagation()}
+          >
+            下级 <ChevronRight size={14} strokeWidth={2} />
+          </span>
+        </Tooltip>
+      ) : (
+        <span
+          className="dept-picker-row-drill"
+          onClick={(e) => {
+            e.stopPropagation();
+            setPathStack((s) => [...s, node]);
+          }}
+        >
+          下级 <ChevronRight size={14} strokeWidth={2} />
+        </span>
+      )
+    );
     const row = (
       <div
         key={node.value}
@@ -183,17 +207,7 @@ const DepartmentPicker = ({
         {disabledReason && (
           <span className="dept-picker-row-reason">· {disabledReason}</span>
         )}
-        {hasChildren && !searchResults && (
-          <span
-            className="dept-picker-row-drill"
-            onClick={(e) => {
-              e.stopPropagation();
-              setPathStack((s) => [...s, node]);
-            }}
-          >
-            下级 <ChevronRight size={14} strokeWidth={2} />
-          </span>
-        )}
+        {drill}
       </div>
     );
     return row;
