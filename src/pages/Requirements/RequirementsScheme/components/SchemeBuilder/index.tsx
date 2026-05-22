@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Toast, Modal, Space, Tag, Spin, Tooltip, Input } from '@douyinfe/semi-ui';
+import { Typography, Button, Toast, Modal, Space, Tag, Spin, Tooltip, Input, Banner } from '@douyinfe/semi-ui';
 import { ChevronLeft, Save, Play, CheckCircle, Pencil, Building2, Star } from 'lucide-react';
 
 import {
@@ -69,13 +69,36 @@ const buildEmptyDraft = (): RequirementScheme => ({
 
 const SchemeBuilderPage = () => {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const presetSourceId = searchParams.get('preset');
   const navigate = useNavigate();
   const { t } = useTranslation();
   const isNewMode = id === 'new';
-  const initialScheme = isNewMode ? buildEmptyDraft() : (id ? getSchemeById(id) ?? null : null);
+
+  const buildDraftFromPreset = useCallback((sourceId: string): RequirementScheme | null => {
+    const src = getSchemeById(sourceId);
+    if (!src) return null;
+    const draft = buildEmptyDraft();
+    return {
+      ...draft,
+      name: `${src.name}（副本）`,
+      description: src.description,
+      custom_fields: src.custom_fields ? src.custom_fields.map((f) => ({ ...f })) : [],
+      value_assessment_model: src.value_assessment_model,
+      complexity_assessment_model: src.complexity_assessment_model,
+      workflow_config: src.workflow_config,
+      cost_config: src.cost_config,
+      approval_flow: src.approval_flow,
+      source_preset_key: src.is_preset ? src.code : src.source_preset_key,
+    };
+  }, []);
+
+  const initialScheme = isNewMode
+    ? (presetSourceId ? (buildDraftFromPreset(presetSourceId) ?? buildEmptyDraft()) : buildEmptyDraft())
+    : (id ? getSchemeById(id) ?? null : null);
   const [savedScheme, setSavedScheme] = useState<RequirementScheme | null>(isNewMode ? null : initialScheme);
   const [draftScheme, setDraftScheme] = useState<RequirementScheme | null>(initialScheme);
-  const [dirty, setDirty] = useState(false);
+  const [dirty, setDirty] = useState(isNewMode && !!presetSourceId);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
   const [testDriveVisible, setTestDriveVisible] = useState(false);
@@ -88,10 +111,10 @@ const SchemeBuilderPage = () => {
     return savedScheme ? resolveEditMode(savedScheme) : 'custom_inactive';
   }, [savedScheme, isNewMode]);
   const isReadOnly = editMode === 'preset';
-  const isFormReadOnly = editMode === 'preset' || editMode === 'custom_active';
+  const isFormReadOnly = editMode === 'preset';
   const showDeptBlock = editMode === 'custom_active' || editMode === 'custom_inactive';
-  const showTestDrive = !isNewMode && (editMode === 'tenant_default' || editMode === 'custom_inactive');
-  const canEditName = editMode === 'tenant_default' || editMode === 'custom_inactive';
+  const showTestDrive = !isNewMode && (editMode === 'tenant_default' || editMode === 'custom_inactive' || editMode === 'custom_active');
+  const canEditName = editMode === 'tenant_default' || editMode === 'custom_inactive' || editMode === 'custom_active';
 
   // 进入页面：解析方案并完成初始化（v15: 不再对已激活方案派生新版本，改为 custom_active 模式）
   useEffect(() => {
