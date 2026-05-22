@@ -7,7 +7,7 @@ import { UserInfoDropdown } from '../UserInfoDropdown';
 import NotificationDrawer from '../NotificationDrawer';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
 import { useApprovalPendingCount } from '@/pages/SharingCenter/shared/useApprovalPendingCount';
-import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, Building2, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Columns3Cog, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, Gauge, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, NotepadTextDashed, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, Users, Wallet, Workflow, Wrench } from 'lucide-react';
+import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, Building2, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Columns3Cog, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, Gauge, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, NotepadTextDashed, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, Users, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
