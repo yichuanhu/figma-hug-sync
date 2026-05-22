@@ -341,13 +341,6 @@ const SCHEME_STORAGE_KEY = 'apa.requirements.schemes.v1';
 
 /** v15: 租户默认方案的来源预设 key */
 export const DEFAULT_PRESET_KEY = 'RPA-PRO';
-/** v15: 演示用——预设当前最新版本，若租户方案的 source_preset_version 落后于此值则显示「预设已更新」 */
-const PRESET_LATEST_VERSIONS: Record<string, string> = {
-  'RPA-PRO': '1.1.0', // 故意比预设里的 1.0.0 高，演示升级通知
-  'RPA-LITE': '1.0.0',
-  'RPA-STAT': '1.0.0',
-  'ADP-DOC': '1.0.0',
-};
 
 // ============= v15 错误码 =============
 export type SchemeErrorCode =
@@ -389,7 +382,6 @@ const buildTenantDefaultFromPreset = (presetKey: string): RequirementScheme | nu
     is_tenant_default: true,
     status: 'active',
     source_preset_key: preset.code,
-    source_preset_version: preset.version,
     applicable_department_ids: [],
     created_at: new Date().toISOString(),
     created_by: 'system',
@@ -454,19 +446,9 @@ const bumpSchemeVersion = (): void => {
   notifySchemeChange();
 };
 
-/** v15: 为方案附加运行时计算字段（preset_update_available） */
-const decorateRuntime = (s: RequirementScheme): RequirementScheme => {
-  if (s.is_preset || !s.source_preset_key) return s;
-  const latest = PRESET_LATEST_VERSIONS[s.source_preset_key];
-  if (latest && s.source_preset_version && latest > s.source_preset_version) {
-    return { ...s, preset_update_available: true };
-  }
-  return s;
-};
-
 export const fetchSchemes = async (keyword?: string): Promise<RequirementScheme[]> => {
   await new Promise((r) => setTimeout(r, 200));
-  let list = schemeStore.map(decorateRuntime);
+  let list = schemeStore.map((s) => ({ ...s }));
   if (keyword?.trim()) {
     const kw = keyword.toLowerCase().trim();
     list = list.filter((s) => s.name.toLowerCase().includes(kw) || s.code.toLowerCase().includes(kw));
@@ -604,9 +586,6 @@ export const setSchemeAsDefault = async (id: string): Promise<void> => {
   bumpSchemeVersion();
 };
 
-/** v15: 取方案对应源预设的最新版本号；用于展示预设升级差异 */
-export const getPresetLatestVersion = (presetKey: string | undefined): string | undefined =>
-  presetKey ? PRESET_LATEST_VERSIONS[presetKey] : undefined;
 
 
 
@@ -681,7 +660,6 @@ export const cloneSchemeAsDraft = async (sourceId: string, opts?: { name?: strin
     parent_id: src.id,
     applicable_department_ids: [],
     source_preset_key: src.is_preset ? src.code : src.source_preset_key,
-    source_preset_version: src.is_preset ? src.version : src.source_preset_version,
     created_at: new Date().toISOString(),
     updated_at: undefined,
   };
