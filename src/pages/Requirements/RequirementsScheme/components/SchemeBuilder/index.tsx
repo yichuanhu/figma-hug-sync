@@ -123,6 +123,18 @@ const SchemeBuilderPage = () => {
     !isNewMode && (editMode === "tenant_default" || editMode === "custom_inactive" || editMode === "custom_active");
   const canEditName = editMode === "tenant_default" || editMode === "custom_inactive" || editMode === "custom_active";
 
+  // v15: 初次进入时，如果尚无任何部门-方案绑定，给若干示例部门绑定到首个激活方案，
+  // 以便在「适用部门」选择器中能看到「已被其他激活方案占用」的禁用态。
+  useEffect(() => {
+    const firstActive = getActiveSchemes()[0];
+    if (!firstActive) return;
+    seedSampleBindingsIfEmpty(firstActive.id, [
+      "dept-north",
+      "dept-east",
+      "dept-finance",
+    ]);
+  }, []);
+
   // 进入页面：解析方案并完成初始化（v15: 不再对已激活方案派生新版本，改为 custom_active 模式）
   useEffect(() => {
     if (!id || isNewMode) return;
