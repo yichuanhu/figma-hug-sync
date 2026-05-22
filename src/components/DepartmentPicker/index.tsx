@@ -130,25 +130,15 @@ const DepartmentPicker = ({
 
   const toggleNode = (node: DeptTreeNode) => {
     if (isDisabled(node.value)) return;
-    const subtree = getDepartmentSubtreeIds(node.value);
+    // 只 toggle 当前节点本身；子部门的展开仅在激活/保存已激活方案时由系统计算
     const next = new Set(draft);
-    if (isChecked(node.value)) {
-      // 取消：移除自身 + 子孙
-      subtree.forEach((id) => next.delete(id));
-    } else {
-      // 选中：加入自身 + 未禁用的子孙
-      subtree.forEach((id) => {
-        if (!isDisabled(id)) next.add(id);
-      });
-    }
+    if (isChecked(node.value)) next.delete(node.value);
+    else next.add(node.value);
     setDraft(Array.from(next));
   };
 
   const removeFromDraft = (id: string) => {
-    const subtree = getDepartmentSubtreeIds(id);
-    const next = new Set(draft);
-    subtree.forEach((x) => next.delete(x));
-    setDraft(Array.from(next));
+    setDraft(draft.filter((x) => x !== id));
   };
 
   const handleConfirm = () => {
