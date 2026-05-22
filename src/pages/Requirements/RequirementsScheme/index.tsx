@@ -376,7 +376,6 @@ const RequirementsScheme = () => {
                       content={(() => {
                         const selected = s.applicable_department_ids ?? [];
                         const effective = new Set(listDepartmentsByScheme(s.id));
-                        if (selected.length === 0) return <Text type="tertiary" size="small">尚未配置适用部门（激活时必填）</Text>;
                         return (
                           <div style={{ maxWidth: 280, padding: '4px 0', display: 'flex', flexDirection: 'column', gap: 4 }}>
                             {selected.map((id) => {
@@ -399,20 +398,6 @@ const RequirementsScheme = () => {
                       {(() => {
                         const selected = (s.applicable_department_ids ?? []).length;
                         const effective = bindCountMap[s.id] ?? 0;
-                        if (selected === 0) {
-                          return (
-                            <Tag
-                              size="small"
-                              color="amber"
-                              type="light"
-                              prefixIcon={<Building2 size={12} strokeWidth={2} />}
-                              onClick={(e) => e.stopPropagation()}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              未配置适用部门
-                            </Tag>
-                          );
-                        }
                         const hasDrift = effective < selected;
                         return (
                           <Tag
