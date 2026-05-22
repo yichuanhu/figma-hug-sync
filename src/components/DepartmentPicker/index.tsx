@@ -11,7 +11,7 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import { Modal, Input, Checkbox, Typography, Tooltip } from '@douyinfe/semi-ui';
-import { Building2, ChevronRight, X, ChevronDown, Search } from 'lucide-react';
+import { Building2, ChevronRight, X, ChevronDown, Search, Lock } from 'lucide-react';
 import {
   departmentTree,
   getDepartmentName,
