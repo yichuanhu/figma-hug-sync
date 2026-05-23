@@ -39,13 +39,11 @@ const ApprovalConfigPage = () => {
   const [keyword, setKeyword] = useState('');
   const [flows, setFlows] = useState<ApprovalFlowTemplate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [bindCountMap, setBindCountMap] = useState<Record<string, number>>(() => getBoundDepartmentCountMap());
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       setFlows(await fetchApprovalFlows(keyword));
-      setBindCountMap(getBoundDepartmentCountMap());
     } finally {
       setLoading(false);
     }
@@ -56,7 +54,6 @@ const ApprovalConfigPage = () => {
   }, [load]);
 
   useEffect(() => subscribeApprovalFlowChange(() => load()), [load]);
-  useEffect(() => subscribeBindingChange(() => setBindCountMap(getBoundDepartmentCountMap())), []);
 
   const goEdit = (f: ApprovalFlowTemplate) => {
     navigate(`/requirements/approval-config/builder/${f.id}`);
