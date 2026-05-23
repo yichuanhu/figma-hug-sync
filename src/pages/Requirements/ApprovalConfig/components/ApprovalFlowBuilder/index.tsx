@@ -166,7 +166,7 @@ const ApprovalFlowBuilderPage = () => {
   }
 
   return (
-    <div className="approval-flow-builder">
+    <div className={`approval-flow-builder${fullscreen ? ' approval-flow-builder--fullscreen' : ''}`}>
       <div className="approval-flow-builder-header">
         <div className="approval-flow-builder-header-left">
           <Tooltip content={t('common.back')} position="bottom">
