@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Input, Toast, Modal, Space, Tag, Spin, Tooltip } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, CheckCircle, Pencil, Building2 } from 'lucide-react';
+import { ChevronLeft, Save, CheckCircle, Pencil, Building2, ChevronRight, Maximize2, Minimize2, X } from 'lucide-react';
 import {
   getApprovalFlowById,
   fetchApprovalFlows,
