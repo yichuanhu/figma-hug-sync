@@ -65,6 +65,7 @@ const ApprovalFlowBuilderPage = () => {
     // 拉取所有已激活模板（草稿态不占用部门）
     fetchApprovalFlows().then((all) => {
       setActiveTemplateIds(all.filter((x) => x.status === 'active').map((x) => x.id));
+      setPresetIds(all.filter((x) => x.is_preset).map((x) => x.id));
     });
     setLoading(false);
   }, [id, navigate]);
