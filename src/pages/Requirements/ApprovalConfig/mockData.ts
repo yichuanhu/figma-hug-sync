@@ -117,14 +117,30 @@ export const fetchApprovalFlows = async (keyword?: string): Promise<ApprovalFlow
 export const getApprovalFlowById = (id: string): ApprovalFlowTemplate | undefined =>
   cache.find((f) => f.id === id);
 
+const isNameDuplicate = (name: string, excludeId?: string) => {
+  const n = name.trim().toLowerCase();
+  return cache.some((f) => f.id !== excludeId && f.name.trim().toLowerCase() === n);
+};
+
+const generateUniqueName = (base: string) => {
+  if (!isNameDuplicate(base)) return base;
+  let i = 2;
+  while (isNameDuplicate(`${base} ${i}`)) i += 1;
+  return `${base} ${i}`;
+};
+
 export const createApprovalFlowDraft = async (
   payload?: Partial<Pick<ApprovalFlowTemplate, 'name' | 'code' | 'description' | 'approvers' | 'assessors' | 'value_model' | 'complexity_model'>>,
 ): Promise<ApprovalFlowTemplate> => {
   await delay();
   const now = new Date().toISOString();
+  const requestedName = payload?.name ?? '未命名审批流';
+  const finalName = payload?.name && isNameDuplicate(payload.name)
+    ? (() => { throw new Error(`已存在同名审批流「${payload.name}」`); })()
+    : generateUniqueName(requestedName);
   const item: ApprovalFlowTemplate = {
     id: `flow-${Date.now()}`,
-    name: payload?.name ?? '未命名审批流',
+    name: finalName,
     code: payload?.code ?? `FLOW-${Date.now().toString(36).slice(-5).toUpperCase()}`,
     description: payload?.description,
     status: 'inactive',
@@ -147,6 +163,9 @@ export const updateApprovalFlow = async (
   patch: Partial<Omit<ApprovalFlowTemplate, 'id' | 'created_at'>>,
 ): Promise<ApprovalFlowTemplate> => {
   await delay();
+  if (typeof patch.name === 'string' && isNameDuplicate(patch.name, id)) {
+    throw new Error(`已存在同名审批流「${patch.name}」，请更换名称`);
+  }
   cache = cache.map((f) => (f.id === id ? { ...f, ...patch, updated_at: new Date().toISOString() } : f));
   save(cache);
   notify();
