@@ -233,26 +233,28 @@ const ApprovalFlowBuilderPage = () => {
         </div>
         <Space>
           {isView ? (
-            <>
-              <Button
-                icon={<Pencil size={16} strokeWidth={2} />}
-                theme="light"
-                type="tertiary"
-                onClick={() => navigate(`/requirements/approval-config/builder/${draft.id}`)}
-              >
-                编辑
-              </Button>
-              {draft.status !== 'active' && (
+            draft.is_preset ? null : (
+              <>
                 <Button
-                  icon={<CheckCircle size={16} strokeWidth={2} />}
-                  theme="solid"
-                  type="primary"
-                  onClick={handleActivate}
+                  icon={<Pencil size={16} strokeWidth={2} />}
+                  theme="light"
+                  type="tertiary"
+                  onClick={() => navigate(`/requirements/approval-config/builder/${draft.id}`)}
                 >
-                  启用
+                  编辑
                 </Button>
-              )}
-            </>
+                {draft.status !== 'active' && (
+                  <Button
+                    icon={<CheckCircle size={16} strokeWidth={2} />}
+                    theme="solid"
+                    type="primary"
+                    onClick={handleActivate}
+                  >
+                    启用
+                  </Button>
+                )}
+              </>
+            )
           ) : (
             <>
               <Button
@@ -281,7 +283,7 @@ const ApprovalFlowBuilderPage = () => {
       <div className="approval-flow-builder-body">
         <div className="workflow-builder">
           {/* 适用部门：保存时同步写入 department_approval_flow_binding（business_type=REQUIREMENT） */}
-          {(() => {
+          {!(isView && draft.is_preset) && (() => {
             const deptCount = (draft.applicable_department_ids ?? []).length;
             return (
               <div className="approval-flow-section-card">
