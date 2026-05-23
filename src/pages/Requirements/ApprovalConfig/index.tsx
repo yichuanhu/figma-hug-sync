@@ -29,12 +29,6 @@ import {
   subscribeApprovalFlowChange,
   type ApprovalFlowTemplate,
 } from './mockData';
-import {
-  getBoundDepartmentCountMap,
-  listDepartmentsByTemplate,
-  subscribeBindingChange,
-} from '@/mocks/departmentApprovalFlowBinding';
-import { getDepartmentName } from '@/mocks/departmentData';
 import './index.less';
 
 const { Title, Text } = Typography;
