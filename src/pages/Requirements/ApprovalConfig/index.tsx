@@ -15,7 +15,6 @@ import {
   Row,
   Col,
   Space,
-  Popover,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause } from 'lucide-react';
