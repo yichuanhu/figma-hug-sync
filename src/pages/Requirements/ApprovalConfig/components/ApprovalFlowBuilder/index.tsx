@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Input, Toast, Modal, Space, Tag, Spin, Tooltip } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, CheckCircle, Pencil, Building2 } from 'lucide-react';
+import { ChevronLeft, Save, CheckCircle, Pencil, Building2, ChevronRight, Maximize2, Minimize2, X } from 'lucide-react';
 import {
   getApprovalFlowById,
   fetchApprovalFlows,
@@ -41,6 +41,8 @@ const ApprovalFlowBuilderPage = () => {
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
   const [activeTemplateIds, setActiveTemplateIds] = useState<string[]>([]);
+  const [presetIds, setPresetIds] = useState<string[]>([]);
+  const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -63,6 +65,7 @@ const ApprovalFlowBuilderPage = () => {
     // 拉取所有已激活模板（草稿态不占用部门）
     fetchApprovalFlows().then((all) => {
       setActiveTemplateIds(all.filter((x) => x.status === 'active').map((x) => x.id));
+      setPresetIds(all.filter((x) => x.is_preset).map((x) => x.id));
     });
     setLoading(false);
   }, [id, navigate]);
@@ -163,7 +166,7 @@ const ApprovalFlowBuilderPage = () => {
   }
 
   return (
-    <div className="approval-flow-builder">
+    <div className={`approval-flow-builder${fullscreen ? ' approval-flow-builder--fullscreen' : ''}`}>
       <div className="approval-flow-builder-header">
         <div className="approval-flow-builder-header-left">
           <Tooltip content={t('common.back')} position="bottom">
@@ -214,11 +217,9 @@ const ApprovalFlowBuilderPage = () => {
               {dirty && <Tag color="red" type="light" size="small">未保存</Tag>}
             </div>
             {isView ? (
-              draft.description ? (
-                <Typography.Text type="tertiary" size="small" style={{ marginTop: 4 }}>
-                  {draft.description}
-                </Typography.Text>
-              ) : null
+              <Typography.Text type="tertiary" size="small" style={{ marginTop: 4 }}>
+                {draft.description || '暂无描述'}
+              </Typography.Text>
             ) : (
               <Input
                 value={draft.description ?? ''}
@@ -233,7 +234,50 @@ const ApprovalFlowBuilderPage = () => {
         </div>
         <Space>
           {isView ? (
-            draft.is_preset ? null : (
+            draft.is_preset ? (() => {
+              const idx = presetIds.indexOf(draft.id);
+              const prevId = idx > 0 ? presetIds[idx - 1] : null;
+              const nextId = idx >= 0 && idx < presetIds.length - 1 ? presetIds[idx + 1] : null;
+              return (
+                <>
+                  <Tooltip content="上一个" position="bottom">
+                    <Button
+                      icon={<ChevronLeft size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      disabled={!prevId}
+                      onClick={() => prevId && navigate(`/requirements/approval-config/detail/${prevId}`)}
+                    />
+                  </Tooltip>
+                  <Tooltip content="下一个" position="bottom">
+                    <Button
+                      icon={<ChevronRight size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      disabled={!nextId}
+                      onClick={() => nextId && navigate(`/requirements/approval-config/detail/${nextId}`)}
+                    />
+                  </Tooltip>
+                  <div style={{ width: 1, height: 16, background: 'var(--semi-color-border)', margin: '0 4px' }} />
+                  <Tooltip content={fullscreen ? '退出全屏' : '全屏'} position="bottom">
+                    <Button
+                      icon={fullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      onClick={() => setFullscreen((v) => !v)}
+                    />
+                  </Tooltip>
+                  <Tooltip content="关闭" position="bottom">
+                    <Button
+                      icon={<X size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      onClick={() => navigate('/requirements/approval-config')}
+                    />
+                  </Tooltip>
+                </>
+              );
+            })() : (
               <>
                 <Button
                   icon={<Pencil size={16} strokeWidth={2} />}
