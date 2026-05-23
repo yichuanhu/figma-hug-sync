@@ -15,10 +15,9 @@ import {
   Row,
   Col,
   Space,
-  Popover,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Building2 } from 'lucide-react';
+import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   fetchApprovalFlows,
@@ -30,12 +29,6 @@ import {
   subscribeApprovalFlowChange,
   type ApprovalFlowTemplate,
 } from './mockData';
-import {
-  getBoundDepartmentCountMap,
-  listDepartmentsByTemplate,
-  subscribeBindingChange,
-} from '@/mocks/departmentApprovalFlowBinding';
-import { getDepartmentName } from '@/mocks/departmentData';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -46,13 +39,11 @@ const ApprovalConfigPage = () => {
   const [keyword, setKeyword] = useState('');
   const [flows, setFlows] = useState<ApprovalFlowTemplate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [bindCountMap, setBindCountMap] = useState<Record<string, number>>(() => getBoundDepartmentCountMap());
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       setFlows(await fetchApprovalFlows(keyword));
-      setBindCountMap(getBoundDepartmentCountMap());
     } finally {
       setLoading(false);
     }
@@ -63,7 +54,6 @@ const ApprovalConfigPage = () => {
   }, [load]);
 
   useEffect(() => subscribeApprovalFlowChange(() => load()), [load]);
-  useEffect(() => subscribeBindingChange(() => setBindCountMap(getBoundDepartmentCountMap())), []);
 
   const goEdit = (f: ApprovalFlowTemplate) => {
     navigate(`/requirements/approval-config/builder/${f.id}`);
@@ -257,67 +247,6 @@ const ApprovalConfigPage = () => {
                   {f.approvers.some((a) => a.approval_mode === 'all') && (
                     <Tag size="small" color="orange" type="light">含会签</Tag>
                   )}
-                  {f.approvers.some((a) => a.approval_mode === 'majority') && (
-                    <Tag size="small" color="cyan" type="light">含多数通过</Tag>
-                  )}
-                  <Popover
-                    position="top"
-                    showArrow
-                    content={(() => {
-                      const selected = f.applicable_department_ids ?? [];
-                      const effective = new Set(listDepartmentsByTemplate(f.id));
-                      if (selected.length === 0) return <Text type="tertiary" size="small">尚未配置适用部门（启用时必填）</Text>;
-                      return (
-                        <div style={{ maxWidth: 280, padding: '4px 0', display: 'flex', flexDirection: 'column', gap: 4 }}>
-                          {selected.map((id) => {
-                            const isEffective = effective.has(id);
-                            return (
-                              <div key={id} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                <Text size="small" type={isEffective ? 'primary' : 'tertiary'} style={{ textDecoration: isEffective ? 'none' : 'line-through' }}>
-                                  {getDepartmentName(id)}
-                                </Text>
-                                {!isEffective && (
-                                  <Text size="small" type="tertiary">（已被其他模板接管）</Text>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      );
-                    })()}
-                  >
-                    {(() => {
-                      const selected = (f.applicable_department_ids ?? []).length;
-                      const effective = bindCountMap[f.id] ?? 0;
-                      if (selected === 0) {
-                        return (
-                          <Tag
-                            size="small"
-                            color="amber"
-                            type="light"
-                            prefixIcon={<Building2 size={12} strokeWidth={2} />}
-                            onClick={(e) => e.stopPropagation()}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            未配置适用部门
-                          </Tag>
-                        );
-                      }
-                      const hasDrift = effective < selected;
-                      return (
-                        <Tag
-                          size="small"
-                          color={hasDrift ? 'amber' : 'violet'}
-                          type="light"
-                          prefixIcon={<Building2 size={12} strokeWidth={2} />}
-                          onClick={(e) => e.stopPropagation()}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          {hasDrift ? `适用 ${selected} · 生效 ${effective}` : `适用 ${selected} 个部门`}
-                        </Tag>
-                      );
-                    })()}
-                  </Popover>
                 </div>
               </div>
             ))}
