@@ -41,6 +41,8 @@ const ApprovalFlowBuilderPage = () => {
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
   const [activeTemplateIds, setActiveTemplateIds] = useState<string[]>([]);
+  const [presetIds, setPresetIds] = useState<string[]>([]);
+  const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
