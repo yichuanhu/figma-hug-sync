@@ -175,38 +175,50 @@ const ApprovalConfigPage = () => {
                     clickToHide
                     position="bottomRight"
                     render={
-                      <Dropdown.Menu>
-                        {f.status !== 'active' ? (
+                      f.is_preset ? (
+                        <Dropdown.Menu>
                           <Dropdown.Item
-                            icon={<CheckCircle size={14} />}
+                            icon={<Eye size={14} />}
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleActivate(f);
+                              goDetail(f);
                             }}
                           >
-                            启用
+                            {t('common.viewDetail')}
                           </Dropdown.Item>
-                        ) : (
+                        </Dropdown.Menu>
+                      ) : (
+                        <Dropdown.Menu>
+                          {f.status !== 'active' ? (
+                            <Dropdown.Item
+                              icon={<CheckCircle size={14} />}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleActivate(f);
+                              }}
+                            >
+                              启用
+                            </Dropdown.Item>
+                          ) : (
+                            <Dropdown.Item
+                              icon={<Pause size={14} />}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeactivate(f);
+                              }}
+                            >
+                              停用
+                            </Dropdown.Item>
+                          )}
                           <Dropdown.Item
-                            icon={<Pause size={14} />}
+                            icon={<Pencil size={14} />}
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleDeactivate(f);
+                              goEdit(f);
                             }}
                           >
-                            停用
+                            编辑
                           </Dropdown.Item>
-                        )}
-                        <Dropdown.Item
-                          icon={<Pencil size={14} />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            goEdit(f);
-                          }}
-                        >
-                          编辑
-                        </Dropdown.Item>
-                        {!f.is_preset && (
                           <Dropdown.Item
                             icon={<Trash2 size={14} />}
                             type="danger"
@@ -217,8 +229,8 @@ const ApprovalConfigPage = () => {
                           >
                             {t('common.delete')}
                           </Dropdown.Item>
-                        )}
-                      </Dropdown.Menu>
+                        </Dropdown.Menu>
+                      )
                     }
                   >
                     <Button
