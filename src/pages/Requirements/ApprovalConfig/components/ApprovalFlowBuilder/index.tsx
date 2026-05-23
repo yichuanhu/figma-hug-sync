@@ -111,6 +111,10 @@ const ApprovalFlowBuilderPage = () => {
       }
     }
     const selectedDeptIds = draft.applicable_department_ids ?? [];
+    if (selectedDeptIds.length === 0) {
+      Toast.warning('请选择适用部门');
+      return;
+    }
     // R-04：选中父部门时自动展开所有子部门写入绑定
     const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
     try {
@@ -345,7 +349,7 @@ const ApprovalFlowBuilderPage = () => {
                     )}
                   </div>
                   <Typography.Text type="tertiary" size="small">
-                    已被其他生效审批流占用的部门将不可选；选中父部门时会自动包含其所有子部门。
+                    已被其他生效方案占用的部门将不可选；激活时系统会按当前部门树展开子部门并写入生效绑定。
                   </Typography.Text>
                 </div>
                 <div className="approval-flow-section-card-body">
