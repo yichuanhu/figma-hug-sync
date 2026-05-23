@@ -234,7 +234,50 @@ const ApprovalFlowBuilderPage = () => {
         </div>
         <Space>
           {isView ? (
-            draft.is_preset ? null : (
+            draft.is_preset ? (() => {
+              const idx = presetIds.indexOf(draft.id);
+              const prevId = idx > 0 ? presetIds[idx - 1] : null;
+              const nextId = idx >= 0 && idx < presetIds.length - 1 ? presetIds[idx + 1] : null;
+              return (
+                <>
+                  <Tooltip content="上一个" position="bottom">
+                    <Button
+                      icon={<ChevronLeft size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      disabled={!prevId}
+                      onClick={() => prevId && navigate(`/requirements/approval-config/detail/${prevId}`)}
+                    />
+                  </Tooltip>
+                  <Tooltip content="下一个" position="bottom">
+                    <Button
+                      icon={<ChevronRight size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      disabled={!nextId}
+                      onClick={() => nextId && navigate(`/requirements/approval-config/detail/${nextId}`)}
+                    />
+                  </Tooltip>
+                  <div style={{ width: 1, height: 16, background: 'var(--semi-color-border)', margin: '0 4px' }} />
+                  <Tooltip content={fullscreen ? '退出全屏' : '全屏'} position="bottom">
+                    <Button
+                      icon={fullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      onClick={() => setFullscreen((v) => !v)}
+                    />
+                  </Tooltip>
+                  <Tooltip content="关闭" position="bottom">
+                    <Button
+                      icon={<X size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      onClick={() => navigate('/requirements/approval-config')}
+                    />
+                  </Tooltip>
+                </>
+              );
+            })() : (
               <>
                 <Button
                   icon={<Pencil size={16} strokeWidth={2} />}
