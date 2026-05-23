@@ -283,7 +283,7 @@ const ApprovalFlowBuilderPage = () => {
       <div className="approval-flow-builder-body">
         <div className="workflow-builder">
           {/* 适用部门：保存时同步写入 department_approval_flow_binding（business_type=REQUIREMENT） */}
-          {(() => {
+          {!(isView && draft.is_preset) && (() => {
             const deptCount = (draft.applicable_department_ids ?? []).length;
             return (
               <div className="approval-flow-section-card">
