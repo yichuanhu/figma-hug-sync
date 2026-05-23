@@ -247,6 +247,9 @@ const ApprovalConfigPage = () => {
                   {f.approvers.some((a) => a.approval_mode === 'all') && (
                     <Tag size="small" color="orange" type="light">含会签</Tag>
                   )}
+                  {f.is_preset && (
+                    <Tag size="small" color="grey" type="light">只读</Tag>
+                  )}
                 </div>
               </div>
             ))}
