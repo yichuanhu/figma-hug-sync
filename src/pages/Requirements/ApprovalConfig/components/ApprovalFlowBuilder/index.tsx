@@ -217,11 +217,9 @@ const ApprovalFlowBuilderPage = () => {
               {dirty && <Tag color="red" type="light" size="small">未保存</Tag>}
             </div>
             {isView ? (
-              draft.description ? (
-                <Typography.Text type="tertiary" size="small" style={{ marginTop: 4 }}>
-                  {draft.description}
-                </Typography.Text>
-              ) : null
+              <Typography.Text type="tertiary" size="small" style={{ marginTop: 4 }}>
+                {draft.description || '暂无描述'}
+              </Typography.Text>
             ) : (
               <Input
                 value={draft.description ?? ''}
