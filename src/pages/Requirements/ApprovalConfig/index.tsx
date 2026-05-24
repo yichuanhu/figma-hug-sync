@@ -200,6 +200,15 @@ const ApprovalConfigPage = () => {
                           >
                             {t('common.viewDetail')}
                           </Dropdown.Item>
+                          <Dropdown.Item
+                            icon={<Copy size={14} />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClone(f);
+                            }}
+                          >
+                            复制
+                          </Dropdown.Item>
                         </Dropdown.Menu>
                       ) : (
                         <Dropdown.Menu>
