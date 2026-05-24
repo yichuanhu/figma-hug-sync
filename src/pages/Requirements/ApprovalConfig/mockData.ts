@@ -190,6 +190,8 @@ export const deleteApprovalFlow = async (id: string): Promise<void> => {
  */
 export const activateApprovalFlow = async (id: string): Promise<void> => {
   await delay();
+  const target = cache.find((f) => f.id === id);
+  if (target?.is_preset) throw new Error('预设审批流不可启用，请先复制为租户模板');
   cache = cache.map((f) => f.id === id
     ? { ...f, status: 'active' as const, is_draft: false, updated_at: new Date().toISOString() }
     : f);
