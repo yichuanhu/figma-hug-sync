@@ -19,6 +19,7 @@ import {
   setSchemeAsDefault,
   validateScheme,
   getDefaultSchemeHealth,
+  cloneSchemeAsDraft,
   SchemeError,
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '../RequirementsWorkbench/types';
