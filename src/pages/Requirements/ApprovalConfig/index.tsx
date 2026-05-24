@@ -93,6 +93,9 @@ const ApprovalConfigPage = () => {
     await deactivateApprovalFlow(f.id);
     Toast.success('已停用');
     load();
+  };
+
+
 
   const handleClone = async (f: ApprovalFlowTemplate) => {
     try {
