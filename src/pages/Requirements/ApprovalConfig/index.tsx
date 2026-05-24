@@ -41,12 +41,12 @@ const ApprovalConfigPage = () => {
   const [flows, setFlows] = useState<ApprovalFlowTemplate[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       setFlows(await fetchApprovalFlows(keyword));
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [keyword]);
 
@@ -54,7 +54,7 @@ const ApprovalConfigPage = () => {
     load();
   }, [load]);
 
-  useEffect(() => subscribeApprovalFlowChange(() => load()), [load]);
+  useEffect(() => subscribeApprovalFlowChange(() => load(true)), [load]);
 
   const goEdit = (f: ApprovalFlowTemplate) => {
     navigate(`/requirements/approval-config/builder/${f.id}`);
