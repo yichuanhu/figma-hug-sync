@@ -216,7 +216,7 @@ const ApprovalFlowBuilderPage = () => {
                   {!isView && <Pencil size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)' }} />}
                 </Title>
               )}
-              {draft.status === 'active' && <Tag color="green" type="light" size="small">已启用</Tag>}
+              {draft.status === 'active' && !draft.is_preset && <Tag color="green" type="light" size="small">已启用</Tag>}
               {draft.is_preset && <Tag color="blue" type="light" size="small">预设</Tag>}
               {dirty && <Tag color="red" type="light" size="small">未保存</Tag>}
             </div>
