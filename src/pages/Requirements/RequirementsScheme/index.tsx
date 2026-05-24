@@ -173,6 +173,17 @@ const RequirementsScheme = () => {
     });
   };
 
+  /** 复制方案为草稿 */
+  const handleClone = async (s: RequirementScheme) => {
+    try {
+      const draft = await cloneSchemeAsDraft(s.id);
+      Toast.success('已复制为草稿');
+      navigate(`/requirements/scheme/builder/${draft.id}`);
+    } catch (e) {
+      Toast.error((e as Error).message ?? '复制失败');
+    }
+  };
+
   /** 操作菜单 */
   const renderActionMenu = (s: RequirementScheme) => {
     const items: React.ReactNode[] = [];
@@ -182,7 +193,14 @@ const RequirementsScheme = () => {
       </Dropdown.Item>,
     );
 
+    const cloneItem = (
+      <Dropdown.Item key="clone" icon={<Copy size={14} />} onClick={(e) => { e.stopPropagation(); handleClone(s); }}>
+        复制
+      </Dropdown.Item>
+    );
+
     if (s.is_preset) {
+      items.push(cloneItem);
       return <Dropdown.Menu>{items}</Dropdown.Menu>;
     }
 
