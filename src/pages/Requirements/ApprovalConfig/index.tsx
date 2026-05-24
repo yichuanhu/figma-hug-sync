@@ -163,7 +163,7 @@ const ApprovalConfigPage = () => {
                     <Text strong ellipsis={{ showTooltip: true }} style={{ fontSize: 16 }}>
                       {f.name}
                     </Text>
-                    {f.status === 'active' && (
+                    {f.status === 'active' && !f.is_preset && (
                       <Tag color="green" type="solid" size="small">已启用</Tag>
                     )}
                     {f.is_preset && (
