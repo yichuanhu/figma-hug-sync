@@ -210,6 +210,7 @@ const RequirementsScheme = () => {
           {t('requirements.scheme.edit')}
         </Dropdown.Item>,
       );
+      items.push(cloneItem);
       return <Dropdown.Menu>{items}</Dropdown.Menu>;
     }
 
