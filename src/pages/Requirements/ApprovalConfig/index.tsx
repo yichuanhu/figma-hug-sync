@@ -93,7 +93,17 @@ const ApprovalConfigPage = () => {
     await deactivateApprovalFlow(f.id);
     Toast.success('已停用');
     load();
+
+  const handleClone = async (f: ApprovalFlowTemplate) => {
+    try {
+      const draft = await cloneApprovalFlowAsDraft(f.id);
+      Toast.success('已复制为草稿');
+      navigate(`/requirements/approval-config/builder/${draft.id}`);
+    } catch (e) {
+      Toast.error((e as Error).message ?? '复制失败');
+    }
   };
+
 
   const handleDelete = (f: ApprovalFlowTemplate) => {
     Modal.confirm({
