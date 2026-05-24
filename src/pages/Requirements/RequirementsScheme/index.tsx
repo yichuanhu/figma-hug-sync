@@ -19,6 +19,7 @@ import {
   setSchemeAsDefault,
   validateScheme,
   getDefaultSchemeHealth,
+  cloneSchemeAsDraft,
   SchemeError,
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '../RequirementsWorkbench/types';
@@ -172,6 +173,17 @@ const RequirementsScheme = () => {
     });
   };
 
+  /** 复制方案为草稿 */
+  const handleClone = async (s: RequirementScheme) => {
+    try {
+      const draft = await cloneSchemeAsDraft(s.id);
+      Toast.success('已复制为草稿');
+      navigate(`/requirements/scheme/builder/${draft.id}`);
+    } catch (e) {
+      Toast.error((e as Error).message ?? '复制失败');
+    }
+  };
+
   /** 操作菜单 */
   const renderActionMenu = (s: RequirementScheme) => {
     const items: React.ReactNode[] = [];
@@ -181,7 +193,14 @@ const RequirementsScheme = () => {
       </Dropdown.Item>,
     );
 
+    const cloneItem = (
+      <Dropdown.Item key="clone" icon={<Copy size={14} />} onClick={(e) => { e.stopPropagation(); handleClone(s); }}>
+        复制
+      </Dropdown.Item>
+    );
+
     if (s.is_preset) {
+      items.push(cloneItem);
       return <Dropdown.Menu>{items}</Dropdown.Menu>;
     }
 
@@ -191,6 +210,7 @@ const RequirementsScheme = () => {
           {t('requirements.scheme.edit')}
         </Dropdown.Item>,
       );
+      items.push(cloneItem);
       return <Dropdown.Menu>{items}</Dropdown.Menu>;
     }
 
@@ -206,6 +226,7 @@ const RequirementsScheme = () => {
           停用
         </Dropdown.Item>,
       );
+      items.push(cloneItem);
     } else {
       items.unshift(
         <Dropdown.Item key="edit" icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
@@ -254,6 +275,8 @@ const RequirementsScheme = () => {
           </Tooltip>
         ) : setDefaultItem,
       );
+
+      items.push(cloneItem);
 
       items.push(
         <Dropdown.Item key="delete" icon={<Trash2 size={14} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(s); }}>

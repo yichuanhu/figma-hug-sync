@@ -17,7 +17,7 @@ import {
   Space,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Eye } from 'lucide-react';
+import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Eye, Copy } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   fetchApprovalFlows,
@@ -25,6 +25,7 @@ import {
   activateApprovalFlow,
   deactivateApprovalFlow,
   createApprovalFlowDraft,
+  cloneApprovalFlowAsDraft,
   
   subscribeApprovalFlowChange,
   type ApprovalFlowTemplate,
@@ -93,6 +94,19 @@ const ApprovalConfigPage = () => {
     Toast.success('已停用');
     load();
   };
+
+
+
+  const handleClone = async (f: ApprovalFlowTemplate) => {
+    try {
+      const draft = await cloneApprovalFlowAsDraft(f.id);
+      Toast.success('已复制为草稿');
+      navigate(`/requirements/approval-config/builder/${draft.id}`);
+    } catch (e) {
+      Toast.error((e as Error).message ?? '复制失败');
+    }
+  };
+
 
   const handleDelete = (f: ApprovalFlowTemplate) => {
     Modal.confirm({
@@ -186,6 +200,15 @@ const ApprovalConfigPage = () => {
                           >
                             {t('common.viewDetail')}
                           </Dropdown.Item>
+                          <Dropdown.Item
+                            icon={<Copy size={14} />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClone(f);
+                            }}
+                          >
+                            复制
+                          </Dropdown.Item>
                         </Dropdown.Menu>
                       ) : (
                         <Dropdown.Menu>
@@ -218,6 +241,15 @@ const ApprovalConfigPage = () => {
                             }}
                           >
                             编辑
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            icon={<Copy size={14} />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClone(f);
+                            }}
+                          >
+                            复制
                           </Dropdown.Item>
                           <Dropdown.Item
                             icon={<Trash2 size={14} />}
