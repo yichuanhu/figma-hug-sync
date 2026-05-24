@@ -275,6 +275,8 @@ const RequirementsScheme = () => {
         ) : setDefaultItem,
       );
 
+      items.push(cloneItem);
+
       items.push(
         <Dropdown.Item key="delete" icon={<Trash2 size={14} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(s); }}>
           {t('common.delete')}
