@@ -226,6 +226,7 @@ const RequirementsScheme = () => {
           停用
         </Dropdown.Item>,
       );
+      items.push(cloneItem);
     } else {
       items.unshift(
         <Dropdown.Item key="edit" icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
