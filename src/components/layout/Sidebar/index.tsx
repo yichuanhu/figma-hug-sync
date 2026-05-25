@@ -253,6 +253,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     // 发布管理 - 分组标题
     { key: 'publishManagement', labelKey: 'sidebar.publishManagement', isGroupLabel: true },
     { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={18} strokeWidth={2} />, path: '/dev-center/release-management' },
+    { key: 'publishApprovals', labelKey: 'sidebar.publishApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/dev-center/publish-approvals' },
+    { key: 'publishApprovalTemplates', labelKey: 'sidebar.publishApprovalTemplates', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/dev-center/publish-approval-templates' },
   ];
 
   const bottomMenuItems: MenuItem[] = [
