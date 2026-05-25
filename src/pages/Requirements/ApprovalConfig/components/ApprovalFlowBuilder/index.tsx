@@ -52,6 +52,8 @@ const ApprovalFlowBuilderPage = ({
   const { t } = useTranslation();
   const isView = location.pathname.includes('/detail/');
   const isPublish = businessType === 'PROCESS_PUBLISH';
+  const isOffline = businessType === 'PROCESS_OFFLINE';
+  const isProcessFlow = isPublish || isOffline;
   const [draft, setDraft] = useState<ApprovalFlowTemplate | null>(null);
   const [loading, setLoading] = useState(true);
   const [dirty, setDirty] = useState(false);
@@ -62,9 +64,11 @@ const ApprovalFlowBuilderPage = ({
   const [fullscreen, setFullscreen] = useState(false);
 
   const isNew = id === 'new';
-  const codePrefix = isPublish ? 'PUB' : 'FLOW';
-  const idPrefix = isPublish ? 'pflow' : 'flow';
-  const defaultName = isPublish ? '未命名发布审批模板' : '未命名审批流';
+  const codePrefix = isPublish ? 'PUB' : isOffline ? 'OFF' : 'FLOW';
+  const idPrefix = isPublish ? 'pflow' : isOffline ? 'oflow' : 'flow';
+  const defaultName = isPublish ? '未命名发布审批模板' : isOffline ? '未命名停用审批模板' : '未命名审批流';
+  const flowKindLabel = isPublish ? '发布审批模板' : isOffline ? '停用审批模板' : '审批流';
+  const businessLabel = isPublish ? '流程发布' : isOffline ? '流程停用' : '需求';
 
   useEffect(() => {
     fetchApprovalFlows(undefined, businessType).then((all) => {
