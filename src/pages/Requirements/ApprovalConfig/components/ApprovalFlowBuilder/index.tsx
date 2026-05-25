@@ -373,7 +373,7 @@ const ApprovalFlowBuilderPage = () => {
                       maxTagCount={6}
                       disabledOptions={computeDeptDisabledOptions(
                         getOccupiedDepartmentMap(draft.id, activeTemplateIds),
-                        (tid) => `已被其他生效审批流绑定`,
+                        (tid) => getApprovalFlowById(tid)?.name ?? '其他生效审批流',
                       )}
                     />
                   )}
