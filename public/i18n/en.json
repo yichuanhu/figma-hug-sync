@@ -142,6 +142,8 @@
     "taskList": "Task List",
     "publishManagement": "Release Management",
     "processPublish": "Process Release",
+    "publishApprovals": "Release Approvals",
+    "publishApprovalTemplates": "Release Approval Templates",
     "publishList": "Release List",
     "newPublish": "New Release",
     "publishHistory": "Release History",
