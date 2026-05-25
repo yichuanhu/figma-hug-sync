@@ -64,10 +64,10 @@ const ApprovalConfigPage = () => {
     navigate(`/requirements/approval-config/detail/${f.id}`);
   };
 
-  const handleCreateNew = async () => {
-    const draft = await createApprovalFlowDraft();
-    navigate(`/requirements/approval-config/builder/${draft.id}`);
+  const handleCreateNew = () => {
+    navigate('/requirements/approval-config/builder/new');
   };
+
 
   const handleActivate = (f: ApprovalFlowTemplate) => {
     const deptCount = (f.applicable_department_ids ?? []).length;
