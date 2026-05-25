@@ -10,7 +10,7 @@
 import type { WorkflowApprover, AssessmentModel } from '@/pages/Requirements/RequirementsWorkbench/types';
 
 export type ApprovalFlowStatus = 'active' | 'inactive';
-export type ApprovalBusinessType = 'REQUIREMENT' | 'PROCESS_PUBLISH';
+export type ApprovalBusinessType = 'REQUIREMENT' | 'PROCESS_PUBLISH' | 'PROCESS_OFFLINE';
 
 export interface ApprovalFlowTemplate {
   id: string;
