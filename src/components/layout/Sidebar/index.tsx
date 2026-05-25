@@ -391,6 +391,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname.startsWith('/dev-center/publish-approvals')) {
       return 'publishApprovals';
     }
+    if (pathname.startsWith('/dev-center/offline-approval-templates')) {
+      return 'offlineApprovalTemplates';
+    }
+    if (pathname.startsWith('/dev-center/offline-approvals')) {
+      return 'offlineApprovals';
+    }
     if (pathname.startsWith('/requirements/list')) {
       return 'requirementsList';
     }
