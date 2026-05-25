@@ -140,7 +140,7 @@
     "autoExecutionPolicy": "Auto Execution Policy",
     "executionTemplate": "Execution Template",
     "taskList": "Task List",
-    "publishManagement": "Release Management",
+    "publishManagement": "Process Lifecycle Management",
     "processPublish": "Process Release",
     "publishApprovals": "Release Approvals",
     "publishApprovalTemplates": "Release Approval Templates",

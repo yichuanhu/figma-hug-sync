@@ -109,7 +109,7 @@
     "taskExecution": "任务执行",
     "autoExecutionPolicy": "自动执行策略",
     "taskList": "任务列表",
-    "publishManagement": "发布管理",
+    "publishManagement": "流程上下线管理",
     "processPublish": "流程发布",
     "publishApprovals": "发布审批",
     "publishApprovalTemplates": "发布审批模板",
