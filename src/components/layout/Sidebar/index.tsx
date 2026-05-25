@@ -383,6 +383,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/dev-center/release-management') {
       return 'processPublish';
     }
+    if (pathname.startsWith('/dev-center/publish-approval-templates')) {
+      return 'publishApprovalTemplates';
+    }
+    if (pathname.startsWith('/dev-center/publish-approvals')) {
+      return 'publishApprovals';
+    }
     if (pathname.startsWith('/requirements/list')) {
       return 'requirementsList';
     }
