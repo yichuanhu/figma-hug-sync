@@ -45,7 +45,35 @@ const ApprovalFlowBuilderPage = () => {
   const [presetIds, setPresetIds] = useState<string[]>([]);
   const [fullscreen, setFullscreen] = useState(false);
 
+  const isNew = id === 'new';
+
   useEffect(() => {
+    // 拉取所有已激活模板（草稿态不占用部门）
+    fetchApprovalFlows().then((all) => {
+      setActiveTemplateIds(all.filter((x) => x.status === 'active').map((x) => x.id));
+      setPresetIds(all.filter((x) => x.is_preset).map((x) => x.id));
+    });
+
+    if (isNew) {
+      const now = new Date().toISOString();
+      setDraft({
+        id: 'new',
+        name: '未命名审批流',
+        code: `FLOW-${Date.now().toString(36).slice(-5).toUpperCase()}`,
+        description: '',
+        status: 'inactive',
+        is_draft: true,
+        approvers: [],
+        assessors: [],
+        applicable_department_ids: [],
+        created_at: now,
+        updated_at: now,
+      } as ApprovalFlowTemplate);
+      setDirty(true);
+      setLoading(false);
+      return;
+    }
+
     if (!id) return;
     const f = getApprovalFlowById(id);
     if (!f) {
@@ -63,13 +91,8 @@ const ApprovalFlowBuilderPage = () => {
       approvers: f.approvers ?? [],
       applicable_department_ids: applicable,
     });
-    // 拉取所有已激活模板（草稿态不占用部门）
-    fetchApprovalFlows().then((all) => {
-      setActiveTemplateIds(all.filter((x) => x.status === 'active').map((x) => x.id));
-      setPresetIds(all.filter((x) => x.is_preset).map((x) => x.id));
-    });
     setLoading(false);
-  }, [id, navigate]);
+  }, [id, isNew, navigate]);
 
   const patch = (p: Partial<ApprovalFlowTemplate>) => {
     setDraft((prev) => (prev ? { ...prev, ...p } : prev));
