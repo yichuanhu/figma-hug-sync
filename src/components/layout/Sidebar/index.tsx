@@ -255,6 +255,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={18} strokeWidth={2} />, path: '/dev-center/release-management' },
     { key: 'publishApprovals', labelKey: 'sidebar.publishApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/dev-center/publish-approvals' },
     { key: 'publishApprovalTemplates', labelKey: 'sidebar.publishApprovalTemplates', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/dev-center/publish-approval-templates' },
+    { key: 'offlineApprovals', labelKey: 'sidebar.offlineApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/dev-center/offline-approvals' },
+    { key: 'offlineApprovalTemplates', labelKey: 'sidebar.offlineApprovalTemplates', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/dev-center/offline-approval-templates' },
   ];
 
   const bottomMenuItems: MenuItem[] = [
@@ -388,6 +390,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     }
     if (pathname.startsWith('/dev-center/publish-approvals')) {
       return 'publishApprovals';
+    }
+    if (pathname.startsWith('/dev-center/offline-approval-templates')) {
+      return 'offlineApprovalTemplates';
+    }
+    if (pathname.startsWith('/dev-center/offline-approvals')) {
+      return 'offlineApprovals';
     }
     if (pathname.startsWith('/requirements/list')) {
       return 'requirementsList';

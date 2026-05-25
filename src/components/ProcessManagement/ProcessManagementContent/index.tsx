@@ -26,10 +26,11 @@ import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import DepartmentSelect from '@/components/DepartmentSelect';
-import { Ellipsis, ExternalLink, Link2, Pencil, PlayCircle, Plus, Trash2, UserPlus } from 'lucide-react';
+import { Ellipsis, ExternalLink, Link2, Pencil, PlayCircle, Plus, PowerOff, Trash2, UserPlus } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
+import OfflineRequestModal from './components/OfflineRequestModal';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import type { LYProcessResponse, LYProcessDependency, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
@@ -332,6 +333,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [offlineRequestProcess, setOfflineRequestProcess] = useState<LYProcessResponse | null>(null);
   const [detailInitialTab, setDetailInitialTab] = useState('detail');
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
@@ -715,6 +717,16 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
               >
                 {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
+              {isSchedulingContext && record.status === 'PUBLISHED' && (
+                <Dropdown.Item
+                  icon={<PowerOff size={16} strokeWidth={2} />}
+                  onClick={() => {
+                    setOfflineRequestProcess(record);
+                  }}
+                >
+                  申请停用
+                </Dropdown.Item>
+              )}
               {!isSchedulingContext && (
                 <Dropdown.Item
                   icon={<Trash2 size={16} strokeWidth={2} />}
@@ -961,6 +973,20 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       {!isSchedulingContext && <OpenProcessModal />}
 
       {renderCollaboratorPanel('PROCESS', context)}
+
+      {/* 申请停用 Modal - 仅调度中心 */}
+      {isSchedulingContext && (
+        <OfflineRequestModal
+          visible={!!offlineRequestProcess}
+          onCancel={() => setOfflineRequestProcess(null)}
+          process={offlineRequestProcess ? {
+            id: offlineRequestProcess.id,
+            name: offlineRequestProcess.name,
+            department_id: (offlineRequestProcess as any).owning_department_id || '',
+            department_name: (offlineRequestProcess as any).owning_department_name || '',
+          } : null}
+        />
+      )}
     </div>
   );
 };
