@@ -23,6 +23,7 @@ import DevFileManagementPage from "@/pages/Development/FileManagement/FileManage
 // Release Management
 import ReleaseListPage from "@/pages/Development/ReleaseManagement/ReleaseListPage";
 import CreateReleasePage from "@/pages/Development/ReleaseManagement/CreateReleasePage";
+import PublishApprovalsPage from "@/pages/Development/PublishApprovals";
 // Scheduling - Worker Management
 import WorkerManagementPage from "@/pages/Scheduling/WorkerManagement/WorkerManagementPage";
 // Scheduling - Credential Management
@@ -148,6 +149,11 @@ const App = () => {
           {/* 发布管理 */}
           <Route path="/dev-center/release-management" element={<ReleaseListPage />} />
           <Route path="/dev-center/release-management/create" element={<CreateReleasePage />} />
+          <Route path="/dev-center/publish-approvals" element={<PublishApprovalsPage />} />
+          <Route path="/dev-center/publish-approval-templates" element={<ApprovalConfigPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" pageTitle="发布审批模板" pageDescription="为流程发布配置审批流并绑定到部门" createButtonText="新建发布审批" />} />
+          <Route path="/dev-center/publish-approval-templates/builder/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" />} />
+          <Route path="/dev-center/publish-approval-templates/detail/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" />} />
+          <Route path="/dev-center/publish-approval-templates/*" element={<Navigate to="/dev-center/publish-approval-templates" replace />} />
           
           {/* 自动化流程 - 调度中心 */}
           <Route path="/scheduling-center/execution-assets/automation-process" element={<SchedulingProcessManagementPage />} />
