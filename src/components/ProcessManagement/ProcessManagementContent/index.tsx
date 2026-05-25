@@ -333,6 +333,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [offlineRequestProcess, setOfflineRequestProcess] = useState<LYProcessResponse | null>(null);
   const [detailInitialTab, setDetailInitialTab] = useState('detail');
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
