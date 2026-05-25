@@ -113,6 +113,8 @@
     "processPublish": "流程发布",
     "publishApprovals": "发布审批",
     "publishApprovalTemplates": "发布审批模板",
+    "offlineApprovals": "停用审批",
+    "offlineApprovalTemplates": "停用审批模板",
     "messageCenter": "消息中心",
     "expandSidebar": "展开侧边栏",
     "dataAnalysis": "数据分析",
