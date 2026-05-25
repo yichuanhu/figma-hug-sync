@@ -371,6 +371,10 @@ const ApprovalFlowBuilderPage = () => {
                       onChange={(ids) => patch({ applicable_department_ids: ids })}
                       placeholder="请选择适用部门（可多选，选中父部门自动包含子部门）"
                       maxTagCount={6}
+                      disabledOptions={computeDeptDisabledOptions(
+                        getOccupiedDepartmentMap(draft.id, activeTemplateIds),
+                        (tid) => `已被其他生效审批流绑定`,
+                      )}
                     />
                   )}
                 </div>
