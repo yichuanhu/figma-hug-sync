@@ -111,6 +111,8 @@
     "taskList": "任务列表",
     "publishManagement": "发布管理",
     "processPublish": "流程发布",
+    "publishApprovals": "发布审批",
+    "publishApprovalTemplates": "发布审批模板",
     "messageCenter": "消息中心",
     "expandSidebar": "展开侧边栏",
     "dataAnalysis": "数据分析",

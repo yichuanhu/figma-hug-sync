@@ -185,7 +185,7 @@ let cache: ProcessVersion[] = load();
 const listeners = new Set<() => void>();
 export const subscribeProcessVersionChange = (cb: () => void) => {
   listeners.add(cb);
-  return () => listeners.delete(cb);
+  return () => { listeners.delete(cb); };
 };
 const notify = () => listeners.forEach((cb) => cb());
 

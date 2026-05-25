@@ -274,8 +274,8 @@ const PublishApprovalsPage = () => {
             field="reason"
             label="拒绝原因"
             placeholder="请填写拒绝原因（最多 500 字）"
-            value={rejectReason}
-            onChange={setRejectReason}
+            initValue={rejectReason}
+            onChange={(v) => setRejectReason(v as string)}
             maxCount={500}
             autosize={{ minRows: 4, maxRows: 8 }}
             rules={[{ required: true, message: '请填写拒绝原因' }]}
