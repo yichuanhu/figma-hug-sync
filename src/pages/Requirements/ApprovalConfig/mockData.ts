@@ -251,13 +251,17 @@ export const createApprovalFlowDraft = async (
 ): Promise<ApprovalFlowTemplate> => {
   await delay();
   const now = new Date().toISOString();
-  const requestedName = payload?.name ?? (businessType === 'PROCESS_PUBLISH' ? '未命名发布审批模板' : '未命名审批流');
+  const defaultName = businessType === 'PROCESS_PUBLISH' ? '未命名发布审批模板'
+    : businessType === 'PROCESS_OFFLINE' ? '未命名停用审批模板'
+    : '未命名审批流';
+  const requestedName = payload?.name ?? defaultName;
   const finalName = payload?.name && isNameDuplicate(payload.name, businessType)
     ? (() => { throw new Error(`已存在同名模板「${payload.name}」`); })()
     : generateUniqueName(requestedName, businessType);
-  const codePrefix = businessType === 'PROCESS_PUBLISH' ? 'PUB' : 'FLOW';
+  const codePrefix = businessType === 'PROCESS_PUBLISH' ? 'PUB' : businessType === 'PROCESS_OFFLINE' ? 'OFF' : 'FLOW';
+  const idPrefix = businessType === 'PROCESS_PUBLISH' ? 'pflow' : businessType === 'PROCESS_OFFLINE' ? 'oflow' : 'flow';
   const item: ApprovalFlowTemplate = {
-    id: `${businessType === 'PROCESS_PUBLISH' ? 'pflow' : 'flow'}-${Date.now()}`,
+    id: `${idPrefix}-${Date.now()}`,
     name: finalName,
     code: payload?.code ?? `${codePrefix}-${Date.now().toString(36).slice(-5).toUpperCase()}`,
     description: payload?.description,
