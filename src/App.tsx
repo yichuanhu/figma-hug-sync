@@ -24,6 +24,7 @@ import DevFileManagementPage from "@/pages/Development/FileManagement/FileManage
 import ReleaseListPage from "@/pages/Development/ReleaseManagement/ReleaseListPage";
 import CreateReleasePage from "@/pages/Development/ReleaseManagement/CreateReleasePage";
 import PublishApprovalsPage from "@/pages/Development/PublishApprovals";
+import OfflineApprovalsPage from "@/pages/Development/OfflineApprovals";
 // Scheduling - Worker Management
 import WorkerManagementPage from "@/pages/Scheduling/WorkerManagement/WorkerManagementPage";
 // Scheduling - Credential Management
