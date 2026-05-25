@@ -10,7 +10,7 @@
 import type { WorkflowApprover, AssessmentModel } from '@/pages/Requirements/RequirementsWorkbench/types';
 
 export type ApprovalFlowStatus = 'active' | 'inactive';
-export type ApprovalBusinessType = 'REQUIREMENT' | 'PROCESS_PUBLISH';
+export type ApprovalBusinessType = 'REQUIREMENT' | 'PROCESS_PUBLISH' | 'PROCESS_OFFLINE';
 
 export interface ApprovalFlowTemplate {
   id: string;
@@ -134,6 +134,42 @@ const defaultFlows: ApprovalFlowTemplate[] = [
     created_at: '2026-04-20T11:00:00Z',
     updated_at: '2026-04-20T11:00:00Z',
   },
+  // 流程停用审批模板（PROCESS_OFFLINE）
+  {
+    id: 'oflow-001',
+    name: '停用审批-标准',
+    code: 'OFF-STD',
+    description: '部门负责人 → 平台运维负责人，适用于一般业务流程下线',
+    status: 'active',
+    is_preset: false,
+    business_type: 'PROCESS_OFFLINE',
+    approval_enabled: true,
+    approvers: [
+      { id: 'oa1', name: '部门负责人审批', type: 'department_leader', priority: 1, required: true, approval_mode: 'any_one', timeout_days: 2 },
+      { id: 'oa2', name: '平台运维审批', type: 'specific_users', priority: 2, required: true, approval_mode: 'any_one', timeout_days: 2, target_ids: ['user-ops-001'] },
+    ],
+    assessors: [],
+    applicable_department_ids: ['dept-apa-product'],
+    created_at: '2026-05-10T09:00:00Z',
+    updated_at: '2026-05-15T14:30:00Z',
+  },
+  {
+    id: 'oflow-002',
+    name: '停用审批-简化',
+    code: 'OFF-LITE',
+    description: '仅需部门负责人审批，适用于内部工具流程下线',
+    status: 'active',
+    is_preset: false,
+    business_type: 'PROCESS_OFFLINE',
+    approval_enabled: true,
+    approvers: [
+      { id: 'oa1', name: '部门负责人审批', type: 'department_leader', priority: 1, required: true, approval_mode: 'any_one', timeout_days: 2 },
+    ],
+    assessors: [],
+    applicable_department_ids: ['dept-finance'],
+    created_at: '2026-05-12T10:00:00Z',
+    updated_at: '2026-05-12T10:00:00Z',
+  },
 ];
 
 const load = (): ApprovalFlowTemplate[] => {
@@ -215,13 +251,17 @@ export const createApprovalFlowDraft = async (
 ): Promise<ApprovalFlowTemplate> => {
   await delay();
   const now = new Date().toISOString();
-  const requestedName = payload?.name ?? (businessType === 'PROCESS_PUBLISH' ? '未命名发布审批模板' : '未命名审批流');
+  const defaultName = businessType === 'PROCESS_PUBLISH' ? '未命名发布审批模板'
+    : businessType === 'PROCESS_OFFLINE' ? '未命名停用审批模板'
+    : '未命名审批流';
+  const requestedName = payload?.name ?? defaultName;
   const finalName = payload?.name && isNameDuplicate(payload.name, businessType)
     ? (() => { throw new Error(`已存在同名模板「${payload.name}」`); })()
     : generateUniqueName(requestedName, businessType);
-  const codePrefix = businessType === 'PROCESS_PUBLISH' ? 'PUB' : 'FLOW';
+  const codePrefix = businessType === 'PROCESS_PUBLISH' ? 'PUB' : businessType === 'PROCESS_OFFLINE' ? 'OFF' : 'FLOW';
+  const idPrefix = businessType === 'PROCESS_PUBLISH' ? 'pflow' : businessType === 'PROCESS_OFFLINE' ? 'oflow' : 'flow';
   const item: ApprovalFlowTemplate = {
-    id: `${businessType === 'PROCESS_PUBLISH' ? 'pflow' : 'flow'}-${Date.now()}`,
+    id: `${idPrefix}-${Date.now()}`,
     name: finalName,
     code: payload?.code ?? `${codePrefix}-${Date.now().toString(36).slice(-5).toUpperCase()}`,
     description: payload?.description,

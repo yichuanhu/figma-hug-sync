@@ -1,94 +1,131 @@
-# 流程发布审批 — 实施计划
 
-> 范围：FEAT-025（STORY-001/002/003/004）。底层模型复用 FEAT-017 STORY-016 的 `approval_flow_template` + `department_approval_flow_binding`，通过 `business_type` 区分 `REQUIREMENT` 与 `PROCESS_PUBLISH`。本期为前端 mock 实现，对齐现状的需求审批模板交互一致性。
+# 流程停用审批管理（FEAT-027）实施计划
 
-## 1. 数据层（mock）
+复用 FEAT-025（发布审批）已搭好的审批模板/部门绑定基建，新增 `PROCESS_OFFLINE` 业务类型，覆盖 STORY-001/002/003 三个故事。整体保持与"发布审批"对称的目录结构与交互，最大限度复用既有组件。
 
-- `src/pages/Requirements/ApprovalConfig/mockData.ts`：为 `ApprovalFlowTemplate` 增加 `business_type: 'REQUIREMENT' | 'PROCESS_PUBLISH'`，`fetchApprovalFlows` 增加 `business_type` 过滤；现有数据补默认值 `REQUIREMENT`，新增 3 条 `PROCESS_PUBLISH` 模板。
-- `src/mocks/departmentApprovalFlowBinding.ts`：在绑定项加 `business_type` 字段（默认 `REQUIREMENT`），`getBindingByDepartment / setBindingsForTemplate / previewBindingsForTemplate / getOccupiedDepartmentMap` 全部按 `business_type` 命名空间隔离，互不影响。
-- 新增 `src/mocks/processVersionApproval.ts`：维护 `process_version` 列表（id、process、version、developer、department、status、submitted_at、approval_template snapshot、current_level、records[]）；导出 `fetchPendingPublishApprovals / approve / reject / submitPublishRequest / fetchVersionApprovalDetail`，含订阅广播。
-- 新增 `src/mocks/processLifecycleMilestones.ts`：流程级 `development_completed_at` / `deployed_at` 写入与读取。
+## 1. 数据层（mock）改造
 
-## 2. 发布审批模板管理（STORY-001）
+### 1.1 业务类型扩展
+- `src/mocks/departmentApprovalFlowBinding.ts`：`ApprovalBindingBusinessType` 增加 `'PROCESS_OFFLINE'`，默认绑定预置 2 条 `PROCESS_OFFLINE`（产研部 / 财务部）。
+- `src/pages/Requirements/ApprovalConfig/mockData.ts`：`ApprovalFlowTemplate.business_type` 联合类型增加 `'PROCESS_OFFLINE'`，预置 2 条停用模板（如 `oflow-001`/`oflow-002`）。`fetchApprovalFlows`、占用计算、激活互斥都按业务类型隔离（已具备）。
 
-- 路由：`/dev-center/publish-approval-templates`、`/builder/:id`、`/detail/:id`。
-- 直接复用 `ApprovalConfig` 列表页与 `ApprovalFlowBuilder`，通过 `context = 'PROCESS_PUBLISH'` 控制：
-  - 列表页 fetch 时按 `business_type` 过滤；新建/复制/激活/停用/删除均传同一 business_type。
-  - Builder 头部隐藏「技术评估人配置」「价值/复杂度模型」（assessment 始终 disabled）。
-  - 部门占用提示文案改为「该部门已被发布审批模板【X】绑定」。
-- 现有 `ApprovalConfigPage` / `ApprovalFlowBuilderPage` 改为接受 `context` prop（可选，默认 `REQUIREMENT`），便于两套页面共用同一组件。
+### 1.2 流程实体扩展（`ProcessManagementContent` mock）
+在 `LYProcessResponse` mock 数据上新增字段：
+- `offline_at?: string`（停用时间）
+- `published_at?: string`（用于联动里程碑展示）
+保持 `status` 仅使用既有 `DEVELOPING | PUBLISHED | ARCHIVED`（按 R-06 不新增枚举）。
 
-## 3. 发布审批列表（STORY-002）
+### 1.3 新增 `src/mocks/processOfflineApproval.ts`
+对齐 `processVersionApproval.ts` 形态，导出：
+```ts
+export type OfflineRequestStatus =
+  'PENDING_APPROVAL' | 'APPROVED' | 'REJECTED' | 'EXECUTED' | 'EXECUTION_FAILED';
 
-- 路由：`/dev-center/publish-approvals`。
-- 列表列：流程名称、版本号、开发者（UserNameWithCard）、所属部门、提交时间、状态 Tag、操作（审批/查看详情）。
-- 顶部过滤：搜索（流程名/开发者）、部门 FilterPopover、状态 Tabs（待审批/已通过/已拒绝/全部）。
-- 详情抽屉 `PublishApprovalDetailDrawer`（`DetailDrawerWrapper` 900px）：
-  - 概要、版本信息（version/package_size/checksum）、输入/输出参数、依赖资源、当前审批级 Stepper、审批历史 Timeline。
-  - 待审批且当前用户为审批人时显示「通过」「拒绝」按钮；拒绝弹 `RejectReasonDialog`（≤500 字）。
-- 通过/拒绝调用 mock service，更新 status，多级审批推进 current_level。
-
-## 4. 流程版本状态与发布申请（STORY-003）
-
-- 在 `ReleaseManagement` 体系中扩展 ReleaseStatus → `UPLOADED | PENDING_APPROVAL | PUBLISHED | REJECTED | FAILED`。
-- `ReleaseListPage`：
-  - 新增"发布版本"概念（version 表），由 mock 生成 `UPLOADED` 版本若干。
-  - 操作列：`UPLOADED` → 显示「发起发布申请」；`PENDING_APPROVAL` → 显示「查看审批」（链接到审批详情）；其它沿用。
-  - 状态 Tag 颜色：UPLOADED 灰 / PENDING_APPROVAL 蓝 / PUBLISHED 绿 / REJECTED 红。
-- `submitPublishRequest(versionId, note)`：
-  1. 查询流程部门 → `getBindingByDepartment(deptId, 'PROCESS_PUBLISH')`；
-  2. 命中且 `approval_enabled=true` → 创建审批单（快照 template id），状态 `PENDING_APPROVAL`，写入 `development_completed_at`；
-  3. 否则 → 状态 `PUBLISHED`，写入 `development_completed_at` + `deployed_at`。
-- 弹窗 `PublishRequestModal`：520px，显示模板预览（无审批/将进入 N 级审批）+ 发布说明 textarea。
-
-## 5. 生命周期里程碑（STORY-004）
-
-- 流程详情 / 列表展示 `development_completed_at`、`deployed_at`、最近上线审核人。
-- 审批通过最终 PUBLISHED 时写入 `deployed_at`；首次发起申请时写 `development_completed_at`。
-- 不实现手工修正 UI（超出页面级 mock 范围，文档备注后续接入）。
-
-## 6. 导航与路由
-
-- `Sidebar` 「发布管理」组下新增：
-  - `publishApprovalTemplates` → `/dev-center/publish-approval-templates`
-  - `publishApprovals` → `/dev-center/publish-approvals`
-- `App.tsx` 注册新路由；i18n key 在 `zh-CN.json` 与 `en.json` 同步。
-
-## 7. 共享与防退回
-
-- 部门绑定 `business_type` 隔离严格执行：需求审批与发布审批可独立绑定同一部门。
-- `ApprovalFlowBuilder` 部门占用计算时仅查同业务类型的激活模板，避免跨业务类型互锁。
-- 现有 `/requirements/approval-config` 行为不受影响（默认 `REQUIREMENT`）。
-
-## 8. 技术细节
-
-```text
-ApprovalFlowTemplate {
-  ...existing,
-  business_type: 'REQUIREMENT' | 'PROCESS_PUBLISH',
-  applicable_department_ids?: string[],
+export interface DependencyCheckSnapshot {
+  blocking: boolean;
+  triggers: { id: string; name: string; type: 'TIME' | 'QUEUE'; enabled: boolean }[];
+  taskTemplates: { id: string; name: string }[];
+  runningTasks: { id: string; name: string; status: 'RUNNING' | 'QUEUED' }[];
+  schedulingRefs: { id: string; name: string }[];
 }
 
-DepartmentApprovalFlowBinding {
-  department_id, business_type, approval_flow_template_id, ...
+export interface ProcessOfflineRequest {
+  id: string;
+  process_id: string; process_name: string;
+  applicant_id: string; applicant_name: string;
+  department_id: string; department_name: string;
+  reason: string;
+  submitted_at: string;
+  dependency_snapshot: DependencyCheckSnapshot;
+  status: OfflineRequestStatus;
+  approval_template_snapshot?: ApprovalFlowTemplate;
+  current_level?: number; total_levels?: number;
+  records: ApprovalRecord[];
+  executed_at?: string;
+  execution_error?: string;
 }
 
-ProcessVersionApproval {
-  id, version_id, process_id, process_name, version,
-  developer_id/name, department_id/name,
-  status: 'PENDING_APPROVAL'|'PUBLISHED'|'REJECTED',
-  submitted_at, current_level, total_levels,
-  approval_template_snapshot, records: [{level, approver, action, comment, at}]
-}
+// 接口
+checkOfflineDependency(processId)        // 模拟依赖扫描
+getCurrentOfflineRequest(processId)      // R-02 互斥
+submitOfflineRequest({processId, reason})// 含二次绑定查询、模板快照
+fetchOfflineApprovals({keyword,status,departmentId})
+approveOfflineRequest(id, comment)       // 非末级推进；末级触发 executeOffline
+rejectOfflineRequest(id, reason)
+executeOffline(id)                       // 二次依赖检查 → 写 ARCHIVED + offline_at；失败置 EXECUTION_FAILED
+subscribeOfflineRequestChange()
 ```
+依赖检查 mock 按 `processId` 哈希生成 0–N 条阻塞项以便演示阻断/通过两种情况。
 
-页面组件均按「文件夹 = 组件」（`index.tsx` + `index.less`）规范，列表页 `Table size="small"` + 外置 `.list-pagination`，详情抽屉沿用 `DetailDrawerWrapper`。
+## 2. 配置端：停用审批模板（STORY-001）
 
-## 9. 不在本期范围
+复用现有 `ApprovalConfigPage` / `ApprovalFlowBuilderPage` 已暴露的 `businessType` + `basePath` props：
+- `App.tsx` 新增三个路由：
+  - `/dev-center/offline-approval-templates` → `ApprovalConfigPage businessType="PROCESS_OFFLINE" basePath=...`
+  - `/dev-center/offline-approval-templates/builder/:id` → `ApprovalFlowBuilderPage businessType="PROCESS_OFFLINE"`
+  - 通配 `…/*` 重定向。
+- `ApprovalFlowBuilder` 内根据 `businessType==='PROCESS_OFFLINE'` 同样隐藏「技术评估人配置」「价值/复杂度模型」（与 PUBLISH 走同一分支）。
+- 部门占用提示文案：`PROCESS_OFFLINE` 时显示"该部门已绑定停用审批模板【X】"。
+- 列表/Builder 的 i18n 标题分键 `offlineApprovalTemplates.*`。
 
-- 后端真实接口、UCI 权限点、数据权限过滤（mock 层假设全员可见）。
-- Creator 客户端上传交互（仅以 mock 数据呈现 UPLOADED 版本）。
-- 生命周期手工修正与审计日志 UI。
-- 通知中心实际投递（仅 Toast 提示）。
+## 3. 调度中心流程列表：申请停用入口（STORY-002）
+
+`src/components/ProcessManagement/ProcessManagementContent`（受 `context='scheduling'` 影响）：
+- 行操作菜单（`Ellipsis` 下拉）增加「申请停用」项；可见条件：`status==='PUBLISHED'` && 当前用户具备入口权限（mock 默认 true）。
+- 新增 `OfflineRequestModal`（520px，`FormModal` 规范）：
+  - 顶部展示流程名 + 部门 + 当前依赖检查摘要（调用 `checkOfflineDependency`，loading 态 skeleton）
+  - 阻塞依赖时按列表分组（触发器 / 任务模板 / 运行中任务 / 调度引用），按钮"提交"禁用并提示"存在阻塞依赖，无法停用"
+  - `reason` Form.TextArea 必填，10–1000 字符
+  - 提交：调用 `submitOfflineRequest`；返回 `needsApproval=false` 时直接调用 `executeOffline` 走"无审批直传"链路（按 STORY-002 R-09）；否则提示已提交进入审批
+  - 互斥：若 `getCurrentOfflineRequest` 返回未结束申请，禁止再次提交，按钮替换为"查看申请"，跳转停用审批列表
+- 流程详情抽屉 `ProcessDetailDrawer`：在头部 `extraActions` 增加同样按钮，并在"基本信息"区展示 `offline_at`（已下线时）与"最近一次停用申请"链接。
+
+## 4. 停用审批列表与详情（STORY-003）
+
+新建 `src/pages/Development/OfflineApprovals/`（与 `PublishApprovals` 对称），结构沿用：
+- 顶部 Tabs：待审批 / 已通过(APPROVED+EXECUTED) / 已拒绝 / 执行失败 / 全部
+- 搜索 320px：流程名 / 申请人；右侧 FilterPopover：部门
+- 表格列：流程名称、申请人（`UserNameWithCard`）、所属部门、提交时间、审批进度、状态 Tag、操作
+- 状态 Tag 颜色：PENDING_APPROVAL 蓝 / APPROVED 浅绿 / EXECUTED 绿 / REJECTED 红 / EXECUTION_FAILED 橙
+- 详情 Modal（720px）：
+  - 流程信息 + 停用原因 + `submitted_at` + 审批进度
+  - 依赖检查快照（按类型分组的卡片，无阻塞时显示"依赖检查通过"）
+  - 审批 `Timeline`（成功/失败图标）
+  - 当前用户为当前级审批人 + `PENDING_APPROVAL` 时显示「通过」「拒绝」按钮；拒绝弹 `RejectReasonDialog`
+  - `EXECUTION_FAILED` 时展示 `execution_error`，并提供"重试执行"入口
+- 接收 `subscribeOfflineRequestChange` 静默刷新（10s 兜底刷新）
+
+## 5. 流程详情里程碑（STORY-002 联动 / STORY-003 收尾）
+
+- `executeOffline` 成功后：流程列表 `status` → `ARCHIVED`，写 `offline_at`；与 FEAT-025 `deployed_at` 一同在流程详情"生命周期"区展示：上线时间 / 下线时间 / 最近停用审批人。
+- `ProcessDetailDrawer` 增加"生命周期"小节（Descriptions），仅展示已存在字段。
+
+## 6. 路由与导航
+
+`src/components/layout/Sidebar/index.tsx` 「发布管理」组下新增两个菜单项（紧邻发布审批）：
+- `offlineApprovalTemplates` → `/dev-center/offline-approval-templates`
+- `offlineApprovals` → `/dev-center/offline-approvals`
+
+`App.tsx` 注册：
+- `/dev-center/offline-approvals` → `OfflineApprovalsPage`
+- 模板路由两条（见 §2）
+
+i18n（`zh-CN.json` / `en.json`）补全：
+- `sidebar.offlineApprovalTemplates` / `sidebar.offlineApprovals`
+- `offlineApprovalTemplates.*`、`offlineApprovals.*`（标题、Tabs、表头、状态、按钮、Toast、依赖类型）
+
+## 7. 防退回与一致性
+
+- 部门绑定/模板列表/审批列表均严格按 `business_type='PROCESS_OFFLINE'` 命名空间隔离，与需求审批、发布审批互不干扰。
+- 复用 `ApprovalFlowBuilder` 部门占用排他校验（已支持 businessType 维度）。
+- 现有 `/requirements/approval-config`、`/dev-center/publish-approval-templates` 行为不受影响。
+- 全部新页面遵循项目规范：folder=component（`index.tsx` + `index.less`）、`Table size="small"`、外置 `.list-pagination`、`DetailDrawerWrapper` / `FormModal` / Lucide 图标、Toast `theme:'light'`、Semi 原生表单校验。
+
+## 8. 不在本期范围
+
+- 真实 UCI 权限点接入与数据权限过滤（mock 假设全员可见）
+- 强制终止运行中任务、定时自动下线
+- 审计日志 UI、通知中心实际投递（仅 Toast）
+- 流程状态机后端校验，仅前端 mock 状态推进
 
 确认后即开始实施。

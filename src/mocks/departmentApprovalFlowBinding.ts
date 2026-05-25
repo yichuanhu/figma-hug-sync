@@ -10,7 +10,7 @@
 
 const STORAGE_KEY = 'apa.requirements.deptApprovalBinding.v2';
 
-export type ApprovalBindingBusinessType = 'REQUIREMENT' | 'PROCESS_PUBLISH';
+export type ApprovalBindingBusinessType = 'REQUIREMENT' | 'PROCESS_PUBLISH' | 'PROCESS_OFFLINE';
 
 export interface DepartmentApprovalFlowBinding {
   department_id: string;
@@ -27,6 +27,8 @@ const defaultBindings: DepartmentApprovalFlowBinding[] = [
   { department_id: 'dept-apa-product', business_type: 'PROCESS_PUBLISH', approval_flow_template_id: 'pflow-001', updated_at: '2026-04-10T09:00:00Z', updated_by: '当前用户' },
   { department_id: 'dept-dw',          business_type: 'PROCESS_PUBLISH', approval_flow_template_id: 'pflow-001', updated_at: '2026-04-10T09:00:00Z', updated_by: '当前用户' },
   { department_id: 'dept-finance',     business_type: 'PROCESS_PUBLISH', approval_flow_template_id: 'pflow-002', updated_at: '2026-04-12T10:00:00Z', updated_by: '当前用户' },
+  { department_id: 'dept-apa-product', business_type: 'PROCESS_OFFLINE', approval_flow_template_id: 'oflow-001', updated_at: '2026-05-15T09:00:00Z', updated_by: '当前用户' },
+  { department_id: 'dept-finance',     business_type: 'PROCESS_OFFLINE', approval_flow_template_id: 'oflow-002', updated_at: '2026-05-15T09:00:00Z', updated_by: '当前用户' },
 ];
 
 const load = (): DepartmentApprovalFlowBinding[] => {

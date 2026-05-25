@@ -52,6 +52,8 @@ const ApprovalFlowBuilderPage = ({
   const { t } = useTranslation();
   const isView = location.pathname.includes('/detail/');
   const isPublish = businessType === 'PROCESS_PUBLISH';
+  const isOffline = businessType === 'PROCESS_OFFLINE';
+  const isProcessFlow = isPublish || isOffline;
   const [draft, setDraft] = useState<ApprovalFlowTemplate | null>(null);
   const [loading, setLoading] = useState(true);
   const [dirty, setDirty] = useState(false);
@@ -62,9 +64,11 @@ const ApprovalFlowBuilderPage = ({
   const [fullscreen, setFullscreen] = useState(false);
 
   const isNew = id === 'new';
-  const codePrefix = isPublish ? 'PUB' : 'FLOW';
-  const idPrefix = isPublish ? 'pflow' : 'flow';
-  const defaultName = isPublish ? '未命名发布审批模板' : '未命名审批流';
+  const codePrefix = isPublish ? 'PUB' : isOffline ? 'OFF' : 'FLOW';
+  const idPrefix = isPublish ? 'pflow' : isOffline ? 'oflow' : 'flow';
+  const defaultName = isPublish ? '未命名发布审批模板' : isOffline ? '未命名停用审批模板' : '未命名审批流';
+  const flowKindLabel = isPublish ? '发布审批模板' : isOffline ? '停用审批模板' : '审批流';
+  const businessLabel = isPublish ? '流程发布' : isOffline ? '流程停用' : '需求';
 
   useEffect(() => {
     fetchApprovalFlows(undefined, businessType).then((all) => {
@@ -168,9 +172,9 @@ const ApprovalFlowBuilderPage = ({
           description: draft.description,
           approval_enabled: draft.approval_enabled,
           approvers: draft.approvers,
-          assessors: isPublish ? [] : draft.assessors,
-          value_model: isPublish ? undefined : draft.value_model,
-          complexity_model: isPublish ? undefined : draft.complexity_model,
+          assessors: isProcessFlow ? [] : draft.assessors,
+          value_model: isProcessFlow ? undefined : draft.value_model,
+          complexity_model: isProcessFlow ? undefined : draft.complexity_model,
         }, businessType);
         saved = await updateApprovalFlow(saved.id, {
           applicable_department_ids: selectedDeptIds,
@@ -182,9 +186,9 @@ const ApprovalFlowBuilderPage = ({
           description: draft.description,
           approval_enabled: draft.approval_enabled,
           approvers: draft.approvers,
-          assessors: isPublish ? [] : draft.assessors,
-          value_model: isPublish ? undefined : draft.value_model,
-          complexity_model: isPublish ? undefined : draft.complexity_model,
+          assessors: isProcessFlow ? [] : draft.assessors,
+          value_model: isProcessFlow ? undefined : draft.value_model,
+          complexity_model: isProcessFlow ? undefined : draft.complexity_model,
           applicable_department_ids: selectedDeptIds,
         });
       }
@@ -212,8 +216,8 @@ const ApprovalFlowBuilderPage = ({
       return;
     }
     Modal.confirm({
-      title: isPublish ? '启用发布审批模板' : '启用审批流',
-      content: `确认将「${draft.name}」启用？启用后将对所选 ${deptIds.length} 个部门的${isPublish ? '流程发布' : '需求'}生效。`,
+      title: `启用${flowKindLabel}`,
+      content: `确认将「${draft.name}」启用？启用后将对所选 ${deptIds.length} 个部门的${businessLabel}生效。`,
       okText: '启用',
       cancelText: t('common.cancel'),
       onOk: async () => {
@@ -411,8 +415,8 @@ const ApprovalFlowBuilderPage = ({
                     )}
                   </div>
                   <Typography.Text type="tertiary" size="small">
-                    {isPublish
-                      ? '已被其他生效发布审批模板占用的部门将不可选；激活时系统会按当前部门树展开子部门并写入生效绑定。'
+                    {isProcessFlow
+                      ? `已被其他生效${flowKindLabel}占用的部门将不可选；激活时系统会按当前部门树展开子部门并写入生效绑定。`
                       : '已被其他生效方案占用的部门将不可选；激活时系统会按当前部门树展开子部门并写入生效绑定。'}
                   </Typography.Text>
                 </div>
@@ -437,7 +441,7 @@ const ApprovalFlowBuilderPage = ({
                       maxTagCount={6}
                       disabledOptions={computeDeptDisabledOptions(
                         getOccupiedDepartmentMap(draft.id, activeTemplateIds, businessType),
-                        (tid) => getApprovalFlowById(tid)?.name ?? (isPublish ? '其他生效发布审批模板' : '其他生效审批流'),
+                        (tid) => getApprovalFlowById(tid)?.name ?? (isProcessFlow ? `其他生效${flowKindLabel}` : '其他生效审批流'),
                       )}
                     />
                   )}
@@ -455,7 +459,7 @@ const ApprovalFlowBuilderPage = ({
             readOnly={isView}
           />
 
-          {!isPublish && (
+          {!isProcessFlow && (
             <ApproverListEditor
               title="技术评估人配置"
               approvers={draft.assessors}
