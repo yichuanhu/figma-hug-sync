@@ -1,7 +1,13 @@
 /**
- * 审批配置 Builder：新建/编辑审批流
- * 头部交互参考 SchemeBuilder（返回、可编辑名称、保存、启用），
- * 主体复用「需求模板 → 工作流 → 审批人配置」卡片。
+ * 审批配置 Builder：新建/编辑审批流（FEAT-017 STORY-016 + FEAT-025 STORY-001）
+ *
+ * 通过 `businessType` + `basePath` 区分需求审批与流程发布审批：
+ *   - REQUIREMENT      → /requirements/approval-config
+ *   - PROCESS_PUBLISH  → /dev-center/publish-approval-templates
+ *
+ * 当 businessType=PROCESS_PUBLISH 时：
+ *   - 隐藏「技术评估人配置」与价值/复杂度模型（assessment 始终 disabled）
+ *   - 部门占用提示文案改为「发布审批模板」
  */
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
@@ -15,6 +21,7 @@ import {
   activateApprovalFlow,
   createApprovalFlowDraft,
   type ApprovalFlowTemplate,
+  type ApprovalBusinessType,
 } from '../../mockData';
 import ApproverListEditor from '../ApproverListEditor';
 import AssessmentBuilder from '@/pages/Requirements/RequirementsScheme/components/SchemeBuilder/AssessmentBuilder';
@@ -30,12 +37,21 @@ import './index.less';
 
 const { Title } = Typography;
 
-const ApprovalFlowBuilderPage = () => {
+interface ApprovalFlowBuilderPageProps {
+  businessType?: ApprovalBusinessType;
+  basePath?: string;
+}
+
+const ApprovalFlowBuilderPage = ({
+  businessType = 'REQUIREMENT',
+  basePath = '/requirements/approval-config',
+}: ApprovalFlowBuilderPageProps) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
   const isView = location.pathname.includes('/detail/');
+  const isPublish = businessType === 'PROCESS_PUBLISH';
   const [draft, setDraft] = useState<ApprovalFlowTemplate | null>(null);
   const [loading, setLoading] = useState(true);
   const [dirty, setDirty] = useState(false);
@@ -46,10 +62,12 @@ const ApprovalFlowBuilderPage = () => {
   const [fullscreen, setFullscreen] = useState(false);
 
   const isNew = id === 'new';
+  const codePrefix = isPublish ? 'PUB' : 'FLOW';
+  const idPrefix = isPublish ? 'pflow' : 'flow';
+  const defaultName = isPublish ? '未命名发布审批模板' : '未命名审批流';
 
   useEffect(() => {
-    // 拉取所有已激活模板（草稿态不占用部门）
-    fetchApprovalFlows().then((all) => {
+    fetchApprovalFlows(undefined, businessType).then((all) => {
       setActiveTemplateIds(all.filter((x) => x.status === 'active').map((x) => x.id));
       setPresetIds(all.filter((x) => x.is_preset).map((x) => x.id));
     });
@@ -58,11 +76,13 @@ const ApprovalFlowBuilderPage = () => {
       const now = new Date().toISOString();
       setDraft({
         id: 'new',
-        name: '未命名审批流',
-        code: `FLOW-${Date.now().toString(36).slice(-5).toUpperCase()}`,
+        name: defaultName,
+        code: `${codePrefix}-${Date.now().toString(36).slice(-5).toUpperCase()}`,
         description: '',
         status: 'inactive',
         is_draft: true,
+        business_type: businessType,
+        approval_enabled: true,
         approvers: [],
         assessors: [],
         applicable_department_ids: [],
@@ -77,14 +97,13 @@ const ApprovalFlowBuilderPage = () => {
     if (!id) return;
     const f = getApprovalFlowById(id);
     if (!f) {
-      Toast.error('审批流不存在');
-      navigate('/requirements/approval-config');
+      Toast.error('模板不存在');
+      navigate(basePath);
       return;
     }
-    // 适用部门：优先取实体上的字段；为空则回填 binding 表中已绑定到本模板的部门
     const applicable = f.applicable_department_ids && f.applicable_department_ids.length > 0
       ? f.applicable_department_ids
-      : listDepartmentsByTemplate(f.id);
+      : listDepartmentsByTemplate(f.id, businessType);
     setDraft({
       ...f,
       assessors: f.assessors ?? [],
@@ -92,7 +111,7 @@ const ApprovalFlowBuilderPage = () => {
       applicable_department_ids: applicable,
     });
     setLoading(false);
-  }, [id, isNew, navigate]);
+  }, [id, isNew, navigate, businessType, basePath, codePrefix, defaultName]);
 
   const patch = (p: Partial<ApprovalFlowTemplate>) => {
     setDraft((prev) => (prev ? { ...prev, ...p } : prev));
@@ -117,7 +136,7 @@ const ApprovalFlowBuilderPage = () => {
   const handleSave = async () => {
     if (!draft) return;
     if (!draft.name.trim()) {
-      Toast.warning('请填写审批流名称');
+      Toast.warning('请填写模板名称');
       return;
     }
     if (draft.approvers.length === 0) {
@@ -139,7 +158,6 @@ const ApprovalFlowBuilderPage = () => {
       Toast.warning('请选择适用部门');
       return;
     }
-    // R-04：选中父部门时自动展开所有子部门写入绑定
     const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
     try {
       let saved: ApprovalFlowTemplate;
@@ -148,11 +166,12 @@ const ApprovalFlowBuilderPage = () => {
           name: draft.name,
           code: draft.code,
           description: draft.description,
+          approval_enabled: draft.approval_enabled,
           approvers: draft.approvers,
-          assessors: draft.assessors,
-          value_model: draft.value_model,
-          complexity_model: draft.complexity_model,
-        });
+          assessors: isPublish ? [] : draft.assessors,
+          value_model: isPublish ? undefined : draft.value_model,
+          complexity_model: isPublish ? undefined : draft.complexity_model,
+        }, businessType);
         saved = await updateApprovalFlow(saved.id, {
           applicable_department_ids: selectedDeptIds,
         });
@@ -161,19 +180,20 @@ const ApprovalFlowBuilderPage = () => {
           name: draft.name,
           code: draft.code,
           description: draft.description,
+          approval_enabled: draft.approval_enabled,
           approvers: draft.approvers,
-          assessors: draft.assessors,
-          value_model: draft.value_model,
-          complexity_model: draft.complexity_model,
+          assessors: isPublish ? [] : draft.assessors,
+          value_model: isPublish ? undefined : draft.value_model,
+          complexity_model: isPublish ? undefined : draft.complexity_model,
           applicable_department_ids: selectedDeptIds,
         });
       }
-      setBindingsForTemplate(saved.id, expandedDeptIds);
+      setBindingsForTemplate(saved.id, expandedDeptIds, businessType);
       setDraft(saved);
       setDirty(false);
       Toast.success('已保存');
       if (isNew) {
-        navigate(`/requirements/approval-config/builder/${saved.id}`, { replace: true });
+        navigate(`${basePath}/builder/${saved.id}`, { replace: true });
       }
     } catch (e) {
       Toast.error((e as Error).message);
@@ -192,14 +212,14 @@ const ApprovalFlowBuilderPage = () => {
       return;
     }
     Modal.confirm({
-      title: '启用审批流',
-      content: `确认将「${draft.name}」启用？启用后该流程将对所选 ${deptIds.length} 个部门的需求生效。`,
+      title: isPublish ? '启用发布审批模板' : '启用审批流',
+      content: `确认将「${draft.name}」启用？启用后将对所选 ${deptIds.length} 个部门的${isPublish ? '流程发布' : '需求'}生效。`,
       okText: '启用',
       cancelText: t('common.cancel'),
       onOk: async () => {
         await activateApprovalFlow(draft.id);
         Toast.success('启用成功');
-        navigate('/requirements/approval-config');
+        navigate(basePath);
       },
     });
   };
@@ -221,7 +241,7 @@ const ApprovalFlowBuilderPage = () => {
               icon={<ChevronLeft size={16} strokeWidth={2} />}
               theme="borderless"
               type="tertiary"
-              onClick={() => guardedNavigate('/requirements/approval-config')}
+              onClick={() => guardedNavigate(basePath)}
             />
           </Tooltip>
           <div className="approval-flow-builder-title-block">
@@ -293,7 +313,7 @@ const ApprovalFlowBuilderPage = () => {
                       theme="borderless"
                       type="tertiary"
                       disabled={!prevId}
-                      onClick={() => prevId && navigate(`/requirements/approval-config/detail/${prevId}`)}
+                      onClick={() => prevId && navigate(`${basePath}/detail/${prevId}`)}
                     />
                   </Tooltip>
                   <Tooltip content="下一个" position="bottom">
@@ -302,7 +322,7 @@ const ApprovalFlowBuilderPage = () => {
                       theme="borderless"
                       type="tertiary"
                       disabled={!nextId}
-                      onClick={() => nextId && navigate(`/requirements/approval-config/detail/${nextId}`)}
+                      onClick={() => nextId && navigate(`${basePath}/detail/${nextId}`)}
                     />
                   </Tooltip>
                   <div style={{ width: 1, height: 16, background: 'var(--semi-color-border)', margin: '0 4px' }} />
@@ -319,7 +339,7 @@ const ApprovalFlowBuilderPage = () => {
                       icon={<X size={16} strokeWidth={2} />}
                       theme="borderless"
                       type="tertiary"
-                      onClick={() => navigate('/requirements/approval-config')}
+                      onClick={() => navigate(basePath)}
                     />
                   </Tooltip>
                 </>
@@ -330,7 +350,7 @@ const ApprovalFlowBuilderPage = () => {
                   icon={<Pencil size={16} strokeWidth={2} />}
                   theme="light"
                   type="tertiary"
-                  onClick={() => navigate(`/requirements/approval-config/builder/${draft.id}`)}
+                  onClick={() => navigate(`${basePath}/builder/${draft.id}`)}
                 >
                   编辑
                 </Button>
@@ -373,7 +393,6 @@ const ApprovalFlowBuilderPage = () => {
 
       <div className="approval-flow-builder-body">
         <div className="workflow-builder">
-          {/* 适用部门：保存时同步写入 department_approval_flow_binding（business_type=REQUIREMENT） */}
           {!(isView && draft.is_preset) && (() => {
             const deptCount = (draft.applicable_department_ids ?? []).length;
             return (
@@ -392,7 +411,9 @@ const ApprovalFlowBuilderPage = () => {
                     )}
                   </div>
                   <Typography.Text type="tertiary" size="small">
-                    已被其他生效方案占用的部门将不可选；激活时系统会按当前部门树展开子部门并写入生效绑定。
+                    {isPublish
+                      ? '已被其他生效发布审批模板占用的部门将不可选；激活时系统会按当前部门树展开子部门并写入生效绑定。'
+                      : '已被其他生效方案占用的部门将不可选；激活时系统会按当前部门树展开子部门并写入生效绑定。'}
                   </Typography.Text>
                 </div>
                 <div className="approval-flow-section-card-body">
@@ -415,8 +436,8 @@ const ApprovalFlowBuilderPage = () => {
                       placeholder="请选择适用部门（可多选，选中父部门自动包含子部门）"
                       maxTagCount={6}
                       disabledOptions={computeDeptDisabledOptions(
-                        getOccupiedDepartmentMap(draft.id, activeTemplateIds),
-                        (tid) => getApprovalFlowById(tid)?.name ?? '其他生效审批流',
+                        getOccupiedDepartmentMap(draft.id, activeTemplateIds, businessType),
+                        (tid) => getApprovalFlowById(tid)?.name ?? (isPublish ? '其他生效发布审批模板' : '其他生效审批流'),
                       )}
                     />
                   )}
@@ -434,25 +455,27 @@ const ApprovalFlowBuilderPage = () => {
             readOnly={isView}
           />
 
-          <ApproverListEditor
-            title="技术评估人配置"
-            approvers={draft.assessors}
-            onChange={(assessors) => patch({ assessors })}
-            emptyHint="暂无评估级，点击右上角添加"
-            defaultItemName="新评估级"
-            readOnly={isView}
-            extra={
-              draft.assessors.length > 0 ? (
-                <AssessmentBuilder
-                  valueModel={draft.value_model}
-                  complexityModel={draft.complexity_model}
-                  fields={[]}
-                  onChange={(value_model, complexity_model) => patch({ value_model, complexity_model })}
-                  disabled={isView}
-                />
-              ) : null
-            }
-          />
+          {!isPublish && (
+            <ApproverListEditor
+              title="技术评估人配置"
+              approvers={draft.assessors}
+              onChange={(assessors) => patch({ assessors })}
+              emptyHint="暂无评估级，点击右上角添加"
+              defaultItemName="新评估级"
+              readOnly={isView}
+              extra={
+                draft.assessors.length > 0 ? (
+                  <AssessmentBuilder
+                    valueModel={draft.value_model}
+                    complexityModel={draft.complexity_model}
+                    fields={[]}
+                    onChange={(value_model, complexity_model) => patch({ value_model, complexity_model })}
+                    disabled={isView}
+                  />
+                ) : null
+              }
+            />
+          )}
         </div>
       </div>
     </div>

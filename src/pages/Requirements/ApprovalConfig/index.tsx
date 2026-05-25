@@ -1,5 +1,9 @@
 /**
- * 审批配置列表页：与「需求模板」一致的卡片网格布局。
+ * 审批配置列表页（FEAT-017 STORY-016 + FEAT-025 STORY-001）
+ *
+ * 通过 `businessType` + `basePath` 复用：
+ *   - REQUIREMENT      → /requirements/approval-config
+ *   - PROCESS_PUBLISH  → /dev-center/publish-approval-templates
  */
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,29 +29,50 @@ import {
   activateApprovalFlow,
   deactivateApprovalFlow,
   cloneApprovalFlowAsDraft,
-  
   subscribeApprovalFlowChange,
   type ApprovalFlowTemplate,
+  type ApprovalBusinessType,
 } from './mockData';
 import './index.less';
 
 const { Title, Text } = Typography;
 
-const ApprovalConfigPage = () => {
+interface ApprovalConfigPageProps {
+  businessType?: ApprovalBusinessType;
+  basePath?: string;
+  pageTitle?: string;
+  pageDescription?: string;
+  createButtonText?: string;
+}
+
+const ApprovalConfigPage = ({
+  businessType = 'REQUIREMENT',
+  basePath = '/requirements/approval-config',
+  pageTitle,
+  pageDescription,
+  createButtonText,
+}: ApprovalConfigPageProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState('');
   const [flows, setFlows] = useState<ApprovalFlowTemplate[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const isPublish = businessType === 'PROCESS_PUBLISH';
+  const resolvedTitle = pageTitle ?? (isPublish ? '发布审批模板' : '审批配置');
+  const resolvedDescription = pageDescription ?? (isPublish
+    ? '管理流程发布审批模板。通过模板中的「适用部门」决定哪些部门的流程发布需要走审批。'
+    : '集中管理需求审批流模板。支持同时启用多个模板；通过模板中的「适用部门」决定哪些部门走该流程。');
+  const resolvedCreateText = createButtonText ?? (isPublish ? '新建审批模板' : '新建审批流');
+
   const load = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     try {
-      setFlows(await fetchApprovalFlows(keyword));
+      setFlows(await fetchApprovalFlows(keyword, businessType));
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [keyword]);
+  }, [keyword, businessType]);
 
   useEffect(() => {
     load();
@@ -56,28 +81,28 @@ const ApprovalConfigPage = () => {
   useEffect(() => subscribeApprovalFlowChange(() => load(true)), [load]);
 
   const goEdit = (f: ApprovalFlowTemplate) => {
-    navigate(`/requirements/approval-config/builder/${f.id}`);
+    navigate(`${basePath}/builder/${f.id}`);
   };
 
   const goDetail = (f: ApprovalFlowTemplate) => {
-    navigate(`/requirements/approval-config/detail/${f.id}`);
+    navigate(`${basePath}/detail/${f.id}`);
   };
 
   const handleCreateNew = () => {
-    navigate('/requirements/approval-config/builder/new');
+    navigate(`${basePath}/builder/new`);
   };
 
 
   const handleActivate = (f: ApprovalFlowTemplate) => {
     const deptCount = (f.applicable_department_ids ?? []).length;
     if (deptCount === 0) {
-      Toast.warning('请先在审批流模板中配置「适用部门」，启用时至少选择 1 个部门');
+      Toast.warning('请先在模板中配置「适用部门」，启用时至少选择 1 个部门');
       goEdit(f);
       return;
     }
     Modal.confirm({
-      title: '启用审批流',
-      content: `确认启用「${f.name}」？启用后该流程将对所选部门的需求生效。`,
+      title: isPublish ? '启用发布审批模板' : '启用审批流',
+      content: `确认启用「${f.name}」？启用后将对所选部门的${isPublish ? '流程发布' : '需求'}生效。`,
       okText: '启用',
       cancelText: t('common.cancel'),
       onOk: async () => {
@@ -100,7 +125,7 @@ const ApprovalConfigPage = () => {
     try {
       const draft = await cloneApprovalFlowAsDraft(f.id);
       Toast.success('已复制为草稿');
-      navigate(`/requirements/approval-config/builder/${draft.id}`);
+      navigate(`${basePath}/builder/${draft.id}`);
     } catch (e) {
       Toast.error((e as Error).message ?? '复制失败');
     }
@@ -109,7 +134,7 @@ const ApprovalConfigPage = () => {
 
   const handleDelete = (f: ApprovalFlowTemplate) => {
     Modal.confirm({
-      title: '删除审批流',
+      title: isPublish ? '删除发布审批模板' : '删除审批流',
       content: `确认删除「${f.name}」？此操作不可恢复。`,
       okText: t('common.delete'),
       okButtonProps: { type: 'danger' },
@@ -130,8 +155,8 @@ const ApprovalConfigPage = () => {
     <div className="approval-config-page">
       <div className="approval-config-page-header">
         <div className="approval-config-page-header-title">
-          <Title heading={3} className="title">审批配置</Title>
-          <Text type="tertiary">集中管理需求审批流模板。支持同时启用多个模板；通过模板中的「适用部门」决定哪些部门走该流程。</Text>
+          <Title heading={3} className="title">{resolvedTitle}</Title>
+          <Text type="tertiary">{resolvedDescription}</Text>
         </div>
         <Row type="flex" justify="space-between" align="middle" className="approval-config-page-header-toolbar">
           <Col>
@@ -153,7 +178,7 @@ const ApprovalConfigPage = () => {
                 type="primary"
                 onClick={handleCreateNew}
               >
-                新建审批流
+                {resolvedCreateText}
               </Button>
             </Space>
           </Col>
@@ -162,7 +187,7 @@ const ApprovalConfigPage = () => {
 
       <div className="approval-config-page-content">
         {!loading && flows.length === 0 ? (
-          <EmptyState variant="noData" description="暂无审批流，点击右上角新建" />
+          <EmptyState variant="noData" description={`暂无${isPublish ? '发布审批模板' : '审批流'}，点击右上角新建`} />
         ) : (
           <div className="approval-config-page-grid">
             {flows.map((f) => (

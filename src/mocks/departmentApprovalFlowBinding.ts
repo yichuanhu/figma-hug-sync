@@ -1,34 +1,42 @@
 /**
- * 部门 → 需求审批流模板绑定（STORY-016）
+ * 部门 → 审批流模板绑定（FEAT-017 STORY-016 + FEAT-025 STORY-001）
  *
- * 运行时通过 requirement.department_id 解析所属审批流模板：
- *   getBindingByDepartment(deptId) -> approval_flow_template_id | null
+ * 通过 business_type 命名空间隔离：
+ *   - REQUIREMENT      需求审批
+ *   - PROCESS_PUBLISH  流程发布审批
  *
- * 一个部门同一时刻仅能绑定一个 business_type=REQUIREMENT 的模板；
- * 一个模板可被多个部门绑定。
+ * 同一部门可同时绑定不同业务类型的模板，但同一业务类型下唯一。
  */
 
-const STORAGE_KEY = 'apa.requirements.deptApprovalBinding.v1';
-const BUSINESS_TYPE = 'REQUIREMENT';
+const STORAGE_KEY = 'apa.requirements.deptApprovalBinding.v2';
+
+export type ApprovalBindingBusinessType = 'REQUIREMENT' | 'PROCESS_PUBLISH';
 
 export interface DepartmentApprovalFlowBinding {
   department_id: string;
-  business_type: typeof BUSINESS_TYPE;
+  business_type: ApprovalBindingBusinessType;
   approval_flow_template_id: string;
   updated_at: string;
   updated_by?: string;
 }
 
 const defaultBindings: DepartmentApprovalFlowBinding[] = [
-  { department_id: 'dept-apa-product', business_type: BUSINESS_TYPE, approval_flow_template_id: 'flow-001', updated_at: '2025-12-01T09:00:00Z', updated_by: '当前用户' },
-  { department_id: 'dept-dw',          business_type: BUSINESS_TYPE, approval_flow_template_id: 'flow-001', updated_at: '2025-12-01T09:00:00Z', updated_by: '当前用户' },
-  { department_id: 'dept-finance',     business_type: BUSINESS_TYPE, approval_flow_template_id: 'flow-002', updated_at: '2025-12-05T10:00:00Z', updated_by: '当前用户' },
+  { department_id: 'dept-apa-product', business_type: 'REQUIREMENT',     approval_flow_template_id: 'flow-001',  updated_at: '2025-12-01T09:00:00Z', updated_by: '当前用户' },
+  { department_id: 'dept-dw',          business_type: 'REQUIREMENT',     approval_flow_template_id: 'flow-001',  updated_at: '2025-12-01T09:00:00Z', updated_by: '当前用户' },
+  { department_id: 'dept-finance',     business_type: 'REQUIREMENT',     approval_flow_template_id: 'flow-002',  updated_at: '2025-12-05T10:00:00Z', updated_by: '当前用户' },
+  { department_id: 'dept-apa-product', business_type: 'PROCESS_PUBLISH', approval_flow_template_id: 'pflow-001', updated_at: '2026-04-10T09:00:00Z', updated_by: '当前用户' },
+  { department_id: 'dept-dw',          business_type: 'PROCESS_PUBLISH', approval_flow_template_id: 'pflow-001', updated_at: '2026-04-10T09:00:00Z', updated_by: '当前用户' },
+  { department_id: 'dept-finance',     business_type: 'PROCESS_PUBLISH', approval_flow_template_id: 'pflow-002', updated_at: '2026-04-12T10:00:00Z', updated_by: '当前用户' },
 ];
 
 const load = (): DepartmentApprovalFlowBinding[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as DepartmentApprovalFlowBinding[];
+    if (raw) {
+      const parsed = JSON.parse(raw) as DepartmentApprovalFlowBinding[];
+      // 兼容旧版本数据（无 business_type 字段）
+      return parsed.map((b) => ({ ...b, business_type: b.business_type ?? 'REQUIREMENT' }));
+    }
   } catch { /* noop */ }
   return defaultBindings;
 };
@@ -47,68 +55,91 @@ const notify = () => listeners.forEach((cb) => cb());
 
 const delay = (ms = 150) => new Promise((r) => setTimeout(r, ms));
 
-export const fetchAllBindings = async (): Promise<DepartmentApprovalFlowBinding[]> => {
+export const fetchAllBindings = async (
+  businessType: ApprovalBindingBusinessType = 'REQUIREMENT',
+): Promise<DepartmentApprovalFlowBinding[]> => {
   await delay();
-  return [...cache];
+  return cache.filter((b) => b.business_type === businessType);
 };
 
-/** 取部门当前绑定的审批流模板 id；未绑定返回 null（运行时即可跳过审批/评估） */
-export const getBindingByDepartment = (deptId: string): string | null => {
-  return cache.find((b) => b.department_id === deptId)?.approval_flow_template_id ?? null;
+/** 取部门当前绑定的审批流模板 id；未绑定返回 null */
+export const getBindingByDepartment = (
+  deptId: string,
+  businessType: ApprovalBindingBusinessType = 'REQUIREMENT',
+): string | null => {
+  return cache.find((b) => b.department_id === deptId && b.business_type === businessType)?.approval_flow_template_id ?? null;
 };
 
 /** 统计某审批流模板被多少个部门绑定 */
-export const countBoundDepartments = (templateId: string): number => {
-  return cache.filter((b) => b.approval_flow_template_id === templateId).length;
+export const countBoundDepartments = (
+  templateId: string,
+  businessType: ApprovalBindingBusinessType = 'REQUIREMENT',
+): number => {
+  return cache.filter((b) => b.approval_flow_template_id === templateId && b.business_type === businessType).length;
 };
 
 /** 批量统计：返回 templateId -> count map */
-export const getBoundDepartmentCountMap = (): Record<string, number> => {
+export const getBoundDepartmentCountMap = (
+  businessType: ApprovalBindingBusinessType = 'REQUIREMENT',
+): Record<string, number> => {
   const map: Record<string, number> = {};
-  cache.forEach((b) => { map[b.approval_flow_template_id] = (map[b.approval_flow_template_id] ?? 0) + 1; });
+  cache.forEach((b) => {
+    if (b.business_type !== businessType) return;
+    map[b.approval_flow_template_id] = (map[b.approval_flow_template_id] ?? 0) + 1;
+  });
   return map;
 };
 
-export const setBinding = async (deptId: string, templateId: string): Promise<void> => {
+export const setBinding = async (
+  deptId: string,
+  templateId: string,
+  businessType: ApprovalBindingBusinessType = 'REQUIREMENT',
+): Promise<void> => {
   await delay();
-  const exist = cache.find((b) => b.department_id === deptId);
+  const exist = cache.find((b) => b.department_id === deptId && b.business_type === businessType);
   const now = new Date().toISOString();
   if (exist) {
-    cache = cache.map((b) => b.department_id === deptId
+    cache = cache.map((b) => (b.department_id === deptId && b.business_type === businessType)
       ? { ...b, approval_flow_template_id: templateId, updated_at: now }
       : b);
   } else {
-    cache = [...cache, { department_id: deptId, business_type: BUSINESS_TYPE, approval_flow_template_id: templateId, updated_at: now, updated_by: '当前用户' }];
+    cache = [...cache, { department_id: deptId, business_type: businessType, approval_flow_template_id: templateId, updated_at: now, updated_by: '当前用户' }];
   }
   save(cache);
   notify();
 };
 
-export const removeBinding = async (deptId: string): Promise<void> => {
+export const removeBinding = async (
+  deptId: string,
+  businessType: ApprovalBindingBusinessType = 'REQUIREMENT',
+): Promise<void> => {
   await delay();
-  cache = cache.filter((b) => b.department_id !== deptId);
+  cache = cache.filter((b) => !(b.department_id === deptId && b.business_type === businessType));
   save(cache);
   notify();
 };
 
 /** 列出绑定到指定模板的所有部门 id */
-export const listDepartmentsByTemplate = (templateId: string): string[] => {
-  return cache.filter((b) => b.approval_flow_template_id === templateId).map((b) => b.department_id);
+export const listDepartmentsByTemplate = (
+  templateId: string,
+  businessType: ApprovalBindingBusinessType = 'REQUIREMENT',
+): string[] => {
+  return cache
+    .filter((b) => b.approval_flow_template_id === templateId && b.business_type === businessType)
+    .map((b) => b.department_id);
 };
 
-/**
- * 覆盖式同步：将「该模板的绑定」整体替换为传入的部门列表。
- * - 移除：原本绑定到该模板但不在新列表里的部门
- * - 新增/抢占：新列表里的部门统一指向该模板（若之前被其他模板占用，则抢占）
- */
 export interface SetTemplateBindingsResult {
   added: string[];
   removed: string[];
-  /** 从其它模板抢占的明细：departmentId -> previousTemplateId */
   overridden: Record<string, string>;
 }
 
-export const setBindingsForTemplate = (templateId: string, deptIds: string[]): SetTemplateBindingsResult => {
+export const setBindingsForTemplate = (
+  templateId: string,
+  deptIds: string[],
+  businessType: ApprovalBindingBusinessType = 'REQUIREMENT',
+): SetTemplateBindingsResult => {
   const now = new Date().toISOString();
   const setIds = new Set(deptIds);
   const overridden: Record<string, string> = {};
@@ -116,19 +147,20 @@ export const setBindingsForTemplate = (templateId: string, deptIds: string[]): S
   const removed: string[] = [];
 
   cache.forEach((b) => {
+    if (b.business_type !== businessType) return;
     if (b.approval_flow_template_id === templateId && !setIds.has(b.department_id)) removed.push(b.department_id);
   });
 
   const touchedDepts = new Set<string>([...deptIds, ...removed]);
-  const remaining = cache.filter((b) => !touchedDepts.has(b.department_id));
+  const remaining = cache.filter((b) => b.business_type !== businessType || !touchedDepts.has(b.department_id));
 
   deptIds.forEach((deptId) => {
-    const prev = cache.find((b) => b.department_id === deptId);
+    const prev = cache.find((b) => b.department_id === deptId && b.business_type === businessType);
     if (!prev) added.push(deptId);
     else if (prev.approval_flow_template_id !== templateId) overridden[deptId] = prev.approval_flow_template_id;
     remaining.push({
       department_id: deptId,
-      business_type: BUSINESS_TYPE,
+      business_type: businessType,
       approval_flow_template_id: templateId,
       updated_at: now,
       updated_by: '当前用户',
@@ -141,12 +173,15 @@ export const setBindingsForTemplate = (templateId: string, deptIds: string[]): S
   return { added, removed, overridden };
 };
 
-/** Dry-run：仅计算会被抢占的部门，不写入。用于"保存前冲突确认"。 */
 export interface BindingConflictItem { deptId: string; prevTemplateId: string; }
-export const previewBindingsForTemplate = (templateId: string, deptIds: string[]): BindingConflictItem[] => {
+export const previewBindingsForTemplate = (
+  templateId: string,
+  deptIds: string[],
+  businessType: ApprovalBindingBusinessType = 'REQUIREMENT',
+): BindingConflictItem[] => {
   const items: BindingConflictItem[] = [];
   deptIds.forEach((deptId) => {
-    const prev = cache.find((b) => b.department_id === deptId);
+    const prev = cache.find((b) => b.department_id === deptId && b.business_type === businessType);
     if (prev && prev.approval_flow_template_id !== templateId) {
       items.push({ deptId, prevTemplateId: prev.approval_flow_template_id });
     }
@@ -155,16 +190,17 @@ export const previewBindingsForTemplate = (templateId: string, deptIds: string[]
 };
 
 /**
- * 返回 deptId -> 当前归属模板 id 的占用 map（可排除指定模板）。
- * 传入 activeTemplateIds 时仅统计这些激活模板的绑定（草稿/未激活模板不占用部门）。
+ * 返回 deptId -> 当前归属模板 id 的占用 map（同业务类型范围内，可排除指定模板）
  */
 export const getOccupiedDepartmentMap = (
   excludeTemplateId?: string,
   activeTemplateIds?: string[],
+  businessType: ApprovalBindingBusinessType = 'REQUIREMENT',
 ): Record<string, string> => {
   const activeSet = activeTemplateIds ? new Set(activeTemplateIds) : null;
   const map: Record<string, string> = {};
   cache.forEach((b) => {
+    if (b.business_type !== businessType) return;
     if (b.approval_flow_template_id === excludeTemplateId) return;
     if (activeSet && !activeSet.has(b.approval_flow_template_id)) return;
     map[b.department_id] = b.approval_flow_template_id;
