@@ -142,20 +142,39 @@ const ApprovalFlowBuilderPage = () => {
     // R-04：选中父部门时自动展开所有子部门写入绑定
     const expandedDeptIds = expandDepartmentIdsWithDescendants(selectedDeptIds);
     try {
-      const updated = await updateApprovalFlow(draft.id, {
-        name: draft.name,
-        code: draft.code,
-        description: draft.description,
-        approvers: draft.approvers,
-        assessors: draft.assessors,
-        value_model: draft.value_model,
-        complexity_model: draft.complexity_model,
-        applicable_department_ids: selectedDeptIds,
-      });
-      setBindingsForTemplate(draft.id, expandedDeptIds);
-      setDraft(updated);
+      let saved: ApprovalFlowTemplate;
+      if (isNew) {
+        saved = await createApprovalFlowDraft({
+          name: draft.name,
+          code: draft.code,
+          description: draft.description,
+          approvers: draft.approvers,
+          assessors: draft.assessors,
+          value_model: draft.value_model,
+          complexity_model: draft.complexity_model,
+        });
+        saved = await updateApprovalFlow(saved.id, {
+          applicable_department_ids: selectedDeptIds,
+        });
+      } else {
+        saved = await updateApprovalFlow(draft.id, {
+          name: draft.name,
+          code: draft.code,
+          description: draft.description,
+          approvers: draft.approvers,
+          assessors: draft.assessors,
+          value_model: draft.value_model,
+          complexity_model: draft.complexity_model,
+          applicable_department_ids: selectedDeptIds,
+        });
+      }
+      setBindingsForTemplate(saved.id, expandedDeptIds);
+      setDraft(saved);
       setDirty(false);
       Toast.success('已保存');
+      if (isNew) {
+        navigate(`/requirements/approval-config/builder/${saved.id}`, { replace: true });
+      }
     } catch (e) {
       Toast.error((e as Error).message);
     }
