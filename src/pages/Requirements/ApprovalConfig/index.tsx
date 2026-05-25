@@ -59,11 +59,16 @@ const ApprovalConfigPage = ({
   const [loading, setLoading] = useState(true);
 
   const isPublish = businessType === 'PROCESS_PUBLISH';
-  const resolvedTitle = pageTitle ?? (isPublish ? '发布审批模板' : '审批配置');
+  const isOffline = businessType === 'PROCESS_OFFLINE';
+  const flowLabel = isPublish ? '发布审批模板' : isOffline ? '停用审批模板' : '审批流';
+  const businessLabel = isPublish ? '流程发布' : isOffline ? '流程停用' : '需求';
+  const resolvedTitle = pageTitle ?? (isPublish ? '发布审批模板' : isOffline ? '停用审批模板' : '审批配置');
   const resolvedDescription = pageDescription ?? (isPublish
     ? '管理流程发布审批模板。通过模板中的「适用部门」决定哪些部门的流程发布需要走审批。'
+    : isOffline
+    ? '管理流程停用审批模板。通过模板中的「适用部门」决定哪些部门的流程下线需要走审批。'
     : '集中管理需求审批流模板。支持同时启用多个模板；通过模板中的「适用部门」决定哪些部门走该流程。');
-  const resolvedCreateText = createButtonText ?? (isPublish ? '新建审批模板' : '新建审批流');
+  const resolvedCreateText = createButtonText ?? (isPublish ? '新建发布审批' : isOffline ? '新建停用审批' : '新建审批流');
 
   const load = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -101,8 +106,8 @@ const ApprovalConfigPage = ({
       return;
     }
     Modal.confirm({
-      title: isPublish ? '启用发布审批模板' : '启用审批流',
-      content: `确认启用「${f.name}」？启用后将对所选部门的${isPublish ? '流程发布' : '需求'}生效。`,
+      title: `启用${flowLabel}`,
+      content: `确认启用「${f.name}」？启用后将对所选部门的${businessLabel}生效。`,
       okText: '启用',
       cancelText: t('common.cancel'),
       onOk: async () => {
@@ -134,7 +139,7 @@ const ApprovalConfigPage = ({
 
   const handleDelete = (f: ApprovalFlowTemplate) => {
     Modal.confirm({
-      title: isPublish ? '删除发布审批模板' : '删除审批流',
+      title: `删除${flowLabel}`,
       content: `确认删除「${f.name}」？此操作不可恢复。`,
       okText: t('common.delete'),
       okButtonProps: { type: 'danger' },
@@ -187,7 +192,7 @@ const ApprovalConfigPage = ({
 
       <div className="approval-config-page-content">
         {!loading && flows.length === 0 ? (
-          <EmptyState variant="noData" description={`暂无${isPublish ? '发布审批模板' : '审批流'}，点击右上角新建`} />
+          <EmptyState variant="noData" description={`暂无${flowLabel}，点击右上角新建`} />
         ) : (
           <div className="approval-config-page-grid">
             {flows.map((f) => (
