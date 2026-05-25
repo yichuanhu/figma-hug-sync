@@ -24,7 +24,6 @@ import {
   deleteApprovalFlow,
   activateApprovalFlow,
   deactivateApprovalFlow,
-  createApprovalFlowDraft,
   cloneApprovalFlowAsDraft,
   
   subscribeApprovalFlowChange,
