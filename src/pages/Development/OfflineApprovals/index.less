@@ -1,0 +1,40 @@
+.offline-approvals-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
+  .offline-approvals-header {
+    padding: 24px 24px 0;
+
+    .title {
+      margin: 0 0 4px;
+    }
+  }
+
+  .offline-approvals-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 24px 12px;
+    flex-wrap: wrap;
+
+    .semi-tabs-bar {
+      border-bottom: none;
+    }
+  }
+
+  .offline-approvals-content {
+    flex: 1;
+    overflow: auto;
+    padding: 0 24px 24px;
+  }
+
+  .offline-dependency-group {
+    border: 1px solid var(--semi-color-border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+  }
+}
