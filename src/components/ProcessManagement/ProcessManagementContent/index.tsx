@@ -973,6 +973,20 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       {!isSchedulingContext && <OpenProcessModal />}
 
       {renderCollaboratorPanel('PROCESS', context)}
+
+      {/* 申请停用 Modal - 仅调度中心 */}
+      {isSchedulingContext && (
+        <OfflineRequestModal
+          visible={!!offlineRequestProcess}
+          onCancel={() => setOfflineRequestProcess(null)}
+          process={offlineRequestProcess ? {
+            id: offlineRequestProcess.id,
+            name: offlineRequestProcess.name,
+            department_id: (offlineRequestProcess as any).owning_department_id || '',
+            department_name: (offlineRequestProcess as any).owning_department_name || '',
+          } : null}
+        />
+      )}
     </div>
   );
 };
