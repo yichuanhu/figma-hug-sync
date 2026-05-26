@@ -94,7 +94,12 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
     { id: 'dept-005', name: 'Operations Department' },
   ];
 
-  const dept = departments[index % departments.length];
+  let dept = departments[index % departments.length];
+  // 停用场景演示：覆盖三个 PUBLISHED 流程的归属部门（process-2 / process-5 / process-8）
+  // 对应 mocks/processOfflineApproval.ts 中的 OFFLINE_SCENARIO_OVERRIDES
+  if (index === 1) dept = { id: 'dept-finance', name: 'Finance Department' };
+  else if (index === 4) dept = { id: 'dept-legal', name: 'Legal Department' };
+  else if (index === 7) dept = { id: 'dept-apa-product', name: 'APA Product Division' };
 
   const createDate = new Date(2025, 0, 1 + (index % 20), 10 + (index % 12), (index * 7) % 60, 0);
   const updateDate = new Date(createDate.getTime() + (index % 10) * 24 * 60 * 60 * 1000);
