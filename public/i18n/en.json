@@ -146,6 +146,7 @@
     "publishApprovalTemplates": "Release Approval Templates",
     "offlineApprovals": "Offline Approvals",
     "offlineApprovalTemplates": "Offline Approval Templates",
+    "approvalTemplates": "Approval Templates",
     "publishList": "Release List",
     "newPublish": "New Release",
     "publishHistory": "Release History",
