@@ -978,7 +978,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       <OfflineRequestModal
         visible={!!offlineRequestProcess}
         onCancel={() => setOfflineRequestProcess(null)}
-        onSuccess={() => fetchProcesses()}
+        onSuccess={() => fetchProcessList()}
         process={offlineRequestProcess ? {
           id: offlineRequestProcess.id,
           name: offlineRequestProcess.name,
