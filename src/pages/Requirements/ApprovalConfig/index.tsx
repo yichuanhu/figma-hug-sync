@@ -43,6 +43,7 @@ interface ApprovalConfigPageProps {
   pageTitle?: string;
   pageDescription?: string;
   createButtonText?: string;
+  tabsSlot?: React.ReactNode;
 }
 
 const ApprovalConfigPage = ({
@@ -51,6 +52,7 @@ const ApprovalConfigPage = ({
   pageTitle,
   pageDescription,
   createButtonText,
+  tabsSlot,
 }: ApprovalConfigPageProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -189,6 +191,8 @@ const ApprovalConfigPage = ({
           </Col>
         </Row>
       </div>
+
+      {tabsSlot && <div className="approval-config-page-tabs">{tabsSlot}</div>}
 
       <div className="approval-config-page-content">
         {!loading && flows.length === 0 ? (
