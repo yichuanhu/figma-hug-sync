@@ -717,7 +717,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
               >
                 {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
-              {isSchedulingContext && record.status === 'PUBLISHED' && (
+              {record.status === 'PUBLISHED' && (
                 <Dropdown.Item
                   icon={<PowerOff size={16} strokeWidth={2} />}
                   onClick={() => {
