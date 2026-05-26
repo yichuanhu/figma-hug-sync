@@ -161,6 +161,7 @@ const App = () => {
 
           {/* 流程停用审批 (FEAT-027) */}
           <Route path="/dev-center/offline-approvals" element={<OfflineApprovalsPage />} />
+          <Route path="/dev-center/offline-approvals/:id" element={<OfflineApprovalDetailPage />} />
           <Route path="/dev-center/offline-approval-templates" element={<ApprovalConfigPage businessType="PROCESS_OFFLINE" basePath="/dev-center/offline-approval-templates" pageTitle="停用审批模板" pageDescription="为流程下线配置审批流并绑定到部门" createButtonText="新建停用审批" />} />
           <Route path="/dev-center/offline-approval-templates/builder/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_OFFLINE" basePath="/dev-center/offline-approval-templates" />} />
           <Route path="/dev-center/offline-approval-templates/detail/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_OFFLINE" basePath="/dev-center/offline-approval-templates" />} />
