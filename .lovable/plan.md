@@ -1,59 +1,74 @@
 ## 目标
 
-让「审批模板」页面与系统其他列表页保持一致的布局，并把页签从顶部移到搜索框下方。
+让「发布审批」「停用审批」两个列表页对齐「需求中心 / 需求审批」页面的体验：
 
-## 期望布局
+1. 顶部统计卡片 + Tabs（待我审批 / 我审批过的 / 全部）+ 工具栏（搜索 / 状态筛选）
+2. 详情改为右侧抽屉，支持上下条导航
+3. 移除独立的详情路由页面
 
-```
-┌─────────────────────────────────────────────────────────┐
-│  审批模板                                                │
-│  统一管理流程发布 / 停用审批模板…                          │
-│                                                          │
-│  [🔍 搜索名称 / 编码 / 描述]              [+ 新建发布审批] │
-│                                                          │
-│  ── 发布审批 │ 停用审批 ───────────────────────────────  │
-│                                                          │
-│  ┌── 模板卡片网格 ─────────────────────────────────┐    │
-│  │  卡片  卡片  卡片  …                              │    │
-│  └─────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────┘
-```
+## 现状概览
 
-- 标题统一为「审批模板」，描述统一为「统一管理流程发布与停用审批模板，通过模板中的『适用部门』决定哪些部门的对应操作需要走审批。」
-- 搜索框与新建按钮保持系统标准（搜索 320px、右上角主按钮）。新建按钮文案随 Tab 切换为「新建发布审批 / 新建停用审批」。
-- Tabs 改为放在搜索行**下方**，紧贴卡片列表上方，采用 Semi `Tabs` line 样式。
-- Tab 切换时仍走 URL（`/dev-center/approval-templates/publish | offline`），保证刷新与深链有效。
+- `src/pages/Requirements/RequirementsReview/index.tsx` 是参考模板：MetricsSection 风格统计卡 → 工具栏 → Tabs → Table → `RequirementDetailDrawer`（基于 `DetailDrawerWrapper`）。
+- `PublishApprovalsPage` / `OfflineApprovalsPage` 当前使用 `Tabs(状态过滤) + Table`，「详情」按 `navigate` 跳到 `Detail/index.tsx`。
+- `Detail/index.tsx` 内的 Card / Timeline / Modal 拒绝逻辑都可平移到抽屉内。
+- Mock 中已通过 `approver_id === 'user-current'` 区分当前用户，可作为「我」的判定依据。
 
 ## 实施步骤
 
-### 1. `src/pages/Requirements/ApprovalConfig/index.tsx`
+### 1. 新增 `PublishApprovalDetailDrawer` 与 `OfflineApprovalDetailDrawer`
 
-- 新增可选 prop `tabsSlot?: React.ReactNode`。
-- 在 JSX 中 `approval-config-page-header` 之后、`approval-config-page-content` 之前渲染：
-  ```tsx
-  {tabsSlot && <div className="approval-config-page-tabs">{tabsSlot}</div>}
-  ```
-- 不修改其他逻辑、不动其他业务方（需求中心）的调用方。
+路径：
+- `src/pages/Development/PublishApprovals/components/DetailDrawer/index.tsx`（+ `.less`）
+- `src/pages/Development/OfflineApprovals/components/DetailDrawer/index.tsx`（+ `.less`）
 
-### 2. `src/pages/Requirements/ApprovalConfig/index.less`
+实现：
+- 基于 `DetailDrawerWrapper`（项目标准 900px、maskless、含导航/全屏）。
+- `title` 渲染流程名 + 版本/状态 Tag。
+- 内容沿用 Detail 页面的 Card 结构：基本信息、审批流（Timeline）、输入参数 / 依赖检查快照。
+- `extraActions` 渲染审批操作：
+  - PublishDrawer：当 `status === 'PENDING_APPROVAL'` 且当前用户是当前级审批人 → 「通过 / 拒绝」按钮。
+  - OfflineDrawer：同上，外加 `EXECUTION_FAILED` 时显示「重试执行」。
+- 拒绝原因走 `Modal` + `Form.TextArea`，与现有逻辑一致。
+- Props：`{ visible, onClose, data, dataList, onNavigate, pagination, onAfterAction }`。
 
-- 新增 `.approval-config-page-tabs` 样式：上边距 8px、下边距 0；让 `.semi-tabs-bar` 底部边框延伸到全宽并贴近内容区。
+### 2. 重写 `PublishApprovalsPage` (`src/pages/Development/PublishApprovals/index.tsx`)
 
-### 3. `src/pages/Development/ApprovalTemplates/index.tsx`
+参考 `RequirementsReview/index.tsx` 实现：
 
-- 移除顶部 Tabs 容器，直接渲染单个 `ApprovalConfigPage`：
-  - `pageTitle="审批模板"`
-  - `pageDescription="统一管理流程发布与停用审批模板…"`
-  - `businessType` / `basePath` / `createButtonText` 仍按 activeKey 切换
-  - `tabsSlot` 传入 Semi `Tabs`（line 样式，TabPane: 发布审批 / 停用审批），onChange 仍 `navigate`
-- 用 `key={activeKey}` 保证切换时内部状态重置。
+- **统计卡片**（4 项，复用 `.requirements-review-stats-*` 同款样式但用本页前缀）：
+  - 待我审批：`status==='PENDING_APPROVAL'` 且当前级审批人为 `user-current`
+  - 我审批过的：`records` 中存在 `approver_id==='user-current'`
+  - 已通过：我参与的 `action==='approve'` 计数
+  - 已拒绝：我参与的 `action==='reject'` 计数
+  - 图标复用 `@/assets/review-stats/*` 现有素材。
+- **工具栏**：`Input(搜索 320px) + FilterPopover(状态多选)`。停用页同样可加状态过滤。
+- **Tabs**：`pending / reviewed / all`（`keepDOM={false}`）。
+- **Table**：表头列保持现有字段；行点击 / 操作菜单（详情/通过/拒绝/重试）改为 Dropdown 风格（与需求审批一致），打开 `DetailDrawer` 而非路由跳转。
+- 列表 `loadData` 一次性拉全量，本地按 Tab/搜索/筛选过滤。
+- 状态变更后调用 `loadData` 并同步更新 `selectedRecord`，使抽屉刷新。
 
-### 4. `src/pages/Development/ApprovalTemplates/index.less`
+### 3. 重写 `OfflineApprovalsPage`
 
-- 简化：仅作为透传容器，`height: 100%`，移除原先的 tabs/body 嵌套样式。
+与发布版完全对称，差异点：
+- 状态枚举包含 `APPROVED / EXECUTED / EXECUTION_FAILED`；统计卡同上口径。
+- 表格列加「申请人」（`UserNameWithCard`）；抽屉中保留依赖快照渲染。
+- Dropdown 菜单含「重试执行」（`EXECUTION_FAILED`）。
+
+### 4. 删除独立详情页面与路由
+
+- 删除文件：
+  - `src/pages/Development/PublishApprovals/Detail/index.tsx`
+  - `src/pages/Development/PublishApprovals/Detail/index.less`
+  - `src/pages/Development/OfflineApprovals/Detail/index.tsx`
+  - `src/pages/Development/OfflineApprovals/Detail/index.less`
+- `src/App.tsx`：移除 `PublishApprovalDetailPage` / `OfflineApprovalDetailPage` 的 import 与 `/:id` 路由（已无入口）。
+
+### 5. 样式
+
+- 新增 `publish-approvals` / `offline-approvals` 页面 less，复制 `requirements-review` 的 stats / toolbar / row-selected 类即可（直接 import + 重命名 selector）。
 
 ## 不改动
 
-- 路由、侧边栏菜单、i18n 不变。
-- ApprovalConfigPage 在「需求中心/审批配置」中的渲染不受影响（未传 `tabsSlot` 即原样）。
-- 模板卡片、Dropdown、Modal/Toast 行为均不修改。
+- Sidebar 菜单、i18n key、ApprovalConfigPage、`processVersionApproval` / `processOfflineApproval` 的 mock 业务逻辑。
+- 审批模板（合并后的）页面。
+- 「需求审批」页面本身不动。
