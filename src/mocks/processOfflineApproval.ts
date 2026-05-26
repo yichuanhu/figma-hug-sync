@@ -243,6 +243,9 @@ export const fetchOfflineApprovals = async (params?: {
   return list.sort((a, b) => b.submitted_at.localeCompare(a.submitted_at));
 };
 
+export const getOfflineRequestById = (id: string): ProcessOfflineRequest | undefined =>
+  cache.find((r) => r.id === id);
+
 export interface SubmitOfflineRequestPayload {
   processId: string;
   processName: string;

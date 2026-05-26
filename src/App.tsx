@@ -24,7 +24,9 @@ import DevFileManagementPage from "@/pages/Development/FileManagement/FileManage
 import ReleaseListPage from "@/pages/Development/ReleaseManagement/ReleaseListPage";
 import CreateReleasePage from "@/pages/Development/ReleaseManagement/CreateReleasePage";
 import PublishApprovalsPage from "@/pages/Development/PublishApprovals";
+import PublishApprovalDetailPage from "@/pages/Development/PublishApprovals/Detail";
 import OfflineApprovalsPage from "@/pages/Development/OfflineApprovals";
+import OfflineApprovalDetailPage from "@/pages/Development/OfflineApprovals/Detail";
 // Scheduling - Worker Management
 import WorkerManagementPage from "@/pages/Scheduling/WorkerManagement/WorkerManagementPage";
 // Scheduling - Credential Management
@@ -151,6 +153,7 @@ const App = () => {
           <Route path="/dev-center/release-management" element={<ReleaseListPage />} />
           <Route path="/dev-center/release-management/create" element={<CreateReleasePage />} />
           <Route path="/dev-center/publish-approvals" element={<PublishApprovalsPage />} />
+          <Route path="/dev-center/publish-approvals/:id" element={<PublishApprovalDetailPage />} />
           <Route path="/dev-center/publish-approval-templates" element={<ApprovalConfigPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" pageTitle="发布审批模板" pageDescription="为流程发布配置审批流并绑定到部门" createButtonText="新建发布审批" />} />
           <Route path="/dev-center/publish-approval-templates/builder/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" />} />
           <Route path="/dev-center/publish-approval-templates/detail/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" />} />
@@ -158,6 +161,7 @@ const App = () => {
 
           {/* 流程停用审批 (FEAT-027) */}
           <Route path="/dev-center/offline-approvals" element={<OfflineApprovalsPage />} />
+          <Route path="/dev-center/offline-approvals/:id" element={<OfflineApprovalDetailPage />} />
           <Route path="/dev-center/offline-approval-templates" element={<ApprovalConfigPage businessType="PROCESS_OFFLINE" basePath="/dev-center/offline-approval-templates" pageTitle="停用审批模板" pageDescription="为流程下线配置审批流并绑定到部门" createButtonText="新建停用审批" />} />
           <Route path="/dev-center/offline-approval-templates/builder/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_OFFLINE" basePath="/dev-center/offline-approval-templates" />} />
           <Route path="/dev-center/offline-approval-templates/detail/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_OFFLINE" basePath="/dev-center/offline-approval-templates" />} />

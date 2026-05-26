@@ -2,15 +2,16 @@
  * 流程停用审批列表页（FEAT-027 STORY-003）
  *
  * 展示流程停用申请：待审批 / 已通过 / 已拒绝 / 执行失败 / 全部。
- * 当前用户可对待审批记录通过 / 拒绝；执行失败可重试。
+ * 详情通过子路由 /dev-center/offline-approvals/:id 跳转。
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Typography, Table, Tag, Input, Button, Toast, Modal, Tabs, TabPane,
-  Space, Form, Descriptions, Timeline,
+  Space, Form,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { CheckCircle, XCircle, Eye, RefreshCw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import {
@@ -39,12 +40,12 @@ const STATUS_TAG: Record<OfflineRequestStatus, { color: 'blue' | 'green' | 'red'
 const fmtTime = (iso?: string) => (iso ? new Date(iso).toLocaleString('zh-CN', { hour12: false }) : '-');
 
 const OfflineApprovalsPage = () => {
+  const navigate = useNavigate();
   const [keyword, setKeyword] = useState('');
   const [status, setStatus] = useState<StatusFilterKey>('PENDING_APPROVAL');
   const [list, setList] = useState<ProcessOfflineRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [detail, setDetail] = useState<ProcessOfflineRequest | null>(null);
-  const [rejectVisible, setRejectVisible] = useState(false);
+  const [rejectTarget, setRejectTarget] = useState<ProcessOfflineRequest | null>(null);
   const [rejectReason, setRejectReason] = useState('');
   const [actingId, setActingId] = useState<string | null>(null);
 
@@ -69,14 +70,9 @@ const OfflineApprovalsPage = () => {
         try {
           setActingId(r.id);
           const next = await approveOfflineRequest(r.id);
-          if (next.status === 'EXECUTION_FAILED') {
-            Toast.warning('审批通过，但执行失败，请稍后重试');
-          } else if (next.status === 'EXECUTED') {
-            Toast.success('已通过并完成下线');
-          } else {
-            Toast.success('已通过，等待下一级审批');
-          }
-          setDetail(null);
+          if (next.status === 'EXECUTION_FAILED') Toast.warning('审批通过，但执行失败，请稍后重试');
+          else if (next.status === 'EXECUTED') Toast.success('已通过并完成下线');
+          else Toast.success('已通过，等待下一级审批');
         } catch (e) {
           Toast.error((e as Error).message);
         } finally {
@@ -86,20 +82,13 @@ const OfflineApprovalsPage = () => {
     });
   };
 
-  const openReject = (r: ProcessOfflineRequest) => {
-    setDetail(r);
-    setRejectReason('');
-    setRejectVisible(true);
-  };
-
   const submitReject = async () => {
-    if (!detail) return;
+    if (!rejectTarget) return;
     try {
-      setActingId(detail.id);
-      await rejectOfflineRequest(detail.id, rejectReason.trim());
+      setActingId(rejectTarget.id);
+      await rejectOfflineRequest(rejectTarget.id, rejectReason.trim());
       Toast.success('已拒绝');
-      setRejectVisible(false);
-      setDetail(null);
+      setRejectTarget(null);
     } catch (e) {
       Toast.error((e as Error).message);
     } finally {
@@ -141,13 +130,13 @@ const OfflineApprovalsPage = () => {
       render: (_: unknown, r: ProcessOfflineRequest) => (
         <Space spacing={4}>
           <Button size="small" theme="borderless" type="tertiary" icon={<Eye size={14} />}
-            onClick={(e) => { e.stopPropagation(); setDetail(r); }}>详情</Button>
+            onClick={(e) => { e.stopPropagation(); navigate(`/dev-center/offline-approvals/${r.id}`); }}>详情</Button>
           {r.status === 'PENDING_APPROVAL' && (
             <>
               <Button size="small" theme="borderless" type="primary" icon={<CheckCircle size={14} />}
                 loading={actingId === r.id} onClick={(e) => { e.stopPropagation(); handleApprove(r); }}>通过</Button>
               <Button size="small" theme="borderless" type="danger" icon={<XCircle size={14} />}
-                onClick={(e) => { e.stopPropagation(); openReject(r); }}>拒绝</Button>
+                onClick={(e) => { e.stopPropagation(); setRejectReason(''); setRejectTarget(r); }}>拒绝</Button>
             </>
           )}
           {r.status === 'EXECUTION_FAILED' && (
@@ -157,49 +146,7 @@ const OfflineApprovalsPage = () => {
         </Space>
       ),
     },
-  ], [actingId]);
-
-  const renderDependency = (r: ProcessOfflineRequest) => {
-    const d = r.dependency_snapshot;
-    const empty = d.triggers.length + d.task_templates.length + d.running_tasks.length + d.scheduling_refs.length === 0;
-    if (empty) return <Tag color="green" type="light" size="small">依赖检查通过</Tag>;
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        {d.triggers.length > 0 && (
-          <div className="offline-dependency-group">
-            <Text strong size="small">启用中的触发器</Text>
-            <ul style={{ margin: '4px 0 0 16px' }}>
-              {d.triggers.map((t) => (<li key={t.id}><Text size="small">{t.name}（{t.type}）</Text></li>))}
-            </ul>
-          </div>
-        )}
-        {d.task_templates.length > 0 && (
-          <div className="offline-dependency-group">
-            <Text strong size="small">引用此流程的任务模板</Text>
-            <ul style={{ margin: '4px 0 0 16px' }}>
-              {d.task_templates.map((t) => (<li key={t.id}><Text size="small">{t.name}</Text></li>))}
-            </ul>
-          </div>
-        )}
-        {d.running_tasks.length > 0 && (
-          <div className="offline-dependency-group">
-            <Text strong size="small">运行中/排队中任务</Text>
-            <ul style={{ margin: '4px 0 0 16px' }}>
-              {d.running_tasks.map((t) => (<li key={t.id}><Text size="small">{t.name}（{t.status}）</Text></li>))}
-            </ul>
-          </div>
-        )}
-        {d.scheduling_refs.length > 0 && (
-          <div className="offline-dependency-group">
-            <Text strong size="small">调度中心其他引用</Text>
-            <ul style={{ margin: '4px 0 0 16px' }}>
-              {d.scheduling_refs.map((t) => (<li key={t.id}><Text size="small">{t.name}</Text></li>))}
-            </ul>
-          </div>
-        )}
-      </div>
-    );
-  };
+  ], [actingId, navigate]);
 
   return (
     <div className="offline-approvals-page">
@@ -237,90 +184,15 @@ const OfflineApprovalsPage = () => {
             rowKey="id"
             loading={loading}
             pagination={false}
-            onRow={(record) => ({ onClick: () => record && setDetail(record) })}
+            onRow={(record) => ({ onClick: () => record && navigate(`/dev-center/offline-approvals/${record.id}`) })}
           />
         )}
       </div>
 
       <Modal
-        title={detail ? `${detail.process_name} 的停用申请` : ''}
-        visible={!!detail && !rejectVisible}
-        onCancel={() => setDetail(null)}
-        width={720}
-        footer={
-          detail?.status === 'PENDING_APPROVAL' ? (
-            <Space>
-              <Button onClick={() => setDetail(null)}>关闭</Button>
-              <Button type="danger" theme="light" icon={<XCircle size={14} />} onClick={() => detail && openReject(detail)}>拒绝</Button>
-              <Button type="primary" theme="solid" icon={<CheckCircle size={14} />} onClick={() => detail && handleApprove(detail)}>通过</Button>
-            </Space>
-          ) : detail?.status === 'EXECUTION_FAILED' ? (
-            <Space>
-              <Button onClick={() => setDetail(null)}>关闭</Button>
-              <Button type="warning" theme="solid" icon={<RefreshCw size={14} />} onClick={() => detail && handleRetry(detail)}>重试执行</Button>
-            </Space>
-          ) : (
-            <Button onClick={() => setDetail(null)}>关闭</Button>
-          )
-        }
-      >
-        {detail && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <Descriptions
-              data={[
-                { key: '状态', value: <Tag color={STATUS_TAG[detail.status].color} type="light" size="small">{STATUS_TAG[detail.status].text}</Tag> },
-                { key: '申请人', value: <UserNameWithCard name={detail.applicant_name} userId={detail.applicant_id} /> },
-                { key: '所属部门', value: detail.department_name },
-                { key: '提交时间', value: fmtTime(detail.submitted_at) },
-                ...(detail.executed_at ? [{ key: '下线时间', value: fmtTime(detail.executed_at) }] : []),
-                { key: '停用原因', value: detail.reason },
-                ...(detail.execution_error ? [{ key: '执行错误', value: <Text type="danger">{detail.execution_error}</Text> }] : []),
-              ]}
-              row
-            />
-
-            <div>
-              <Text strong style={{ marginBottom: 8, display: 'block' }}>依赖检查快照</Text>
-              {renderDependency(detail)}
-            </div>
-
-            {detail.approval_template_snapshot && (
-              <div>
-                <Text strong>审批流：{detail.approval_template_snapshot.name}</Text>
-                {detail.status === 'PENDING_APPROVAL' && detail.total_levels && (
-                  <Text type="tertiary" style={{ marginLeft: 8 }}>
-                    当前第 {detail.current_level} / {detail.total_levels} 级
-                  </Text>
-                )}
-              </div>
-            )}
-
-            {detail.records.length > 0 && (
-              <div>
-                <Text strong style={{ marginBottom: 8, display: 'block' }}>审批历史</Text>
-                <Timeline>
-                  {detail.records.map((r, idx) => (
-                    <Timeline.Item key={idx} type={r.action === 'approve' ? 'success' : 'error'} time={fmtTime(r.acted_at)}>
-                      <Space>
-                        <Text strong>{r.approver_name}</Text>
-                        <Tag color={r.action === 'approve' ? 'green' : 'red'} type="light" size="small">
-                          {r.action === 'approve' ? '通过' : '拒绝'}（第 {r.level} 级）
-                        </Tag>
-                      </Space>
-                      {r.comment && <div><Text type="tertiary" size="small">{r.comment}</Text></div>}
-                    </Timeline.Item>
-                  ))}
-                </Timeline>
-              </div>
-            )}
-          </div>
-        )}
-      </Modal>
-
-      <Modal
         title="拒绝停用申请"
-        visible={rejectVisible}
-        onCancel={() => setRejectVisible(false)}
+        visible={!!rejectTarget}
+        onCancel={() => setRejectTarget(null)}
         onOk={submitReject}
         okText="确认拒绝"
         okButtonProps={{ type: 'danger', loading: !!actingId }}
