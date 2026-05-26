@@ -153,6 +153,7 @@ const App = () => {
           <Route path="/dev-center/release-management" element={<ReleaseListPage />} />
           <Route path="/dev-center/release-management/create" element={<CreateReleasePage />} />
           <Route path="/dev-center/publish-approvals" element={<PublishApprovalsPage />} />
+          <Route path="/dev-center/publish-approvals/:id" element={<PublishApprovalDetailPage />} />
           <Route path="/dev-center/publish-approval-templates" element={<ApprovalConfigPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" pageTitle="发布审批模板" pageDescription="为流程发布配置审批流并绑定到部门" createButtonText="新建发布审批" />} />
           <Route path="/dev-center/publish-approval-templates/builder/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" />} />
           <Route path="/dev-center/publish-approval-templates/detail/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" />} />
