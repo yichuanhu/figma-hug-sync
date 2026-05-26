@@ -254,9 +254,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'publishManagement', labelKey: 'sidebar.publishManagement', isGroupLabel: true },
     { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={18} strokeWidth={2} />, path: '/dev-center/release-management' },
     { key: 'publishApprovals', labelKey: 'sidebar.publishApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/dev-center/publish-approvals' },
-    { key: 'publishApprovalTemplates', labelKey: 'sidebar.publishApprovalTemplates', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/dev-center/publish-approval-templates' },
     { key: 'offlineApprovals', labelKey: 'sidebar.offlineApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/dev-center/offline-approvals' },
-    { key: 'offlineApprovalTemplates', labelKey: 'sidebar.offlineApprovalTemplates', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/dev-center/offline-approval-templates' },
+    { key: 'approvalTemplates', labelKey: 'sidebar.approvalTemplates', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/dev-center/approval-templates/publish' },
   ];
 
   const bottomMenuItems: MenuItem[] = [
