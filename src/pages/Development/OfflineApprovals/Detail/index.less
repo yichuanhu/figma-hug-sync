@@ -1,0 +1,44 @@
+.offline-approval-detail-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: 24px;
+
+  .detail-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    .title { margin: 0; flex: 1; }
+  }
+
+  .detail-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .detail-section {
+    .info-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .info-row-block { flex-direction: column; gap: 4px; }
+    .dependency-group { margin-bottom: 8px; }
+    .dependency-group ul { margin: 4px 0 0 16px; padding: 0; }
+  }
+
+  .detail-footer {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 16px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+}
