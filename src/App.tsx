@@ -154,18 +154,23 @@ const App = () => {
           <Route path="/dev-center/release-management/create" element={<CreateReleasePage />} />
           <Route path="/dev-center/publish-approvals" element={<PublishApprovalsPage />} />
           <Route path="/dev-center/publish-approvals/:id" element={<PublishApprovalDetailPage />} />
-          <Route path="/dev-center/publish-approval-templates" element={<ApprovalConfigPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" pageTitle="发布审批模板" pageDescription="为流程发布配置审批流并绑定到部门" createButtonText="新建发布审批" />} />
-          <Route path="/dev-center/publish-approval-templates/builder/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" />} />
-          <Route path="/dev-center/publish-approval-templates/detail/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_PUBLISH" basePath="/dev-center/publish-approval-templates" />} />
-          <Route path="/dev-center/publish-approval-templates/*" element={<Navigate to="/dev-center/publish-approval-templates" replace />} />
 
           {/* 流程停用审批 (FEAT-027) */}
           <Route path="/dev-center/offline-approvals" element={<OfflineApprovalsPage />} />
           <Route path="/dev-center/offline-approvals/:id" element={<OfflineApprovalDetailPage />} />
-          <Route path="/dev-center/offline-approval-templates" element={<ApprovalConfigPage businessType="PROCESS_OFFLINE" basePath="/dev-center/offline-approval-templates" pageTitle="停用审批模板" pageDescription="为流程下线配置审批流并绑定到部门" createButtonText="新建停用审批" />} />
-          <Route path="/dev-center/offline-approval-templates/builder/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_OFFLINE" basePath="/dev-center/offline-approval-templates" />} />
-          <Route path="/dev-center/offline-approval-templates/detail/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_OFFLINE" basePath="/dev-center/offline-approval-templates" />} />
-          <Route path="/dev-center/offline-approval-templates/*" element={<Navigate to="/dev-center/offline-approval-templates" replace />} />
+
+          {/* 审批模板（合并发布/停用模板） */}
+          <Route path="/dev-center/approval-templates" element={<Navigate to="/dev-center/approval-templates/publish" replace />} />
+          <Route path="/dev-center/approval-templates/publish" element={<ApprovalTemplatesPage />} />
+          <Route path="/dev-center/approval-templates/offline" element={<ApprovalTemplatesPage />} />
+          <Route path="/dev-center/approval-templates/publish/builder/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_PUBLISH" basePath="/dev-center/approval-templates/publish" />} />
+          <Route path="/dev-center/approval-templates/publish/detail/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_PUBLISH" basePath="/dev-center/approval-templates/publish" />} />
+          <Route path="/dev-center/approval-templates/offline/builder/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_OFFLINE" basePath="/dev-center/approval-templates/offline" />} />
+          <Route path="/dev-center/approval-templates/offline/detail/:id" element={<ApprovalFlowBuilderPage businessType="PROCESS_OFFLINE" basePath="/dev-center/approval-templates/offline" />} />
+
+          {/* 旧路径兼容重定向 */}
+          <Route path="/dev-center/publish-approval-templates/*" element={<Navigate to="/dev-center/approval-templates/publish" replace />} />
+          <Route path="/dev-center/offline-approval-templates/*" element={<Navigate to="/dev-center/approval-templates/offline" replace />} />
 
           
           {/* 自动化流程 - 调度中心 */}
