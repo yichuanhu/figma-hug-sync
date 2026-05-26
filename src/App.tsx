@@ -152,11 +152,11 @@ const App = () => {
           <Route path="/dev-center/release-management" element={<ReleaseListPage />} />
           <Route path="/dev-center/release-management/create" element={<CreateReleasePage />} />
           <Route path="/dev-center/publish-approvals" element={<PublishApprovalsPage />} />
-          <Route path="/dev-center/publish-approvals/:id" element={<PublishApprovalDetailPage />} />
+          <Route path="/dev-center/publish-approvals/:id" element={<Navigate to="/dev-center/publish-approvals" replace />} />
 
           {/* 流程停用审批 (FEAT-027) */}
           <Route path="/dev-center/offline-approvals" element={<OfflineApprovalsPage />} />
-          <Route path="/dev-center/offline-approvals/:id" element={<OfflineApprovalDetailPage />} />
+          <Route path="/dev-center/offline-approvals/:id" element={<Navigate to="/dev-center/offline-approvals" replace />} />
 
           {/* 审批模板（合并发布/停用模板） */}
           <Route path="/dev-center/approval-templates" element={<Navigate to="/dev-center/approval-templates/publish" replace />} />
