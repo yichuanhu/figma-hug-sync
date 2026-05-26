@@ -192,6 +192,8 @@ const ApprovalConfigPage = ({
         </Row>
       </div>
 
+      {tabsSlot && <div className="approval-config-page-tabs">{tabsSlot}</div>}
+
       <div className="approval-config-page-content">
         {!loading && flows.length === 0 ? (
           <EmptyState variant="noData" description={`暂无${flowLabel}，点击右上角新建`} />
