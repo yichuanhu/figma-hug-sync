@@ -384,14 +384,13 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/dev-center/release-management') {
       return 'processPublish';
     }
-    if (pathname.startsWith('/dev-center/publish-approval-templates')) {
-      return 'publishApprovalTemplates';
+    if (pathname.startsWith('/dev-center/approval-templates') ||
+        pathname.startsWith('/dev-center/publish-approval-templates') ||
+        pathname.startsWith('/dev-center/offline-approval-templates')) {
+      return 'approvalTemplates';
     }
     if (pathname.startsWith('/dev-center/publish-approvals')) {
       return 'publishApprovals';
-    }
-    if (pathname.startsWith('/dev-center/offline-approval-templates')) {
-      return 'offlineApprovalTemplates';
     }
     if (pathname.startsWith('/dev-center/offline-approvals')) {
       return 'offlineApprovals';
