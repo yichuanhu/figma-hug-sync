@@ -43,6 +43,7 @@ interface ApprovalConfigPageProps {
   pageTitle?: string;
   pageDescription?: string;
   createButtonText?: string;
+  tabsSlot?: React.ReactNode;
 }
 
 const ApprovalConfigPage = ({
@@ -51,6 +52,7 @@ const ApprovalConfigPage = ({
   pageTitle,
   pageDescription,
   createButtonText,
+  tabsSlot,
 }: ApprovalConfigPageProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
