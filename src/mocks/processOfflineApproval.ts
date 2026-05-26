@@ -55,7 +55,7 @@ export interface ProcessOfflineRequest {
   execution_error?: string;
 }
 
-const STORAGE_KEY = 'apa.processOfflineApproval.v1';
+const STORAGE_KEY = 'apa.processOfflineApproval.v2';
 
 const now = (offsetH = 0) => new Date(Date.now() - offsetH * 3_600_000).toISOString();
 
@@ -66,7 +66,35 @@ const hash = (s: string) => {
   return Math.abs(h);
 };
 
+/**
+ * 开发中心三种停用场景的显式覆盖：
+ * - process-2：有阻塞依赖，禁止停用
+ * - process-5：无依赖，无审批（dept-legal 未绑定 PROCESS_OFFLINE）
+ * - process-8：无依赖，需审批（dept-apa-product 绑定 oflow-001）
+ */
+const OFFLINE_SCENARIO_OVERRIDES: Record<string, (name: string) => DependencyCheckSnapshot> = {
+  'process-2': (name) => ({
+    blocking: true,
+    triggers: [
+      { id: 'tr-process-2-1', name: `${name} 月度定时触发器`, type: 'TIME', enabled: true },
+    ],
+    task_templates: [
+      { id: 'tpl-process-2-1', name: `${name} 例行批量处理模板` },
+    ],
+    running_tasks: [
+      { id: 'task-process-2-1', name: `${name} 运行中任务 #2048`, status: 'RUNNING' },
+    ],
+    scheduling_refs: [
+      { id: 'ref-process-2-1', name: `${name} 月末结账调度引用` },
+    ],
+  }),
+  'process-5': () => ({ blocking: false, triggers: [], task_templates: [], running_tasks: [], scheduling_refs: [] }),
+  'process-8': () => ({ blocking: false, triggers: [], task_templates: [], running_tasks: [], scheduling_refs: [] }),
+};
+
 export const buildDependencySnapshot = (processId: string, processName: string): DependencyCheckSnapshot => {
+  const override = OFFLINE_SCENARIO_OVERRIDES[processId];
+  if (override) return override(processName);
   const h = hash(processId);
   const hasTrigger = h % 5 === 0;
   const hasTaskTpl = h % 4 === 0;
