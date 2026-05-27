@@ -31,6 +31,7 @@ import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } fr
 import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
+import DocumentsTab from './components/DocumentsTab';
 
 import {
   fetchAllLinkableRequirements,
