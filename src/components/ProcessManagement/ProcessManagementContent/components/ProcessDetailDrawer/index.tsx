@@ -941,6 +941,19 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           onClose={() => setBasicInfoEditField(null)}
         />
       )}
+      {lifecycleAdjustField && (
+        <LifecycleAdjustModal
+          visible={!!lifecycleAdjustField}
+          processId={processData.id}
+          field={lifecycleAdjustField}
+          onClose={() => setLifecycleAdjustField(null)}
+        />
+      )}
+      <LifecycleHistoryModal
+        visible={lifecycleHistoryVisible}
+        processId={processData.id}
+        onClose={() => setLifecycleHistoryVisible(false)}
+      />
     </DetailDrawerWrapper>
   );
 };
