@@ -479,9 +479,19 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
 
   const creatorInfo = getCreatorInfo(processData.creator_id);
 
-  const descriptionData = [
+  const basicGroupData = [
     { key: t('development.processDevelopment.fields.processName'), value: processData.name },
     { key: t('common.description'), value: <ExpandableText text={processData.description} maxLines={3} /> },
+    {
+      key: t('common.status'),
+      value: (
+        <Tag color={statusConfig[processData.status]?.color || 'grey'} type="light">
+          {t(statusConfig[processData.status]?.i18nKey || 'development.processDevelopment.status.developing')}
+        </Tag>
+      ),
+    },
+    { key: t('common.creator'), value: creatorInfo ? <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> : '-' },
+    { key: t('common.owner'), value: processData.owner_name ? <UserNameWithCard name={processData.owner_name} userId={processData.owner_id || ''} /> : '-' },
     { key: t('common.owningDepartment'), value: getDepartmentName(processData.owning_department_id) },
     ...(linkedRequirement
       ? [
@@ -495,8 +505,11 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           { key: t('workspaceSelect.label'), value: linkedRequirement.workspaceName || '-' },
         ]
       : []),
-    { key: t('common.owner'), value: processData.owner_name ? <UserNameWithCard name={processData.owner_name} userId={processData.owner_id || ''} /> : '-' },
-    { key: t('common.creator'), value: creatorInfo ? <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> : '-' },
+    { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
+    { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
+  ];
+
+  const lifecycleGroupData = [
     ...(basicInfoPermission.canView && basicInfo
       ? [
           {
@@ -622,32 +635,11 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
                     />
                   </Tooltip>
                 )}
-                {f === 'offline_at' && (
-                  <Button
-                    theme="borderless"
-                    type="primary"
-                    size="small"
-                    onClick={() => setLifecycleHistoryVisible(true)}
-                    style={{ marginLeft: 'auto' }}
-                  >
-                    查看修正历史
-                  </Button>
-                )}
               </span>
             ),
           };
         })
       : []),
-    { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
-    { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
-    {
-      key: t('common.status'),
-      value: (
-        <Tag color={statusConfig[processData.status]?.color || 'grey'} type="light">
-          {t(statusConfig[processData.status]?.i18nKey || 'development.processDevelopment.status.developing')}
-        </Tag>
-      ),
-    },
   ];
 
 
