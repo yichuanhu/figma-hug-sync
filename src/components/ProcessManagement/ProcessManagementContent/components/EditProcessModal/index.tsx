@@ -347,6 +347,60 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           )}
         </Form.Slot>
 
+        <div className="edit-process-modal-section-title">交付信息</div>
+
+        <Form.Slot label={{ text: '开发工程师' }}>
+          <OwnerSearchSelect
+            multiple
+            value={developerIds}
+            onChange={(v: string[]) => setDeveloperIds(v || [])}
+            placeholder="请选择开发工程师（可多选）"
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: '代码审核员' }}>
+          <OwnerSearchSelect
+            multiple
+            value={codeReviewerIds}
+            onChange={(v: string[]) => setCodeReviewerIds(v || [])}
+            placeholder="请选择代码审核员（可多选）"
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: '开发完成时间' }}>
+          <DatePicker
+            type="dateTime"
+            format="yyyy-MM-dd HH:mm"
+            value={developmentCompletedAt ?? undefined}
+            onChange={(v) => setDevelopmentCompletedAt((v as Date) ?? null)}
+            style={{ width: '100%' }}
+            placeholder="请选择开发完成时间"
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: '部署上线时间' }}>
+          <DatePicker
+            type="dateTime"
+            format="yyyy-MM-dd HH:mm"
+            value={deployedAt ?? undefined}
+            onChange={(v) => setDeployedAt((v as Date) ?? null)}
+            style={{ width: '100%' }}
+            placeholder="请选择部署上线时间"
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: '流程下线时间' }}>
+          <DatePicker
+            type="dateTime"
+            format="yyyy-MM-dd HH:mm"
+            value={offlineAt ?? undefined}
+            onChange={(v) => setOfflineAt((v as Date) ?? null)}
+            style={{ width: '100%' }}
+            placeholder="请选择流程下线时间"
+          />
+        </Form.Slot>
+
+
         <div className="edit-process-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
