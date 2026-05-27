@@ -469,22 +469,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     { key: t('common.owner'), value: processData.owner_name ? <UserNameWithCard name={processData.owner_name} userId={processData.owner_id || ''} /> : '-' },
     {
       key: t('common.owningDepartment'),
-      value: (
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          {getDepartmentName(processData.owning_department_id)}
-          {basicInfoPermission.canUpdate && (
-            <Tooltip content="编辑归属部门">
-              <Button
-                icon={<Pencil size={14} strokeWidth={2} />}
-                theme="borderless"
-                type="tertiary"
-                size="small"
-                onClick={() => Toast.info('归属部门编辑能力即将开放')}
-              />
-            </Tooltip>
-          )}
-        </span>
-      ),
+      value: getDepartmentName(processData.owning_department_id),
     },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
