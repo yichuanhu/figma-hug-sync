@@ -14,7 +14,7 @@ import {
   Toast,
   Modal,
   TextArea,
-  
+  DatePicker,
 } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse, LYProcessDependency } from '@/api';
@@ -26,26 +26,26 @@ import ExpandableText from '@/components/ExpandableText';
 import { getDepartmentName } from '@/mocks/departmentData';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import './index.less';
-import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
+import { Check, ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload, X } from 'lucide-react';
 import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
 import DocumentsTab from './components/DocumentsTab';
-import BasicInfoEditModal, { type BasicInfoEditField } from './components/BasicInfoEditModal';
-import LifecycleAdjustModal from './components/LifecycleAdjustModal';
 
 import {
   getProcessBasicInfo,
   getUserById,
   overrideDevelopersOnVersionUpload,
   subscribeBasicInfo,
+  updateProcessBasicInfo,
 } from '@/mocks/processBasicInfo';
 import { useProcessBasicInfoPermission } from '@/hooks/useProcessBasicInfoPermission';
 import { useProcessLifecyclePermission } from '@/hooks/useProcessLifecyclePermission';
 import {
   FIELD_LABEL as LIFECYCLE_FIELD_LABEL,
-  SOURCE_LABEL as LIFECYCLE_SOURCE_LABEL,
+  adjustLifecycleMilestone,
   getProcessLifecycleLedger,
   subscribeLifecycleLedger,
   type LifecycleField,
@@ -344,7 +344,8 @@ const ProcessDetailDrawer = ({
   // 基本信息（STORY-002-PG-RESPONSIBILITY）
   const basicInfoPermission = useProcessBasicInfoPermission(processData?.id);
   const [basicInfoTick, setBasicInfoTick] = useState(0);
-  const [basicInfoEditField, setBasicInfoEditField] = useState<BasicInfoEditField | null>(null);
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState<unknown>(null);
   useEffect(() => {
     if (!processData?.id) return;
     return subscribeBasicInfo(processData.id, () => setBasicInfoTick((v) => v + 1));
@@ -358,7 +359,7 @@ const ProcessDetailDrawer = ({
   // 生命周期台账（STORY-003-PG-LIFECYCLE-LEDGER）
   const lifecyclePermission = useProcessLifecyclePermission(processData?.id);
   const [lifecycleTick, setLifecycleTick] = useState(0);
-  const [lifecycleAdjustField, setLifecycleAdjustField] = useState<LifecycleField | null>(null);
+  
   
   useEffect(() => {
     if (!processData?.id) return;
@@ -493,85 +494,191 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
   ];
 
+  // 内联编辑工具
+  const startEdit = (key: string, initial: unknown) => {
+    setEditingField(key);
+    setEditingValue(initial);
+  };
+  const cancelEdit = () => {
+    setEditingField(null);
+    setEditingValue(null);
+  };
+  const renderPeopleRow = (
+    fieldKey: 'developer_ids' | 'code_reviewer_ids',
+    ids: string[],
+  ) => {
+    if (editingField === fieldKey) {
+      const value = (editingValue as string[]) || [];
+      return (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, width: '100%', maxWidth: 420 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <OwnerSearchSelect
+              multiple
+              value={value}
+              onChange={(v: string[]) => setEditingValue(v)}
+              placeholder="请选择用户（可多选）"
+              size="small"
+            />
+          </div>
+          <Tooltip content="保存">
+            <Button
+              icon={<Check size={14} strokeWidth={2} />}
+              theme="borderless"
+              type="primary"
+              size="small"
+              onClick={() => {
+                const unique = Array.from(new Set(value));
+                updateProcessBasicInfo(processData.id, { [fieldKey]: unique } as Partial<{
+                  developer_ids: string[];
+                  code_reviewer_ids: string[];
+                }>);
+                Toast.success('保存成功');
+                cancelEdit();
+              }}
+            />
+          </Tooltip>
+          <Tooltip content="取消">
+            <Button
+              icon={<X size={14} strokeWidth={2} />}
+              theme="borderless"
+              type="tertiary"
+              size="small"
+              onClick={cancelEdit}
+            />
+          </Tooltip>
+        </span>
+      );
+    }
+    return (
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+        {ids.length === 0 ? (
+          <Text type="tertiary">-</Text>
+        ) : (
+          ids.map((uid, i) => {
+            const u = getUserById(uid);
+            return (
+              <span key={uid} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                {u ? (
+                  <UserNameWithCard name={u.name} userId={u.id} department={u.department} role={u.role} email={u.email} />
+                ) : (
+                  uid
+                )}
+                {i < ids.length - 1 && <Text type="tertiary">,</Text>}
+              </span>
+            );
+          })
+        )}
+        {basicInfoPermission.canUpdate && (
+          <Button
+            icon={<Pencil size={14} strokeWidth={2} />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            onClick={() => startEdit(fieldKey, ids)}
+          />
+        )}
+      </span>
+    );
+  };
+
+  const renderLifecycleRow = (f: LifecycleField, m: LifecycleMilestone) => {
+    if (editingField === f) {
+      const current = editingValue as Date | undefined;
+      return (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <DatePicker
+            type="dateTime"
+            format="yyyy-MM-dd HH:mm"
+            value={current}
+            onChange={(v) => setEditingValue(v as Date)}
+            size="small"
+            style={{ width: 200 }}
+          />
+          <Tooltip content="保存">
+            <Button
+              icon={<Check size={14} strokeWidth={2} />}
+              theme="borderless"
+              type="primary"
+              size="small"
+              onClick={() => {
+                if (!current) {
+                  Toast.warning('请选择时间');
+                  return;
+                }
+                const pad = (n: number) => String(n).padStart(2, '0');
+                const iso = `${current.getFullYear()}-${pad(current.getMonth() + 1)}-${pad(current.getDate())}T${pad(current.getHours())}:${pad(current.getMinutes())}:00`;
+                try {
+                  adjustLifecycleMilestone(processData.id, f, {
+                    new_effective_at: iso,
+                    reason: '内联修正',
+                    backfill: true,
+                  });
+                  Toast.success('修正成功');
+                  cancelEdit();
+                } catch {
+                  Toast.error('修正失败');
+                }
+              }}
+            />
+          </Tooltip>
+          <Tooltip content="取消">
+            <Button
+              icon={<X size={14} strokeWidth={2} />}
+              theme="borderless"
+              type="tertiary"
+              size="small"
+              onClick={cancelEdit}
+            />
+          </Tooltip>
+        </span>
+      );
+    }
+    return (
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+        <Text>{formatDateTime(m.effective_at)}</Text>
+        {lifecyclePermission.canAdjust && (
+          <Button
+            icon={<Pencil size={14} strokeWidth={2} />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            onClick={() =>
+              startEdit(f, m.effective_at ? new Date(m.effective_at) : undefined)
+            }
+          />
+        )}
+      </span>
+    );
+  };
+
+  const labelWithTooltip = (label: string, tooltip: string) => (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+      {label}
+      <Tooltip content={<div style={{ maxWidth: 300 }}>{tooltip}</div>}>
+        <HelpCircle size={12} strokeWidth={2} style={{ cursor: 'help' }} />
+      </Tooltip>
+    </span>
+  );
+
+  const LIFECYCLE_TOOLTIP: Record<LifecycleField, string> = {
+    development_completed_at: '流程级展示值为最近一次发布申请提交成功时间；关联版本为本次申请发布的流程版本。',
+    deployed_at: '流程级展示值为最近一次发布成功并激活版本时间；关联版本为本次被激活的流程版本。',
+    offline_at: '流程级展示值为停用审批通过并执行成功时间；关联版本为下线时当前激活版本。',
+  };
+
   const lifecycleGroupData = [
     ...(basicInfoPermission.canView && basicInfo
       ? [
           {
             key: '开发工程师',
-            value: (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                {basicInfo.developer_ids.length === 0 ? (
-                  <Text type="tertiary">-</Text>
-                ) : (
-                  basicInfo.developer_ids.map((uid, i) => {
-                    const u = getUserById(uid);
-                    return (
-                      <span key={uid} style={{ display: 'inline-flex', alignItems: 'center' }}>
-                        {u ? (
-                          <UserNameWithCard name={u.name} userId={u.id} department={u.department} role={u.role} email={u.email} />
-                        ) : (
-                          uid
-                        )}
-                        {i < basicInfo.developer_ids.length - 1 && <Text type="tertiary">,</Text>}
-                      </span>
-                    );
-                  })
-                )}
-                {basicInfoPermission.canUpdate && (
-                  <Tooltip content="编辑开发工程师">
-                    <Button
-                      icon={<Pencil size={14} strokeWidth={2} />}
-                      theme="borderless"
-                      type="tertiary"
-                      size="small"
-                      onClick={() => setBasicInfoEditField('developer_ids')}
-                    />
-                  </Tooltip>
-                )}
-              </span>
-            ),
+            value: renderPeopleRow('developer_ids', basicInfo.developer_ids),
           },
           {
-            key: (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                代码审核员
-                <Tooltip content="代码审核员可手工维护；若为空且发布审批存在“代码审核”节点，将在该节点审批通过后自动写入。">
-                  <HelpCircle size={12} strokeWidth={2} />
-                </Tooltip>
-              </span>
+            key: labelWithTooltip(
+              '代码审核员',
+              '代码审核员可手工维护；若为空且发布审批存在“代码审核”节点，将在该节点审批通过后自动写入。',
             ),
-            value: (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                {basicInfo.code_reviewer_ids.length === 0 ? (
-                  <Text type="tertiary">-</Text>
-                ) : (
-                  basicInfo.code_reviewer_ids.map((uid, i) => {
-                    const u = getUserById(uid);
-                    return (
-                      <span key={uid} style={{ display: 'inline-flex', alignItems: 'center' }}>
-                        {u ? (
-                          <UserNameWithCard name={u.name} userId={u.id} department={u.department} role={u.role} email={u.email} />
-                        ) : (
-                          uid
-                        )}
-                        {i < basicInfo.code_reviewer_ids.length - 1 && <Text type="tertiary">,</Text>}
-                      </span>
-                    );
-                  })
-                )}
-                {basicInfoPermission.canUpdate && (
-                  <Tooltip content="编辑代码审核员">
-                    <Button
-                      icon={<Pencil size={14} strokeWidth={2} />}
-                      theme="borderless"
-                      type="tertiary"
-                      size="small"
-                      onClick={() => setBasicInfoEditField('code_reviewer_ids')}
-                    />
-                  </Tooltip>
-                )}
-              </span>
-            ),
+            value: renderPeopleRow('code_reviewer_ids', basicInfo.code_reviewer_ids),
           },
         ]
       : []),
@@ -581,56 +688,13 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           'development_completed_at',
           'deployed_at',
           'offline_at',
-        ] as LifecycleField[]).map((f) => {
-          const m: LifecycleMilestone = lifecycleLedger[f];
-          const isManual = m.source === 'manual_adjust';
-          const STORY_TOOLTIP: Record<LifecycleField, string> = {
-            development_completed_at: '流程级展示值为最近一次发布申请提交成功时间；关联版本为本次申请发布的流程版本。',
-            deployed_at: '流程级展示值为最近一次发布成功并激活版本时间；关联版本为本次被激活的流程版本。',
-            offline_at: '流程级展示值为停用审批通过并执行成功时间；关联版本为下线时当前激活版本。',
-          };
-          const tooltipContent = (
-            <div style={{ maxWidth: 300 }}>
-              <div>{STORY_TOOLTIP[f]}</div>
-              <div style={{ marginTop: 6 }}>来源：{LIFECYCLE_SOURCE_LABEL[m.source]}</div>
-              <div>原始事件：{formatDateTime(m.original_event_at)}</div>
-              {m.manual_note && (
-                <>
-                  <div style={{ marginTop: 4 }}>
-                    修正人：{m.manual_note.actor_name} · {formatDateTime(m.manual_note.at)}
-                  </div>
-                  <div>原因：{m.manual_note.reason}</div>
-                  {m.manual_note.backfill && <div>（历史补录）</div>}
-                </>
-              )}
-            </div>
-          );
-          return {
-            key: LIFECYCLE_FIELD_LABEL[f],
-            value: (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                <Text>{formatDateTime(m.effective_at)}</Text>
-                {isManual && <Tag size="small" color="orange" type="light">已修正</Tag>}
-                <Tooltip content={tooltipContent}>
-                  <HelpCircle size={12} strokeWidth={2} style={{ cursor: 'help' }} />
-                </Tooltip>
-                {lifecyclePermission.canAdjust && (
-                  <Tooltip content={`修正${LIFECYCLE_FIELD_LABEL[f]}`}>
-                    <Button
-                      icon={<Pencil size={14} strokeWidth={2} />}
-                      theme="borderless"
-                      type="tertiary"
-                      size="small"
-                      onClick={() => setLifecycleAdjustField(f)}
-                    />
-                  </Tooltip>
-                )}
-              </span>
-            ),
-          };
-        })
+        ] as LifecycleField[]).map((f) => ({
+          key: labelWithTooltip(LIFECYCLE_FIELD_LABEL[f], LIFECYCLE_TOOLTIP[f]),
+          value: renderLifecycleRow(f, lifecycleLedger[f]),
+        }))
       : []),
   ];
+
 
 
   const getVersionDescriptionData = (version: VersionDetailData) => [
@@ -896,27 +960,6 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
         }}
         onGoToDependencies={() => setActiveTab('dependencies')}
       />
-      {basicInfoEditField && basicInfo && (
-        <BasicInfoEditModal
-          visible={!!basicInfoEditField}
-          field={basicInfoEditField}
-          processId={processData.id}
-          initialValue={
-            basicInfoEditField === 'developer_ids'
-              ? basicInfo.developer_ids
-              : basicInfo.code_reviewer_ids
-          }
-          onClose={() => setBasicInfoEditField(null)}
-        />
-      )}
-      {lifecycleAdjustField && (
-        <LifecycleAdjustModal
-          visible={!!lifecycleAdjustField}
-          processId={processData.id}
-          field={lifecycleAdjustField}
-          onClose={() => setLifecycleAdjustField(null)}
-        />
-      )}
     </DetailDrawerWrapper>
   );
 };
