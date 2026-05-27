@@ -34,7 +34,7 @@ import RoiConfigTab from './components/RoiConfigTab';
 import DocumentsTab from './components/DocumentsTab';
 import BasicInfoEditModal, { type BasicInfoEditField } from './components/BasicInfoEditModal';
 import LifecycleAdjustModal from './components/LifecycleAdjustModal';
-import LifecycleHistoryModal from './components/LifecycleHistoryModal';
+
 import {
   getProcessBasicInfo,
   getUserById,
@@ -52,10 +52,8 @@ import {
   type LifecycleMilestone,
 } from '@/mocks/processLifecycleLedger';
 
-import {
-  fetchAllLinkableRequirements,
-  type LinkableRequirementBrief,
-} from '@/pages/Requirements/RequirementsProjects/mockData';
+
+
 
 const { Title, Text } = Typography;
 
@@ -361,7 +359,7 @@ const ProcessDetailDrawer = ({
   const lifecyclePermission = useProcessLifecyclePermission(processData?.id);
   const [lifecycleTick, setLifecycleTick] = useState(0);
   const [lifecycleAdjustField, setLifecycleAdjustField] = useState<LifecycleField | null>(null);
-  const [lifecycleHistoryVisible, setLifecycleHistoryVisible] = useState(false);
+  
   useEffect(() => {
     if (!processData?.id) return;
     const unsub = subscribeLifecycleLedger(processData.id, () => setLifecycleTick((v) => v + 1));
@@ -437,26 +435,6 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     prevVisibleRef.current = visible;
   }, [visible, initialTab]);
 
-  // 加载关联需求信息（用于回显项目/工作空间）
-  const [linkedRequirement, setLinkedRequirement] = useState<LinkableRequirementBrief | null>(null);
-  useEffect(() => {
-    if (!visible || !processData?.requirement_id) {
-      setLinkedRequirement(null);
-      return;
-    }
-    let cancelled = false;
-    fetchAllLinkableRequirements()
-      .then((list) => {
-        if (cancelled) return;
-        setLinkedRequirement(list.find((r) => r.id === processData.requirement_id) ?? null);
-      })
-      .catch(() => {
-        if (!cancelled) setLinkedRequirement(null);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [visible, processData?.requirement_id]);
 
   const selectedVersionIdResolved = selectedVersionId ?? sortedVersionData[0]?.id ?? null;
 
@@ -492,19 +470,25 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     },
     { key: t('common.creator'), value: creatorInfo ? <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> : '-' },
     { key: t('common.owner'), value: processData.owner_name ? <UserNameWithCard name={processData.owner_name} userId={processData.owner_id || ''} /> : '-' },
-    { key: t('common.owningDepartment'), value: getDepartmentName(processData.owning_department_id) },
-    ...(linkedRequirement
-      ? [
-          {
-            key: t('development.processDevelopment.createModal.fields.requirementLabel'),
-            value: linkedRequirement.req_no
-              ? `[${linkedRequirement.req_no}] ${linkedRequirement.title}`
-              : linkedRequirement.title,
-          },
-          { key: t('common.owningProject'), value: linkedRequirement.projectName || '-' },
-          { key: t('workspaceSelect.label'), value: linkedRequirement.workspaceName || '-' },
-        ]
-      : []),
+    {
+      key: t('common.owningDepartment'),
+      value: (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          {getDepartmentName(processData.owning_department_id)}
+          {basicInfoPermission.canUpdate && (
+            <Tooltip content="编辑归属部门">
+              <Button
+                icon={<Pencil size={14} strokeWidth={2} />}
+                theme="borderless"
+                type="tertiary"
+                size="small"
+                onClick={() => Toast.info('归属部门编辑能力即将开放')}
+              />
+            </Tooltip>
+          )}
+        </span>
+      ),
+    },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
   ];
@@ -600,9 +584,15 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
         ] as LifecycleField[]).map((f) => {
           const m: LifecycleMilestone = lifecycleLedger[f];
           const isManual = m.source === 'manual_adjust';
+          const STORY_TOOLTIP: Record<LifecycleField, string> = {
+            development_completed_at: '流程级展示值为最近一次发布申请提交成功时间；关联版本为本次申请发布的流程版本。',
+            deployed_at: '流程级展示值为最近一次发布成功并激活版本时间；关联版本为本次被激活的流程版本。',
+            offline_at: '流程级展示值为停用审批通过并执行成功时间；关联版本为下线时当前激活版本。',
+          };
           const tooltipContent = (
-            <div style={{ maxWidth: 280 }}>
-              <div>来源：{LIFECYCLE_SOURCE_LABEL[m.source]}</div>
+            <div style={{ maxWidth: 300 }}>
+              <div>{STORY_TOOLTIP[f]}</div>
+              <div style={{ marginTop: 6 }}>来源：{LIFECYCLE_SOURCE_LABEL[m.source]}</div>
               <div>原始事件：{formatDateTime(m.original_event_at)}</div>
               {m.manual_note && (
                 <>
@@ -721,19 +711,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             {lifecycleGroupData.length > 0 && (
               <>
                 <Divider margin="20px" />
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <Title heading={6} style={{ margin: 0 }}>交付信息</Title>
-                  {lifecyclePermission.canView && lifecycleLedger && (
-                    <Button
-                      theme="borderless"
-                      type="primary"
-                      size="small"
-                      onClick={() => setLifecycleHistoryVisible(true)}
-                    >
-                      查看修正历史
-                    </Button>
-                  )}
-                </div>
+                <Title heading={6} style={{ margin: '0 0 12px' }}>交付信息</Title>
                 <Descriptions data={lifecycleGroupData} align="left" />
               </>
             )}
@@ -939,11 +917,6 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           onClose={() => setLifecycleAdjustField(null)}
         />
       )}
-      <LifecycleHistoryModal
-        visible={lifecycleHistoryVisible}
-        processId={processData.id}
-        onClose={() => setLifecycleHistoryVisible(false)}
-      />
     </DetailDrawerWrapper>
   );
 };
