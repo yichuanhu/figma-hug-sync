@@ -52,10 +52,8 @@ import {
   type LifecycleMilestone,
 } from '@/mocks/processLifecycleLedger';
 
-import {
-  fetchAllLinkableRequirements,
-  type LinkableRequirementBrief,
-} from '@/pages/Requirements/RequirementsProjects/mockData';
+
+
 
 const { Title, Text } = Typography;
 
@@ -437,26 +435,6 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     prevVisibleRef.current = visible;
   }, [visible, initialTab]);
 
-  // 加载关联需求信息（用于回显项目/工作空间）
-  const [linkedRequirement, setLinkedRequirement] = useState<LinkableRequirementBrief | null>(null);
-  useEffect(() => {
-    if (!visible || !processData?.requirement_id) {
-      setLinkedRequirement(null);
-      return;
-    }
-    let cancelled = false;
-    fetchAllLinkableRequirements()
-      .then((list) => {
-        if (cancelled) return;
-        setLinkedRequirement(list.find((r) => r.id === processData.requirement_id) ?? null);
-      })
-      .catch(() => {
-        if (!cancelled) setLinkedRequirement(null);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [visible, processData?.requirement_id]);
 
   const selectedVersionIdResolved = selectedVersionId ?? sortedVersionData[0]?.id ?? null;
 
