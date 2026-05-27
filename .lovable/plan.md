@@ -1,74 +1,84 @@
 ## 目标
 
-让「发布审批」「停用审批」两个列表页对齐「需求中心 / 需求审批」页面的体验：
+根据 `STORY-001-PG-DOCUMENTS`，在流程详情抽屉新增「资料」Tab，支持流程相关交付物（设计文档、测试报告、用户手册、部署说明、其他）的归档管理。
 
-1. 顶部统计卡片 + Tabs（待我审批 / 我审批过的 / 全部）+ 工具栏（搜索 / 状态筛选）
-2. 详情改为右侧抽屉，支持上下条导航
-3. 移除独立的详情路由页面
+## 范围
 
-## 现状概览
+- 仅调整 `ProcessDetailDrawer`（`src/components/ProcessManagement/ProcessManagementContent/components/ProcessDetailDrawer/`），开发中心与调度中心共用。
+- 不新增独立路由、不改后端业务逻辑（mock 模拟即可）。
+- 权限点（`process_document.view/upload/download/delete`）以前端 mock 开关形式留出预留，便于后续接入 UCI。
 
-- `src/pages/Requirements/RequirementsReview/index.tsx` 是参考模板：MetricsSection 风格统计卡 → 工具栏 → Tabs → Table → `RequirementDetailDrawer`（基于 `DetailDrawerWrapper`）。
-- `PublishApprovalsPage` / `OfflineApprovalsPage` 当前使用 `Tabs(状态过滤) + Table`，「详情」按 `navigate` 跳到 `Detail/index.tsx`。
-- `Detail/index.tsx` 内的 Card / Timeline / Modal 拒绝逻辑都可平移到抽屉内。
-- Mock 中已通过 `approver_id === 'user-current'` 区分当前用户，可作为「我」的判定依据。
+## 详情
 
-## 实施步骤
+### 1. 新增 Tab：`资料`
 
-### 1. 新增 `PublishApprovalDetailDrawer` 与 `OfflineApprovalDetailDrawer`
+位置：放在「依赖」与「工时」之间。Tab 标题带数量徽标 `资料 (N)`。
 
-路径：
-- `src/pages/Development/PublishApprovals/components/DetailDrawer/index.tsx`（+ `.less`）
-- `src/pages/Development/OfflineApprovals/components/DetailDrawer/index.tsx`（+ `.less`）
+### 2. 子组件 `DocumentsTab`
 
-实现：
-- 基于 `DetailDrawerWrapper`（项目标准 900px、maskless、含导航/全屏）。
-- `title` 渲染流程名 + 版本/状态 Tag。
-- 内容沿用 Detail 页面的 Card 结构：基本信息、审批流（Timeline）、输入参数 / 依赖检查快照。
-- `extraActions` 渲染审批操作：
-  - PublishDrawer：当 `status === 'PENDING_APPROVAL'` 且当前用户是当前级审批人 → 「通过 / 拒绝」按钮。
-  - OfflineDrawer：同上，外加 `EXECUTION_FAILED` 时显示「重试执行」。
-- 拒绝原因走 `Modal` + `Form.TextArea`，与现有逻辑一致。
-- Props：`{ visible, onClose, data, dataList, onNavigate, pagination, onAfterAction }`。
+路径：`.../ProcessDetailDrawer/components/DocumentsTab/{index.tsx, index.less}`
 
-### 2. 重写 `PublishApprovalsPage` (`src/pages/Development/PublishApprovals/index.tsx`)
+- **顶部工具栏**：左侧筛选 `资料类型`（多选 FilterPopover）+ `关联层级`（PROCESS / PROCESS_VERSION / PUBLISH_RECORD），右侧 `上传资料` 主按钮。
+- **列表**：Semi `Table size="small"`，列：资料名称（点击下载）、资料类型 Tag、关联对象（流程名 / 版本号 / 发布记录号，可点击跳转）、文件大小、上传人（`UserNameWithCard`）、上传时间、操作（下载 / 删除）。
+- **空状态**：复用 `EmptyState` `no-data` 图，描述「暂无流程资料」+ 上传按钮。
+- 删除走 `Modal.confirm`，符合项目标准；删除/上传后局部刷新。
 
-参考 `RequirementsReview/index.tsx` 实现：
+### 3. 上传弹窗 `UploadDocumentModal`
 
-- **统计卡片**（4 项，复用 `.requirements-review-stats-*` 同款样式但用本页前缀）：
-  - 待我审批：`status==='PENDING_APPROVAL'` 且当前级审批人为 `user-current`
-  - 我审批过的：`records` 中存在 `approver_id==='user-current'`
-  - 已通过：我参与的 `action==='approve'` 计数
-  - 已拒绝：我参与的 `action==='reject'` 计数
-  - 图标复用 `@/assets/review-stats/*` 现有素材。
-- **工具栏**：`Input(搜索 320px) + FilterPopover(状态多选)`。停用页同样可加状态过滤。
-- **Tabs**：`pending / reviewed / all`（`keepDOM={false}`）。
-- **Table**：表头列保持现有字段；行点击 / 操作菜单（详情/通过/拒绝/重试）改为 Dropdown 风格（与需求审批一致），打开 `DetailDrawer` 而非路由跳转。
-- 列表 `loadData` 一次性拉全量，本地按 Tab/搜索/筛选过滤。
-- 状态变更后调用 `loadData` 并同步更新 `selectedRecord`，使抽屉刷新。
+路径：`.../ProcessDetailDrawer/components/UploadDocumentModal/index.tsx`
 
-### 3. 重写 `OfflineApprovalsPage`
+- 基于 `FormModal`，宽度 520px。
+- 字段顺序：
+  1. `资料类型`（必填，Select）：设计文档 / 测试报告 / 用户手册 / 部署说明 / 其他。
+  2. `关联层级`（必填，Radio）：流程 / 流程版本 / 发布记录。
+  3. `关联对象`（必填，Select，依据关联层级动态加载）：
+     - 流程层级 → 自动选中当前流程，禁用。
+     - 流程版本 → 列出 `versionData`。
+     - 发布记录 → 列出当前流程下的发布记录（mock 提供）。
+  4. `文件`（必填，Upload）：复用 `UploadFileModal` 同款拖拽样式（Lucide `Inbox` 图标、隐藏原生列表、自定义文件信息）；单文件，限制 100MB。
+  5. `备注`（可选，TextArea，最长 500 字符）。
+- 提交时 mock 调用 `POST /api/processes/{processId}/documents`，写入本地 mock store。
 
-与发布版完全对称，差异点：
-- 状态枚举包含 `APPROVED / EXECUTED / EXECUTION_FAILED`；统计卡同上口径。
-- 表格列加「申请人」（`UserNameWithCard`）；抽屉中保留依赖快照渲染。
-- Dropdown 菜单含「重试执行」（`EXECUTION_FAILED`）。
+### 4. Mock 数据
 
-### 4. 删除独立详情页面与路由
+新建 `src/mocks/processDocuments.ts`：
 
-- 删除文件：
-  - `src/pages/Development/PublishApprovals/Detail/index.tsx`
-  - `src/pages/Development/PublishApprovals/Detail/index.less`
-  - `src/pages/Development/OfflineApprovals/Detail/index.tsx`
-  - `src/pages/Development/OfflineApprovals/Detail/index.less`
-- `src/App.tsx`：移除 `PublishApprovalDetailPage` / `OfflineApprovalDetailPage` 的 import 与 `/:id` 路由（已无入口）。
+- 类型 `ProcessDocument { id, processId, target_type, target_id, document_type, file_name, file_size, mime_type, uploader_id, uploader_name, uploaded_at, remark }`。
+- 提供 `listDocuments(processId, filter)`、`createDocument(...)`、`deleteDocument(id)`、`downloadDocument(id)` 接口；用 in-memory `Map` 持久化当前会话。
+- 预置每个流程 2-3 条样例资料，覆盖三种 `target_type`。
 
-### 5. 样式
+### 5. 权限预留
 
-- 新增 `publish-approvals` / `offline-approvals` 页面 less，复制 `requirements-review` 的 stats / toolbar / row-selected 类即可（直接 import + 重命名 selector）。
+新增 `useProcessDocumentPermission(processId)` Hook（mock 全部返回 true）：暴露 `canView / canUpload / canDownload / canDelete`，组件按权限隐藏对应按钮，便于后续接 UCI。
+
+### 6. 文案与 i18n
+
+在 `public/i18n/zh-CN.json` 与 `en.json` 的 `development.processDevelopment.detail` 命名空间下新增 `documents.*` key（tab 标题、列表列名、资料类型、关联层级、上传弹窗字段、空态、确认删除等）。
+
+### 7. 详情抽屉接线
+
+`ProcessDetailDrawer/index.tsx`：
+- 引入并渲染新 `<TabPane itemKey="documents">`；
+- 通过 `versions` prop 传给 Tab，用于关联对象选择；
+- 不改其他 Tab。
 
 ## 不改动
 
-- Sidebar 菜单、i18n key、ApprovalConfigPage、`processVersionApproval` / `processOfflineApproval` 的 mock 业务逻辑。
-- 审批模板（合并后的）页面。
-- 「需求审批」页面本身不动。
+- 现有「详情 / 版本 / 依赖 / 工时 / ROI」Tab 内容与样式。
+- 路由、Sidebar、ApprovalConfig、发布/停用审批页面。
+- 既有文件服务（沿用 mock）。
+
+## ASCII 结构
+
+```text
+ProcessDetailDrawer
+└── Tabs
+    ├── 详情
+    ├── 版本
+    ├── 依赖
+    ├── 资料 (N)   ← 新增
+    │   ├── Toolbar [类型筛选] [层级筛选]      [上传资料]
+    │   └── Table  名称 | 类型 | 关联对象 | 大小 | 上传人 | 时间 | 操作
+    ├── 工时
+    └── ROI 配置
+```
