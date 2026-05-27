@@ -32,6 +32,14 @@ import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
 import DocumentsTab from './components/DocumentsTab';
+import BasicInfoEditModal, { type BasicInfoEditField } from './components/BasicInfoEditModal';
+import {
+  getProcessBasicInfo,
+  getUserById,
+  overrideDevelopersOnVersionUpload,
+  subscribeBasicInfo,
+} from '@/mocks/processBasicInfo';
+import { useProcessBasicInfoPermission } from '@/hooks/useProcessBasicInfoPermission';
 
 import {
   fetchAllLinkableRequirements,
@@ -323,6 +331,20 @@ const ProcessDetailDrawer = ({
   const [versionData, setVersionData] = useState<VersionDetailData[]>(initialMockVersionData);
   const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
   const [documentCount, setDocumentCount] = useState(0);
+
+  // 基本信息（STORY-002-PG-RESPONSIBILITY）
+  const basicInfoPermission = useProcessBasicInfoPermission(processData?.id);
+  const [basicInfoTick, setBasicInfoTick] = useState(0);
+  const [basicInfoEditField, setBasicInfoEditField] = useState<BasicInfoEditField | null>(null);
+  useEffect(() => {
+    if (!processData?.id) return;
+    return subscribeBasicInfo(processData.id, () => setBasicInfoTick((v) => v + 1));
+  }, [processData?.id]);
+  const basicInfo = useMemo(
+    () => (processData?.id ? getProcessBasicInfo(processData.id) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [processData?.id, basicInfoTick],
+  );
 
   // 版本数据按版本号降序排列
   const sortedVersionData = useMemo(() => {
