@@ -125,11 +125,6 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
         <Text strong>{t('requirements.delivery.title')}</Text>
       </div>
 
-      {/* 关联项目 / 工作空间 / 关联方式 */}
-      <div style={{ marginBottom: 16 }}>
-        {renderLinkRow(t('requirements.delivery.linkedProject'), data.linkedProject, PROJECT_DETAIL_BASE)}
-        {renderLinkRow(t('requirements.delivery.linkedWorkspace'), data.linkedWorkspace, WORKSPACE_DETAIL_BASE)}
-      </div>
 
       {/* 聚合摘要 chip 行 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
