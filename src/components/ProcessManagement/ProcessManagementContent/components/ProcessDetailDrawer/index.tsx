@@ -33,6 +33,8 @@ import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
 import DocumentsTab from './components/DocumentsTab';
 import BasicInfoEditModal, { type BasicInfoEditField } from './components/BasicInfoEditModal';
+import LifecycleAdjustModal from './components/LifecycleAdjustModal';
+import LifecycleHistoryModal from './components/LifecycleHistoryModal';
 import {
   getProcessBasicInfo,
   getUserById,
@@ -40,6 +42,15 @@ import {
   subscribeBasicInfo,
 } from '@/mocks/processBasicInfo';
 import { useProcessBasicInfoPermission } from '@/hooks/useProcessBasicInfoPermission';
+import { useProcessLifecyclePermission } from '@/hooks/useProcessLifecyclePermission';
+import {
+  FIELD_LABEL as LIFECYCLE_FIELD_LABEL,
+  SOURCE_LABEL as LIFECYCLE_SOURCE_LABEL,
+  getProcessLifecycleLedger,
+  subscribeLifecycleLedger,
+  type LifecycleField,
+  type LifecycleMilestone,
+} from '@/mocks/processLifecycleLedger';
 
 import {
   fetchAllLinkableRequirements,
