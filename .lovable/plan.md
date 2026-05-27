@@ -1,147 +1,55 @@
 ## 目标
 
-按 `STORY-003-PG-LIFECYCLE-LEDGER` 在流程详情抽屉「详情」Tab 基本信息中新增「生命周期台账」区域，展示开发完成、部署上线、流程下线三个里程碑的当前生效值、原始事件值、来源，并支持有权限用户修正及查看修正历史。
+将流程详情「详情」Tab 的基本信息按用户要求重排为两组，使用两段 `Descriptions` 和分组小标题。
 
-## 范围
+## 分组与字段顺序
 
-- 仅改动 `ProcessDetailDrawer`「详情」Tab 基本信息区域及配套 mock 服务、权限 hook、修正弹窗与历史抽屉/弹窗。
-- 不实现自动事件写入逻辑（由 FEAT-025 / FEAT-027 承接）；本 Story 仅在 mock 层预置自动事件作为展示数据。
-- 不改流程访问权限、协作者、组织架构。
+**第一组：基础信息**
+1. 流程名称
+2. 描述
+3. 状态
+4. 创建者
+5. 归属者
+6. 归属部门
+7. 创建时间
+8. 更新时间
 
-## 详情
+**第二组：生命周期信息**
+1. 开发工程师
+2. 代码审核员
+3. 开发完成时间
+4. 部署上线时间
+5. 流程下线时间
 
-### 1. 基本信息区追加生命周期台账
+## 改动范围
 
-在 `descriptionData` 末尾追加分组小标题「生命周期台账」并新增三行：
+仅修改 `src/components/ProcessManagement/ProcessManagementContent/components/ProcessDetailDrawer/index.tsx`：
 
-- **开发完成时间** `development_completed_at`
-- **部署上线时间** `deployed_at`（未上线时显示 `-`）
-- **流程下线时间** `offline_at`（未下线时显示 `-`）
-
-每行渲染：
+1. 将原单一 `descriptionData` 数组拆分为 `basicGroupData` 与 `lifecycleGroupData` 两个数组。
+2. 第一组中移除「关联需求/归属项目/工作空间」三项（如有 `linkedRequirement` 仍保留在基础信息组尾部，紧跟「更新时间」之前，作为只读补充——待用户确认；当前计划：**保留**在基础信息组内紧随「归属部门」之后，避免功能丢失）。
+3. 第二组中：
+   - 移除原先「查看修正历史」按钮挂在 `offline_at` 行右侧的写法，改为放在第二组小标题右侧的链接按钮，更直观。
+   - 三个时间字段沿用现有 Tooltip / 已修正 Tag / 铅笔修正按钮。
+4. Tab 渲染处替换为：
 
 ```text
-2026-05-20 10:23  ⓘ  ✎
+<div class="process-detail-drawer-tab-content">
+  <Title heading={6}>基础信息</Title>
+  <Descriptions data={basicGroupData} align="left" />
+  <Divider margin="16px" />
+  <div 标题行>
+    <Title heading={6}>生命周期信息</Title>
+    <Button 链接 type="primary">查看修正历史</Button>   // 仅 canView 时
+  </div>
+  <Descriptions data={lifecycleGroupData} align="left" />
+</div>
 ```
 
-- 主体：当前生效值（`YYYY-MM-DD HH:mm`）。
-- `ⓘ` Tooltip：展示「来源：自动记录(发布申请提交) / 手工修正(由 张三 于 ... 修正，原因：...)」+ 原始事件值。来源为 `manual_adjust` 时主体右侧追加小 Tag「已修正」。
-- `✎` 铅笔按钮（Lucide `Pencil` size=14）：仅 `canAdjust` 时显示，点击打开修正弹窗。
-- 区域底部一行链接「查看修正历史」，点击打开历史弹窗。
-
-权限：整体区域按 `useProcessLifecyclePermission(processId).canView` 控制可见；修正入口按 `canAdjust` 控制（mock 全开，预留 UCI `process_lifecycle.view` / `process_lifecycle.adjust`）。
-
-### 2. 修正弹窗 `LifecycleAdjustModal`
-
-路径：`.../ProcessDetailDrawer/components/LifecycleAdjustModal/`
-
-- 基于 `FormModal`，宽 520px，标题随字段动态：`修正开发完成时间` 等。
-- 只读展示：原始事件值、当前生效值。
-- 表单字段：
-  - 新时间（`DatePicker type="dateTime"`，必填）
-  - 修正原因（`TextArea` 1~500 字符，必填，AC-ERR-01）
-  - 历史补录（`Switch`，仅修正 `offline_at` 且新值早于 `deployed_at` 时强制要求开启，R-06）
-- 校验：
-  - 修正原因必填；
-  - `offline_at` 默认不得早于 `deployed_at`，除非开启「历史补录」并填写原因。
-- 提交调用 `adjustLifecycleMilestone(processId, field, payload)`，成功后 `Toast.success`，触发基本信息局部刷新。
-
-### 3. 修正历史弹窗 `LifecycleHistoryModal`
-
-- `Modal` 宽 720px，标题「修正历史」。
-- `Table size="small"`：字段、修正前生效值、修正后生效值、原始事件值、原因、修正人（`UserNameWithCard`）、修正时间。
-- 数据来自 `getLifecycleAdjustments(processId)`，按时间倒序。
-
-### 4. Mock 数据与服务
-
-新建 `src/mocks/processLifecycleLedger.ts`：
-
-- 类型：
-
-```ts
-type MilestoneSource =
-  | 'auto_publish_submit'
-  | 'auto_publish_success'
-  | 'auto_offline_success'
-  | 'manual_adjust';
-
-interface LifecycleMilestone {
-  effective_at: string | null;
-  original_event_at: string | null;
-  source: MilestoneSource;
-  manual_note?: { actor_id: string; actor_name: string; at: string; reason: string };
-}
-
-interface ProcessLifecycleLedger {
-  process_id: string;
-  development_completed_at: LifecycleMilestone;
-  deployed_at: LifecycleMilestone;
-  offline_at: LifecycleMilestone;
-}
-
-interface LifecycleAdjustment {
-  id: string;
-  process_id: string;
-  field: 'development_completed_at' | 'deployed_at' | 'offline_at';
-  previous_effective_at: string | null;
-  new_effective_at: string;
-  original_event_at: string | null;
-  reason: string;
-  backfill: boolean;
-  actor_id: string;
-  actor_name: string;
-  at: string;
-}
-```
-
-- 服务：`getProcessLifecycleLedger`、`adjustLifecycleMilestone`、`getLifecycleAdjustments`、`subscribeLifecycleLedger`。
-- 内存 `Map` 预置 1~2 个流程的台账（含一条「已修正」样例和一条调整历史）。
-- 写操作输出 `console.info('[AUDIT] lifecycle …')` 模拟 R-03/R-08 审计。
-- 默认遵循 R-07：新自动事件追加 `original_event_at` 与审计，但不覆盖已存在的 `manual_adjust` 当前生效值（仅在 mock helper 中体现，本 Story 不接线自动事件）。
-
-### 5. 权限 Hook
-
-新建 `src/hooks/useProcessLifecyclePermission.ts`：
-
-```ts
-export const useProcessLifecyclePermission = (_processId?: string) => ({
-  canView: true,
-  canAdjust: true,
-});
-```
-
-预留 UCI：`process_lifecycle.view`、`process_lifecycle.adjust`。
-
-### 6. i18n
-
-在 `public/i18n/zh-CN.json` 与 `en.json` 的 `development.processDevelopment.detail` 下新增：
-
-- `lifecycle.sectionTitle`
-- `lifecycle.developmentCompletedAt` / `deployedAt` / `offlineAt`
-- `lifecycle.source.autoPublishSubmit` / `autoPublishSuccess` / `autoOfflineSuccess` / `manualAdjust`
-- `lifecycle.tag.adjusted`
-- `lifecycle.tooltip.original`、`lifecycle.tooltip.manual`
-- `lifecycle.viewHistory`、`lifecycle.history.title` 及表头键
-- `lifecycle.adjust.title.*`、`lifecycle.adjust.newTime`、`reason`、`backfill`、`backfillHint`、`reasonRequired`、`offlineBeforeDeployed`
+5. 标题字号使用 Semi `Typography.Title heading={6}`，与项目其他详情抽屉保持一致；分组之间用 `Divider` 或 16px 间距。
+6. 若 `basicInfoPermission.canView` 或 `lifecyclePermission.canView` 为 false，对应组隐藏（包括组标题）。
 
 ## 不改动
 
-- 现有版本/依赖/资料/工时/ROI Tab。
-- 发布、停用审批 UI 与业务流。
-- 路由、Sidebar、协作者机制。
-
-## ASCII 结构
-
-```text
-ProcessDetailDrawer › 详情 Tab › 基本信息
-├── ...（流程名/部门/负责人/开发工程师/代码审核员/最近上线审核人）
-└── 生命周期台账
-    ├── 开发完成时间   2026-05-20 10:23  ⓘ ✎
-    ├── 部署上线时间   2026-05-22 09:00  ⓘ ✎  [已修正]
-    ├── 流程下线时间   -                 ⓘ ✎
-    └── 查看修正历史 ›
-
-弹窗：
-  LifecycleAdjustModal  ─ 新时间 + 原因(必填) + 历史补录(可选)
-  LifecycleHistoryModal ─ 字段 / 修正前 / 修正后 / 原始事件 / 原因 / 修正人 / 时间
-```
+- 弹窗 `BasicInfoEditModal`、`LifecycleAdjustModal`、`LifecycleHistoryModal` 逻辑。
+- Mock 数据、权限 hook、其他 Tab。
+- 国际化键值（标题「基础信息」「生命周期信息」直接使用中文文案，与现有「生命周期台账」一致采用硬编码中文；如需 i18n 后续单独处理）。
