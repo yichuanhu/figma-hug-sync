@@ -1,12 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Toast, Button, Select, Input } from '@douyinfe/semi-ui';
+import { Modal, Form, Toast, Button, Select, Input, DatePicker } from '@douyinfe/semi-ui';
 import type { LYUpdateProcessRequest, LYProcessResponse } from '@/api';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import { getDependents, cascadeUpdateDepartment } from '@/mocks/processDependencies';
 import { getDepartmentName } from '@/mocks/departmentData';
+import {
+  getProcessBasicInfo,
+  updateProcessBasicInfo,
+} from '@/mocks/processBasicInfo';
+import {
+  getProcessLifecycleLedger,
+  adjustLifecycleMilestone,
+  type LifecycleField,
+} from '@/mocks/processLifecycleLedger';
 import {
   fetchAllLinkableRequirements,
   type LinkableRequirementBrief,
