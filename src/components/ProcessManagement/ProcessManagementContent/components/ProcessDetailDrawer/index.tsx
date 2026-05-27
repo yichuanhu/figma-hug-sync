@@ -32,6 +32,14 @@ import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
 import DocumentsTab from './components/DocumentsTab';
+import BasicInfoEditModal, { type BasicInfoEditField } from './components/BasicInfoEditModal';
+import {
+  getProcessBasicInfo,
+  getUserById,
+  overrideDevelopersOnVersionUpload,
+  subscribeBasicInfo,
+} from '@/mocks/processBasicInfo';
+import { useProcessBasicInfoPermission } from '@/hooks/useProcessBasicInfoPermission';
 
 import {
   fetchAllLinkableRequirements,
@@ -324,6 +332,20 @@ const ProcessDetailDrawer = ({
   const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
   const [documentCount, setDocumentCount] = useState(0);
 
+  // 基本信息（STORY-002-PG-RESPONSIBILITY）
+  const basicInfoPermission = useProcessBasicInfoPermission(processData?.id);
+  const [basicInfoTick, setBasicInfoTick] = useState(0);
+  const [basicInfoEditField, setBasicInfoEditField] = useState<BasicInfoEditField | null>(null);
+  useEffect(() => {
+    if (!processData?.id) return;
+    return subscribeBasicInfo(processData.id, () => setBasicInfoTick((v) => v + 1));
+  }, [processData?.id]);
+  const basicInfo = useMemo(
+    () => (processData?.id ? getProcessBasicInfo(processData.id) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [processData?.id, basicInfoTick],
+  );
+
   // 版本数据按版本号降序排列
   const sortedVersionData = useMemo(() => {
     const data = [...versionData];
@@ -448,6 +470,110 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       : []),
     { key: t('common.owner'), value: processData.owner_name ? <UserNameWithCard name={processData.owner_name} userId={processData.owner_id || ''} /> : '-' },
     { key: t('common.creator'), value: creatorInfo ? <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> : '-' },
+    ...(basicInfoPermission.canView && basicInfo
+      ? [
+          {
+            key: '开发工程师',
+            value: (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                {basicInfo.developer_ids.length === 0 ? (
+                  <Text type="tertiary">-</Text>
+                ) : (
+                  basicInfo.developer_ids.map((uid, i) => {
+                    const u = getUserById(uid);
+                    return (
+                      <span key={uid} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        {u ? (
+                          <UserNameWithCard name={u.name} userId={u.id} department={u.department} role={u.role} email={u.email} />
+                        ) : (
+                          uid
+                        )}
+                        {i < basicInfo.developer_ids.length - 1 && <Text type="tertiary">,</Text>}
+                      </span>
+                    );
+                  })
+                )}
+                {basicInfoPermission.canUpdate && (
+                  <Tooltip content="编辑开发工程师">
+                    <Button
+                      icon={<Pencil size={14} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      size="small"
+                      onClick={() => setBasicInfoEditField('developer_ids')}
+                    />
+                  </Tooltip>
+                )}
+              </span>
+            ),
+          },
+          {
+            key: (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                代码审核员
+                <Tooltip content="代码审核员可手工维护；若为空且发布审批存在“代码审核”节点，将在该节点审批通过后自动写入。">
+                  <HelpCircle size={12} strokeWidth={2} />
+                </Tooltip>
+              </span>
+            ),
+            value: (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                {basicInfo.code_reviewer_ids.length === 0 ? (
+                  <Text type="tertiary">-</Text>
+                ) : (
+                  basicInfo.code_reviewer_ids.map((uid, i) => {
+                    const u = getUserById(uid);
+                    return (
+                      <span key={uid} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        {u ? (
+                          <UserNameWithCard name={u.name} userId={u.id} department={u.department} role={u.role} email={u.email} />
+                        ) : (
+                          uid
+                        )}
+                        {i < basicInfo.code_reviewer_ids.length - 1 && <Text type="tertiary">,</Text>}
+                      </span>
+                    );
+                  })
+                )}
+                {basicInfoPermission.canUpdate && (
+                  <Tooltip content="编辑代码审核员">
+                    <Button
+                      icon={<Pencil size={14} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      size="small"
+                      onClick={() => setBasicInfoEditField('code_reviewer_ids')}
+                    />
+                  </Tooltip>
+                )}
+              </span>
+            ),
+          },
+          {
+            key: (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                最近上线审核人
+                <Tooltip content="来源于最近一次发布审批通过记录，仅作展示，不会回写代码审核员。">
+                  <HelpCircle size={12} strokeWidth={2} />
+                </Tooltip>
+              </span>
+            ),
+            value: basicInfo.last_release_reviewer ? (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <UserNameWithCard
+                  name={basicInfo.last_release_reviewer.user_name}
+                  userId={basicInfo.last_release_reviewer.user_id}
+                />
+                <Text type="tertiary" size="small">
+                  · {basicInfo.last_release_reviewer.version} · {formatDateTime(basicInfo.last_release_reviewer.approved_at)}
+                </Text>
+              </span>
+            ) : (
+              <Text type="tertiary">-</Text>
+            ),
+          },
+        ]
+      : []),
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
     {
@@ -709,9 +835,25 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             const merged = [...(processData.dependencies || []), ...newDeps];
             onDependenciesChange(processData.id, merged);
           }
+          // R-03 / R-04：上传新版本成功后覆盖流程级开发工程师为本次上传人
+          overrideDevelopersOnVersionUpload(processData.id, 'user-001', 'new');
+          Toast.info('已将开发工程师更新为本次上传人');
         }}
         onGoToDependencies={() => setActiveTab('dependencies')}
       />
+      {basicInfoEditField && basicInfo && (
+        <BasicInfoEditModal
+          visible={!!basicInfoEditField}
+          field={basicInfoEditField}
+          processId={processData.id}
+          initialValue={
+            basicInfoEditField === 'developer_ids'
+              ? basicInfo.developer_ids
+              : basicInfo.code_reviewer_ids
+          }
+          onClose={() => setBasicInfoEditField(null)}
+        />
+      )}
     </DetailDrawerWrapper>
   );
 };
