@@ -576,31 +576,9 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
               </span>
             ),
           },
-          {
-            key: (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                最近上线审核人
-                <Tooltip content="来源于最近一次发布审批通过记录，仅作展示，不会回写代码审核员。">
-                  <HelpCircle size={12} strokeWidth={2} />
-                </Tooltip>
-              </span>
-            ),
-            value: basicInfo.last_release_reviewer ? (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <UserNameWithCard
-                  name={basicInfo.last_release_reviewer.user_name}
-                  userId={basicInfo.last_release_reviewer.user_id}
-                />
-                <Text type="tertiary" size="small">
-                  · {basicInfo.last_release_reviewer.version} · {formatDateTime(basicInfo.last_release_reviewer.approved_at)}
-                </Text>
-              </span>
-            ) : (
-              <Text type="tertiary">-</Text>
-            ),
-          },
         ]
       : []),
+
     ...(lifecyclePermission.canView && lifecycleLedger
       ? ([
           'development_completed_at',
