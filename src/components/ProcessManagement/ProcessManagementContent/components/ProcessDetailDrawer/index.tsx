@@ -897,27 +897,6 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
         }}
         onGoToDependencies={() => setActiveTab('dependencies')}
       />
-      {basicInfoEditField && basicInfo && (
-        <BasicInfoEditModal
-          visible={!!basicInfoEditField}
-          field={basicInfoEditField}
-          processId={processData.id}
-          initialValue={
-            basicInfoEditField === 'developer_ids'
-              ? basicInfo.developer_ids
-              : basicInfo.code_reviewer_ids
-          }
-          onClose={() => setBasicInfoEditField(null)}
-        />
-      )}
-      {lifecycleAdjustField && (
-        <LifecycleAdjustModal
-          visible={!!lifecycleAdjustField}
-          processId={processData.id}
-          field={lifecycleAdjustField}
-          onClose={() => setLifecycleAdjustField(null)}
-        />
-      )}
     </DetailDrawerWrapper>
   );
 };
