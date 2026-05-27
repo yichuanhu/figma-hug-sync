@@ -305,7 +305,7 @@ const DocumentsTab = ({
           dataSource={documents}
           rowKey="id"
           pagination={false}
-          empty={<EmptyState description="无匹配资料" type="no-result" size={100} />}
+          empty={<EmptyState description="无匹配资料" variant="noResult" size={100} />}
         />
       )}
 
