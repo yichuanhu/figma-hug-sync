@@ -357,6 +357,21 @@ const ProcessDetailDrawer = ({
     [processData?.id, basicInfoTick],
   );
 
+  // 生命周期台账（STORY-003-PG-LIFECYCLE-LEDGER）
+  const lifecyclePermission = useProcessLifecyclePermission(processData?.id);
+  const [lifecycleTick, setLifecycleTick] = useState(0);
+  const [lifecycleAdjustField, setLifecycleAdjustField] = useState<LifecycleField | null>(null);
+  const [lifecycleHistoryVisible, setLifecycleHistoryVisible] = useState(false);
+  useEffect(() => {
+    if (!processData?.id) return;
+    return subscribeLifecycleLedger(processData.id, () => setLifecycleTick((v) => v + 1));
+  }, [processData?.id]);
+  const lifecycleLedger = useMemo(
+    () => (processData?.id ? getProcessLifecycleLedger(processData.id) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [processData?.id, lifecycleTick],
+  );
+
   // 版本数据按版本号降序排列
   const sortedVersionData = useMemo(() => {
     const data = [...versionData];
