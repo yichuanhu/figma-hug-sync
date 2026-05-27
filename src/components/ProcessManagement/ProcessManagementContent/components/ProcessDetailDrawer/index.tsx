@@ -344,8 +344,6 @@ const ProcessDetailDrawer = ({
   // 基本信息（STORY-002-PG-RESPONSIBILITY）
   const basicInfoPermission = useProcessBasicInfoPermission(processData?.id);
   const [basicInfoTick, setBasicInfoTick] = useState(0);
-  const [editingField, setEditingField] = useState<string | null>(null);
-  const [editingValue, setEditingValue] = useState<unknown>(null);
   useEffect(() => {
     if (!processData?.id) return;
     return subscribeBasicInfo(processData.id, () => setBasicInfoTick((v) => v + 1));
@@ -359,8 +357,6 @@ const ProcessDetailDrawer = ({
   // 生命周期台账（STORY-003-PG-LIFECYCLE-LEDGER）
   const lifecyclePermission = useProcessLifecyclePermission(processData?.id);
   const [lifecycleTick, setLifecycleTick] = useState(0);
-  
-  
   useEffect(() => {
     if (!processData?.id) return;
     const unsub = subscribeLifecycleLedger(processData.id, () => setLifecycleTick((v) => v + 1));
