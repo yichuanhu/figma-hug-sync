@@ -344,7 +344,8 @@ const ProcessDetailDrawer = ({
   // 基本信息（STORY-002-PG-RESPONSIBILITY）
   const basicInfoPermission = useProcessBasicInfoPermission(processData?.id);
   const [basicInfoTick, setBasicInfoTick] = useState(0);
-  const [basicInfoEditField, setBasicInfoEditField] = useState<BasicInfoEditField | null>(null);
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState<unknown>(null);
   useEffect(() => {
     if (!processData?.id) return;
     return subscribeBasicInfo(processData.id, () => setBasicInfoTick((v) => v + 1));
