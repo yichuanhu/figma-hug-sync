@@ -1,66 +1,61 @@
 ## 目标
 
-按 `STORY-002-PG-BASIC-INFO` v2 的范围与规则调整流程详情抽屉「基本信息」Tab，使分组、字段、tooltip 与维护入口与 Story 验收标准一致。
+将「流程详情抽屉 - 基本信息 Tab」的多个行内编辑入口收敛为**复用现有 Header 铅笔编辑按钮**，扩展 `EditProcessModal` 字段以覆盖详情中的全部可编辑项，与项目其他详情页编辑范式保持一致。
 
-仅改动 `src/components/ProcessManagement/ProcessManagementContent/components/ProcessDetailDrawer/index.tsx`（必要时移除已不再需要的 `LifecycleHistoryModal` 引用）。
+## 一、详情 Tab 改为纯只读
 
-## 一、基础信息组（第一组）
+文件：`src/components/ProcessManagement/ProcessManagementContent/components/ProcessDetailDrawer/index.tsx`
 
-按 Story §3.1 严格列示，移除不在范围内的字段：
+- 移除所有行内编辑代码：
+  - `editingField` / `editingValue` state 与相关 handler
+  - `renderPeopleRow` / `renderLifecycleRow` 中的编辑分支（`OwnerSearchSelect`、`DatePicker`、Save/Cancel）
+  - 「归属部门」铅笔按钮 + `Toast.info('即将开放')`
+  - 所有字段右侧的 `Pencil` 图标按钮
+- `Descriptions` 恢复纯展示形态。
+- 保留：分组结构（基础信息 / 交付信息）、字段名后的 `HelpCircle` tooltip（含 Story §3.3 文案）、`UserNameWithCard` 人员展示、`formatDateTime` 时间格式化。
+- 清理 import：`DatePicker`、`TextArea`、`Modal`、`OwnerSearchSelect`、`Check`、`X`、不再使用的 `Pencil`、相关 mock service 中仅供编辑使用的方法。
 
-1. 流程名称
-2. 描述
-3. 状态
-4. 创建者
-5. 归属者
-6. 归属部门
-7. 创建时间
-8. 更新时间
+## 二、Header 编辑按钮
 
-变更点：
-- 移除当前实现中插在「归属部门」与「创建时间」之间的「关联需求 / 归属项目 / 工作空间」三行（Story 范围内未列出，避免混入需求中心字段；`linkedRequirement` 加载逻辑保留给其他 Tab 使用，仅不在基础信息组渲染）。
-- 「归属部门」右侧新增编辑按钮（铅笔图标），仅在具备 `process_basic_info.update`（沿用现有 `basicInfoPermission.canUpdate` mock）时显示，点击打开复用现有 `DepartmentSelect` 的轻量编辑（mock 仅在本次先占位为 TODO，本 Story 暂不实现部门修改后的服务端写入；保留按钮以满足 AC-ERR-02 的入口可见性）—— 若你希望本轮直接落地完整编辑流程请告知，否则按"先保留 UI 入口、不开放保存"的稳妥方式处理。
+**不新增**，沿用现有 `ProcessDetailDrawer` 已有的 `onEdit` prop → 父组件 `ProcessManagementContent` 的 `handleEdit()` → 打开 `EditProcessModal`。
 
-## 二、交付信息组（第二组）
+## 三、扩展 `EditProcessModal` 字段
 
-按 Story §3.2 列示，标题为「交付信息」（已更新）：
+文件：`src/components/ProcessManagement/ProcessManagementContent/components/EditProcessModal/index.tsx`
 
-1. 开发工程师（多人，铅笔编辑，沿用 `BasicInfoEditModal`）
-2. 代码审核员（多人，铅笔编辑 + HelpCircle tooltip：说明可手工维护 / 自动写入规则）
-3. 开发完成时间
-4. 部署上线时间
-5. 流程下线时间
+在现有「基础信息」字段（名称 / 部门 / 归属者 / 描述）之后，新增「交付信息」分组：
 
-每个生命周期时间字段：
-- 展示当前生效值（formatDateTime）。
-- 若 `source === 'manual_adjust'` 显示「已修正」Tag。
-- HelpCircle tooltip 文案改为 Story §3.3 标准文案：
-  - 开发完成时间：流程级展示值为最近一次发布申请提交成功时间；关联版本为本次申请发布的流程版本。
-  - 部署上线时间：流程级展示值为最近一次发布成功并激活版本时间；关联版本为本次被激活的流程版本。
-  - 流程下线时间：流程级展示值为停用审批通过并执行成功时间；关联版本为下线时当前激活版本。
-  - tooltip 内同时显示「来源」「原始事件时间」「关联版本」「修正人 / 修正时间 / 修正原因（若有）」。
-- 具备 `process_lifecycle.adjust` 时显示铅笔按钮，打开现有 `LifecycleAdjustModal`。
+1. 开发工程师（`OwnerSearchSelect` multiple）
+2. 代码审核员（`OwnerSearchSelect` multiple）
+3. 开发完成时间（Semi `DatePicker` type="dateTime"）
+4. 部署上线时间（Semi `DatePicker` type="dateTime"）
+5. 流程下线时间（Semi `DatePicker` type="dateTime"）
 
-## 三、移除「查看修正历史」入口
+- 弹窗宽度保持现状（520px）。
+- 字段间距 16px，符合 mem `Modal Design Specification`。
+- 分组结构遵循 mem `Form Layout Preference`（字段 >6 用分组小标题）。
+- Semi 原生 validation（`trigger=['blur','change']`）。
+- 打开时从 `getProcessBasicInfo` + `getProcessLifecycleLedger` 取初始值填充。
 
-依据 Story R-10：「系统仅记录必要操作审计，不提供单独的修正记录列表」。
+提交时：
+- 流程名称 / 描述 / 部门 / 归属者 → 沿用现有 `onSuccess` 流程
+- 开发工程师 / 代码审核员 → 调 `updateProcessBasicInfo`
+- 三个生命周期时间 → 与原值不同的字段分别调 `adjustLifecycleMilestone`，`reason` 传固定占位 `'统一编辑'`、`backfill: true`（**不在弹窗收集修正原因**）
+- 提交成功后通过 subscribe 自动刷新抽屉数据
 
-- 移除交付信息组标题右侧的「查看修正历史」按钮。
-- 移除 `LifecycleHistoryModal` 的渲染与相关 state (`lifecycleHistoryVisible`)。文件保留（其他 Story 可能复用），仅本组件不再引用。
+## 四、清理
 
-## 四、tooltip / Hover 与审计
+- 删除 `ProcessDetailDrawer` 对 `BasicInfoEditModal`、`LifecycleAdjustModal`（如还有 import）与相关 state、render 块的引用。
+- 不删除两个 Modal 文件本身（其他地方未引用即可，由后续清理处理）。
 
-- 代码审核员 HelpCircle 文案保留现有规则说明，与 R-05、R-06、R-07 表述一致。
-- 不改动审计 mock（`/mocks/processBasicInfo.ts`、`/mocks/processLifecycleLedger.ts`）已记录所需字段，满足 R-16。
+## 五、不改动
 
-## 不改动
+- 抽屉 Header 结构与按钮顺序（铅笔按钮已存在）
+- 其他 Tab、mock service 行为、权限 hook、i18n key
+- 项目其他详情页
 
-- 弹窗 `BasicInfoEditModal`、`LifecycleAdjustModal` 内部逻辑。
-- 其他 Tab（版本、参数、依赖、协作者等）。
-- mock 数据与权限 hook。
-- i18n 资源（标题与字段沿用现有 key 与中文硬编码）。
+## 收益
 
-## 待确认
-
-1. 「关联需求 / 归属项目 / 工作空间」三项是否同意从基础信息组移除？（按 Story 严格范围应当移除；如希望保留作为附加展示请告知。）
-2. 「归属部门」编辑入口本轮是否需要落地完整编辑+保存流程？默认按"仅保留 UI 入口"的稳妥方式处理。
+- 编辑入口：详情 Tab 的 N 个行内铅笔 → 1 个 Header 铅笔（已存在）
+- 与项目其他详情页编辑范式完全一致
+- 改动局限：`ProcessDetailDrawer` 瘦身 + `EditProcessModal` 字段扩展

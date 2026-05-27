@@ -1,12 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Toast, Button, Select, Input } from '@douyinfe/semi-ui';
+import { Modal, Form, Toast, Button, Select, Input, DatePicker } from '@douyinfe/semi-ui';
 import type { LYUpdateProcessRequest, LYProcessResponse } from '@/api';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import { getDependents, cascadeUpdateDepartment } from '@/mocks/processDependencies';
 import { getDepartmentName } from '@/mocks/departmentData';
+import {
+  getProcessBasicInfo,
+  updateProcessBasicInfo,
+} from '@/mocks/processBasicInfo';
+import {
+  getProcessLifecycleLedger,
+  adjustLifecycleMilestone,
+  type LifecycleField,
+} from '@/mocks/processLifecycleLedger';
 import {
   fetchAllLinkableRequirements,
   type LinkableRequirementBrief,
@@ -30,6 +39,19 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
   const [requirementLoading, setRequirementLoading] = useState(false);
   const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
 
+  // 交付信息字段
+  const [developerIds, setDeveloperIds] = useState<string[]>([]);
+  const [codeReviewerIds, setCodeReviewerIds] = useState<string[]>([]);
+  const [developmentCompletedAt, setDevelopmentCompletedAt] = useState<Date | null>(null);
+  const [deployedAt, setDeployedAt] = useState<Date | null>(null);
+  const [offlineAt, setOfflineAt] = useState<Date | null>(null);
+  // 保留原始生命周期值用于判断"是否变更"
+  const initialLifecycleRef = useState<{ development_completed_at: string | null; deployed_at: string | null; offline_at: string | null }>({
+    development_completed_at: null,
+    deployed_at: null,
+    offline_at: null,
+  })[0];
+
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 
   // 打开时同步初始值
@@ -38,8 +60,22 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       setOwningDepartmentId(processData.owning_department_id || undefined);
       setOwnerId(processData.owner_id || undefined);
       setRequirementId(processData.requirement_id || undefined);
+
+      // 加载交付信息初始值
+      const basicInfo = getProcessBasicInfo(processData.id);
+      setDeveloperIds(basicInfo.developer_ids || []);
+      setCodeReviewerIds(basicInfo.code_reviewer_ids || []);
+
+      const ledger = getProcessLifecycleLedger(processData.id);
+      const toDate = (iso: string | null) => (iso ? new Date(iso) : null);
+      setDevelopmentCompletedAt(toDate(ledger.development_completed_at.effective_at));
+      setDeployedAt(toDate(ledger.deployed_at.effective_at));
+      setOfflineAt(toDate(ledger.offline_at.effective_at));
+      initialLifecycleRef.development_completed_at = ledger.development_completed_at.effective_at;
+      initialLifecycleRef.deployed_at = ledger.deployed_at.effective_at;
+      initialLifecycleRef.offline_at = ledger.offline_at.effective_at;
     }
-  }, [visible, processData]);
+  }, [visible, processData, initialLifecycleRef]);
 
   // 加载可关联需求
   useEffect(() => {
@@ -121,6 +157,38 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
         const result = cascadeUpdateDepartment(processData.id, finalDeptId, finalDeptName || finalDeptId);
         cascadedTotal = result.total;
       }
+
+      // 写入交付信息：开发工程师 / 代码审核员
+      updateProcessBasicInfo(processData.id, {
+        developer_ids: Array.from(new Set(developerIds)),
+        code_reviewer_ids: Array.from(new Set(codeReviewerIds)),
+      });
+
+      // 写入生命周期时间（仅对发生变更的字段调用 adjust）
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const toIso = (d: Date | null): string | null => {
+        if (!d) return null;
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
+      };
+      const lifecyclePairs: Array<[LifecycleField, Date | null, string | null]> = [
+        ['development_completed_at', developmentCompletedAt, initialLifecycleRef.development_completed_at],
+        ['deployed_at', deployedAt, initialLifecycleRef.deployed_at],
+        ['offline_at', offlineAt, initialLifecycleRef.offline_at],
+      ];
+      lifecyclePairs.forEach(([field, current, original]) => {
+        const newIso = toIso(current);
+        if (newIso && newIso !== original) {
+          try {
+            adjustLifecycleMilestone(processData.id, field, {
+              new_effective_at: newIso,
+              reason: '统一编辑',
+              backfill: true,
+            });
+          } catch (e) {
+            console.error('生命周期修正失败:', field, e);
+          }
+        }
+      });
 
       const updatedProcess: LYProcessResponse = {
         ...processData,
@@ -278,6 +346,60 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
             <OwnerSearchSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
           )}
         </Form.Slot>
+
+        <div className="edit-process-modal-section-title">交付信息</div>
+
+        <Form.Slot label={{ text: '开发工程师' }}>
+          <OwnerSearchSelect
+            multiple
+            value={developerIds}
+            onChange={(v: string[]) => setDeveloperIds(v || [])}
+            placeholder="请选择开发工程师（可多选）"
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: '代码审核员' }}>
+          <OwnerSearchSelect
+            multiple
+            value={codeReviewerIds}
+            onChange={(v: string[]) => setCodeReviewerIds(v || [])}
+            placeholder="请选择代码审核员（可多选）"
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: '开发完成时间' }}>
+          <DatePicker
+            type="dateTime"
+            format="yyyy-MM-dd HH:mm"
+            value={developmentCompletedAt ?? undefined}
+            onChange={(v) => setDevelopmentCompletedAt((v as Date) ?? null)}
+            style={{ width: '100%' }}
+            placeholder="请选择开发完成时间"
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: '部署上线时间' }}>
+          <DatePicker
+            type="dateTime"
+            format="yyyy-MM-dd HH:mm"
+            value={deployedAt ?? undefined}
+            onChange={(v) => setDeployedAt((v as Date) ?? null)}
+            style={{ width: '100%' }}
+            placeholder="请选择部署上线时间"
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: '流程下线时间' }}>
+          <DatePicker
+            type="dateTime"
+            format="yyyy-MM-dd HH:mm"
+            value={offlineAt ?? undefined}
+            onChange={(v) => setOfflineAt((v as Date) ?? null)}
+            style={{ width: '100%' }}
+            placeholder="请选择流程下线时间"
+          />
+        </Form.Slot>
+
 
         <div className="edit-process-modal-footer">
           <Button theme="light" onClick={onCancel}>

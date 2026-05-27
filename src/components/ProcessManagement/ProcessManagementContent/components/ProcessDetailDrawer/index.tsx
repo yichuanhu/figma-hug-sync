@@ -14,7 +14,6 @@ import {
   Toast,
   Modal,
   TextArea,
-  DatePicker,
 } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse, LYProcessDependency } from '@/api';
@@ -26,9 +25,8 @@ import ExpandableText from '@/components/ExpandableText';
 import { getDepartmentName } from '@/mocks/departmentData';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
-import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import './index.less';
-import { Check, ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload, X } from 'lucide-react';
+import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
@@ -39,17 +37,14 @@ import {
   getUserById,
   overrideDevelopersOnVersionUpload,
   subscribeBasicInfo,
-  updateProcessBasicInfo,
 } from '@/mocks/processBasicInfo';
 import { useProcessBasicInfoPermission } from '@/hooks/useProcessBasicInfoPermission';
 import { useProcessLifecyclePermission } from '@/hooks/useProcessLifecyclePermission';
 import {
   FIELD_LABEL as LIFECYCLE_FIELD_LABEL,
-  adjustLifecycleMilestone,
   getProcessLifecycleLedger,
   subscribeLifecycleLedger,
   type LifecycleField,
-  type LifecycleMilestone,
 } from '@/mocks/processLifecycleLedger';
 
 
@@ -344,8 +339,6 @@ const ProcessDetailDrawer = ({
   // 基本信息（STORY-002-PG-RESPONSIBILITY）
   const basicInfoPermission = useProcessBasicInfoPermission(processData?.id);
   const [basicInfoTick, setBasicInfoTick] = useState(0);
-  const [editingField, setEditingField] = useState<string | null>(null);
-  const [editingValue, setEditingValue] = useState<unknown>(null);
   useEffect(() => {
     if (!processData?.id) return;
     return subscribeBasicInfo(processData.id, () => setBasicInfoTick((v) => v + 1));
@@ -359,8 +352,6 @@ const ProcessDetailDrawer = ({
   // 生命周期台账（STORY-003-PG-LIFECYCLE-LEDGER）
   const lifecyclePermission = useProcessLifecyclePermission(processData?.id);
   const [lifecycleTick, setLifecycleTick] = useState(0);
-  
-  
   useEffect(() => {
     if (!processData?.id) return;
     const unsub = subscribeLifecycleLedger(processData.id, () => setLifecycleTick((v) => v + 1));
@@ -473,180 +464,29 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     { key: t('common.owner'), value: processData.owner_name ? <UserNameWithCard name={processData.owner_name} userId={processData.owner_id || ''} /> : '-' },
     {
       key: t('common.owningDepartment'),
-      value: (
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          {getDepartmentName(processData.owning_department_id)}
-          {basicInfoPermission.canUpdate && (
-            <Tooltip content="编辑归属部门">
-              <Button
-                icon={<Pencil size={14} strokeWidth={2} />}
-                theme="borderless"
-                type="tertiary"
-                size="small"
-                onClick={() => Toast.info('归属部门编辑能力即将开放')}
-              />
-            </Tooltip>
-          )}
-        </span>
-      ),
+      value: getDepartmentName(processData.owning_department_id),
     },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
   ];
 
-  // 内联编辑工具
-  const startEdit = (key: string, initial: unknown) => {
-    setEditingField(key);
-    setEditingValue(initial);
-  };
-  const cancelEdit = () => {
-    setEditingField(null);
-    setEditingValue(null);
-  };
-  const renderPeopleRow = (
-    fieldKey: 'developer_ids' | 'code_reviewer_ids',
-    ids: string[],
-  ) => {
-    if (editingField === fieldKey) {
-      const value = (editingValue as string[]) || [];
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, width: '100%', maxWidth: 420 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <OwnerSearchSelect
-              multiple
-              value={value}
-              onChange={(v: string[]) => setEditingValue(v)}
-              placeholder="请选择用户（可多选）"
-              size="small"
-            />
-          </div>
-          <Tooltip content="保存">
-            <Button
-              icon={<Check size={14} strokeWidth={2} />}
-              theme="borderless"
-              type="primary"
-              size="small"
-              onClick={() => {
-                const unique = Array.from(new Set(value));
-                updateProcessBasicInfo(processData.id, { [fieldKey]: unique } as Partial<{
-                  developer_ids: string[];
-                  code_reviewer_ids: string[];
-                }>);
-                Toast.success('保存成功');
-                cancelEdit();
-              }}
-            />
-          </Tooltip>
-          <Tooltip content="取消">
-            <Button
-              icon={<X size={14} strokeWidth={2} />}
-              theme="borderless"
-              type="tertiary"
-              size="small"
-              onClick={cancelEdit}
-            />
-          </Tooltip>
-        </span>
-      );
-    }
+  const renderPeopleValue = (ids: string[]) => {
+    if (ids.length === 0) return <Text type="tertiary">-</Text>;
     return (
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-        {ids.length === 0 ? (
-          <Text type="tertiary">-</Text>
-        ) : (
-          ids.map((uid, i) => {
-            const u = getUserById(uid);
-            return (
-              <span key={uid} style={{ display: 'inline-flex', alignItems: 'center' }}>
-                {u ? (
-                  <UserNameWithCard name={u.name} userId={u.id} department={u.department} role={u.role} email={u.email} />
-                ) : (
-                  uid
-                )}
-                {i < ids.length - 1 && <Text type="tertiary">,</Text>}
-              </span>
-            );
-          })
-        )}
-        {basicInfoPermission.canUpdate && (
-          <Button
-            icon={<Pencil size={14} strokeWidth={2} />}
-            theme="borderless"
-            type="tertiary"
-            size="small"
-            onClick={() => startEdit(fieldKey, ids)}
-          />
-        )}
-      </span>
-    );
-  };
-
-  const renderLifecycleRow = (f: LifecycleField, m: LifecycleMilestone) => {
-    if (editingField === f) {
-      const current = editingValue as Date | undefined;
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <DatePicker
-            type="dateTime"
-            format="yyyy-MM-dd HH:mm"
-            value={current}
-            onChange={(v) => setEditingValue(v as Date)}
-            size="small"
-            style={{ width: 200 }}
-          />
-          <Tooltip content="保存">
-            <Button
-              icon={<Check size={14} strokeWidth={2} />}
-              theme="borderless"
-              type="primary"
-              size="small"
-              onClick={() => {
-                if (!current) {
-                  Toast.warning('请选择时间');
-                  return;
-                }
-                const pad = (n: number) => String(n).padStart(2, '0');
-                const iso = `${current.getFullYear()}-${pad(current.getMonth() + 1)}-${pad(current.getDate())}T${pad(current.getHours())}:${pad(current.getMinutes())}:00`;
-                try {
-                  adjustLifecycleMilestone(processData.id, f, {
-                    new_effective_at: iso,
-                    reason: '内联修正',
-                    backfill: true,
-                  });
-                  Toast.success('修正成功');
-                  cancelEdit();
-                } catch {
-                  Toast.error('修正失败');
-                }
-              }}
-            />
-          </Tooltip>
-          <Tooltip content="取消">
-            <Button
-              icon={<X size={14} strokeWidth={2} />}
-              theme="borderless"
-              type="tertiary"
-              size="small"
-              onClick={cancelEdit}
-            />
-          </Tooltip>
-        </span>
-      );
-    }
-    return (
-      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-        <Text>{formatDateTime(m.effective_at)}</Text>
-        {lifecyclePermission.canAdjust && (
-          <Button
-            icon={<Pencil size={14} strokeWidth={2} />}
-            theme="borderless"
-            type="tertiary"
-            size="small"
-            onClick={() =>
-              startEdit(f, m.effective_at ? new Date(m.effective_at) : undefined)
-            }
-          />
-        )}
+        {ids.map((uid, i) => {
+          const u = getUserById(uid);
+          return (
+            <span key={uid} style={{ display: 'inline-flex', alignItems: 'center' }}>
+              {u ? (
+                <UserNameWithCard name={u.name} userId={u.id} department={u.department} role={u.role} email={u.email} />
+              ) : (
+                uid
+              )}
+              {i < ids.length - 1 && <Text type="tertiary">,</Text>}
+            </span>
+          );
+        })}
       </span>
     );
   };
@@ -671,14 +511,14 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       ? [
           {
             key: '开发工程师',
-            value: renderPeopleRow('developer_ids', basicInfo.developer_ids),
+            value: renderPeopleValue(basicInfo.developer_ids),
           },
           {
             key: labelWithTooltip(
               '代码审核员',
-              '代码审核员可手工维护；若为空且发布审批存在“代码审核”节点，将在该节点审批通过后自动写入。',
+              '代码审核员可手工维护；若为空且发布审批存在"代码审核"节点，将在该节点审批通过后自动写入。',
             ),
-            value: renderPeopleRow('code_reviewer_ids', basicInfo.code_reviewer_ids),
+            value: renderPeopleValue(basicInfo.code_reviewer_ids),
           },
         ]
       : []),
@@ -690,10 +530,11 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           'offline_at',
         ] as LifecycleField[]).map((f) => ({
           key: labelWithTooltip(LIFECYCLE_FIELD_LABEL[f], LIFECYCLE_TOOLTIP[f]),
-          value: renderLifecycleRow(f, lifecycleLedger[f]),
+          value: <Text>{formatDateTime(lifecycleLedger[f].effective_at)}</Text>,
         }))
       : []),
   ];
+
 
 
 
