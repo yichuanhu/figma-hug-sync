@@ -39,6 +39,19 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
   const [requirementLoading, setRequirementLoading] = useState(false);
   const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
 
+  // 交付信息字段
+  const [developerIds, setDeveloperIds] = useState<string[]>([]);
+  const [codeReviewerIds, setCodeReviewerIds] = useState<string[]>([]);
+  const [developmentCompletedAt, setDevelopmentCompletedAt] = useState<Date | null>(null);
+  const [deployedAt, setDeployedAt] = useState<Date | null>(null);
+  const [offlineAt, setOfflineAt] = useState<Date | null>(null);
+  // 保留原始生命周期值用于判断"是否变更"
+  const initialLifecycleRef = useState<{ development_completed_at: string | null; deployed_at: string | null; offline_at: string | null }>({
+    development_completed_at: null,
+    deployed_at: null,
+    offline_at: null,
+  })[0];
+
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 
   // 打开时同步初始值
@@ -47,8 +60,22 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       setOwningDepartmentId(processData.owning_department_id || undefined);
       setOwnerId(processData.owner_id || undefined);
       setRequirementId(processData.requirement_id || undefined);
+
+      // 加载交付信息初始值
+      const basicInfo = getProcessBasicInfo(processData.id);
+      setDeveloperIds(basicInfo.developer_ids || []);
+      setCodeReviewerIds(basicInfo.code_reviewer_ids || []);
+
+      const ledger = getProcessLifecycleLedger(processData.id);
+      const toDate = (iso: string | null) => (iso ? new Date(iso) : null);
+      setDevelopmentCompletedAt(toDate(ledger.development_completed_at.effective_at));
+      setDeployedAt(toDate(ledger.deployed_at.effective_at));
+      setOfflineAt(toDate(ledger.offline_at.effective_at));
+      initialLifecycleRef.development_completed_at = ledger.development_completed_at.effective_at;
+      initialLifecycleRef.deployed_at = ledger.deployed_at.effective_at;
+      initialLifecycleRef.offline_at = ledger.offline_at.effective_at;
     }
-  }, [visible, processData]);
+  }, [visible, processData, initialLifecycleRef]);
 
   // 加载可关联需求
   useEffect(() => {
