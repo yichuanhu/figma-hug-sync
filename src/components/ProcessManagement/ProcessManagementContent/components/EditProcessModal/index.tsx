@@ -158,6 +158,38 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
         cascadedTotal = result.total;
       }
 
+      // 写入交付信息：开发工程师 / 代码审核员
+      updateProcessBasicInfo(processData.id, {
+        developer_ids: Array.from(new Set(developerIds)),
+        code_reviewer_ids: Array.from(new Set(codeReviewerIds)),
+      });
+
+      // 写入生命周期时间（仅对发生变更的字段调用 adjust）
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const toIso = (d: Date | null): string | null => {
+        if (!d) return null;
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
+      };
+      const lifecyclePairs: Array<[LifecycleField, Date | null, string | null]> = [
+        ['development_completed_at', developmentCompletedAt, initialLifecycleRef.development_completed_at],
+        ['deployed_at', deployedAt, initialLifecycleRef.deployed_at],
+        ['offline_at', offlineAt, initialLifecycleRef.offline_at],
+      ];
+      lifecyclePairs.forEach(([field, current, original]) => {
+        const newIso = toIso(current);
+        if (newIso && newIso !== original) {
+          try {
+            adjustLifecycleMilestone(processData.id, field, {
+              new_effective_at: newIso,
+              reason: '统一编辑',
+              backfill: true,
+            });
+          } catch (e) {
+            console.error('生命周期修正失败:', field, e);
+          }
+        }
+      });
+
       const updatedProcess: LYProcessResponse = {
         ...processData,
         name: updateRequest.name || processData.name,
