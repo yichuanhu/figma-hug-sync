@@ -1,84 +1,74 @@
 ## 目标
 
-根据 `STORY-001-PG-DOCUMENTS`，在流程详情抽屉新增「资料」Tab，支持流程相关交付物（设计文档、测试报告、用户手册、部署说明、其他）的归档管理。
+按 `STORY-002-PG-RESPONSIBILITY` 在流程详情抽屉「详情」Tab 的基本信息中新增并维护：开发工程师、代码审核员、最近上线审核人（只读派生），并实现上传新版本后覆盖开发工程师、发布审批通过后回填代码审核员的自动逻辑。
 
 ## 范围
 
-- 仅调整 `ProcessDetailDrawer`（`src/components/ProcessManagement/ProcessManagementContent/components/ProcessDetailDrawer/`），开发中心与调度中心共用。
-- 不新增独立路由、不改后端业务逻辑（mock 模拟即可）。
-- 权限点（`process_document.view/upload/download/delete`）以前端 mock 开关形式留出预留，便于后续接入 UCI。
+- 仅改动 `ProcessDetailDrawer`（详情 Tab 的基本信息区域）及对应 mock 服务。
+- 上传版本、发布审批通过两个已有动作旁挂自动写入逻辑。
+- 不新增协作者权限、不改变流程访问权限、不修改组织架构数据。
 
 ## 详情
 
-### 1. 新增 Tab：`资料`
+### 1. 基本信息字段调整
 
-位置：放在「依赖」与「工时」之间。Tab 标题带数量徽标 `资料 (N)`。
+`ProcessDetailDrawer/index.tsx` `descriptionData` 中，在「负责人」之后追加三行：
 
-### 2. 子组件 `DocumentsTab`
+- **开发工程师** `developer_ids` — 多人；展示 `UserNameWithCard` 列表（逗号分隔），后面跟一个铅笔图标（Lucide `Pencil` size=14），点击打开编辑弹窗。空值显示 `-` + 添加按钮（同权限点）。
+- **代码审核员** `code_reviewer_ids` — 多人；展示 + 编辑入口同上。说明文案 tooltip：「代码审核员可手工维护；若为空且发布审批存在“代码审核”节点，将在该节点审批通过后写入」。
+- **最近上线审核人** `last_release_reviewer`（只读派生）— 显示「{用户名} · {版本号} · {审批通过时间}」，无数据显示 `-`；右侧问号 tooltip 解释来源，不可编辑。
 
-路径：`.../ProcessDetailDrawer/components/DocumentsTab/{index.tsx, index.less}`
+所有新增字段按 `useProcessBasicInfoPermission(processId).canView` 控制可见；编辑入口按 `canUpdate` 控制（mock 默认全开，预留 UCI 权限点）。
 
-- **顶部工具栏**：左侧筛选 `资料类型`（多选 FilterPopover）+ `关联层级`（PROCESS / PROCESS_VERSION / PUBLISH_RECORD），右侧 `上传资料` 主按钮。
-- **列表**：Semi `Table size="small"`，列：资料名称（点击下载）、资料类型 Tag、关联对象（流程名 / 版本号 / 发布记录号，可点击跳转）、文件大小、上传人（`UserNameWithCard`）、上传时间、操作（下载 / 删除）。
-- **空状态**：复用 `EmptyState` `no-data` 图，描述「暂无流程资料」+ 上传按钮。
-- 删除走 `Modal.confirm`，符合项目标准；删除/上传后局部刷新。
+### 2. 编辑弹窗 `BasicInfoEditModal`
 
-### 3. 上传弹窗 `UploadDocumentModal`
+路径：`.../ProcessDetailDrawer/components/BasicInfoEditModal/`
 
-路径：`.../ProcessDetailDrawer/components/UploadDocumentModal/index.tsx`
+- 基于 `FormModal`，宽 520px，标题随入口动态：`编辑开发工程师` / `编辑代码审核员`。
+- 字段：用户多选（`Select multiple filter`，使用现有 `OwnerSelect` 或简单 mock 用户列表 + 去重校验）。复用既有 `mockCreatorInfoMap` 扩充为 8 人左右作为选项。
+- 校验：必须为有效用户、不可重复；可为空（按 R-02、R-05）。
+- 提交后调用 mock 服务 `updateProcessBasicInfo`，写入本地 store 并 `Toast.success`，触发抽屉局部刷新（通过 `refreshTick`/回调）。
 
-- 基于 `FormModal`，宽度 520px。
-- 字段顺序：
-  1. `资料类型`（必填，Select）：设计文档 / 测试报告 / 用户手册 / 部署说明 / 其他。
-  2. `关联层级`（必填，Radio）：流程 / 流程版本 / 发布记录。
-  3. `关联对象`（必填，Select，依据关联层级动态加载）：
-     - 流程层级 → 自动选中当前流程，禁用。
-     - 流程版本 → 列出 `versionData`。
-     - 发布记录 → 列出当前流程下的发布记录（mock 提供）。
-  4. `文件`（必填，Upload）：复用 `UploadFileModal` 同款拖拽样式（Lucide `Inbox` 图标、隐藏原生列表、自定义文件信息）；单文件，限制 100MB。
-  5. `备注`（可选，TextArea，最长 500 字符）。
-- 提交时 mock 调用 `POST /api/processes/{processId}/documents`，写入本地 mock store。
+### 3. Mock 数据与服务
 
-### 4. Mock 数据
+新建 `src/mocks/processBasicInfo.ts`：
 
-新建 `src/mocks/processDocuments.ts`：
+- 类型 `ProcessBasicInfo { process_id, developer_ids: string[], code_reviewer_ids: string[], last_release_reviewer?: { user_id, user_name, version, approved_at } }`。
+- 提供 `getProcessBasicInfo(processId)`、`updateProcessBasicInfo(processId, patch)`、`overrideDevelopersOnVersionUpload(processId, uploaderId)`、`writeCodeReviewerFromApproval(processId, approverId)`、`setLastReleaseReviewer(processId, info)`。
+- 内置 in-memory `Map`，按 process 预置 1-2 个开发工程师、0-1 个审核员、一条最近上线审核人样例数据。
+- 提供 mock 用户列表（与现有 `mockCreatorInfoMap` 对齐，新增 user-006/007/008）。
+- 所有写操作伴随 `console.info('[AUDIT] ...')` 输出，模拟 R-04/R-11 审计日志。
 
-- 类型 `ProcessDocument { id, processId, target_type, target_id, document_type, file_name, file_size, mime_type, uploader_id, uploader_name, uploaded_at, remark }`。
-- 提供 `listDocuments(processId, filter)`、`createDocument(...)`、`deleteDocument(id)`、`downloadDocument(id)` 接口；用 in-memory `Map` 持久化当前会话。
-- 预置每个流程 2-3 条样例资料，覆盖三种 `target_type`。
+### 4. 自动维护逻辑接线
 
-### 5. 权限预留
+- **上传新版本覆盖开发工程师 (R-03/R-04, AC-FUNC-03)**：找到 `ProcessDetailDrawer` 内现有「上传新版本」成功回调（versions Tab 内的上传/创建版本逻辑），在成功后调用 `overrideDevelopersOnVersionUpload(processId, currentUserId)` 并刷新基本信息。若现有上传逻辑在外部组件，则通过 `onUploadVersionSuccess` 回调向上暴露，并在抽屉拿到回调后写入。
+- **发布审批通过回填代码审核员 (R-05/R-06, AC-FUNC-04)**：在现有发布审批 mock 通过流程（`src/mocks/processVersionApproval.ts` 中标记通过的位置）尾部调用 `writeCodeReviewerFromApproval`，仅在 `code_reviewer_ids` 为空且节点名包含「代码审核」时写入最后一个节点通过人；同时调用 `setLastReleaseReviewer` 更新只读字段（无论代码审核员是否被写入，AC-FUNC-05）。
 
-新增 `useProcessDocumentPermission(processId)` Hook（mock 全部返回 true）：暴露 `canView / canUpload / canDownload / canDelete`，组件按权限隐藏对应按钮，便于后续接 UCI。
+### 5. 权限 Hook
 
-### 6. 文案与 i18n
+新建 `src/hooks/useProcessBasicInfoPermission.ts`，导出 `{ canView, canUpdate }`，mock 全返回 true，预留 UCI（`process_basic_info.view` / `process_basic_info.update`）。
 
-在 `public/i18n/zh-CN.json` 与 `en.json` 的 `development.processDevelopment.detail` 命名空间下新增 `documents.*` key（tab 标题、列表列名、资料类型、关联层级、上传弹窗字段、空态、确认删除等）。
+### 6. i18n
 
-### 7. 详情抽屉接线
-
-`ProcessDetailDrawer/index.tsx`：
-- 引入并渲染新 `<TabPane itemKey="documents">`；
-- 通过 `versions` prop 传给 Tab，用于关联对象选择；
-- 不改其他 Tab。
+`public/i18n/zh-CN.json` 与 `en.json` 在 `development.processDevelopment.detail` 下新增：
+`basicInfo.developers`、`basicInfo.codeReviewers`、`basicInfo.lastReleaseReviewer`、`basicInfo.lastReleaseReviewerTip`、`basicInfo.codeReviewerTip`、`basicInfo.editDevelopers`、`basicInfo.editCodeReviewers`、`basicInfo.userPlaceholder`、`basicInfo.duplicateUser` 等键。
 
 ## 不改动
 
-- 现有「详情 / 版本 / 依赖 / 工时 / ROI」Tab 内容与样式。
-- 路由、Sidebar、ApprovalConfig、发布/停用审批页面。
-- 既有文件服务（沿用 mock）。
+- 现有「版本/依赖/资料/工时/ROI」Tab 内容与样式。
+- 流程访问权限、协作者机制、组织架构数据。
+- 路由、Sidebar、发布/停用审批页面 UI（仅在审批通过的 mock 服务里追加回填调用）。
 
 ## ASCII 结构
 
 ```text
-ProcessDetailDrawer
-└── Tabs
-    ├── 详情
-    ├── 版本
-    ├── 依赖
-    ├── 资料 (N)   ← 新增
-    │   ├── Toolbar [类型筛选] [层级筛选]      [上传资料]
-    │   └── Table  名称 | 类型 | 关联对象 | 大小 | 上传人 | 时间 | 操作
-    ├── 工时
-    └── ROI 配置
+ProcessDetailDrawer › 详情 Tab › 基本信息
+├── 流程名 / 描述 / 归属部门 / 关联需求 / 负责人 / 创建人 ...
+├── 开发工程师        [张三, 李四] ✎              ← 新增（可编辑）
+├── 代码审核员        [王五] ✎ (?)               ← 新增（可编辑 + 说明）
+└── 最近上线审核人    赵六 · v1.2.0 · 2026-05-20 (?)  ← 新增（只读派生）
+
+自动维护：
+  上传新版本成功 ──▶ overrideDevelopersOnVersionUpload
+  发布审批「代码审核」节点通过 ──▶ writeCodeReviewerFromApproval (+ setLastReleaseReviewer)
 ```
