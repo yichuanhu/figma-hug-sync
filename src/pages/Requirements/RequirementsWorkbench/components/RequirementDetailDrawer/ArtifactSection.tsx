@@ -9,8 +9,6 @@ import { bucketLinkedProcesses, linkedProcessStatusConfig } from '../../utils/ag
 const { Text } = Typography;
 
 const PROCESS_DETAIL_BASE = '/dev-center/automation-process';
-const PROJECT_DETAIL_BASE = '/requirements/projects';
-const WORKSPACE_DETAIL_BASE = '/requirements/projects';
 
 interface ArtifactSectionProps {
   data: RequirementItem;
@@ -98,26 +96,6 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
   ];
 
 
-  const renderLinkRow = (
-    label: string,
-    target?: { id: string; name: string },
-    base?: string,
-  ) => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '6px 0', minHeight: 28 }}>
-      <Text type="tertiary" size="small" style={{ width: 96, flexShrink: 0 }}>{label}</Text>
-      {target ? (
-        <Link
-          to={`${base}?id=${target.id}`}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: 'var(--semi-color-link)' }}
-        >
-          <span>{target.name}</span>
-          <ExternalLink size={12} strokeWidth={2} />
-        </Link>
-      ) : (
-        <Text type="tertiary" size="small">{t('requirements.delivery.emptyLink')}</Text>
-      )}
-    </div>
-  );
 
   return (
     <div className="requirement-detail-section">
@@ -125,11 +103,6 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
         <Text strong>{t('requirements.delivery.title')}</Text>
       </div>
 
-      {/* 关联项目 / 工作空间 / 关联方式 */}
-      <div style={{ marginBottom: 16 }}>
-        {renderLinkRow(t('requirements.delivery.linkedProject'), data.linkedProject, PROJECT_DETAIL_BASE)}
-        {renderLinkRow(t('requirements.delivery.linkedWorkspace'), data.linkedWorkspace, WORKSPACE_DETAIL_BASE)}
-      </div>
 
       {/* 聚合摘要 chip 行 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
