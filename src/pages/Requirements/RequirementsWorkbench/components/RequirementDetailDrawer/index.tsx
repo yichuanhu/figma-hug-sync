@@ -164,27 +164,6 @@ const PropertyPanel = ({
 
       <div className="requirement-detail-property-group">
         <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">{t('requirements.projects.belongsToWorkspace')}</Text>
-          {wsBinding ? (
-            <Text>{wsBinding.workspace.name}</Text>
-          ) : (
-            <Text type="tertiary">{t('requirements.projects.unlinked')}</Text>
-          )}
-        </div>
-        <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">{t('requirements.projects.belongsToProject')}</Text>
-          {wsBinding ? (
-            <Text type="tertiary">{wsBinding.project.name}</Text>
-          ) : (
-            <Text type="tertiary">{t('requirements.projects.unlinked')}</Text>
-          )}
-        </div>
-      </div>
-
-      <div className="requirement-detail-property-divider" />
-
-      <div className="requirement-detail-property-group">
-        <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('common.createTime')}</Text>
           <Text size="small">{data.createdAt.replace('T', ' ').substring(0, 19)}</Text>
         </div>
