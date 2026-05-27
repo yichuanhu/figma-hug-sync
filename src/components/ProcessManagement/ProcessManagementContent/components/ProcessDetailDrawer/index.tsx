@@ -601,6 +601,65 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           },
         ]
       : []),
+    ...(lifecyclePermission.canView && lifecycleLedger
+      ? ([
+          'development_completed_at',
+          'deployed_at',
+          'offline_at',
+        ] as LifecycleField[]).map((f) => {
+          const m: LifecycleMilestone = lifecycleLedger[f];
+          const isManual = m.source === 'manual_adjust';
+          const tooltipContent = (
+            <div style={{ maxWidth: 280 }}>
+              <div>来源：{LIFECYCLE_SOURCE_LABEL[m.source]}</div>
+              <div>原始事件：{formatDateTime(m.original_event_at)}</div>
+              {m.manual_note && (
+                <>
+                  <div style={{ marginTop: 4 }}>
+                    修正人：{m.manual_note.actor_name} · {formatDateTime(m.manual_note.at)}
+                  </div>
+                  <div>原因：{m.manual_note.reason}</div>
+                  {m.manual_note.backfill && <div>（历史补录）</div>}
+                </>
+              )}
+            </div>
+          );
+          return {
+            key: LIFECYCLE_FIELD_LABEL[f],
+            value: (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                <Text>{formatDateTime(m.effective_at)}</Text>
+                {isManual && <Tag size="small" color="orange" type="light">已修正</Tag>}
+                <Tooltip content={tooltipContent}>
+                  <HelpCircle size={12} strokeWidth={2} style={{ cursor: 'help' }} />
+                </Tooltip>
+                {lifecyclePermission.canAdjust && (
+                  <Tooltip content={`修正${LIFECYCLE_FIELD_LABEL[f]}`}>
+                    <Button
+                      icon={<Pencil size={14} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      size="small"
+                      onClick={() => setLifecycleAdjustField(f)}
+                    />
+                  </Tooltip>
+                )}
+                {f === 'offline_at' && (
+                  <Button
+                    theme="borderless"
+                    type="primary"
+                    size="small"
+                    onClick={() => setLifecycleHistoryVisible(true)}
+                    style={{ marginLeft: 'auto' }}
+                  >
+                    查看修正历史
+                  </Button>
+                )}
+              </span>
+            ),
+          };
+        })
+      : []),
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
     {
@@ -612,6 +671,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       ),
     },
   ];
+
 
   const getVersionDescriptionData = (version: VersionDetailData) => [
     { key: t('development.processDevelopment.detail.versionDetail.processVersion'), value: <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>{version.version}{version.id === latestActiveVersionId && <Tag color="green" type="light" size="small">{t('development.processDevelopment.detail.versionList.activeVersion')}</Tag>}</span> },
