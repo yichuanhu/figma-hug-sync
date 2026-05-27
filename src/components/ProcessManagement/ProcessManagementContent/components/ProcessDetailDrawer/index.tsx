@@ -31,6 +31,7 @@ import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } fr
 import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
+import DocumentsTab from './components/DocumentsTab';
 
 import {
   fetchAllLinkableRequirements,
@@ -321,6 +322,7 @@ const ProcessDetailDrawer = ({
   const [uploadVersionModalVisible, setUploadVersionModalVisible] = useState(false);
   const [versionData, setVersionData] = useState<VersionDetailData[]>(initialMockVersionData);
   const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
+  const [documentCount, setDocumentCount] = useState(0);
 
   // 版本数据按版本号降序排列
   const sortedVersionData = useMemo(() => {
@@ -671,6 +673,16 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             }
             readOnly={isSchedulingContext}
             context={context}
+          />
+        </TabPane>
+
+
+        <TabPane tab={`资料${documentCount ? ` (${documentCount})` : ''}`} itemKey="documents">
+          <DocumentsTab
+            processId={processData.id}
+            processName={processData.name}
+            versions={sortedVersionData.map((v) => ({ id: v.id, version: v.version }))}
+            onCountChange={setDocumentCount}
           />
         </TabPane>
 
