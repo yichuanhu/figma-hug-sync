@@ -250,11 +250,11 @@ const UploadDocumentModal = ({
           </Form.Slot>
 
           <Form.Slot label="备注">
-            <Input.TextArea
+            <TextArea
               value={remark}
               onChange={setRemark}
               placeholder="可选，最长 500 字符"
-              maxLength={500}
+              maxCount={500}
               rows={3}
             />
           </Form.Slot>
