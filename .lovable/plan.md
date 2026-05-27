@@ -1,61 +1,49 @@
 ## 目标
 
-将「流程详情抽屉 - 基本信息 Tab」的多个行内编辑入口收敛为**复用现有 Header 铅笔编辑按钮**，扩展 `EditProcessModal` 字段以覆盖详情中的全部可编辑项，与项目其他详情页编辑范式保持一致。
+按照简化后的 Story（STORY-001-PG-DOCUMENTS）调整流程资料 Tab：移除「关联层级」三选一概念（PROCESS / PROCESS_VERSION / PUBLISH_RECORD），改为统一归档到流程，只保留可选的「适用流程版本」字段。
 
-## 一、详情 Tab 改为纯只读
+## 一、Mock 层（`src/mocks/processDocuments.ts`）
 
-文件：`src/components/ProcessManagement/ProcessManagementContent/components/ProcessDetailDrawer/index.tsx`
+- 移除类型 `ProcessDocumentTargetType` 与常量 `PROCESS_DOCUMENT_TARGET_LABEL`。
+- 移除 `getPublishRecordsByProcess` 与 `publishRecordStore`、`ProcessPublishRecordBrief`。
+- `ProcessDocument` 字段调整：
+  - 删除 `target_type`、`target_id`、`target_label`
+  - 新增 `applicable_version_id?: string`、`applicable_version_label?: string`（即版本号；流程级资料时两者为空）
+- `CreateDocumentInput` 同步：去掉 target_* 三个字段，新增可选 `applicable_version_id` / `applicable_version_label`。
+- `ListDocumentsFilter`：删除 `targetTypes`，新增可选 `applicableVersionIds?: string[]`。
+- 种子数据按新结构改写（一条流程级 + 一条带 v1.1.0 版本 + 一条带 v2.0.0 版本，去掉发布单维度）。
+- `listProcessDocuments` 的 keyword 不再匹配 `target_label`，改匹配 `file_name`（兼具版本号匹配可选保留）。
 
-- 移除所有行内编辑代码：
-  - `editingField` / `editingValue` state 与相关 handler
-  - `renderPeopleRow` / `renderLifecycleRow` 中的编辑分支（`OwnerSearchSelect`、`DatePicker`、Save/Cancel）
-  - 「归属部门」铅笔按钮 + `Toast.info('即将开放')`
-  - 所有字段右侧的 `Pencil` 图标按钮
-- `Descriptions` 恢复纯展示形态。
-- 保留：分组结构（基础信息 / 交付信息）、字段名后的 `HelpCircle` tooltip（含 Story §3.3 文案）、`UserNameWithCard` 人员展示、`formatDateTime` 时间格式化。
-- 清理 import：`DatePicker`、`TextArea`、`Modal`、`OwnerSearchSelect`、`Check`、`X`、不再使用的 `Pencil`、相关 mock service 中仅供编辑使用的方法。
+## 二、上传弹窗（`UploadDocumentModal/index.tsx`）
 
-## 二、Header 编辑按钮
+- 删除「关联层级」`RadioGroup` 与「关联对象」`Select` 两个表单项。
+- 新增「适用版本」`Select`（可选、可清空），选项 = `versions`（版本号），placeholder「不指定则归档到流程级」。
+- state：移除 `targetType` / `targetId` / `publishRecords` / `targetOptions`；新增 `applicableVersionId: string | undefined`。
+- `handleSubmit`：透传 `applicable_version_id` 与对应 `applicable_version_label`（从 versions 查得），无选则 undefined。
+- 清理 import：`RadioGroup` / `Radio` / `PROCESS_DOCUMENT_TARGET_LABEL` / `getPublishRecordsByProcess` / `ProcessDocumentTargetType`。
+- 提交按钮禁用条件改为 `!selectedFile`（不再要求 targetId）。
 
-**不新增**，沿用现有 `ProcessDetailDrawer` 已有的 `onEdit` prop → 父组件 `ProcessManagementContent` 的 `handleEdit()` → 打开 `EditProcessModal`。
+## 三、资料列表（`DocumentsTab/index.tsx`）
 
-## 三、扩展 `EditProcessModal` 字段
+- 列变更：
+  - 删除「关联对象」列（`target_label` + `PROCESS_DOCUMENT_TARGET_LABEL` 前缀）
+  - 新增「适用版本」列：当 `applicable_version_label` 为空时显示「流程级」（灰色 Text），否则显示版本号 Tag
+- `FilterPopover`：移除「关联层级」分组，新增「适用版本」分组（多选，选项 = 当前流程的 `versions` + 一项「流程级」对应空值）。
+  - 实现细节：filter 值为 `applicableVersionIds`，「流程级」用特殊常量 `__PROCESS_LEVEL__` 占位，在 `listProcessDocuments` 中识别为「`applicable_version_id` 为空」。
+- 移除对 `targetTypes` state 与 `ProcessDocumentTargetType` 的引用。
+- 搜索 placeholder 改为「搜索资料名称」。
+- 清理 import：`PROCESS_DOCUMENT_TARGET_LABEL`、`ProcessDocumentTargetType`、`Text`（如不再使用）。
 
-文件：`src/components/ProcessManagement/ProcessManagementContent/components/EditProcessModal/index.tsx`
+## 四、权限点（不动）
 
-在现有「基础信息」字段（名称 / 部门 / 归属者 / 描述）之后，新增「交付信息」分组：
-
-1. 开发工程师（`OwnerSearchSelect` multiple）
-2. 代码审核员（`OwnerSearchSelect` multiple）
-3. 开发完成时间（Semi `DatePicker` type="dateTime"）
-4. 部署上线时间（Semi `DatePicker` type="dateTime"）
-5. 流程下线时间（Semi `DatePicker` type="dateTime"）
-
-- 弹窗宽度保持现状（520px）。
-- 字段间距 16px，符合 mem `Modal Design Specification`。
-- 分组结构遵循 mem `Form Layout Preference`（字段 >6 用分组小标题）。
-- Semi 原生 validation（`trigger=['blur','change']`）。
-- 打开时从 `getProcessBasicInfo` + `getProcessLifecycleLedger` 取初始值填充。
-
-提交时：
-- 流程名称 / 描述 / 部门 / 归属者 → 沿用现有 `onSuccess` 流程
-- 开发工程师 / 代码审核员 → 调 `updateProcessBasicInfo`
-- 三个生命周期时间 → 与原值不同的字段分别调 `adjustLifecycleMilestone`，`reason` 传固定占位 `'统一编辑'`、`backfill: true`（**不在弹窗收集修正原因**）
-- 提交成功后通过 subscribe 自动刷新抽屉数据
-
-## 四、清理
-
-- 删除 `ProcessDetailDrawer` 对 `BasicInfoEditModal`、`LifecycleAdjustModal`（如还有 import）与相关 state、render 块的引用。
-- 不删除两个 Modal 文件本身（其他地方未引用即可，由后续清理处理）。
+`useProcessDocumentPermission` 已对齐 view/upload/download/delete 四个权限点，无需调整。
 
 ## 五、不改动
 
-- 抽屉 Header 结构与按钮顺序（铅笔按钮已存在）
-- 其他 Tab、mock service 行为、权限 hook、i18n key
-- 项目其他详情页
+- 抽屉其它 Tab、Header、`EditProcessModal`、i18n、其他详情页
+- 权限 hook、文件大小限制（100MB）、Toast 文案风格
 
 ## 收益
 
-- 编辑入口：详情 Tab 的 N 个行内铅笔 → 1 个 Header 铅笔（已存在）
-- 与项目其他详情页编辑范式完全一致
-- 改动局限：`ProcessDetailDrawer` 瘦身 + `EditProcessModal` 字段扩展
+- 删除「关联层级」三态复杂度，与简化后的 Story 字段（仅 `applicable_version_id`）一一对应
+- 上传与筛选只剩「适用版本（可选）」一个维度，符合 R-05 / AC-FUNC-02

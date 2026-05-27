@@ -16,13 +16,12 @@ import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover, { type FilterSection } from '@/components/FilterPopover';
 import {
-  PROCESS_DOCUMENT_TARGET_LABEL,
   PROCESS_DOCUMENT_TYPE_COLOR,
   PROCESS_DOCUMENT_TYPE_LABEL,
+  PROCESS_LEVEL_VERSION_FILTER,
   deleteProcessDocument,
   listProcessDocuments,
   type ProcessDocument,
-  type ProcessDocumentTargetType,
   type ProcessDocumentType,
 } from '@/mocks/processDocuments';
 import { useProcessDocumentPermission } from '@/hooks/useProcessDocumentPermission';
@@ -63,7 +62,7 @@ const DocumentsTab = ({
   const permission = useProcessDocumentPermission(processId);
   const [keyword, setKeyword] = useState('');
   const [documentTypes, setDocumentTypes] = useState<ProcessDocumentType[]>([]);
-  const [targetTypes, setTargetTypes] = useState<ProcessDocumentTargetType[]>([]);
+  const [applicableVersionIds, setApplicableVersionIds] = useState<string[]>([]);
   const [filterVisible, setFilterVisible] = useState(false);
   const [uploadVisible, setUploadVisible] = useState(false);
   const [refreshTick, setRefreshTick] = useState(0);
@@ -72,11 +71,11 @@ const DocumentsTab = ({
     () =>
       listProcessDocuments(processId, processName, {
         documentTypes,
-        targetTypes,
+        applicableVersionIds,
         keyword,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [processId, processName, documentTypes, targetTypes, keyword, refreshTick],
+    [processId, processName, documentTypes, applicableVersionIds, keyword, refreshTick],
   );
 
   useEffect(() => {
@@ -118,21 +117,22 @@ const DocumentsTab = ({
         })),
       },
       {
-        key: 'targetType',
-        label: '关联层级',
+        key: 'applicableVersion',
+        label: '适用版本',
         type: 'checkbox',
-        value: targetTypes,
-        options: (Object.keys(PROCESS_DOCUMENT_TARGET_LABEL) as ProcessDocumentTargetType[]).map(
-          (v) => ({ value: v, label: PROCESS_DOCUMENT_TARGET_LABEL[v] }),
-        ),
+        value: applicableVersionIds,
+        options: [
+          { value: PROCESS_LEVEL_VERSION_FILTER, label: '流程级' },
+          ...versions.map((v) => ({ value: v.id, label: v.version })),
+        ],
       },
     ],
-    [documentTypes, targetTypes],
+    [documentTypes, applicableVersionIds, versions],
   );
 
   const handleFilterConfirm = (values: Record<string, unknown>) => {
     setDocumentTypes((values.documentType as ProcessDocumentType[]) || []);
-    setTargetTypes((values.targetType as ProcessDocumentTargetType[]) || []);
+    setApplicableVersionIds((values.applicableVersion as string[]) || []);
     setFilterVisible(false);
   };
 
@@ -170,19 +170,20 @@ const DocumentsTab = ({
         ),
       },
       {
-        title: '关联对象',
-        dataIndex: 'target_label',
-        key: 'target_label',
-        width: 180,
-        ellipsis: { showTitle: false },
-        render: (label: string, record: ProcessDocument) => (
-          <span>
-            <Text type="tertiary" size="small" style={{ marginRight: 6 }}>
-              {PROCESS_DOCUMENT_TARGET_LABEL[record.target_type]}
+        title: '适用版本',
+        dataIndex: 'applicable_version_label',
+        key: 'applicable_version_label',
+        width: 130,
+        render: (label: string | undefined) =>
+          label ? (
+            <Tag color="blue" type="light" size="small">
+              {label}
+            </Tag>
+          ) : (
+            <Text type="tertiary" size="small">
+              流程级
             </Text>
-            {label}
-          </span>
-        ),
+          ),
       },
       {
         title: '大小',
@@ -252,7 +253,11 @@ const DocumentsTab = ({
     );
   }
 
-  const isEmpty = documents.length === 0 && !keyword && documentTypes.length === 0 && targetTypes.length === 0;
+  const isEmpty =
+    documents.length === 0 &&
+    !keyword &&
+    documentTypes.length === 0 &&
+    applicableVersionIds.length === 0;
 
   return (
     <div className="documents-tab">
@@ -261,7 +266,7 @@ const DocumentsTab = ({
           <Input
             value={keyword}
             onChange={setKeyword}
-            placeholder="搜索资料名称 / 关联对象"
+            placeholder="搜索资料名称"
             showClear
             style={{ width: 320 }}
           />
