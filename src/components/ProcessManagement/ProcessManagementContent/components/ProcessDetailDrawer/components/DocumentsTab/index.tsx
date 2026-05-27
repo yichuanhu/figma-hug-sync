@@ -247,7 +247,7 @@ const DocumentsTab = ({
   if (!permission.canView) {
     return (
       <div className="documents-tab-empty">
-        <EmptyState type="no-access" description="您暂无查看资料的权限" size={120} />
+        <EmptyState variant="noAccess" description="您暂无查看资料的权限" size={120} />
       </div>
     );
   }
