@@ -722,7 +722,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
               <>
                 <Divider margin="20px" />
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <Title heading={6} style={{ margin: 0 }}>生命周期信息</Title>
+                  <Title heading={6} style={{ margin: 0 }}>交付信息</Title>
                   {lifecyclePermission.canView && lifecycleLedger && (
                     <Button
                       theme="borderless"
