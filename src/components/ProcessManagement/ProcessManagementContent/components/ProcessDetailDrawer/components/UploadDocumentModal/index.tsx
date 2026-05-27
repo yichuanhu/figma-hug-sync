@@ -9,7 +9,7 @@ import {
   Select,
   RadioGroup,
   Radio,
-  Input,
+  TextArea,
 } from '@douyinfe/semi-ui';
 import { File as FileIcon, Inbox, X } from 'lucide-react';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
