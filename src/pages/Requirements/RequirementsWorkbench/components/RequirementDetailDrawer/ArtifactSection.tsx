@@ -9,8 +9,6 @@ import { bucketLinkedProcesses, linkedProcessStatusConfig } from '../../utils/ag
 const { Text } = Typography;
 
 const PROCESS_DETAIL_BASE = '/dev-center/automation-process';
-const PROJECT_DETAIL_BASE = '/requirements/projects';
-const WORKSPACE_DETAIL_BASE = '/requirements/projects';
 
 interface ArtifactSectionProps {
   data: RequirementItem;
