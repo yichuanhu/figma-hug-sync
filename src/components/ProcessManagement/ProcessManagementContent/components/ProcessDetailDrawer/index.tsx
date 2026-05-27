@@ -716,7 +716,27 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       <Tabs activeKey={activeTab} onChange={setActiveTab} className="process-detail-drawer-tabs">
         <TabPane tab={t('development.processDevelopment.detail.tabs.detail')} itemKey="detail">
           <div className="process-detail-drawer-tab-content">
-            <Descriptions data={descriptionData} align="left" />
+            <Title heading={6} style={{ margin: '0 0 12px' }}>基础信息</Title>
+            <Descriptions data={basicGroupData} align="left" />
+            {lifecycleGroupData.length > 0 && (
+              <>
+                <Divider margin="20px" />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <Title heading={6} style={{ margin: 0 }}>生命周期信息</Title>
+                  {lifecyclePermission.canView && lifecycleLedger && (
+                    <Button
+                      theme="borderless"
+                      type="primary"
+                      size="small"
+                      onClick={() => setLifecycleHistoryVisible(true)}
+                    >
+                      查看修正历史
+                    </Button>
+                  )}
+                </div>
+                <Descriptions data={lifecycleGroupData} align="left" />
+              </>
+            )}
           </div>
         </TabPane>
 
