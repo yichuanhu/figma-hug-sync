@@ -14,7 +14,7 @@ import {
   Toast,
   Modal,
   TextArea,
-  
+  DatePicker,
 } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse, LYProcessDependency } from '@/api';
@@ -26,26 +26,26 @@ import ExpandableText from '@/components/ExpandableText';
 import { getDepartmentName } from '@/mocks/departmentData';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import './index.less';
-import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
+import { Check, ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload, X } from 'lucide-react';
 import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
 import DocumentsTab from './components/DocumentsTab';
-import BasicInfoEditModal, { type BasicInfoEditField } from './components/BasicInfoEditModal';
-import LifecycleAdjustModal from './components/LifecycleAdjustModal';
 
 import {
   getProcessBasicInfo,
   getUserById,
   overrideDevelopersOnVersionUpload,
   subscribeBasicInfo,
+  updateProcessBasicInfo,
 } from '@/mocks/processBasicInfo';
 import { useProcessBasicInfoPermission } from '@/hooks/useProcessBasicInfoPermission';
 import { useProcessLifecyclePermission } from '@/hooks/useProcessLifecyclePermission';
 import {
   FIELD_LABEL as LIFECYCLE_FIELD_LABEL,
-  SOURCE_LABEL as LIFECYCLE_SOURCE_LABEL,
+  adjustLifecycleMilestone,
   getProcessLifecycleLedger,
   subscribeLifecycleLedger,
   type LifecycleField,
