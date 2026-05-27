@@ -322,6 +322,7 @@ const ProcessDetailDrawer = ({
   const [uploadVersionModalVisible, setUploadVersionModalVisible] = useState(false);
   const [versionData, setVersionData] = useState<VersionDetailData[]>(initialMockVersionData);
   const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
+  const [documentCount, setDocumentCount] = useState(0);
 
   // 版本数据按版本号降序排列
   const sortedVersionData = useMemo(() => {
