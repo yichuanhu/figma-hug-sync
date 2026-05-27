@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Modal,
   Upload,
@@ -7,19 +7,14 @@ import {
   Toast,
   Typography,
   Select,
-  RadioGroup,
-  Radio,
   TextArea,
 } from '@douyinfe/semi-ui';
 import { File as FileIcon, Inbox, X } from 'lucide-react';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 
 import {
-  PROCESS_DOCUMENT_TARGET_LABEL,
   PROCESS_DOCUMENT_TYPE_LABEL,
   createProcessDocument,
-  getPublishRecordsByProcess,
-  type ProcessDocumentTargetType,
   type ProcessDocumentType,
 } from '@/mocks/processDocuments';
 
@@ -64,44 +59,22 @@ const UploadDocumentModal = ({
   versions,
 }: UploadDocumentModalProps) => {
   const [documentType, setDocumentType] = useState<ProcessDocumentType>('DESIGN_DOC');
-  const [targetType, setTargetType] = useState<ProcessDocumentTargetType>('PROCESS');
-  const [targetId, setTargetId] = useState<string>(processId);
+  const [applicableVersionId, setApplicableVersionId] = useState<string | undefined>(undefined);
   const [remark, setRemark] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const publishRecords = useMemo(() => getPublishRecordsByProcess(processId), [processId]);
-
   useEffect(() => {
     if (visible) {
       setDocumentType('DESIGN_DOC');
-      setTargetType('PROCESS');
-      setTargetId(processId);
+      setApplicableVersionId(undefined);
       setRemark('');
       setSelectedFile(null);
       setSubmitting(false);
     }
-  }, [visible, processId]);
+  }, [visible]);
 
-  useEffect(() => {
-    if (targetType === 'PROCESS') {
-      setTargetId(processId);
-    } else if (targetType === 'PROCESS_VERSION') {
-      setTargetId(versions[0]?.id ?? '');
-    } else {
-      setTargetId(publishRecords[0]?.id ?? '');
-    }
-  }, [targetType, processId, versions, publishRecords]);
-
-  const targetOptions = useMemo(() => {
-    if (targetType === 'PROCESS') {
-      return [{ value: processId, label: processName }];
-    }
-    if (targetType === 'PROCESS_VERSION') {
-      return versions.map((v) => ({ value: v.id, label: v.version }));
-    }
-    return publishRecords.map((r) => ({ value: r.id, label: r.label }));
-  }, [targetType, processId, processName, versions, publishRecords]);
+  const versionOptions = versions.map((v) => ({ value: v.id, label: v.version }));
 
   const handleFileChange = useCallback((info: { fileList: FileItem[] }) => {
     const file = info.fileList[0]?.fileInstance;
@@ -124,20 +97,15 @@ const UploadDocumentModal = ({
       Toast.warning('请选择要上传的文件');
       return;
     }
-    if (!targetId) {
-      Toast.warning('请选择关联对象');
-      return;
-    }
-    const targetLabel = targetOptions.find((o) => o.value === targetId)?.label ?? '';
+    const versionLabel = versions.find((v) => v.id === applicableVersionId)?.version;
     setSubmitting(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 600));
       createProcessDocument({
         process_id: processId,
         process_name: processName,
-        target_type: targetType,
-        target_id: targetId,
-        target_label: targetLabel,
+        applicable_version_id: applicableVersionId || undefined,
+        applicable_version_label: versionLabel,
         document_type: documentType,
         file: selectedFile,
         remark: remark.trim() || undefined,
@@ -165,7 +133,7 @@ const UploadDocumentModal = ({
             type="primary"
             loading={submitting}
             onClick={handleSubmit}
-            disabled={!selectedFile || !targetId}
+            disabled={!selectedFile}
           >
             确定
           </Button>
@@ -188,28 +156,13 @@ const UploadDocumentModal = ({
             />
           </Form.Slot>
 
-          <Form.Slot label={<span><Text type="danger">* </Text>关联层级</span>}>
-            <RadioGroup
-              value={targetType}
-              onChange={(e) => setTargetType(e.target.value as ProcessDocumentTargetType)}
-            >
-              {(Object.keys(PROCESS_DOCUMENT_TARGET_LABEL) as ProcessDocumentTargetType[]).map(
-                (v) => (
-                  <Radio key={v} value={v}>
-                    {PROCESS_DOCUMENT_TARGET_LABEL[v]}
-                  </Radio>
-                ),
-              )}
-            </RadioGroup>
-          </Form.Slot>
-
-          <Form.Slot label={<span><Text type="danger">* </Text>关联对象</span>}>
+          <Form.Slot label="适用版本">
             <Select
-              value={targetId}
-              onChange={(v) => setTargetId(v as string)}
-              optionList={targetOptions}
-              disabled={targetType === 'PROCESS' || targetOptions.length === 0}
-              placeholder={targetOptions.length === 0 ? '暂无可选项' : '请选择'}
+              value={applicableVersionId}
+              onChange={(v) => setApplicableVersionId(v as string | undefined)}
+              optionList={versionOptions}
+              placeholder="不指定则归档到流程级"
+              showClear
               style={{ width: '100%' }}
             />
           </Form.Slot>

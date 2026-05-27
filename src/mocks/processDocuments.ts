@@ -1,7 +1,5 @@
 // 流程资料 Mock 数据与服务
-// 关联类型：流程 / 流程版本 / 发布记录
-
-export type ProcessDocumentTargetType = 'PROCESS' | 'PROCESS_VERSION' | 'PUBLISH_RECORD';
+// 资料统一归档到流程，可选指定适用流程版本
 
 export type ProcessDocumentType =
   | 'DESIGN_DOC'
@@ -13,9 +11,8 @@ export type ProcessDocumentType =
 export interface ProcessDocument {
   id: string;
   process_id: string;
-  target_type: ProcessDocumentTargetType;
-  target_id: string;
-  target_label: string; // 关联对象的显示文本（版本号 / 发布单号 / 流程名）
+  applicable_version_id?: string;
+  applicable_version_label?: string;
   document_type: ProcessDocumentType;
   file_id: string;
   file_name: string;
@@ -35,12 +32,6 @@ export const PROCESS_DOCUMENT_TYPE_LABEL: Record<ProcessDocumentType, string> = 
   OTHER: '其他资料',
 };
 
-export const PROCESS_DOCUMENT_TARGET_LABEL: Record<ProcessDocumentTargetType, string> = {
-  PROCESS: '流程',
-  PROCESS_VERSION: '流程版本',
-  PUBLISH_RECORD: '发布记录',
-};
-
 export const PROCESS_DOCUMENT_TYPE_COLOR: Record<
   ProcessDocumentType,
   'blue' | 'green' | 'orange' | 'purple' | 'grey'
@@ -52,23 +43,8 @@ export const PROCESS_DOCUMENT_TYPE_COLOR: Record<
   OTHER: 'grey',
 };
 
-// 当前流程对应的发布记录（mock 列表，用于上传时选择）
-export interface ProcessPublishRecordBrief {
-  id: string;
-  label: string; // 例如 "REL-2025-001 v1.1.0"
-}
-
-const publishRecordStore = new Map<string, ProcessPublishRecordBrief[]>();
-
-export const getPublishRecordsByProcess = (processId: string): ProcessPublishRecordBrief[] => {
-  if (!publishRecordStore.has(processId)) {
-    publishRecordStore.set(processId, [
-      { id: `${processId}-rel-001`, label: 'REL-2025-001 v1.1.0' },
-      { id: `${processId}-rel-002`, label: 'REL-2025-002 v2.0.0' },
-    ]);
-  }
-  return publishRecordStore.get(processId)!;
-};
+// 「流程级」筛选占位常量（applicable_version_id 为空）
+export const PROCESS_LEVEL_VERSION_FILTER = '__PROCESS_LEVEL__';
 
 // In-memory store
 const documentStore = new Map<string, ProcessDocument[]>();
@@ -80,16 +56,13 @@ const uid = (): string =>
     return v.toString(16);
   });
 
-const ensureSeeded = (processId: string, processName: string) => {
+const ensureSeeded = (processId: string, _processName: string) => {
   if (documentStore.has(processId)) return;
   const now = Date.now();
   const seed: ProcessDocument[] = [
     {
       id: uid(),
       process_id: processId,
-      target_type: 'PROCESS',
-      target_id: processId,
-      target_label: processName,
       document_type: 'DESIGN_DOC',
       file_id: uid(),
       file_name: '流程设计文档_V1.docx',
@@ -103,9 +76,8 @@ const ensureSeeded = (processId: string, processName: string) => {
     {
       id: uid(),
       process_id: processId,
-      target_type: 'PROCESS_VERSION',
-      target_id: 'version-mock-1',
-      target_label: 'v1.1.0',
+      applicable_version_id: 'version-mock-1',
+      applicable_version_label: 'v1.1.0',
       document_type: 'USER_MANUAL',
       file_id: uid(),
       file_name: '用户操作手册_v1.1.0.pdf',
@@ -118,9 +90,8 @@ const ensureSeeded = (processId: string, processName: string) => {
     {
       id: uid(),
       process_id: processId,
-      target_type: 'PUBLISH_RECORD',
-      target_id: `${processId}-rel-001`,
-      target_label: 'REL-2025-001 v1.1.0',
+      applicable_version_id: 'version-mock-2',
+      applicable_version_label: 'v2.0.0',
       document_type: 'TEST_REPORT',
       file_id: uid(),
       file_name: '上线测试报告.xlsx',
@@ -137,7 +108,7 @@ const ensureSeeded = (processId: string, processName: string) => {
 
 export interface ListDocumentsFilter {
   documentTypes?: ProcessDocumentType[];
-  targetTypes?: ProcessDocumentTargetType[];
+  applicableVersionIds?: string[]; // 可包含 PROCESS_LEVEL_VERSION_FILTER 表示「流程级」
   keyword?: string;
 }
 
@@ -151,8 +122,13 @@ export const listProcessDocuments = (
   if (filter.documentTypes?.length) {
     list = list.filter((d) => filter.documentTypes!.includes(d.document_type));
   }
-  if (filter.targetTypes?.length) {
-    list = list.filter((d) => filter.targetTypes!.includes(d.target_type));
+  if (filter.applicableVersionIds?.length) {
+    list = list.filter((d) => {
+      if (!d.applicable_version_id) {
+        return filter.applicableVersionIds!.includes(PROCESS_LEVEL_VERSION_FILTER);
+      }
+      return filter.applicableVersionIds!.includes(d.applicable_version_id);
+    });
   }
   if (filter.keyword) {
     const kw = filter.keyword.trim().toLowerCase();
@@ -160,7 +136,7 @@ export const listProcessDocuments = (
       list = list.filter(
         (d) =>
           d.file_name.toLowerCase().includes(kw) ||
-          d.target_label.toLowerCase().includes(kw),
+          (d.applicable_version_label?.toLowerCase().includes(kw) ?? false),
       );
     }
   }
@@ -172,9 +148,8 @@ export const listProcessDocuments = (
 export interface CreateDocumentInput {
   process_id: string;
   process_name: string;
-  target_type: ProcessDocumentTargetType;
-  target_id: string;
-  target_label: string;
+  applicable_version_id?: string;
+  applicable_version_label?: string;
   document_type: ProcessDocumentType;
   file: File;
   remark?: string;
@@ -185,9 +160,8 @@ export const createProcessDocument = (input: CreateDocumentInput): ProcessDocume
   const doc: ProcessDocument = {
     id: uid(),
     process_id: input.process_id,
-    target_type: input.target_type,
-    target_id: input.target_id,
-    target_label: input.target_label,
+    applicable_version_id: input.applicable_version_id,
+    applicable_version_label: input.applicable_version_label,
     document_type: input.document_type,
     file_id: uid(),
     file_name: input.file.name,
