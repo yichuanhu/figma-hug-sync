@@ -37,17 +37,14 @@ import {
   getUserById,
   overrideDevelopersOnVersionUpload,
   subscribeBasicInfo,
-  updateProcessBasicInfo,
 } from '@/mocks/processBasicInfo';
 import { useProcessBasicInfoPermission } from '@/hooks/useProcessBasicInfoPermission';
 import { useProcessLifecyclePermission } from '@/hooks/useProcessLifecyclePermission';
 import {
   FIELD_LABEL as LIFECYCLE_FIELD_LABEL,
-  adjustLifecycleMilestone,
   getProcessLifecycleLedger,
   subscribeLifecycleLedger,
   type LifecycleField,
-  type LifecycleMilestone,
 } from '@/mocks/processLifecycleLedger';
 
 
