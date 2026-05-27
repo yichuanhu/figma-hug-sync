@@ -364,7 +364,8 @@ const ProcessDetailDrawer = ({
   const [lifecycleHistoryVisible, setLifecycleHistoryVisible] = useState(false);
   useEffect(() => {
     if (!processData?.id) return;
-    return subscribeLifecycleLedger(processData.id, () => setLifecycleTick((v) => v + 1));
+    const unsub = subscribeLifecycleLedger(processData.id, () => setLifecycleTick((v) => v + 1));
+    return () => { unsub(); };
   }, [processData?.id]);
   const lifecycleLedger = useMemo(
     () => (processData?.id ? getProcessLifecycleLedger(processData.id) : null),
