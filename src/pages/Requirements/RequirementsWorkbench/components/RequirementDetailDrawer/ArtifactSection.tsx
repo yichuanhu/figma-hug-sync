@@ -98,26 +98,6 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
   ];
 
 
-  const renderLinkRow = (
-    label: string,
-    target?: { id: string; name: string },
-    base?: string,
-  ) => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '6px 0', minHeight: 28 }}>
-      <Text type="tertiary" size="small" style={{ width: 96, flexShrink: 0 }}>{label}</Text>
-      {target ? (
-        <Link
-          to={`${base}?id=${target.id}`}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: 'var(--semi-color-link)' }}
-        >
-          <span>{target.name}</span>
-          <ExternalLink size={12} strokeWidth={2} />
-        </Link>
-      ) : (
-        <Text type="tertiary" size="small">{t('requirements.delivery.emptyLink')}</Text>
-      )}
-    </div>
-  );
 
   return (
     <div className="requirement-detail-section">
