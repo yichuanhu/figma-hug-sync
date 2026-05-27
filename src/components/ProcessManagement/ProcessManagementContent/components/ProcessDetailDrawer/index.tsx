@@ -835,9 +835,25 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             const merged = [...(processData.dependencies || []), ...newDeps];
             onDependenciesChange(processData.id, merged);
           }
+          // R-03 / R-04：上传新版本成功后覆盖流程级开发工程师为本次上传人
+          overrideDevelopersOnVersionUpload(processData.id, 'user-001', 'new');
+          Toast.info('已将开发工程师更新为本次上传人');
         }}
         onGoToDependencies={() => setActiveTab('dependencies')}
       />
+      {basicInfoEditField && basicInfo && (
+        <BasicInfoEditModal
+          visible={!!basicInfoEditField}
+          field={basicInfoEditField}
+          processId={processData.id}
+          initialValue={
+            basicInfoEditField === 'developer_ids'
+              ? basicInfo.developer_ids
+              : basicInfo.code_reviewer_ids
+          }
+          onClose={() => setBasicInfoEditField(null)}
+        />
+      )}
     </DetailDrawerWrapper>
   );
 };
