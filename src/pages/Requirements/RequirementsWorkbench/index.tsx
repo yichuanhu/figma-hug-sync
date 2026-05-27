@@ -343,21 +343,6 @@ const RequirementsWorkbench = () => {
       ),
     },
     {
-      title: t('requirements.fields.linkedProject', '所属项目'),
-      dataIndex: 'linkedProject',
-      key: 'linkedProject',
-      width: 160,
-      ellipsis: { showTitle: false },
-      render: (_: unknown, record: RequirementItem) =>
-        record.linkedProject ? (
-          <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 140 }}>
-            {record.linkedProject.name}
-          </Text>
-        ) : (
-          <Text type="tertiary">-</Text>
-        ),
-    },
-    {
       title: t('common.owner', t('common.creator') as string),
       dataIndex: 'owner_name',
       key: 'owner_name',
