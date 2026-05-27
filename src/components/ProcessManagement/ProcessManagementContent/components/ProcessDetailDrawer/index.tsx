@@ -676,6 +676,16 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           />
         </TabPane>
 
+
+        <TabPane tab={`资料${documentCount ? ` (${documentCount})` : ''}`} itemKey="documents">
+          <DocumentsTab
+            processId={processData.id}
+            processName={processData.name}
+            versions={sortedVersionData.map((v) => ({ id: v.id, version: v.version }))}
+            onCountChange={setDocumentCount}
+          />
+        </TabPane>
+
         <TabPane tab={t('development.processDevelopment.detail.tabs.effort')} itemKey="effort">
           <EffortTab processId={processData.id} creatorId={processData.creator_id} />
         </TabPane>
