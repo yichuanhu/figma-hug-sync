@@ -1,74 +1,147 @@
 ## 目标
 
-按 `STORY-002-PG-RESPONSIBILITY` 在流程详情抽屉「详情」Tab 的基本信息中新增并维护：开发工程师、代码审核员、最近上线审核人（只读派生），并实现上传新版本后覆盖开发工程师、发布审批通过后回填代码审核员的自动逻辑。
+按 `STORY-003-PG-LIFECYCLE-LEDGER` 在流程详情抽屉「详情」Tab 基本信息中新增「生命周期台账」区域，展示开发完成、部署上线、流程下线三个里程碑的当前生效值、原始事件值、来源，并支持有权限用户修正及查看修正历史。
 
 ## 范围
 
-- 仅改动 `ProcessDetailDrawer`（详情 Tab 的基本信息区域）及对应 mock 服务。
-- 上传版本、发布审批通过两个已有动作旁挂自动写入逻辑。
-- 不新增协作者权限、不改变流程访问权限、不修改组织架构数据。
+- 仅改动 `ProcessDetailDrawer`「详情」Tab 基本信息区域及配套 mock 服务、权限 hook、修正弹窗与历史抽屉/弹窗。
+- 不实现自动事件写入逻辑（由 FEAT-025 / FEAT-027 承接）；本 Story 仅在 mock 层预置自动事件作为展示数据。
+- 不改流程访问权限、协作者、组织架构。
 
 ## 详情
 
-### 1. 基本信息字段调整
+### 1. 基本信息区追加生命周期台账
 
-`ProcessDetailDrawer/index.tsx` `descriptionData` 中，在「负责人」之后追加三行：
+在 `descriptionData` 末尾追加分组小标题「生命周期台账」并新增三行：
 
-- **开发工程师** `developer_ids` — 多人；展示 `UserNameWithCard` 列表（逗号分隔），后面跟一个铅笔图标（Lucide `Pencil` size=14），点击打开编辑弹窗。空值显示 `-` + 添加按钮（同权限点）。
-- **代码审核员** `code_reviewer_ids` — 多人；展示 + 编辑入口同上。说明文案 tooltip：「代码审核员可手工维护；若为空且发布审批存在“代码审核”节点，将在该节点审批通过后写入」。
-- **最近上线审核人** `last_release_reviewer`（只读派生）— 显示「{用户名} · {版本号} · {审批通过时间}」，无数据显示 `-`；右侧问号 tooltip 解释来源，不可编辑。
+- **开发完成时间** `development_completed_at`
+- **部署上线时间** `deployed_at`（未上线时显示 `-`）
+- **流程下线时间** `offline_at`（未下线时显示 `-`）
 
-所有新增字段按 `useProcessBasicInfoPermission(processId).canView` 控制可见；编辑入口按 `canUpdate` 控制（mock 默认全开，预留 UCI 权限点）。
+每行渲染：
 
-### 2. 编辑弹窗 `BasicInfoEditModal`
+```text
+2026-05-20 10:23  ⓘ  ✎
+```
 
-路径：`.../ProcessDetailDrawer/components/BasicInfoEditModal/`
+- 主体：当前生效值（`YYYY-MM-DD HH:mm`）。
+- `ⓘ` Tooltip：展示「来源：自动记录(发布申请提交) / 手工修正(由 张三 于 ... 修正，原因：...)」+ 原始事件值。来源为 `manual_adjust` 时主体右侧追加小 Tag「已修正」。
+- `✎` 铅笔按钮（Lucide `Pencil` size=14）：仅 `canAdjust` 时显示，点击打开修正弹窗。
+- 区域底部一行链接「查看修正历史」，点击打开历史弹窗。
 
-- 基于 `FormModal`，宽 520px，标题随入口动态：`编辑开发工程师` / `编辑代码审核员`。
-- 字段：用户多选（`Select multiple filter`，使用现有 `OwnerSelect` 或简单 mock 用户列表 + 去重校验）。复用既有 `mockCreatorInfoMap` 扩充为 8 人左右作为选项。
-- 校验：必须为有效用户、不可重复；可为空（按 R-02、R-05）。
-- 提交后调用 mock 服务 `updateProcessBasicInfo`，写入本地 store 并 `Toast.success`，触发抽屉局部刷新（通过 `refreshTick`/回调）。
+权限：整体区域按 `useProcessLifecyclePermission(processId).canView` 控制可见；修正入口按 `canAdjust` 控制（mock 全开，预留 UCI `process_lifecycle.view` / `process_lifecycle.adjust`）。
 
-### 3. Mock 数据与服务
+### 2. 修正弹窗 `LifecycleAdjustModal`
 
-新建 `src/mocks/processBasicInfo.ts`：
+路径：`.../ProcessDetailDrawer/components/LifecycleAdjustModal/`
 
-- 类型 `ProcessBasicInfo { process_id, developer_ids: string[], code_reviewer_ids: string[], last_release_reviewer?: { user_id, user_name, version, approved_at } }`。
-- 提供 `getProcessBasicInfo(processId)`、`updateProcessBasicInfo(processId, patch)`、`overrideDevelopersOnVersionUpload(processId, uploaderId)`、`writeCodeReviewerFromApproval(processId, approverId)`、`setLastReleaseReviewer(processId, info)`。
-- 内置 in-memory `Map`，按 process 预置 1-2 个开发工程师、0-1 个审核员、一条最近上线审核人样例数据。
-- 提供 mock 用户列表（与现有 `mockCreatorInfoMap` 对齐，新增 user-006/007/008）。
-- 所有写操作伴随 `console.info('[AUDIT] ...')` 输出，模拟 R-04/R-11 审计日志。
+- 基于 `FormModal`，宽 520px，标题随字段动态：`修正开发完成时间` 等。
+- 只读展示：原始事件值、当前生效值。
+- 表单字段：
+  - 新时间（`DatePicker type="dateTime"`，必填）
+  - 修正原因（`TextArea` 1~500 字符，必填，AC-ERR-01）
+  - 历史补录（`Switch`，仅修正 `offline_at` 且新值早于 `deployed_at` 时强制要求开启，R-06）
+- 校验：
+  - 修正原因必填；
+  - `offline_at` 默认不得早于 `deployed_at`，除非开启「历史补录」并填写原因。
+- 提交调用 `adjustLifecycleMilestone(processId, field, payload)`，成功后 `Toast.success`，触发基本信息局部刷新。
 
-### 4. 自动维护逻辑接线
+### 3. 修正历史弹窗 `LifecycleHistoryModal`
 
-- **上传新版本覆盖开发工程师 (R-03/R-04, AC-FUNC-03)**：找到 `ProcessDetailDrawer` 内现有「上传新版本」成功回调（versions Tab 内的上传/创建版本逻辑），在成功后调用 `overrideDevelopersOnVersionUpload(processId, currentUserId)` 并刷新基本信息。若现有上传逻辑在外部组件，则通过 `onUploadVersionSuccess` 回调向上暴露，并在抽屉拿到回调后写入。
-- **发布审批通过回填代码审核员 (R-05/R-06, AC-FUNC-04)**：在现有发布审批 mock 通过流程（`src/mocks/processVersionApproval.ts` 中标记通过的位置）尾部调用 `writeCodeReviewerFromApproval`，仅在 `code_reviewer_ids` 为空且节点名包含「代码审核」时写入最后一个节点通过人；同时调用 `setLastReleaseReviewer` 更新只读字段（无论代码审核员是否被写入，AC-FUNC-05）。
+- `Modal` 宽 720px，标题「修正历史」。
+- `Table size="small"`：字段、修正前生效值、修正后生效值、原始事件值、原因、修正人（`UserNameWithCard`）、修正时间。
+- 数据来自 `getLifecycleAdjustments(processId)`，按时间倒序。
+
+### 4. Mock 数据与服务
+
+新建 `src/mocks/processLifecycleLedger.ts`：
+
+- 类型：
+
+```ts
+type MilestoneSource =
+  | 'auto_publish_submit'
+  | 'auto_publish_success'
+  | 'auto_offline_success'
+  | 'manual_adjust';
+
+interface LifecycleMilestone {
+  effective_at: string | null;
+  original_event_at: string | null;
+  source: MilestoneSource;
+  manual_note?: { actor_id: string; actor_name: string; at: string; reason: string };
+}
+
+interface ProcessLifecycleLedger {
+  process_id: string;
+  development_completed_at: LifecycleMilestone;
+  deployed_at: LifecycleMilestone;
+  offline_at: LifecycleMilestone;
+}
+
+interface LifecycleAdjustment {
+  id: string;
+  process_id: string;
+  field: 'development_completed_at' | 'deployed_at' | 'offline_at';
+  previous_effective_at: string | null;
+  new_effective_at: string;
+  original_event_at: string | null;
+  reason: string;
+  backfill: boolean;
+  actor_id: string;
+  actor_name: string;
+  at: string;
+}
+```
+
+- 服务：`getProcessLifecycleLedger`、`adjustLifecycleMilestone`、`getLifecycleAdjustments`、`subscribeLifecycleLedger`。
+- 内存 `Map` 预置 1~2 个流程的台账（含一条「已修正」样例和一条调整历史）。
+- 写操作输出 `console.info('[AUDIT] lifecycle …')` 模拟 R-03/R-08 审计。
+- 默认遵循 R-07：新自动事件追加 `original_event_at` 与审计，但不覆盖已存在的 `manual_adjust` 当前生效值（仅在 mock helper 中体现，本 Story 不接线自动事件）。
 
 ### 5. 权限 Hook
 
-新建 `src/hooks/useProcessBasicInfoPermission.ts`，导出 `{ canView, canUpdate }`，mock 全返回 true，预留 UCI（`process_basic_info.view` / `process_basic_info.update`）。
+新建 `src/hooks/useProcessLifecyclePermission.ts`：
+
+```ts
+export const useProcessLifecyclePermission = (_processId?: string) => ({
+  canView: true,
+  canAdjust: true,
+});
+```
+
+预留 UCI：`process_lifecycle.view`、`process_lifecycle.adjust`。
 
 ### 6. i18n
 
-`public/i18n/zh-CN.json` 与 `en.json` 在 `development.processDevelopment.detail` 下新增：
-`basicInfo.developers`、`basicInfo.codeReviewers`、`basicInfo.lastReleaseReviewer`、`basicInfo.lastReleaseReviewerTip`、`basicInfo.codeReviewerTip`、`basicInfo.editDevelopers`、`basicInfo.editCodeReviewers`、`basicInfo.userPlaceholder`、`basicInfo.duplicateUser` 等键。
+在 `public/i18n/zh-CN.json` 与 `en.json` 的 `development.processDevelopment.detail` 下新增：
+
+- `lifecycle.sectionTitle`
+- `lifecycle.developmentCompletedAt` / `deployedAt` / `offlineAt`
+- `lifecycle.source.autoPublishSubmit` / `autoPublishSuccess` / `autoOfflineSuccess` / `manualAdjust`
+- `lifecycle.tag.adjusted`
+- `lifecycle.tooltip.original`、`lifecycle.tooltip.manual`
+- `lifecycle.viewHistory`、`lifecycle.history.title` 及表头键
+- `lifecycle.adjust.title.*`、`lifecycle.adjust.newTime`、`reason`、`backfill`、`backfillHint`、`reasonRequired`、`offlineBeforeDeployed`
 
 ## 不改动
 
-- 现有「版本/依赖/资料/工时/ROI」Tab 内容与样式。
-- 流程访问权限、协作者机制、组织架构数据。
-- 路由、Sidebar、发布/停用审批页面 UI（仅在审批通过的 mock 服务里追加回填调用）。
+- 现有版本/依赖/资料/工时/ROI Tab。
+- 发布、停用审批 UI 与业务流。
+- 路由、Sidebar、协作者机制。
 
 ## ASCII 结构
 
 ```text
 ProcessDetailDrawer › 详情 Tab › 基本信息
-├── 流程名 / 描述 / 归属部门 / 关联需求 / 负责人 / 创建人 ...
-├── 开发工程师        [张三, 李四] ✎              ← 新增（可编辑）
-├── 代码审核员        [王五] ✎ (?)               ← 新增（可编辑 + 说明）
-└── 最近上线审核人    赵六 · v1.2.0 · 2026-05-20 (?)  ← 新增（只读派生）
+├── ...（流程名/部门/负责人/开发工程师/代码审核员/最近上线审核人）
+└── 生命周期台账
+    ├── 开发完成时间   2026-05-20 10:23  ⓘ ✎
+    ├── 部署上线时间   2026-05-22 09:00  ⓘ ✎  [已修正]
+    ├── 流程下线时间   -                 ⓘ ✎
+    └── 查看修正历史 ›
 
-自动维护：
-  上传新版本成功 ──▶ overrideDevelopersOnVersionUpload
-  发布审批「代码审核」节点通过 ──▶ writeCodeReviewerFromApproval (+ setLastReleaseReviewer)
+弹窗：
+  LifecycleAdjustModal  ─ 新时间 + 原因(必填) + 历史补录(可选)
+  LifecycleHistoryModal ─ 字段 / 修正前 / 修正后 / 原始事件 / 原因 / 修正人 / 时间
 ```

@@ -33,6 +33,8 @@ import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
 import DocumentsTab from './components/DocumentsTab';
 import BasicInfoEditModal, { type BasicInfoEditField } from './components/BasicInfoEditModal';
+import LifecycleAdjustModal from './components/LifecycleAdjustModal';
+import LifecycleHistoryModal from './components/LifecycleHistoryModal';
 import {
   getProcessBasicInfo,
   getUserById,
@@ -40,6 +42,15 @@ import {
   subscribeBasicInfo,
 } from '@/mocks/processBasicInfo';
 import { useProcessBasicInfoPermission } from '@/hooks/useProcessBasicInfoPermission';
+import { useProcessLifecyclePermission } from '@/hooks/useProcessLifecyclePermission';
+import {
+  FIELD_LABEL as LIFECYCLE_FIELD_LABEL,
+  SOURCE_LABEL as LIFECYCLE_SOURCE_LABEL,
+  getProcessLifecycleLedger,
+  subscribeLifecycleLedger,
+  type LifecycleField,
+  type LifecycleMilestone,
+} from '@/mocks/processLifecycleLedger';
 
 import {
   fetchAllLinkableRequirements,
@@ -346,6 +357,22 @@ const ProcessDetailDrawer = ({
     [processData?.id, basicInfoTick],
   );
 
+  // 生命周期台账（STORY-003-PG-LIFECYCLE-LEDGER）
+  const lifecyclePermission = useProcessLifecyclePermission(processData?.id);
+  const [lifecycleTick, setLifecycleTick] = useState(0);
+  const [lifecycleAdjustField, setLifecycleAdjustField] = useState<LifecycleField | null>(null);
+  const [lifecycleHistoryVisible, setLifecycleHistoryVisible] = useState(false);
+  useEffect(() => {
+    if (!processData?.id) return;
+    const unsub = subscribeLifecycleLedger(processData.id, () => setLifecycleTick((v) => v + 1));
+    return () => { unsub(); };
+  }, [processData?.id]);
+  const lifecycleLedger = useMemo(
+    () => (processData?.id ? getProcessLifecycleLedger(processData.id) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [processData?.id, lifecycleTick],
+  );
+
   // 版本数据按版本号降序排列
   const sortedVersionData = useMemo(() => {
     const data = [...versionData];
@@ -574,6 +601,65 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           },
         ]
       : []),
+    ...(lifecyclePermission.canView && lifecycleLedger
+      ? ([
+          'development_completed_at',
+          'deployed_at',
+          'offline_at',
+        ] as LifecycleField[]).map((f) => {
+          const m: LifecycleMilestone = lifecycleLedger[f];
+          const isManual = m.source === 'manual_adjust';
+          const tooltipContent = (
+            <div style={{ maxWidth: 280 }}>
+              <div>来源：{LIFECYCLE_SOURCE_LABEL[m.source]}</div>
+              <div>原始事件：{formatDateTime(m.original_event_at)}</div>
+              {m.manual_note && (
+                <>
+                  <div style={{ marginTop: 4 }}>
+                    修正人：{m.manual_note.actor_name} · {formatDateTime(m.manual_note.at)}
+                  </div>
+                  <div>原因：{m.manual_note.reason}</div>
+                  {m.manual_note.backfill && <div>（历史补录）</div>}
+                </>
+              )}
+            </div>
+          );
+          return {
+            key: LIFECYCLE_FIELD_LABEL[f],
+            value: (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                <Text>{formatDateTime(m.effective_at)}</Text>
+                {isManual && <Tag size="small" color="orange" type="light">已修正</Tag>}
+                <Tooltip content={tooltipContent}>
+                  <HelpCircle size={12} strokeWidth={2} style={{ cursor: 'help' }} />
+                </Tooltip>
+                {lifecyclePermission.canAdjust && (
+                  <Tooltip content={`修正${LIFECYCLE_FIELD_LABEL[f]}`}>
+                    <Button
+                      icon={<Pencil size={14} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      size="small"
+                      onClick={() => setLifecycleAdjustField(f)}
+                    />
+                  </Tooltip>
+                )}
+                {f === 'offline_at' && (
+                  <Button
+                    theme="borderless"
+                    type="primary"
+                    size="small"
+                    onClick={() => setLifecycleHistoryVisible(true)}
+                    style={{ marginLeft: 'auto' }}
+                  >
+                    查看修正历史
+                  </Button>
+                )}
+              </span>
+            ),
+          };
+        })
+      : []),
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
     {
@@ -585,6 +671,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       ),
     },
   ];
+
 
   const getVersionDescriptionData = (version: VersionDetailData) => [
     { key: t('development.processDevelopment.detail.versionDetail.processVersion'), value: <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>{version.version}{version.id === latestActiveVersionId && <Tag color="green" type="light" size="small">{t('development.processDevelopment.detail.versionList.activeVersion')}</Tag>}</span> },
@@ -854,6 +941,19 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           onClose={() => setBasicInfoEditField(null)}
         />
       )}
+      {lifecycleAdjustField && (
+        <LifecycleAdjustModal
+          visible={!!lifecycleAdjustField}
+          processId={processData.id}
+          field={lifecycleAdjustField}
+          onClose={() => setLifecycleAdjustField(null)}
+        />
+      )}
+      <LifecycleHistoryModal
+        visible={lifecycleHistoryVisible}
+        processId={processData.id}
+        onClose={() => setLifecycleHistoryVisible(false)}
+      />
     </DetailDrawerWrapper>
   );
 };
