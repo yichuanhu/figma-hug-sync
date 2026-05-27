@@ -359,7 +359,7 @@ const ProcessDetailDrawer = ({
   // 生命周期台账（STORY-003-PG-LIFECYCLE-LEDGER）
   const lifecyclePermission = useProcessLifecyclePermission(processData?.id);
   const [lifecycleTick, setLifecycleTick] = useState(0);
-  const [lifecycleAdjustField, setLifecycleAdjustField] = useState<LifecycleField | null>(null);
+  
   
   useEffect(() => {
     if (!processData?.id) return;
