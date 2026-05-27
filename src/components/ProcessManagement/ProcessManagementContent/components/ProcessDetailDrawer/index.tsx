@@ -470,6 +470,110 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       : []),
     { key: t('common.owner'), value: processData.owner_name ? <UserNameWithCard name={processData.owner_name} userId={processData.owner_id || ''} /> : '-' },
     { key: t('common.creator'), value: creatorInfo ? <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> : '-' },
+    ...(basicInfoPermission.canView && basicInfo
+      ? [
+          {
+            key: '开发工程师',
+            value: (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                {basicInfo.developer_ids.length === 0 ? (
+                  <Text type="tertiary">-</Text>
+                ) : (
+                  basicInfo.developer_ids.map((uid, i) => {
+                    const u = getUserById(uid);
+                    return (
+                      <span key={uid} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        {u ? (
+                          <UserNameWithCard name={u.name} userId={u.id} department={u.department} role={u.role} email={u.email} />
+                        ) : (
+                          uid
+                        )}
+                        {i < basicInfo.developer_ids.length - 1 && <Text type="tertiary">,</Text>}
+                      </span>
+                    );
+                  })
+                )}
+                {basicInfoPermission.canUpdate && (
+                  <Tooltip content="编辑开发工程师">
+                    <Button
+                      icon={<Pencil size={14} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      size="small"
+                      onClick={() => setBasicInfoEditField('developer_ids')}
+                    />
+                  </Tooltip>
+                )}
+              </span>
+            ),
+          },
+          {
+            key: (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                代码审核员
+                <Tooltip content="代码审核员可手工维护；若为空且发布审批存在“代码审核”节点，将在该节点审批通过后自动写入。">
+                  <HelpCircle size={12} strokeWidth={2} />
+                </Tooltip>
+              </span>
+            ),
+            value: (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                {basicInfo.code_reviewer_ids.length === 0 ? (
+                  <Text type="tertiary">-</Text>
+                ) : (
+                  basicInfo.code_reviewer_ids.map((uid, i) => {
+                    const u = getUserById(uid);
+                    return (
+                      <span key={uid} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        {u ? (
+                          <UserNameWithCard name={u.name} userId={u.id} department={u.department} role={u.role} email={u.email} />
+                        ) : (
+                          uid
+                        )}
+                        {i < basicInfo.code_reviewer_ids.length - 1 && <Text type="tertiary">,</Text>}
+                      </span>
+                    );
+                  })
+                )}
+                {basicInfoPermission.canUpdate && (
+                  <Tooltip content="编辑代码审核员">
+                    <Button
+                      icon={<Pencil size={14} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      size="small"
+                      onClick={() => setBasicInfoEditField('code_reviewer_ids')}
+                    />
+                  </Tooltip>
+                )}
+              </span>
+            ),
+          },
+          {
+            key: (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                最近上线审核人
+                <Tooltip content="来源于最近一次发布审批通过记录，仅作展示，不会回写代码审核员。">
+                  <HelpCircle size={12} strokeWidth={2} />
+                </Tooltip>
+              </span>
+            ),
+            value: basicInfo.last_release_reviewer ? (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <UserNameWithCard
+                  name={basicInfo.last_release_reviewer.user_name}
+                  userId={basicInfo.last_release_reviewer.user_id}
+                />
+                <Text type="tertiary" size="small">
+                  · {basicInfo.last_release_reviewer.version} · {formatDateTime(basicInfo.last_release_reviewer.approved_at)}
+                </Text>
+              </span>
+            ) : (
+              <Text type="tertiary">-</Text>
+            ),
+          },
+        ]
+      : []),
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
     {
