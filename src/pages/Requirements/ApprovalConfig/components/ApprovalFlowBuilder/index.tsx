@@ -372,7 +372,7 @@ const ApprovalFlowBuilderPage = ({
                       icon={<X size={16} strokeWidth={2} />}
                       theme="borderless"
                       type="tertiary"
-                      onClick={() => navigate(basePath)}
+                      onClick={() => (embedded ? onEmbeddedClose?.() : navigate(basePath))}
                     />
                   </Tooltip>
                 </>
