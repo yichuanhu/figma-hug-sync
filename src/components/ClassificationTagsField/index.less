@@ -34,14 +34,12 @@
   }
 
   &.is-ready {
-    border: 1px solid var(--semi-color-border);
-    border-radius: 8px;
-    padding: 20px 24px;
-    background: var(--semi-color-bg-0);
-    transition: border-color 0.2s;
+    padding: 0;
+    background: transparent;
+    border: none;
 
-    &.has-error {
-      border-color: var(--semi-color-danger);
+    &.has-error .cls-header-label {
+      color: var(--semi-color-danger);
     }
   }
 
@@ -49,12 +47,13 @@
     display: flex;
     align-items: baseline;
     gap: 8px;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
 
     &-label {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 400;
       color: var(--semi-color-text-0);
+      line-height: 20px;
     }
 
     &-hint {
@@ -73,14 +72,14 @@
     gap: 6px;
     color: var(--semi-color-danger);
     font-size: 13px;
-    margin: 4px 0 12px;
+    margin: 0 0 12px;
   }
 
   .cls-key-list {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    margin-top: 16px;
+    gap: 16px;
+    margin-top: 4px;
   }
 
   .cls-key-block {
