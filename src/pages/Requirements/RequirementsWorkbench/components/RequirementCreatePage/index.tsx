@@ -426,19 +426,18 @@ const RequirementCreatePage = () => {
     if (!classificationEditable) return true;
     if (classificationStatus === "error") {
       Toast.error("分类标签加载失败，请稍后重试");
-      setCurrentStep(3);
+      setCurrentStep(0);
       return false;
     }
     if (classificationStatus === "loading") {
       Toast.info("分类标签加载中，请稍候");
       return false;
     }
-    if (classificationStatus === "empty") return true; // AF1：无适用分类键
-    // ready 态：合计至少 1 个
+    if (classificationStatus === "empty") return true;
     const total = Object.values(classificationValue).reduce((sum, ids) => sum + (ids?.length ?? 0), 0);
     if (total === 0) {
       setForceClsError(true);
-      setCurrentStep(3);
+      setCurrentStep(0);
       setTimeout(() => {
         const el = document.querySelector("[data-classification-anchor]");
         el?.scrollIntoView({ behavior: "smooth", block: "center" });
