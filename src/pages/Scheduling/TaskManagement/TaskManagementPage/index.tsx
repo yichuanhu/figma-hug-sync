@@ -760,6 +760,40 @@ const TaskManagementPage = () => {
           Toast.success(`已取消 ${cancellable.length} 个任务`);
         } else {
           Toast.warning(`成功 ${cancellable.length} 个，失败 ${uncancellable} 个`);
+          const failedItems = items.filter((it) => !it.success);
+          Modal.info({
+            title: '批量取消结果',
+            content: (
+              <div style={{ lineHeight: '22px' }}>
+                <div style={{ marginBottom: 8 }}>
+                  共 <strong>{selectedTasks.length}</strong> 个：
+                  成功 <strong style={{ color: 'var(--semi-color-success)' }}>{cancellable.length}</strong> 个，
+                  失败 <strong style={{ color: 'var(--semi-color-danger)' }}>{uncancellable}</strong> 个
+                </div>
+                <div style={{ maxHeight: 240, overflow: 'auto', border: '1px solid var(--semi-color-border)', borderRadius: 6 }}>
+                  <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse' }}>
+                    <thead style={{ background: 'var(--semi-color-fill-0)' }}>
+                      <tr>
+                        <th style={{ textAlign: 'left', padding: '6px 12px' }}>任务 ID</th>
+                        <th style={{ textAlign: 'left', padding: '6px 12px' }}>失败原因</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {failedItems.map((it) => (
+                        <tr key={it.task_id} style={{ borderTop: '1px solid var(--semi-color-border)' }}>
+                          <td style={{ padding: '6px 12px', fontFamily: 'monospace' }}>{it.task_id}</td>
+                          <td style={{ padding: '6px 12px', color: 'var(--semi-color-text-2)' }}>{it.message || '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ),
+            okText: '知道了',
+            hasCancel: false,
+            width: 560,
+          });
         }
       },
     });
