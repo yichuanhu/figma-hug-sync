@@ -129,16 +129,30 @@ const generateMockTaskResponse = (index: number): LYTaskResponse & { trigger_id:
 
   const deptNames = ['Finance Department', 'Enterprise Business Center', 'Human Resources Department', 'R&D Center', 'Finance Department'];
 
+  const triggerSource = triggerSources[index % triggerSources.length];
+  const matchedTrigger =
+    triggerSource === 'SCHEDULED' || triggerSource === 'QUEUE'
+      ? mockTriggerList.filter((t) => t.trigger_source === triggerSource)[index % 2]
+      : null;
+  const targetType = targetTypes[index % targetTypes.length];
+  const isGroupTarget = targetType === 'BOT_GROUP';
+  const targetEntity = isGroupTarget
+    ? mockWorkerGroupList[index % mockWorkerGroupList.length]
+    : mockWorkerList[index % mockWorkerList.length];
+  const targetName = targetEntity.name;
+  const processEntity = mockProcessList[index % mockProcessList.length];
+
   return {
     task_id: `TASK-${String(100000 + index).substring(1)}`,
-    process_id: generateUUID(),
-    process_name: processNames[index % processNames.length],
+    process_id: processEntity.process_id,
+    process_name: processEntity.process_name,
     owning_department_name: deptNames[index % deptNames.length],
     process_version_id: generateUUID(),
     process_version: `v${(index % 5) + 1}.0.0`,
-    execution_target_type: targetTypes[index % targetTypes.length],
-    execution_target_id: generateUUID(),
-    execution_target_name: targetNames[index % targetNames.length],
+    execution_target_type: targetType,
+    execution_target_id: targetEntity.id,
+    execution_target_name: targetName,
+
     task_status: taskStatus,
     execution_status: hasExecution ? executionStatuses[index % executionStatuses.length] : null,
     priority: priorities[index % priorities.length],
