@@ -365,10 +365,10 @@ const RequirementDetailDrawer = ({
     const availableTabs: string[] = ['overview'];
     if (hasApproval && data.approvalFlowConfig && !isHistory) availableTabs.push('approval');
     if ((hasAssessment || context === 'assessment') && context !== 'approval') availableTabs.push('assessment');
-    if (hasAssessment && context !== 'assessment') availableTabs.push('cost');
+    if (hasAssessment && context !== 'assessment' && context !== 'approval') availableTabs.push('cost');
     if (!isHistory && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('effort');
-    if (!isHistory && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('devScheme');
-    if (!isHistory && isPostProjectStatus(data.status)) availableTabs.push('changeLog');
+    if (!isHistory && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('devScheme');
+    if (!isHistory && context !== 'approval' && context !== 'assessment' && isPostProjectStatus(data.status)) availableTabs.push('changeLog');
     if (!availableTabs.includes(activeTab)) {
       setActiveTab('overview');
     }
