@@ -82,10 +82,17 @@ const FilterSectionItem = memo(
     section,
     onChange,
   }: {
-    section: InternalSectionState & { label: string; options?: FilterOption[]; datePresets?: Array<{ text: string; start: Date; end: Date }> };
+    section: InternalSectionState & {
+      label: string;
+      options?: FilterOption[];
+      datePresets?: Array<{ text: string; start: Date; end: Date }>;
+      placeholder?: string;
+      render?: (value: unknown, onChange: (value: unknown) => void) => ReactNode;
+    };
     onChange: (value: unknown) => void;
   }) => {
     switch (section.type) {
+
       case 'checkbox':
         return (
           <CheckboxGroup
