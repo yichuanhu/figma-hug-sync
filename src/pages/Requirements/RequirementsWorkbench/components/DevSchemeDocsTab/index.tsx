@@ -156,7 +156,6 @@ const DevSchemeDocsTab = ({ requirement, onChange }: Props) => {
       theme="solid"
       type="primary"
       icon={<Plus size={14} strokeWidth={2} />}
-      disabled={!perm.canManage}
       onClick={() => setUploadOpen(true)}
     >
       {t('requirements.devScheme.uploadButton')}
@@ -169,7 +168,7 @@ const DevSchemeDocsTab = ({ requirement, onChange }: Props) => {
         <span className="header-count">
           {t('requirements.devScheme.totalCount', { count: docs.length })}
         </span>
-        {perm.canManage && uploadButton}
+        {uploadButton}
       </div>
 
       {loading ? (
