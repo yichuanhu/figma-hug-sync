@@ -35,7 +35,7 @@ import {
 } from '../RequirementsWorkbench/mockData';
 import RequirementDetailDrawer from '../RequirementsWorkbench/components/RequirementDetailDrawer';
 import './index.less';
-import { CheckCircle, Ellipsis, Eye, Undo2, XCircle } from 'lucide-react';
+import { CheckCircle, Ellipsis, Undo2 } from 'lucide-react';
 import pendingIcon from '@/assets/review-stats/pending.png';
 import reviewedIcon from '@/assets/review-stats/reviewed.png';
 import approvedIcon from '@/assets/review-stats/approved.png';
@@ -322,26 +322,18 @@ const RequirementsReview = () => {
         width: 60,
         ellipsis: false,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        render: ((_: any, record: any) => (
-          <Dropdown
-            trigger="click"
-            position="bottomRight"
-            clickToHide
-            render={
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  icon={<Eye size={16} strokeWidth={2} />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedRecord(record);
-                    setInitialTab('overview');
-                    setDetailDrawerVisible(true);
-                  }}
-                >
-                  {t('common.viewDetail')}
-                </Dropdown.Item>
-                {isMyTurn(record) && (
-                  <>
+        render: ((_: any, record: any) => {
+          const canApprove = isMyTurn(record);
+          const canWithdraw = record.status === 'PENDING_APPROVAL' && record.creatorId === MOCK_CURRENT_USER_ID;
+          if (!canApprove && !canWithdraw) return <Text type="tertiary">-</Text>;
+          return (
+            <Dropdown
+              trigger="click"
+              position="bottomRight"
+              clickToHide
+              render={
+                <Dropdown.Menu>
+                  {canApprove && (
                     <Dropdown.Item
                       icon={<CheckCircle size={16} strokeWidth={2} />}
                       onClick={(e) => {
@@ -351,39 +343,27 @@ const RequirementsReview = () => {
                         setDetailDrawerVisible(true);
                       }}
                     >
-                      {t('requirements.detail.approve')}
+                      {t('requirements.review.approveAction', { defaultValue: '需求审批' })}
                     </Dropdown.Item>
+                  )}
+                  {canWithdraw && (
                     <Dropdown.Item
-                      icon={<XCircle size={16} strokeWidth={2} />}
-                      type="danger"
+                      icon={<Undo2 size={16} strokeWidth={2} />}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedRecord(record);
-                        setInitialTab('approval');
-                        setDetailDrawerVisible(true);
+                        handleWithdraw(record);
                       }}
                     >
-                      {t('requirements.detail.reject')}
+                      {t('requirements.review.withdraw')}
                     </Dropdown.Item>
-                  </>
-                )}
-                {record.status === 'PENDING_APPROVAL' && record.creatorId === MOCK_CURRENT_USER_ID && (
-                  <Dropdown.Item
-                    icon={<Undo2 size={16} strokeWidth={2} />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleWithdraw(record);
-                    }}
-                  >
-                    {t('requirements.review.withdraw')}
-                  </Dropdown.Item>
-                )}
-              </Dropdown.Menu>
-            }
-          >
-            <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
-          </Dropdown>
-        )),
+                  )}
+                </Dropdown.Menu>
+              }
+            >
+              <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+            </Dropdown>
+          );
+        }),
       });
     }
 
@@ -513,6 +493,7 @@ const RequirementsReview = () => {
                   onClick: () => {
                     if (record) {
                       setSelectedRecord(record as RequirementItem);
+                      setInitialTab('overview');
                       if (!detailDrawerVisible) setDetailDrawerVisible(true);
                     }
                   },
@@ -539,6 +520,7 @@ const RequirementsReview = () => {
                   onClick: () => {
                     if (record) {
                       setSelectedRecord(record as RequirementItem);
+                      setInitialTab('overview');
                       if (!detailDrawerVisible) setDetailDrawerVisible(true);
                     }
                   },
@@ -566,6 +548,7 @@ const RequirementsReview = () => {
                   onClick: () => {
                     if (record) {
                       setSelectedRecord(record as RequirementItem);
+                      setInitialTab('overview');
                       if (!detailDrawerVisible) setDetailDrawerVisible(true);
                     }
                   },
