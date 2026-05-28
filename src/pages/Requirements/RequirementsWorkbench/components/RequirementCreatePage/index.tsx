@@ -2,10 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Typography, Steps, Button, Form, Toast, Modal, Tag, Spin, useFormState } from "@douyinfe/semi-ui";
-import { ArrowLeft, Plus, Trash2, Building2 } from "lucide-react";
-import { Select, InputNumber, Banner } from "@douyinfe/semi-ui";
+import { ArrowLeft, Building2 } from "lucide-react";
+import { Banner } from "@douyinfe/semi-ui";
 import DepartmentSearchSelect from "@/components/DepartmentSearchSelect";
-// EmptyState 不再使用：v3 改为在 Step 0 内联 Banner 提示
 import { getSchemeIdByDepartment, subscribeSchemeBindingChange } from "@/mocks/departmentSchemeBinding";
 import { getDepartmentName } from "@/mocks/departmentData";
 import OwnerSearchSelect from "@/components/OwnerSearchSelect";
@@ -32,17 +31,27 @@ import ClassificationTagsField, {
   type ClassificationLoadStatus,
 } from "@/components/ClassificationTagsField";
 import { assignEntityClassifications, removeEntityClassifications } from "@/mocks/classification/service";
+import CostBaselineSection, {
+  type RequirementCostItemSnapshot,
+} from "./components/CostBaselineSection";
 import "./index.less";
 
 const { Title, Text } = Typography;
 
+/**
+ * Step 字段映射（用于 next 按钮分步校验 + 错误定位）
+ *   0 基本信息：title / department / owner / priority / 分类标签
+ *   1 业务补充字段：scheme 自定义字段（不在此列出，由各字段 rules 触发）
+ *   2 成本基线：execution_frequency / single_duration
+ *   3 发布变更（仅立项后编辑）
+ */
 const STEP_FIELDS: Array<string[]> = [
   ["title", "department", "owner", "priority"],
   [],
+  ["execution_frequency", "single_duration"],
   [],
-  [], // Step 3: 分类标签
-  [], // Step 4 (post-project edit only): 发布变更
 ];
+
 
 /** 动态 scheme 字段渲染器 */
 const SchemeFieldsRenderer = ({
