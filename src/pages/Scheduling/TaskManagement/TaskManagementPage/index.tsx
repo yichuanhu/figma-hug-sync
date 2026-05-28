@@ -1018,7 +1018,7 @@ const TaskManagementPage = () => {
                   showClear
                   maxTagCount={1}
                   useNameAsValue
-                  style={{ width: 150, flexShrink: 0 }}
+                  style={{ width: 168, flexShrink: 0 }}
                 />
                 <DatePicker
                   type="dateTimeRange"
@@ -1026,7 +1026,7 @@ const TaskManagementPage = () => {
                   value={dateRange ?? undefined}
                   onChange={(d) => { setDateRange(Array.isArray(d) && d.length === 2 && d[0] && d[1] ? (d as [Date, Date]) : null); setQueryParams((p) => ({ ...p, offset: 0 })); }}
                   placeholder={['开始时间', '结束时间']}
-                  style={{ width: 300, flexShrink: 0 }}
+                  style={{ width: 340, flexShrink: 0 }}
                 />
                 <FilterPopover
                   visible={filterPopoverVisible}
