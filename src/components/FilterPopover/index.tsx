@@ -33,14 +33,19 @@ export interface FilterSection {
   /** 区块标题 */
   label: string;
   /** 筛选类型 */
-  type: 'checkbox' | 'radio' | 'dateRange';
-  /** 选项列表（checkbox/radio类型必填） */
+  type: 'checkbox' | 'radio' | 'dateRange' | 'select' | 'multiSelect' | 'booleanTri' | 'custom';
+  /** 选项列表（checkbox/radio/select/multiSelect 类型必填） */
   options?: FilterOption[];
   /** 当前选中值（由外部控制） */
   value: unknown;
   /** 日期快捷选项（dateRange类型可选） */
   datePresets?: Array<{ text: string; start: Date; end: Date }>;
+  /** 占位符（select/multiSelect 可选） */
+  placeholder?: string;
+  /** 自定义渲染（type=custom 时使用） */
+  render?: (value: unknown, onChange: (value: unknown) => void) => ReactNode;
 }
+
 
 export interface FilterPopoverProps {
   /** 筛选区块配置列表 */
