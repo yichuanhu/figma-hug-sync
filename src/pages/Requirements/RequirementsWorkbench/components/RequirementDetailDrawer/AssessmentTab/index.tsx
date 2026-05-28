@@ -316,17 +316,8 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
 
   return (
     <div className="assessment-tab-content">
-      <Banner
-        type="info"
-        description={
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <Layers size={14} strokeWidth={2} />
-            评估流：<b>{flow.name}</b> · 共 {flow.levels.length} 级 · 当前进度 L{assessment.current_level_priority}
-          </span>
-        }
-        closeIcon={null}
-        icon={<ClipboardCheck size={16} strokeWidth={2} />}
-      />
+
+
 
       {(() => {
         const myRecords = assessment.records
