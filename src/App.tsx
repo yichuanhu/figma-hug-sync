@@ -72,6 +72,7 @@ import SchemeBuilderPage from "@/pages/Requirements/RequirementsScheme/component
 import ApprovalConfigPage from "@/pages/Requirements/ApprovalConfig";
 import ApprovalFlowBuilderPage from "@/pages/Requirements/ApprovalConfig/components/ApprovalFlowBuilder";
 import AssessmentConfigPage from "@/pages/Requirements/AssessmentConfig";
+import AssessmentFlowBuilderPage from "@/pages/Requirements/AssessmentConfig/components/AssessmentFlowBuilder";
 import CostBaselineConfigPage from "@/pages/Requirements/CostBaselineConfig";
 
 import ApprovalTemplatesPage from "@/pages/Development/ApprovalTemplates";
