@@ -944,7 +944,7 @@ const TaskManagementPage = () => {
           </div>
           <Row type="flex" justify="space-between" align="middle" className="task-management-page-header-toolbar">
             <Col>
-              <Space>
+              <Space wrap>
                 <Input
                   prefix={<IconSearchStroked />}
                   placeholder={t('task.searchPlaceholder')}
@@ -953,18 +953,42 @@ const TaskManagementPage = () => {
                   onChange={handleSearch}
                   showClear
                 />
+                <Select
+                  placeholder="流程"
+                  value={processFilter}
+                  onChange={(v) => { setProcessFilter((v as string[]) || []); setQueryParams((p) => ({ ...p, offset: 0 })); }}
+                  optionList={processOptions}
+                  multiple
+                  maxTagCount={1}
+                  showClear
+                  style={{ minWidth: 160 }}
+                />
+                <Select
+                  placeholder="任务状态"
+                  value={taskStatusFilter}
+                  onChange={(v) => { setTaskStatusFilter((v as string[]) || []); setQueryParams((p) => ({ ...p, offset: 0 })); }}
+                  optionList={taskStatusOptions}
+                  multiple
+                  maxTagCount={1}
+                  showClear
+                  style={{ minWidth: 140 }}
+                />
                 <DepartmentSelect
                   placeholder={t('common.filterDepartment')}
                   value={departmentFilter}
-                  onChange={(v) => {
-                    setDepartmentFilter(v);
-                    setQueryParams(prev => ({ ...prev, offset: 0 }));
-                  }}
+                  onChange={(v) => { setDepartmentFilter(v); setQueryParams((p) => ({ ...p, offset: 0 })); }}
                   multiple
                   showClear
                   maxTagCount={1}
                   useNameAsValue
                   style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
+                />
+                <DatePicker
+                  type="dateTimeRange"
+                  value={dateRange ?? undefined}
+                  onChange={(d) => { setDateRange(Array.isArray(d) && d.length === 2 && d[0] && d[1] ? (d as [Date, Date]) : null); setQueryParams((p) => ({ ...p, offset: 0 })); }}
+                  placeholder={['创建开始时间', '结束时间']}
+                  style={{ width: 320 }}
                 />
                 <FilterPopover
                   visible={filterPopoverVisible}
@@ -972,18 +996,45 @@ const TaskManagementPage = () => {
                   onConfirm={handleFilterConfirm}
                   sections={[
                     {
-                      key: 'taskStatus',
-                      label: t('task.filter.taskStatus'),
-                      type: 'checkbox',
-                      options: taskStatusOptions,
-                      value: taskStatusFilter,
+                      key: 'executionTarget',
+                      label: '执行目标',
+                      type: 'custom',
+                      value: { type: executionTargetType, id: executionTargetId },
+                      render: (val, onChange) => {
+                        const v = (val as { type: 'WORKER' | 'WORKER_GROUP' | null; id: string | null }) || { type: null, id: null };
+                        const targetList = v.type === 'WORKER_GROUP' ? mockWorkerGroupList : mockWorkerList;
+                        return (
+                          <Space>
+                            <Select
+                              placeholder="目标类型"
+                              value={v.type ?? undefined}
+                              onChange={(t) => onChange({ type: (t as 'WORKER' | 'WORKER_GROUP') || null, id: null })}
+                              optionList={[
+                                { value: 'WORKER', label: '机器人' },
+                                { value: 'WORKER_GROUP', label: '机器人组' },
+                              ]}
+                              showClear
+                              style={{ width: 120 }}
+                            />
+                            <Select
+                              placeholder="选择目标"
+                              value={v.id ?? undefined}
+                              onChange={(id) => onChange({ type: v.type, id: (id as string) || null })}
+                              optionList={targetList.map((x) => ({ value: x.id, label: x.name }))}
+                              disabled={!v.type}
+                              showClear
+                              style={{ width: 180 }}
+                            />
+                          </Space>
+                        );
+                      },
                     },
                     {
-                      key: 'executionStatus',
-                      label: t('task.filter.executionStatus'),
+                      key: 'priority',
+                      label: t('task.table.priority'),
                       type: 'checkbox',
-                      options: executionStatusOptions,
-                      value: executionStatusFilter,
+                      options: priorityOptions,
+                      value: priorityFilter,
                     },
                     {
                       key: 'triggerSource',
@@ -993,10 +1044,32 @@ const TaskManagementPage = () => {
                       value: triggerSourceFilter,
                     },
                     {
-                      key: 'dateRange',
-                      label: t('task.filter.dateRange'),
-                      type: 'dateRange',
-                      value: dateRange,
+                      key: 'triggerId',
+                      label: '所属触发器',
+                      type: 'select',
+                      placeholder: '选择触发器',
+                      options: triggerOptions,
+                      value: triggerIdFilter,
+                    },
+                    {
+                      key: 'executionStatus',
+                      label: t('task.filter.executionStatus'),
+                      type: 'checkbox',
+                      options: executionStatusOptions,
+                      value: executionStatusFilter,
+                    },
+                    {
+                      key: 'enableRecording',
+                      label: '是否录屏',
+                      type: 'booleanTri',
+                      value: enableRecordingFilter,
+                    },
+                    {
+                      key: 'hasScreenshot',
+                      label: '包含任务截图',
+                      type: 'checkbox',
+                      options: [{ value: true, label: '仅包含截图' }],
+                      value: hasScreenshotFilter === true ? [true] : [],
                     },
                   ]}
                 />
@@ -1018,6 +1091,59 @@ const TaskManagementPage = () => {
               </Space>
             </Col>
           </Row>
+
+          {/* 活动筛选标签 */}
+          {(() => {
+            const chips: Array<{ key: string; label: string; onClose: () => void }> = [];
+            if (searchValue) chips.push({ key: 'kw', label: `关键词: ${searchValue}`, onClose: () => { setSearchValue(''); setQueryParams((p) => ({ ...p, keyword: '', offset: 0 })); } });
+            processFilter.forEach((pid) => {
+              const p = mockProcessList.find((x) => x.process_id === pid);
+              chips.push({ key: `proc-${pid}`, label: `流程: ${p?.process_name || pid}`, onClose: () => setProcessFilter((arr) => arr.filter((x) => x !== pid)) });
+            });
+            taskStatusFilter.forEach((s) => chips.push({ key: `ts-${s}`, label: `任务状态: ${t(taskStatusConfig[s as TaskStatus]?.i18nKey || s)}`, onClose: () => setTaskStatusFilter((arr) => arr.filter((x) => x !== s)) }));
+            departmentFilter.forEach((d) => chips.push({ key: `dept-${d}`, label: `部门: ${d}`, onClose: () => setDepartmentFilter((arr) => arr.filter((x) => x !== d)) }));
+            if (dateRange) chips.push({ key: 'date', label: `创建时间: ${dateRange[0].toLocaleDateString()} ~ ${dateRange[1].toLocaleDateString()}`, onClose: () => setDateRange(null) });
+            if (executionTargetType && executionTargetId) {
+              const list = executionTargetType === 'WORKER_GROUP' ? mockWorkerGroupList : mockWorkerList;
+              const entity = list.find((x) => x.id === executionTargetId);
+              chips.push({ key: 'target', label: `执行目标: ${entity?.name || executionTargetId}`, onClose: () => { setExecutionTargetType(null); setExecutionTargetId(null); } });
+            }
+            priorityFilter.forEach((p) => chips.push({ key: `pr-${p}`, label: `优先级: ${t(priorityConfig[p as TaskPriority]?.i18nKey || p)}`, onClose: () => setPriorityFilter((arr) => arr.filter((x) => x !== p)) }));
+            triggerSourceFilter.forEach((s) => chips.push({ key: `tr-${s}`, label: `触发来源: ${t(`task.triggerSource.${s.toLowerCase()}`)}`, onClose: () => setTriggerSourceFilter((arr) => arr.filter((x) => x !== s)) }));
+            if (triggerIdFilter) {
+              const trg = mockTriggerList.find((x) => x.trigger_id === triggerIdFilter);
+              chips.push({ key: 'trg', label: `触发器: ${trg?.trigger_name || triggerIdFilter}`, onClose: () => setTriggerIdFilter(null) });
+            }
+            executionStatusFilter.forEach((s) => chips.push({ key: `es-${s}`, label: `执行状态: ${t(executionStatusConfig[s as ExecutionStatus]?.i18nKey || s)}`, onClose: () => setExecutionStatusFilter((arr) => arr.filter((x) => x !== s)) }));
+            if (enableRecordingFilter !== null) chips.push({ key: 'rec', label: `录屏: ${enableRecordingFilter ? '启用' : '关闭'}`, onClose: () => setEnableRecordingFilter(null) });
+            if (hasScreenshotFilter === true) chips.push({ key: 'shot', label: '仅包含截图', onClose: () => setHasScreenshotFilter(null) });
+            if (chips.length === 0) return null;
+            return (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12, alignItems: 'center' }}>
+                {chips.map((c) => (
+                  <Tag key={c.key} closable onClose={c.onClose} color="blue" type="light">{c.label}</Tag>
+                ))}
+                <Button theme="borderless" type="tertiary" size="small" onClick={handleClearAllFilters}>清除全部</Button>
+              </div>
+            );
+          })()}
+
+          {/* 批量操作栏 */}
+          {selectedRowKeys.length > 0 && (() => {
+            const selectedTasks = list.filter((t) => selectedRowKeys.includes(t.task_id));
+            const cancellableCount = selectedTasks.filter((t) => t.task_status === 'PENDING').length;
+            return (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: 'var(--semi-color-fill-0)', borderRadius: 8, marginBottom: 16 }}>
+                <Space>
+                  <Text>已选择 {selectedRowKeys.length} 项</Text>
+                  <Button icon={<X size={14} strokeWidth={2} />} size="small" theme="borderless" onClick={() => setSelectedRowKeys([])}>清除选择</Button>
+                </Space>
+                <Tooltip content={cancellableCount === 0 ? '没有可取消任务' : ''} trigger={cancellableCount === 0 ? 'hover' : 'custom'}>
+                  <Button icon={<XCircle size={16} strokeWidth={2} />} type="warning" disabled={cancellableCount === 0} onClick={handleBulkCancel}>批量取消</Button>
+                </Tooltip>
+              </div>
+            );
+          })()}
         </div>
 
         <div className="task-management-page-table">
@@ -1030,12 +1156,16 @@ const TaskManagementPage = () => {
               dataSource={list}
               rowKey="task_id"
               loading={loading && !isInitialLoad}
+              rowSelection={{
+                selectedRowKeys,
+                onChange: (keys) => setSelectedRowKeys((keys as string[]) || []),
+              }}
               empty={
                 <EmptyState
-                  variant={searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange ? 'noResult' : 'noData'}
+                  variant={searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter || executionTargetId || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange ? 'noResult' : 'noData'}
                   description={
-                    searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange
-                      ? t('task.empty.filterDescription')
+                    searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter || executionTargetId || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange
+                      ? '未找到匹配任务'
                       : t('task.empty.defaultDescription')
                   }
                 />
@@ -1048,6 +1178,7 @@ const TaskManagementPage = () => {
               })}
             />
           )}
+
           {total > 0 && (
             <div className="list-pagination">
               <Text type="tertiary">
