@@ -309,6 +309,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'requirementsConfig', labelKey: 'sidebar.requirementsConfig', isGroupLabel: true },
     { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <NotepadTextDashed size={18} strokeWidth={2} />, path: '/requirements/scheme' },
     { key: 'requirementsApprovalConfig', labelKey: 'sidebar.requirementsApprovalConfig', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/requirements/approval-config' },
+    { key: 'requirementsCostBaseline', labelKey: 'sidebar.requirementsCostBaseline', icon: <Wallet size={18} strokeWidth={2} />, path: '/requirements/cost-baseline' },
+
+
     
   ];
 
