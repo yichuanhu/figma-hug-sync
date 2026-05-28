@@ -641,16 +641,21 @@ const RequirementsReview = () => {
       {/* 详情抽屉 */}
       <RequirementDetailDrawer
         visible={detailDrawerVisible}
-        onClose={() => setDetailDrawerVisible(false)}
+        onClose={() => {
+          setDetailDrawerVisible(false);
+          setInitialTab('overview');
+        }}
         data={selectedRecord}
         dataList={filteredData}
         onNavigate={(item) => setSelectedRecord(item)}
         onEdit={() => {}}
         onDelete={() => {}}
         onStatusChange={handleStatusChange}
+        onRefresh={loadData}
         pagination={pagination}
         onScrollToRow={() => {}}
         context="approval"
+        initialTab={initialTab}
       />
     </div>
   );
