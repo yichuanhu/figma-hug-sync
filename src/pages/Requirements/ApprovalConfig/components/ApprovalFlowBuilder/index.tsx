@@ -54,6 +54,8 @@ interface ApprovalFlowBuilderPageProps {
   onEmbeddedSaved?: (saved: ApprovalFlowTemplate) => void;
   /** 嵌入模式下切换到另一个详情 */
   onEmbeddedNavigate?: (id: string) => void;
+  /** 隐藏内置 header（嵌入到 DetailDrawerWrapper 时使用，由外层提供标题与操作） */
+  hideHeader?: boolean;
 }
 
 const ApprovalFlowBuilderPage = ({
