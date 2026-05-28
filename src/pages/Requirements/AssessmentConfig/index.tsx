@@ -278,9 +278,7 @@ const AssessmentConfigPage = () => {
           </Space>
         ) : null;
 
-            )}
-          </Space>
-        ) : null;
+
         const deleteAction = current && !current.is_preset ? (
           <Button
             icon={<Trash2 size={16} strokeWidth={2} />}
