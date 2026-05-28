@@ -327,18 +327,67 @@ const AssessmentConfigPage = () => {
             deleteAction={deleteAction}
             className="assessment-flow-detail-drawer"
           >
-            {detailId && (
-              <AssessmentFlowBuilder
-                key={detailId}
-                embedded
-                embeddedId={detailId}
-                embeddedView
-                hideHeader
-                onEmbeddedClose={() => { setDetailId(null); load(true); }}
-                onEmbeddedSwitchEdit={(id) => { setDetailId(null); navigate(`${BASE_PATH}/builder/${id}`); }}
-                onEmbeddedNavigate={(id) => setDetailId(id)}
-              />
+            {detailId && current && (
+              <Tabs type="line" className="assessment-flow-detail-drawer-tabs" style={{ height: '100%' }}>
+                <TabPane tab="基本信息" itemKey="basic">
+                  <div className="assessment-flow-detail-drawer-content">
+                    <div className="assessment-flow-detail-drawer-meta-grid">
+                      <Text className="label">名称</Text>
+                      <Text>{current.name}</Text>
+                      <Text className="label">状态</Text>
+                      <Text>
+                        {current.is_preset
+                          ? '预设模板（不可启用）'
+                          : current.status === 'active'
+                          ? '已启用'
+                          : '未启用'}
+                      </Text>
+                      <Text className="label">描述</Text>
+                      <Text>{current.description || '-'}</Text>
+                      <Text className="label">适用部门</Text>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                        {(current.applicable_department_ids ?? []).length === 0 ? (
+                          <Text type="tertiary">尚未配置适用部门</Text>
+                        ) : (
+                          current.applicable_department_ids.map((id) => (
+                            <Tag
+                              key={id}
+                              color="violet"
+                              type="light"
+                              size="small"
+                              prefixIcon={<Building2 size={12} strokeWidth={2} />}
+                            >
+                              {getDepartmentName(id)}
+                            </Tag>
+                          ))
+                        )}
+                      </div>
+                      <Text className="label">评估级数</Text>
+                      <Text>{current.levels.length} 级</Text>
+                      <Text className="label">评估维度</Text>
+                      <Text>{current.models.reduce((s, m) => s + m.dimensions.length, 0)} 个</Text>
+                      <Text className="label">{t('common.createdAt')}</Text>
+                      <Text>{new Date(current.created_at).toLocaleString('zh-CN', { hour12: false })}</Text>
+                      <Text className="label">{t('common.updatedAt') || '更新时间'}</Text>
+                      <Text>{new Date(current.updated_at).toLocaleString('zh-CN', { hour12: false })}</Text>
+                    </div>
+                  </div>
+                </TabPane>
+                <TabPane tab={`评估流配置 (${current.levels.length})`} itemKey="flow">
+                  <AssessmentFlowBuilder
+                    key={detailId}
+                    embedded
+                    embeddedId={detailId}
+                    embeddedView
+                    hideHeader
+                    onEmbeddedClose={() => { setDetailId(null); load(true); }}
+                    onEmbeddedSwitchEdit={(id) => { setDetailId(null); navigate(`${BASE_PATH}/builder/${id}`); }}
+                    onEmbeddedNavigate={(id) => setDetailId(id)}
+                  />
+                </TabPane>
+              </Tabs>
             )}
+
           </DetailDrawerWrapper>
         );
       })()}
