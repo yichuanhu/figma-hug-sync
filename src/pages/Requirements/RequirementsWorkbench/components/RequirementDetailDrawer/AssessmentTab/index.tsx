@@ -401,38 +401,38 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
                         placeholder="评估说明（可选，最多 500 字）"
                         value={record.comment ?? ''}
                         onChange={(v) => patchRecord(idx, { comment: v })}
-                        autosize={{ minRows: 2, maxRows: 4 }}
+                        autosize={{ minRows: 3, maxRows: 5 }}
                         maxCount={500}
                         showClear
-                        style={{ marginTop: 12 }}
+                        className="assessment-result-textarea"
                       />
                       <Button
                         theme="solid"
                         type="primary"
                         loading={submitting}
                         onClick={() => handleSubmitLevel(idx)}
-                        style={{ marginTop: 12 }}
+                        className="assessment-result-submit"
                         block
                       >
                         提交本级评估
                       </Button>
                     </>
                   ) : (
-                    <>
-                      {record.comment && (
-                        <div style={{ marginTop: 12 }}>
-                          <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 4 }}>
-                            评估说明
+                    (record.comment || record.assessor_name) && (
+                      <div className="assessment-result-readonly">
+                        {record.comment && (
+                          <>
+                            <Text type="tertiary" size="small">评估说明</Text>
+                            <Text>{record.comment}</Text>
+                          </>
+                        )}
+                        {record.assessor_name && (
+                          <Text type="tertiary" size="small">
+                            {record.assessor_name} · {record.assessed_at?.replace('T', ' ').substring(0, 16)}
                           </Text>
-                          <Text>{record.comment}</Text>
-                        </div>
-                      )}
-                      {record.assessor_name && (
-                        <Text type="tertiary" size="small" style={{ marginTop: 8, display: 'block' }}>
-                          {record.assessor_name} · {record.assessed_at?.replace('T', ' ').substring(0, 16)}
-                        </Text>
-                      )}
-                    </>
+                        )}
+                      </div>
+                    )
                   )}
                 </div>
               </>
