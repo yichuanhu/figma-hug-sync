@@ -151,8 +151,9 @@ const RequirementsAssessment = () => {
     if (updated) setSelectedRecord(updated);
   };
 
-  const openAssess = (record: RequirementItem) => {
+  const openAssess = (record: RequirementItem, tab: string = 'assessment') => {
     setSelectedRecord(record);
+    setInitialTab(tab);
     setDetailDrawerVisible(true);
   };
 
