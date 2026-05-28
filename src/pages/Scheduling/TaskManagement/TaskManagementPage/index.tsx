@@ -217,7 +217,20 @@ type LYTaskResponseExt = LYTaskResponse & {
 let mockTaskData = generateMockTaskList();
 
 
-const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTaskResponse> => {
+type ExtTasksParams = GetTasksParams & {
+  owning_department_name?: string[];
+  process_ids?: string[];
+  trigger_id?: string | null;
+  execution_target_type?: 'WORKER' | 'WORKER_GROUP' | null;
+  execution_target_id?: string | null;
+  priorities?: string[];
+  enable_recording?: boolean | null;
+  has_screenshot?: boolean | null;
+  created_at_start?: string;
+  created_at_end?: string;
+};
+
+const fetchTaskList = async (params: ExtTasksParams): Promise<LYListResponseLYTaskResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
 
   let filteredData = [...mockTaskData];
@@ -229,6 +242,11 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
       item.task_id.toLowerCase().includes(keyword) ||
       item.process_name.toLowerCase().includes(keyword)
     );
+  }
+
+  // 流程过滤
+  if (params.process_ids && params.process_ids.length > 0) {
+    filteredData = filteredData.filter((item) => params.process_ids!.includes(item.process_id));
   }
 
   // taskStatusFilter
@@ -248,21 +266,52 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
     filteredData = filteredData.filter((item) => params.trigger_source!.includes(item.trigger_source));
   }
 
+  // 所属触发器
+  if (params.trigger_id) {
+    filteredData = filteredData.filter((item) => item.trigger_id === params.trigger_id);
+  }
+
+  // 执行目标
+  if (params.execution_target_type && params.execution_target_id) {
+    filteredData = filteredData.filter((item) => {
+      if (params.execution_target_type === 'WORKER_GROUP') {
+        return item.worker_group_id === params.execution_target_id;
+      }
+      return item.worker_id === params.execution_target_id;
+    });
+  }
+
+  // 优先级
+  if (params.priorities && params.priorities.length > 0) {
+    filteredData = filteredData.filter((item) => params.priorities!.includes(item.priority));
+  }
+
+  // 录屏
+  if (params.enable_recording === true || params.enable_recording === false) {
+    filteredData = filteredData.filter((item) => item.enable_recording === params.enable_recording);
+  }
+
+  // 截图
+  if (params.has_screenshot === true) {
+    filteredData = filteredData.filter((item) => item.has_screenshot === true);
+  }
+
   // 归属部门Filter
-  if ((params as any).owning_department_name && (params as any).owning_department_name.length > 0) {
-    const deptNames: string[] = (params as any).owning_department_name;
+  if (params.owning_department_name && params.owning_department_name.length > 0) {
+    const deptNames = params.owning_department_name;
     filteredData = filteredData.filter((item) => deptNames.includes((item as any).owning_department_name));
   }
 
-  // Time范围Filter
-  if (params.start_time) {
-    const startDate = new Date(params.start_time);
+  // 创建时间范围
+  if (params.created_at_start) {
+    const startDate = new Date(params.created_at_start);
     filteredData = filteredData.filter((item) => new Date(item.create_time) >= startDate);
   }
-  if (params.end_time) {
-    const endDate = new Date(params.end_time);
+  if (params.created_at_end) {
+    const endDate = new Date(params.created_at_end);
     filteredData = filteredData.filter((item) => new Date(item.create_time) <= endDate);
   }
+
 
   // Sort
   filteredData.sort((a, b) => {
