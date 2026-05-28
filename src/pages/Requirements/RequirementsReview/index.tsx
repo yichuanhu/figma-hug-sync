@@ -548,6 +548,7 @@ const RequirementsReview = () => {
                   onClick: () => {
                     if (record) {
                       setSelectedRecord(record as RequirementItem);
+                      setInitialTab('overview');
                       if (!detailDrawerVisible) setDetailDrawerVisible(true);
                     }
                   },
