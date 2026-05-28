@@ -121,25 +121,17 @@ const RequirementCreatePage = () => {
     dirtyRef.current = v;
     forceTick((k) => k + 1);
   };
-  const [positionCosts, setPositionCosts] = useState<Array<{ level?: string; cost?: number }>>([
-    { level: undefined, cost: undefined },
-  ]);
+  // 成本基线快照（STORY-003 v6）
+  const [costItems, setCostItems] = useState<RequirementCostItemSnapshot[]>([]);
+  const [legacyDeprecated, setLegacyDeprecated] = useState(false);
 
   // 草稿 / 发布变更 状态
   const [hasDraft, setHasDraft] = useState(false);
   const [draftLoadedAt, setDraftLoadedAt] = useState<string | null>(null);
   const [publishReason, setPublishReason] = useState("");
 
-  const updatePositionCost = (idx: number, patch: Partial<{ level: string; cost: number }>) => {
-    setPositionCosts((prev) => prev.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
-    setDirty(true);
-  };
-  const addPositionCost = () => {
-    setPositionCosts((prev) => [...prev, { level: undefined, cost: undefined }]);
-    setDirty(true);
-  };
-  const removePositionCost = (idx: number) => {
-    setPositionCosts((prev) => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== idx)));
+  const handleCostItemsChange = (next: RequirementCostItemSnapshot[]) => {
+    setCostItems(next);
     setDirty(true);
   };
 
