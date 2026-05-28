@@ -309,6 +309,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'requirementsConfig', labelKey: 'sidebar.requirementsConfig', isGroupLabel: true },
     { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <NotepadTextDashed size={18} strokeWidth={2} />, path: '/requirements/scheme' },
     { key: 'requirementsApprovalConfig', labelKey: 'sidebar.requirementsApprovalConfig', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/requirements/approval-config' },
+    { key: 'requirementsAssessmentConfig', labelKey: 'sidebar.requirementsAssessmentConfig', icon: <ClipboardCheck size={18} strokeWidth={2} />, path: '/requirements/assessment-config' },
     { key: 'requirementsCostBaseline', labelKey: 'sidebar.requirementsCostBaseline', icon: <Wallet size={18} strokeWidth={2} />, path: '/requirements/cost-baseline' },
 
 
@@ -439,8 +440,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname.startsWith('/sharing-center/admin/approval-levels')) return 'sharingApprovalLevels';
     if (pathname.startsWith('/sharing-center/admin/permissions')) return 'sharingPermissions';
     
-    if (pathname.startsWith('/requirements/approval-config')) return 'requirementsApprovalConfig';
-    if (pathname.startsWith('/requirements/cost-baseline')) return 'requirementsCostBaseline';
+   if (pathname.startsWith('/requirements/approval-config')) return 'requirementsApprovalConfig';
+   if (pathname.startsWith('/requirements/assessment-config')) return 'requirementsAssessmentConfig';
+   if (pathname.startsWith('/requirements/cost-baseline')) return 'requirementsCostBaseline';
 
     if (pathname.startsWith('/maintenance/config')) return 'mtConfigManagement';
     if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';

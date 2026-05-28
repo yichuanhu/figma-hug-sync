@@ -1021,7 +1021,7 @@
       "tab": {
         "overview": "概览",
         "approval": "审批流程",
-        "assessment": "技术评估",
+        "assessment": "需求评估",
         "cost": "预估节省成本",
         "effort": "开发工时",
         "versions": "版本历史",
@@ -1242,7 +1242,7 @@
       }
     },
     "assessment": {
-      "title": "技术评估",
+      "title": "需求评估",
       "description": "完成业务价值与技术复杂度评估",
       "searchPlaceholder": "搜索需求名称",
       "pendingMe": "待我评估",

@@ -169,10 +169,11 @@
     "requirementsManagement": "Requirements Management",
     "requirementsList": "Requirements List",
     "requirementsReview": "Requirement Review",
-    "requirementsAssessment": "Technical Assessment",
+    "requirementsAssessment": "Requirement Assessment",
     "requirementsConfig": "Requirements Configuration",
     "requirementsScheme": "Requirements Template Config",
-    "requirementsApprovalConfig": "Review & Assessment Flow Config",
+    "requirementsApprovalConfig": "Approval Flow Config",
+    "requirementsAssessmentConfig": "Assessment Flow Config",
     "requirementsCostBaseline": "Cost Baseline Config",
 
     "requirementsDeptApprovalBinding": "Dept Approval Binding",
@@ -1128,7 +1129,7 @@
       "tab": {
         "overview": "Overview",
         "approval": "Approval Flow",
-        "assessment": "Assessment",
+        "assessment": "Requirement Assessment",
         "cost": "Estimated Savings",
         "effort": "Dev Effort",
         "versions": "Version History",
@@ -1349,7 +1350,7 @@
       }
     },
     "assessment": {
-      "title": "Technical Assessment",
+      "title": "Requirement Assessment",
       "description": "Score business value and technical complexity",
       "searchPlaceholder": "Search requirements",
       "pendingMe": "Pending My Assessment",
