@@ -83,7 +83,7 @@ const ApproverListEditor = ({
 
   return (
     <div className="workflow-section">
-      <div className="workflow-card-header">
+      <div className="workflow-card-header" style={{ marginBottom: 12 }}>
         <Text strong>{title}</Text>
         {!readOnly && (
           <Button icon={<Plus size={14} strokeWidth={2} />} size="small" onClick={add}>
