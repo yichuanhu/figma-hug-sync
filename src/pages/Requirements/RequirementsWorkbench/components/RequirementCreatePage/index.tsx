@@ -359,7 +359,7 @@ const RequirementCreatePage = () => {
 
   const locateFirstError = (errorFields: string[]) => {
     const step0 = new Set(["title", "department", "owner", "priority"]);
-    const step2 = new Set(["execution_frequency", "single_duration"]);
+    const step2 = new Set(["monthly_execution_count", "single_manual_duration_minutes"]);
     let target = 1;
     const first = errorFields[0];
     if (first) {
