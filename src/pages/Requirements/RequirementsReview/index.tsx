@@ -344,7 +344,9 @@ const RequirementsReview = () => {
                       icon={<CheckCircle size={16} strokeWidth={2} />}
                       onClick={(e) => {
                         e.stopPropagation();
-                        openApprovalModal(record, 'approve');
+                        setSelectedRecord(record);
+                        setInitialTab('approval');
+                        setDetailDrawerVisible(true);
                       }}
                     >
                       {t('requirements.detail.approve')}
@@ -354,7 +356,9 @@ const RequirementsReview = () => {
                       type="danger"
                       onClick={(e) => {
                         e.stopPropagation();
-                        openApprovalModal(record, 'reject');
+                        setSelectedRecord(record);
+                        setInitialTab('approval');
+                        setDetailDrawerVisible(true);
                       }}
                     >
                       {t('requirements.detail.reject')}
