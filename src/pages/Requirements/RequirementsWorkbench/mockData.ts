@@ -19,6 +19,7 @@ import type {
   ApprovalHistoryAction,
 } from './types';
 import { statusConfigV2 } from './statusConfig';
+import { getActiveAssessmentFlowForDepartment } from '../AssessmentConfig/mockData';
 
 // ============= 旧 statusConfig（兼容，已迁移至 statusConfigV2） =============
 
@@ -272,34 +273,99 @@ const generateMockRequirements = (): RequirementItem[] => {
 
 const POST_ASSESS: RequirementStatus[] = ['PENDING_PROJECT', 'DEVELOPING', 'LAUNCHED', 'OFFLINE'];
 
-const generateMockDetailedAssessment = (status: RequirementStatus, idx: number): DetailedAssessment | undefined => {
+/**
+ * 基于评估流配置生成 mock 评估数据：
+ * - 对每个 level 生成 records；除最后一级外都标记 completed；
+ * - 价值/复杂度每个维度按伪随机命中一档计算 score；
+ * - 可行性按净分给一个倾向值。
+ */
+const generateMockDetailedAssessment = (
+  status: RequirementStatus,
+  index: number,
+  departmentId?: string,
+): DetailedAssessment | undefined => {
   if (!POST_ASSESS.includes(status)) return undefined;
-  const sv = (n: number) => (((idx + n) % 5) + 1) as 1 | 2 | 3 | 4 | 5;
-  const valueDimensions = [
-    { key: 'strategicAlignment', score: sv(1) },
-    { key: 'benefitScale', score: sv(2) },
-    { key: 'urgency', score: sv(3) },
+  const flow = getActiveAssessmentFlowForDepartment(departmentId);
+  if (!flow) return undefined;
+
+  const valueModel = flow.models.find((m) => m.type === 'value')!;
+  const complexityModel = flow.models.find((m) => m.type === 'complexity')!;
+  const mockUsers = [
+    { id: 'user-001', name: '张技术' },
+    { id: 'user-002', name: '李架构' },
+    { id: 'user-003', name: '王评审' },
+    { id: 'user-004', name: '赵负责人' },
+    { id: 'user-008', name: 'Angela Wu' },
   ];
-  const complexityDimensions = [
-    { key: 'implementationDifficulty', score: sv(4) },
-    { key: 'dependencyComplexity', score: sv(5) },
-    { key: 'risk', score: sv(0) },
-  ];
-  const valueTotal = valueDimensions.reduce((s, d) => s + d.score, 0);
-  const complexityTotal = complexityDimensions.reduce((s, d) => s + d.score, 0);
-  const netScore = valueTotal - complexityTotal;
-  const conclusion = netScore >= 5 ? 'RECOMMEND' : netScore >= 0 ? 'CAUTION' : 'REJECT';
+
+  const buildAnswers = (dims: typeof valueModel.dimensions, seed: number) =>
+    dims.map((d, i) => {
+      const tier = d.tiers[(seed + i) % d.tiers.length];
+      const isNumeric = d.input_type === 'numeric_input';
+      const numeric = isNumeric
+        ? Math.round(((tier.min_value ?? 0) + ((tier.max_value ?? (tier.min_value ?? 0) + 50))) / 2)
+        : undefined;
+      return {
+        dim_key: d.key,
+        dim_name: d.name,
+        tier_id: isNumeric ? undefined : tier.id,
+        matched_tier_id: isNumeric ? tier.id : undefined,
+        numeric_value: numeric,
+        score: tier.score,
+        weight: d.weight,
+      };
+    });
+
+  const weightedSum = (answers: ReturnType<typeof buildAnswers>) =>
+    Number(answers.reduce((s, a) => s + a.score * a.weight, 0).toFixed(2));
+
+  const records: import('./types').LevelAssessmentRecord[] = flow.levels.map((lv, li) => {
+    // 最后一级若状态尚未到 LAUNCHED 则保持 in_progress；其余视为 completed
+    const isLast = li === flow.levels.length - 1;
+    const completed = !isLast || ['LAUNCHED', 'OFFLINE', 'DEVELOPING'].includes(status);
+    const seed = index + li * 2;
+    const valueAnswers = buildAnswers(valueModel.dimensions, seed);
+    const complexityAnswers = buildAnswers(complexityModel.dimensions, seed + 1);
+    const valueScore = weightedSum(valueAnswers);
+    const complexityScore = weightedSum(complexityAnswers);
+    const net = valueScore - complexityScore;
+    const feasibility: import('./types').FeasibilityLevel =
+      net >= 30 ? 'feasible' : net >= 0 ? 'not_recommended' : 'not_feasible';
+    const assessor = mockUsers[(index + li) % mockUsers.length];
+    return {
+      level_id: lv.id,
+      level_name: lv.name,
+      level_priority: lv.priority,
+      status: completed ? 'completed' : isLast ? 'in_progress' : 'pending',
+      assessor_id: completed ? assessor.id : undefined,
+      assessor_name: completed ? assessor.name : undefined,
+      assessed_at: completed
+        ? new Date(2026, 1, 15 + ((index + li) % 10), 14, li * 2).toISOString()
+        : undefined,
+      value_answers: valueAnswers,
+      complexity_answers: complexityAnswers,
+      value_score: valueScore,
+      complexity_score: complexityScore,
+      feasibility: completed ? feasibility : undefined,
+      comment: completed ? '基于评估流自动生成的 mock 评估结论。' : undefined,
+    };
+  });
+
+  const latest = [...records].reverse().find((r) => r.status === 'completed');
+  const completedCount = records.filter((r) => r.status === 'completed').length;
   return {
-    valueDimensions,
-    complexityDimensions,
-    netScore,
-    conclusion,
-    assessorId: 'user-008',
-    assessorName: 'Angela Wu',
-    assessedAt: new Date(2026, 1, 15 + (idx % 10), 14, 0).toISOString(),
-    comment: 'Aligned with strategic priority. Resource plan to be confirmed.',
+    flow_id: flow.id,
+    flow_name: flow.name,
+    records,
+    current_level_priority: Math.min(completedCount + 1, flow.levels.length),
+    feasibility: latest?.feasibility,
+    netScore: latest ? Number((latest.value_score - latest.complexity_score).toFixed(2)) : undefined,
+    assessorId: latest?.assessor_id,
+    assessorName: latest?.assessor_name,
+    assessedAt: latest?.assessed_at,
   };
 };
+
 
 // ============= Story-010 成本预估自动计算 =============
 
@@ -1151,9 +1217,9 @@ export const updateRequirementAssessment = async (
   const newVersion: VersionSnapshot = {
     version: (cur.historyVersions?.length ?? 0) + 1,
     createdAt: new Date().toISOString(),
-    actorId: assessment.assessorId,
-    actorName: assessment.assessorName,
-    summary: `Assessment completed (net ${assessment.netScore}, ${assessment.conclusion}).`,
+    actorId: assessment.assessorId ?? 'system',
+    actorName: assessment.assessorName ?? 'System',
+    summary: `Assessment updated (net ${assessment.netScore ?? '-'}, ${assessment.feasibility ?? 'in progress'}).`,
     snapshot: {
       title: cur.title,
       description: cur.description,

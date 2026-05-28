@@ -40,10 +40,15 @@ const { Title, Text } = Typography;
 
 type AssessTab = 'pending' | 'assessed' | 'all';
 
-const conclusionTagColor: Record<string, TagColor> = {
-  RECOMMEND: 'green',
-  CAUTION: 'orange',
-  REJECT: 'red',
+const feasibilityTagColor: Record<string, TagColor> = {
+  feasible: 'green',
+  not_recommended: 'orange',
+  not_feasible: 'red',
+};
+const feasibilityLabel: Record<string, string> = {
+  feasible: '可行',
+  not_recommended: '不建议',
+  not_feasible: '不通过',
 };
 
 const RequirementsAssessment = () => {
@@ -94,8 +99,8 @@ const RequirementsAssessment = () => {
     allRequirements.forEach((r) => {
       const a = r.detailedAssessment;
       if (!a || a.assessorId !== MOCK_CURRENT_USER_ID) return;
-      if (a.conclusion === 'RECOMMEND') recommendCount += 1;
-      if (a.conclusion === 'REJECT') rejectCount += 1;
+      if (a.feasibility === 'feasible') recommendCount += 1;
+      if (a.feasibility === 'not_feasible') rejectCount += 1;
     });
     return { pendingCount, assessedCount, recommendCount, rejectCount };
   }, [allRequirements]);

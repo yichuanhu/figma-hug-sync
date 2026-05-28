@@ -518,24 +518,77 @@ export interface RequirementItem {
   updatedAt: string;
 }
 
-// ============= Story-007 详细评估 =============
+// ============= Story-007 详细评估（配置驱动，多级串行） =============
+
+/** 可行性判断（替代旧的 conclusion） */
+export type FeasibilityLevel = "feasible" | "not_recommended" | "not_feasible";
+
+/** 单维度作答 */
+export interface DimensionAnswer {
+  /** 关联评估流配置中的维度 key */
+  dim_key: string;
+  /** 维度名称快照（用于配置变更后仍可显示） */
+  dim_name: string;
+  /** tier_select 时使用，命中的档位 id */
+  tier_id?: string;
+  /** numeric_input 时使用，评估人填写的数值 */
+  numeric_value?: number;
+  /** numeric_input 时根据区间命中的档位 id（用于回显） */
+  matched_tier_id?: string;
+  /** 命中档位分值（0-100） */
+  score: number;
+  /** 维度权重快照（0-1） */
+  weight: number;
+}
+
+/** 单级评估记录 */
+export interface LevelAssessmentRecord {
+  level_id: string;
+  level_name: string;
+  level_priority: number;
+  /** pending: 还没轮到 / in_progress: 正在评估 / completed: 已提交 */
+  status: "pending" | "in_progress" | "completed";
+  assessor_id?: string;
+  assessor_name?: string;
+  assessed_at?: string;
+  value_answers: DimensionAnswer[];
+  complexity_answers: DimensionAnswer[];
+  /** 加权后的价值得分（0-100） */
+  value_score: number;
+  /** 加权后的复杂度得分（0-100） */
+  complexity_score: number;
+  /** 可行性判断（评估人下拉选择） */
+  feasibility?: FeasibilityLevel;
+  comment?: string;
+}
+
+/** 兼容旧字段所需的最小评分类型（保留以避免编译报错；新代码使用 DimensionAnswer） */
 export type AssessmentScore = 1 | 2 | 3 | 4 | 5;
 export interface AssessmentDimensionScore {
   key: string;
   score: AssessmentScore;
   note?: string;
 }
-export type AssessmentConclusionV2 = "RECOMMEND" | "CAUTION" | "REJECT";
+
 export interface DetailedAssessment {
-  valueDimensions: AssessmentDimensionScore[];
-  complexityDimensions: AssessmentDimensionScore[];
-  netScore: number;
-  conclusion: AssessmentConclusionV2;
-  assessorId: string;
-  assessorName: string;
-  assessedAt: string;
-  comment?: string;
+  /** 评估流模板 id */
+  flow_id: string;
+  /** 评估流模板名称快照 */
+  flow_name: string;
+  /** 各级评估记录（按 priority 升序） */
+  records: LevelAssessmentRecord[];
+  /** 当前进行到的级别 priority；全部完成后为 levels.length */
+  current_level_priority: number;
+  /** 最近一次已提交的可行性判断，用于列表展示 */
+  feasibility?: FeasibilityLevel;
+  /** 最近一次已提交记录的净得分 = value - complexity，用于列表/历史展示 */
+  netScore?: number;
+  /** 最近一次提交人，用于列表展示 */
+  assessorId?: string;
+  assessorName?: string;
+  assessedAt?: string;
 }
+
 
 // ============= Story-010 成本估算（自动计算，只读） =============
 /** 岗位级别 code（开放字符串，由激活模版的 cost_config.rate_table 决定） */
