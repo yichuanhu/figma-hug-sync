@@ -218,7 +218,7 @@ const PropertyPanel = ({
         );
       })()}
 
-      {hasApproval && showApprovalSection && (
+      {showApprovalSection && (
         <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
       )}
     </div>
