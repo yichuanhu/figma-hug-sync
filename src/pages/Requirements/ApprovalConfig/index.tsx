@@ -61,6 +61,8 @@ const ApprovalConfigPage = ({
   const [keyword, setKeyword] = useState('');
   const [flows, setFlows] = useState<ApprovalFlowTemplate[]>([]);
   const [loading, setLoading] = useState(true);
+  const useDrawer = businessType === 'REQUIREMENT';
+  const [drawerState, setDrawerState] = useState<{ id: string; view: boolean } | null>(null);
 
   const isPublish = businessType === 'PROCESS_PUBLISH';
   const isOffline = businessType === 'PROCESS_OFFLINE';
