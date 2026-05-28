@@ -19,6 +19,7 @@ import type {
   ApprovalHistoryAction,
 } from './types';
 import { statusConfigV2 } from './statusConfig';
+import { getActiveAssessmentFlowForDepartment } from '../AssessmentConfig/mockData';
 
 // ============= 旧 statusConfig（兼容，已迁移至 statusConfigV2） =============
 
