@@ -101,6 +101,7 @@ const ApprovalFlowBuilderPage = ({
     fetchApprovalFlows(undefined, businessType).then((all) => {
       setActiveTemplateIds(all.filter((x) => x.status === 'active').map((x) => x.id));
       setPresetIds(all.filter((x) => x.is_preset).map((x) => x.id));
+      setAllIds(all.map((x) => x.id));
     });
 
     if (isNew) {
