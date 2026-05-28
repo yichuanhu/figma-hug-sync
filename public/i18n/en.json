@@ -1048,13 +1048,15 @@
         "publishChangeDesc": "Provide change reason and publish"
       },
       "costBaseline": {
-        "banner": "Daily cost is captured from Cost Baseline Configuration as a snapshot, not actual execution config.",
-        "selectorLabel": "Cost Items",
-        "selectorPlaceholder": "Select cost items (multi-select)",
+        "banner": "Describes the manual cost baseline for handling this requirement. Used to estimate hours and money saved; does NOT affect bot execution, scheduling, or task runs.",
+        "selectorLabel": "Primary Role/Activity",
+        "selectorPlaceholder": "Select the primary role or activity (multi-select)",
         "empty": "No cost items yet. Please create them in Cost Baseline Configuration first.",
         "goConfig": "Go to Cost Baseline Configuration",
-        "executionFrequency": "Execution Frequency",
-        "singleDuration": "Single Duration (minutes)",
+        "monthlyExecutionCount": "Monthly Execution Count",
+        "monthlyExecutionCountUnit": "times/month",
+        "singleManualDuration": "Single Manual Duration",
+        "singleManualDurationUnit": "minutes",
         "legacyDeprecated": "Legacy position cost fields are deprecated. Please re-select cost baseline items.",
         "selectedTitle": "Selected Cost Items",
         "colType": "Type",
@@ -1062,7 +1064,13 @@
         "colDailyCost": "Daily Cost",
         "colAction": "Action",
         "dailyCostUnit": "/ person-day",
-        "remove": "Remove"
+        "remove": "Remove",
+        "tooltip": {
+          "selector": "Choose the role or activity primarily responsible for manual processing; the corresponding daily cost is auto-filled.",
+          "dailyCost": "Maintained by admins in Cost Baseline Configuration. A snapshot is captured when saving; later config changes do not affect this requirement's historical estimates.",
+          "monthlyExecutionCount": "Average number of manual executions per month for this scenario, used to compute monthly hours saved.",
+          "singleManualDuration": "Average manual handling time per execution, in minutes, used to compute monthly hours saved."
+        }
       }
     },
     "detail": {
