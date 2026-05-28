@@ -483,6 +483,7 @@ const RequirementDetailDrawer = ({
       storageKey="requirementDetailDrawerWidth"
       className="requirement-detail-drawer"
       extraActions={
+        context === 'approval' || context === 'assessment' ? null : (
         <>
           {!isHistoryMode && effectiveData.status === 'DRAFT' && (() => {
             const submitLabel = hasApproval
@@ -594,9 +595,10 @@ const RequirementDetailDrawer = ({
             </Tooltip>
           )}
         </>
+        )
       }
       deleteAction={
-        canDelete ? (
+        context !== 'approval' && context !== 'assessment' && canDelete ? (
           <Tooltip content={t('common.delete')}>
             <Button
               icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
