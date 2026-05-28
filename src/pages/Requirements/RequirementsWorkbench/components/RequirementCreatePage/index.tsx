@@ -234,15 +234,15 @@ const RequirementCreatePage = () => {
         setEditData(item);
         setDepartmentValue(item.owning_department_id || undefined);
         setOwnerId(item.owner_id || MOCK_CURRENT_USER.id);
-        // 还原岗位成本：优先 form_data.position_costs 数组；否则尝试从 position_level/position_cost 兼容
+        // 还原成本基线快照（STORY-003 v6）：优先 cost_baseline.items；旧字段 position_costs 仅显示废弃提示
         const fd = (item.form_data ?? {}) as Record<string, unknown>;
-        const arr = fd.position_costs as Array<{ level?: string; cost?: number }> | undefined;
-        if (Array.isArray(arr) && arr.length > 0) {
-          setPositionCosts(arr.map((r) => ({ level: r?.level, cost: r?.cost })));
-        } else if (fd.position_level || fd.position_cost) {
-          setPositionCosts([
-            { level: fd.position_level as string | undefined, cost: fd.position_cost as number | undefined },
-          ]);
+        const cb = fd.cost_baseline as
+          | { items?: RequirementCostItemSnapshot[]; execution_frequency?: string; single_duration?: number }
+          | undefined;
+        if (cb && Array.isArray(cb.items) && cb.items.length > 0) {
+          setCostItems(cb.items);
+        } else if (fd.position_costs || fd.position_level || fd.position_cost) {
+          setLegacyDeprecated(true);
         }
 
         // 立项后：尝试加载草稿合并
@@ -258,11 +258,17 @@ const RequirementCreatePage = () => {
               if (patch.priority !== undefined) formApi?.setValue?.("priority", patch.priority);
               if (patch.form_data) {
                 Object.entries(patch.form_data).forEach(([k, v]) => formApi?.setValue?.(k, v));
-                const da = (patch.form_data as Record<string, unknown>).position_costs as
-                  | Array<{ level?: string; cost?: number }>
+                const dcb = (patch.form_data as Record<string, unknown>).cost_baseline as
+                  | { items?: RequirementCostItemSnapshot[]; execution_frequency?: string; single_duration?: number }
                   | undefined;
-                if (Array.isArray(da) && da.length > 0) {
-                  setPositionCosts(da.map((r) => ({ level: r?.level, cost: r?.cost })));
+                if (dcb?.items && Array.isArray(dcb.items)) {
+                  setCostItems(dcb.items);
+                }
+                if (dcb?.execution_frequency !== undefined) {
+                  formApi?.setValue?.("execution_frequency", dcb.execution_frequency);
+                }
+                if (dcb?.single_duration !== undefined) {
+                  formApi?.setValue?.("single_duration", dcb.single_duration);
                 }
               }
             }, 0);
