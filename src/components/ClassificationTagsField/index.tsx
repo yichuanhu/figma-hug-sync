@@ -187,12 +187,15 @@ const ClassificationTagsField = ({
     >
       <div className="cls-header">
         <span className="cls-header-label">
-          分类标签 <span className="cls-required-mark">*</span>
+          分类标签
+          {required && <span className="cls-required-mark">*</span>}
         </span>
         <Text type="tertiary" size="small" className="cls-header-hint">
           {selectedCount > 0
             ? `（已选择 ${selectedCount} 个标签）`
-            : '（至少选择 1 个标签）'}
+            : required
+              ? '（至少选择 1 个标签）'
+              : '（可选，按业务维度打标）'}
         </Text>
       </div>
 
