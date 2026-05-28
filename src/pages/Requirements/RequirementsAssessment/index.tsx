@@ -131,7 +131,7 @@ const RequirementsAssessment = () => {
       data = data.filter((item) => departmentFilter.includes(item.owning_department_name));
     }
     if (activeTab !== 'pending' && conclusionFilter !== 'ALL') {
-      data = data.filter((item) => item.detailedAssessment?.conclusion === conclusionFilter);
+      data = data.filter((item) => item.detailedAssessment?.feasibility === conclusionFilter);
     }
     return data;
   }, [activeTab, allRequirements, searchValue, departmentFilter, conclusionFilter]);
@@ -216,15 +216,15 @@ const RequirementsAssessment = () => {
     },
     {
       title: t('requirements.assessment.conclusionCol'),
-      dataIndex: 'conclusion',
-      key: 'conclusion',
+      dataIndex: 'feasibility',
+      key: 'feasibility',
       width: 110,
       render: (_: unknown, record: RequirementItem) => {
         const a = record.detailedAssessment;
-        if (!a) return <Text type="tertiary">-</Text>;
+        if (!a?.feasibility) return <Text type="tertiary">-</Text>;
         return (
-          <Tag color={conclusionTagColor[a.conclusion] || 'grey'} type="light">
-            {t(`requirements.assessmentV2.conclusion.${a.conclusion}`)}
+          <Tag color={feasibilityTagColor[a.feasibility] || 'grey'} type="light">
+            {feasibilityLabel[a.feasibility] || a.feasibility}
           </Tag>
         );
       },
@@ -422,9 +422,9 @@ const RequirementsAssessment = () => {
                       type: 'radio',
                       options: [
                         { label: t('requirements.assessment.filterConclusionAll'), value: 'ALL' },
-                        { label: t('requirements.assessmentV2.conclusion.RECOMMEND'), value: 'RECOMMEND' },
-                        { label: t('requirements.assessmentV2.conclusion.CAUTION'), value: 'CAUTION' },
-                        { label: t('requirements.assessmentV2.conclusion.REJECT'), value: 'REJECT' },
+                        { label: '可行', value: 'feasible' },
+                        { label: '不建议', value: 'not_recommended' },
+                        { label: '不通过', value: 'not_feasible' },
                       ],
                       value: conclusionFilter,
                     },
