@@ -325,9 +325,9 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
           .filter(({ r }) => {
             const lv = flow.levels.find((l) => l.id === r.level_id);
             if (!lv) return false;
-            if (lv.assessor_type === 'department_leader') return true;
             return lv.assessor_ids.includes(MOCK_CURRENT_USER_ID);
           });
+
         if (myRecords.length === 0) {
           return (
             <Empty title="暂无您负责的评估级别" description="当前评估流未将您列为任一级别的评估人。" />
