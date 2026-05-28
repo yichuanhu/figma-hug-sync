@@ -20,6 +20,7 @@ import {
   Col,
   Space,
   SideSheet,
+  Tooltip,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Eye, Copy } from 'lucide-react';
@@ -29,7 +30,6 @@ import {
   deleteApprovalFlow,
   activateApprovalFlow,
   deactivateApprovalFlow,
-  cloneApprovalFlowAsDraft,
   subscribeApprovalFlowChange,
   type ApprovalFlowTemplate,
   type ApprovalBusinessType,
@@ -61,8 +61,10 @@ const ApprovalConfigPage = ({
   const [keyword, setKeyword] = useState('');
   const [flows, setFlows] = useState<ApprovalFlowTemplate[]>([]);
   const [loading, setLoading] = useState(true);
-  const useDrawer = true;
-  const [drawerState, setDrawerState] = useState<{ id: string; view: boolean } | null>(null);
+  // 详情抽屉 —— 仅用于查看；新建/编辑统一跳转新页面
+  const [detailId, setDetailId] = useState<string | null>(null);
+  // 基于模板创建：弹窗选择预设
+  const [presetPickerVisible, setPresetPickerVisible] = useState(false);
 
   const isPublish = businessType === 'PROCESS_PUBLISH';
   const isOffline = businessType === 'PROCESS_OFFLINE';
@@ -91,22 +93,16 @@ const ApprovalConfigPage = ({
 
   useEffect(() => subscribeApprovalFlowChange(() => load(true)), [load]);
 
-  const goEdit = (f: ApprovalFlowTemplate) => {
-    if (useDrawer) setDrawerState({ id: f.id, view: false });
-    else navigate(`${basePath}/builder/${f.id}`);
+  const goEdit = (f: ApprovalFlowTemplate) => navigate(`${basePath}/builder/${f.id}`);
+  const goDetail = (f: ApprovalFlowTemplate) => setDetailId(f.id);
+  const handleCreateNew = () => navigate(`${basePath}/builder/new`);
+  const handleCloneFromPreset = (sourceId: string) => {
+    setPresetPickerVisible(false);
+    navigate(`${basePath}/builder/new?preset=${encodeURIComponent(sourceId)}`);
   };
 
-  const goDetail = (f: ApprovalFlowTemplate) => {
-    if (useDrawer) setDrawerState({ id: f.id, view: true });
-    else navigate(`${basePath}/detail/${f.id}`);
-  };
-
-  const handleCreateNew = () => {
-    if (useDrawer) setDrawerState({ id: 'new', view: false });
-    else navigate(`${basePath}/builder/new`);
-  };
-
-
+  const presetFlows = flows.filter((f) => f.is_preset);
+  const hasPresets = presetFlows.length > 0;
 
   const handleActivate = (f: ApprovalFlowTemplate) => {
     const deptCount = (f.applicable_department_ids ?? []).length;
@@ -133,20 +129,6 @@ const ApprovalConfigPage = ({
     Toast.success('已停用');
     load();
   };
-
-
-
-  const handleClone = async (f: ApprovalFlowTemplate) => {
-    try {
-      const draft = await cloneApprovalFlowAsDraft(f.id);
-      Toast.success('已复制为草稿');
-      if (useDrawer) setDrawerState({ id: draft.id, view: false });
-      else navigate(`${basePath}/builder/${draft.id}`);
-    } catch (e) {
-      Toast.error((e as Error).message ?? '复制失败');
-    }
-  };
-
 
   const handleDelete = (f: ApprovalFlowTemplate) => {
     Modal.confirm({
@@ -188,6 +170,17 @@ const ApprovalConfigPage = ({
           </Col>
           <Col>
             <Space>
+              <Tooltip content={!hasPresets ? '暂无可用预设模板' : ''} position="bottom">
+                <span style={{ display: 'inline-block' }}>
+                  <Button
+                    icon={<Copy size={16} strokeWidth={2} />}
+                    disabled={!hasPresets}
+                    onClick={() => setPresetPickerVisible(true)}
+                  >
+                    基于模板创建
+                  </Button>
+                </span>
+              </Tooltip>
               <Button
                 icon={<Plus size={16} strokeWidth={2} />}
                 theme="solid"
@@ -246,10 +239,10 @@ const ApprovalConfigPage = ({
                             icon={<Copy size={14} />}
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleClone(f);
+                              handleCloneFromPreset(f.id);
                             }}
                           >
-                            复制
+                            基于此模板创建
                           </Dropdown.Item>
                         </Dropdown.Menu>
                       ) : (
@@ -288,10 +281,10 @@ const ApprovalConfigPage = ({
                             icon={<Copy size={14} />}
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleClone(f);
+                              handleCloneFromPreset(f.id);
                             }}
                           >
-                            复制
+                            基于此模板创建
                           </Dropdown.Item>
                           <Dropdown.Item
                             icon={<Trash2 size={14} />}
@@ -343,38 +336,69 @@ const ApprovalConfigPage = ({
         )}
       </div>
 
-      {useDrawer && (
-        <SideSheet
-          visible={!!drawerState}
-          onCancel={() => setDrawerState(null)}
-          mask={false}
-          width={900}
-          headerStyle={{ display: 'none' }}
-          bodyStyle={{ padding: 0 }}
-          closeOnEsc
-        >
-          {drawerState && (
-            <ApprovalFlowBuilder
-              key={`${drawerState.id}-${drawerState.view ? 'v' : 'e'}`}
-              businessType={businessType}
-              basePath={basePath}
-              embedded
-              embeddedId={drawerState.id}
-              embeddedView={drawerState.view}
-              onEmbeddedClose={() => {
-                setDrawerState(null);
-                load(true);
+      {/* 详情抽屉 —— 仅查看；编辑统一跳转新页面 */}
+      <SideSheet
+        visible={!!detailId}
+        onCancel={() => setDetailId(null)}
+        mask={false}
+        width={900}
+        headerStyle={{ display: 'none' }}
+        bodyStyle={{ padding: 0 }}
+        closeOnEsc
+      >
+        {detailId && (
+          <ApprovalFlowBuilder
+            key={detailId}
+            businessType={businessType}
+            basePath={basePath}
+            embedded
+            embeddedId={detailId}
+            embeddedView
+            onEmbeddedClose={() => {
+              setDetailId(null);
+              load(true);
+            }}
+            onEmbeddedSwitchEdit={(id) => {
+              setDetailId(null);
+              navigate(`${basePath}/builder/${id}`);
+            }}
+            onEmbeddedNavigate={(id) => setDetailId(id)}
+          />
+        )}
+      </SideSheet>
+
+      {/* 基于预设模板创建 */}
+      <Modal
+        title="基于模板创建"
+        visible={presetPickerVisible}
+        onCancel={() => setPresetPickerVisible(false)}
+        footer={null}
+        width={520}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {presetFlows.map((f) => (
+            <div
+              key={f.id}
+              onClick={() => handleCloneFromPreset(f.id)}
+              style={{
+                padding: 12,
+                border: '1px solid var(--semi-color-border)',
+                borderRadius: 6,
+                cursor: 'pointer',
               }}
-              onEmbeddedSwitchEdit={(id) => setDrawerState({ id, view: false })}
-              onEmbeddedNavigate={(id) => setDrawerState({ id, view: true })}
-              onEmbeddedSaved={(saved) => {
-                setDrawerState({ id: saved.id, view: false });
-                load(true);
-              }}
-            />
+            >
+              <div style={{ fontWeight: 500 }}>{f.name}</div>
+              <Text type="tertiary" size="small">{f.code}</Text>
+              <div style={{ marginTop: 4 }}>
+                <Text size="small" type="secondary">{f.description || '暂无描述'}</Text>
+              </div>
+            </div>
+          ))}
+          {presetFlows.length === 0 && (
+            <Text type="tertiary">暂无可用预设模板</Text>
           )}
-        </SideSheet>
-      )}
+        </div>
+      </Modal>
     </div>
   );
 };
