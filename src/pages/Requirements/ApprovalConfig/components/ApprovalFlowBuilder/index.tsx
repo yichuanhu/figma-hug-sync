@@ -224,7 +224,8 @@ const ApprovalFlowBuilderPage = ({
       setDirty(false);
       Toast.success('已保存');
       if (isNew) {
-        navigate(`${basePath}/builder/${saved.id}`, { replace: true });
+        if (embedded) onEmbeddedSaved?.(saved);
+        else navigate(`${basePath}/builder/${saved.id}`, { replace: true });
       }
     } catch (e) {
       Toast.error((e as Error).message);
