@@ -341,9 +341,11 @@ const RequirementDetailDrawer = ({
   
   const assessmentReadonly = context !== 'assessment';
 
-  // 抽屉关闭后重置 tab/版本视图；打开新数据时不重置 tab
+  // 抽屉关闭/打开时按 initialTab 同步当前 Tab
   useEffect(() => {
-    if (!visible) {
+    if (visible) {
+      setActiveTab(initialTab);
+    } else {
       setActiveTab(initialTab);
       setViewingVersion('current');
     }
@@ -481,6 +483,7 @@ const RequirementDetailDrawer = ({
       storageKey="requirementDetailDrawerWidth"
       className="requirement-detail-drawer"
       extraActions={
+        context === 'approval' || context === 'assessment' ? null : (
         <>
           {!isHistoryMode && effectiveData.status === 'DRAFT' && (() => {
             const submitLabel = hasApproval
@@ -592,9 +595,10 @@ const RequirementDetailDrawer = ({
             </Tooltip>
           )}
         </>
+        )
       }
       deleteAction={
-        canDelete ? (
+        context !== 'approval' && context !== 'assessment' && canDelete ? (
           <Tooltip content={t('common.delete')}>
             <Button
               icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
