@@ -10,7 +10,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tabs, TabPane, Typography, Tag, Button, Tooltip, Empty } from '@douyinfe/semi-ui';
-import { Pencil, CheckCircle, Trash2, Copy, Building2 } from 'lucide-react';
+import { Pencil, CheckCircle, Trash2, Building2 } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import { getDepartmentName } from '@/mocks/departmentData';
 import { listDepartmentsByTemplate } from '@/mocks/departmentApprovalFlowBinding';
