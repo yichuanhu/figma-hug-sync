@@ -2,7 +2,25 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 4px 4px 16px;
+  padding: 8px 4px 24px;
+}
+
+.assessment-level-card {
+  background: var(--semi-color-bg-0);
+  border: 1px solid var(--semi-color-border);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: box-shadow 0.2s ease;
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
 }
 
 .assessment-cards-row {
@@ -21,34 +39,55 @@
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 
   &-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--semi-color-border);
   }
 }
 
 .assessment-dim-row {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+
+  & + & {
+    margin-top: 4px;
+  }
 }
 
 .assessment-result {
   background: var(--semi-color-fill-0);
   border-radius: 8px;
-  padding: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 
   &-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    gap: 12px;
+    min-height: 32px;
+  }
 
-    &:last-of-type {
-      margin-bottom: 0;
-    }
+  &-textarea {
+    margin-top: 4px;
+  }
+
+  &-submit {
+    margin-top: 4px;
+  }
+
+  &-readonly {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 }
