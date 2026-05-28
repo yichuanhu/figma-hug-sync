@@ -734,13 +734,13 @@ const RequirementsWorkbench = () => {
           await updateRequirementStatus(id, newStatus, comment);
           loadData();
           // Refresh the selected record
-          const updated = (await fetchRequirementList({ ...queryParams, departmentFilter, projectFilter })).list.find(r => r.id === id);
+          const updated = (await fetchRequirementList({ ...queryParams, departmentFilter })).list.find(r => r.id === id);
           if (updated) setSelectedRecord(updated);
         }}
         onRefresh={async () => {
           loadData();
           if (selectedRecord) {
-            const updated = (await fetchRequirementList({ ...queryParams, departmentFilter, projectFilter })).list.find(r => r.id === selectedRecord.id);
+            const updated = (await fetchRequirementList({ ...queryParams, departmentFilter })).list.find(r => r.id === selectedRecord.id);
             if (updated) setSelectedRecord(updated);
           }
         }}
