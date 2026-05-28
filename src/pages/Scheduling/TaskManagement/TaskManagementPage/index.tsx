@@ -678,13 +678,88 @@ const TaskManagementPage = () => {
     });
   };
 
-  // FilterConfirm
+  // FilterConfirm（仅处理收纳面板内的条件）
   const handleFilterConfirm = (values: Record<string, unknown>) => {
-    setTaskStatusFilter((values.taskStatus as string[]) || []);
     setExecutionStatusFilter((values.executionStatus as string[]) || []);
     setTriggerSourceFilter((values.triggerSource as string[]) || []);
-    setDateRange((values.dateRange as [Date, Date] | null) || null);
+    setPriorityFilter((values.priority as string[]) || []);
+    setTriggerIdFilter((values.triggerId as string | null) ?? null);
+    setEnableRecordingFilter(values.enableRecording === true || values.enableRecording === false ? values.enableRecording as boolean : null);
+    setHasScreenshotFilter((values.hasScreenshot as boolean[] | undefined)?.includes(true) ? true : null);
+    const target = values.executionTarget as { type: 'WORKER' | 'WORKER_GROUP' | null; id: string | null } | null;
+    setExecutionTargetType(target?.type ?? null);
+    setExecutionTargetId(target?.id ?? null);
+    setQueryParams((prev) => ({ ...prev, offset: 0 }));
   };
+
+  // 清除所有筛选
+  const handleClearAllFilters = () => {
+    setSearchValue('');
+    setProcessFilter([]);
+    setTaskStatusFilter([]);
+    setDepartmentFilter([]);
+    setDateRange(null);
+    setExecutionStatusFilter([]);
+    setTriggerSourceFilter([]);
+    setPriorityFilter([]);
+    setTriggerIdFilter(null);
+    setExecutionTargetType(null);
+    setExecutionTargetId(null);
+    setEnableRecordingFilter(null);
+    setHasScreenshotFilter(null);
+    setQueryParams((prev) => ({ ...prev, offset: 0, keyword: '' }));
+  };
+
+  // 批量取消
+  const handleBulkCancel = () => {
+    const selectedTasks = list.filter((t) => selectedRowKeys.includes(t.task_id));
+    const cancellable = selectedTasks.filter((t) => t.task_status === 'PENDING');
+    const uncancellable = selectedTasks.length - cancellable.length;
+
+    if (selectedTasks.length > 100) {
+      Toast.warning('单次最多取消 100 个任务');
+      return;
+    }
+
+    Modal.confirm({
+      title: '批量取消任务',
+      content: (
+        <div style={{ lineHeight: '22px' }}>
+          <div>已选择 <strong>{selectedTasks.length}</strong> 个任务</div>
+          <div>当前可取消 <strong style={{ color: 'var(--semi-color-success)' }}>{cancellable.length}</strong> 个</div>
+          <div>不可取消 <strong style={{ color: 'var(--semi-color-text-2)' }}>{uncancellable}</strong> 个</div>
+          <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>最终结果以服务端返回为准</div>
+        </div>
+      ),
+      okText: '确认取消',
+      cancelText: '取消',
+      okButtonProps: { type: 'warning' },
+      onOk: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        const cancellableIds = new Set(cancellable.map((t) => t.task_id));
+        const items: Array<{ task_id: string; success: boolean; message?: string }> = [];
+        mockTaskData = mockTaskData.map((item) => {
+          if (cancellableIds.has(item.task_id)) {
+            items.push({ task_id: item.task_id, success: true });
+            return { ...item, task_status: 'CANCELLED' as TaskStatus };
+          }
+          if (selectedRowKeys.includes(item.task_id)) {
+            items.push({ task_id: item.task_id, success: false, message: '任务状态不可取消' });
+          }
+          return item;
+        });
+        console.log('[audit] bulk_cancel_tasks', { total: selectedTasks.length, items });
+        loadData();
+        setSelectedRowKeys([]);
+        if (uncancellable === 0) {
+          Toast.success(`已取消 ${cancellable.length} 个任务`);
+        } else {
+          Toast.warning(`成功 ${cancellable.length} 个，失败 ${uncancellable} 个`);
+        }
+      },
+    });
+  };
+
 
   // 分页Info
   const { range, list } = listResponse;
