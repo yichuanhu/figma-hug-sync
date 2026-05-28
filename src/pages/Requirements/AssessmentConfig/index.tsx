@@ -20,7 +20,10 @@ import {
   Col,
   Space,
   Tooltip,
+  Tabs,
+  TabPane,
 } from '@douyinfe/semi-ui';
+
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Eye, Copy } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
