@@ -54,6 +54,8 @@ interface ApprovalFlowBuilderPageProps {
   onEmbeddedSaved?: (saved: ApprovalFlowTemplate) => void;
   /** 嵌入模式下切换到另一个详情 */
   onEmbeddedNavigate?: (id: string) => void;
+  /** 隐藏内置 header（嵌入到 DetailDrawerWrapper 时使用，由外层提供标题与操作） */
+  hideHeader?: boolean;
 }
 
 const ApprovalFlowBuilderPage = ({
@@ -66,6 +68,7 @@ const ApprovalFlowBuilderPage = ({
   onEmbeddedSwitchEdit,
   onEmbeddedSaved,
   onEmbeddedNavigate,
+  hideHeader = false,
 }: ApprovalFlowBuilderPageProps) => {
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -274,7 +277,8 @@ const ApprovalFlowBuilderPage = ({
   }
 
   return (
-    <div className={`approval-flow-builder${fullscreen ? ' approval-flow-builder--fullscreen' : ''}`}>
+    <div className={`approval-flow-builder${fullscreen ? ' approval-flow-builder--fullscreen' : ''}${hideHeader ? ' approval-flow-builder--embedded' : ''}`}>
+      {!hideHeader && (
       <div className="approval-flow-builder-header">
         <div className="approval-flow-builder-header-left">
           <Tooltip content={t('common.back')} position="bottom">
@@ -472,6 +476,8 @@ const ApprovalFlowBuilderPage = ({
           )}
         </Space>
       </div>
+      )}
+
 
       <div className="approval-flow-builder-body">
         <div className="workflow-builder">
