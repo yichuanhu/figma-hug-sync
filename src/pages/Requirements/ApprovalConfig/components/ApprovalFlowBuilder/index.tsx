@@ -87,6 +87,7 @@ const ApprovalFlowBuilderPage = ({
   const [nameDraft, setNameDraft] = useState('');
   const [activeTemplateIds, setActiveTemplateIds] = useState<string[]>([]);
   const [presetIds, setPresetIds] = useState<string[]>([]);
+  const [allIds, setAllIds] = useState<string[]>([]);
   const [fullscreen, setFullscreen] = useState(false);
 
   const isNew = id === 'new';
@@ -100,6 +101,7 @@ const ApprovalFlowBuilderPage = ({
     fetchApprovalFlows(undefined, businessType).then((all) => {
       setActiveTemplateIds(all.filter((x) => x.status === 'active').map((x) => x.id));
       setPresetIds(all.filter((x) => x.is_preset).map((x) => x.id));
+      setAllIds(all.map((x) => x.id));
     });
 
     if (isNew) {
@@ -377,28 +379,69 @@ const ApprovalFlowBuilderPage = ({
                   </Tooltip>
                 </>
               );
-            })() : (
-              <>
-                <Button
-                  icon={<Pencil size={16} strokeWidth={2} />}
-                  theme="light"
-                  type="tertiary"
-                  onClick={() => (embedded ? onEmbeddedSwitchEdit?.(draft.id) : navigate(`${basePath}/builder/${draft.id}`))}
-                >
-                  编辑
-                </Button>
-                {draft.status !== 'active' && (
-                  <Button
-                    icon={<CheckCircle size={16} strokeWidth={2} />}
-                    theme="solid"
-                    type="primary"
-                    onClick={handleActivate}
-                  >
-                    启用
-                  </Button>
-                )}
-              </>
-            )
+            })() : (() => {
+              const idx = allIds.indexOf(draft.id);
+              const prevId = idx > 0 ? allIds[idx - 1] : null;
+              const nextId = idx >= 0 && idx < allIds.length - 1 ? allIds[idx + 1] : null;
+              return (
+                <>
+                  <Tooltip content={t('common.edit')} position="bottom">
+                    <Button
+                      icon={<Pencil size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      onClick={() => (embedded ? onEmbeddedSwitchEdit?.(draft.id) : navigate(`${basePath}/builder/${draft.id}`))}
+                    />
+                  </Tooltip>
+                  {draft.status !== 'active' && (
+                    <Tooltip content="启用" position="bottom">
+                      <Button
+                        icon={<CheckCircle size={16} strokeWidth={2} />}
+                        theme="borderless"
+                        type="tertiary"
+                        onClick={handleActivate}
+                      />
+                    </Tooltip>
+                  )}
+                  <div style={{ width: 1, height: 16, background: 'var(--semi-color-border)', margin: '0 4px' }} />
+                  <Tooltip content="上一个" position="bottom">
+                    <Button
+                      icon={<ChevronLeft size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      disabled={!prevId}
+                      onClick={() => prevId && (embedded ? onEmbeddedNavigate?.(prevId) : navigate(`${basePath}/detail/${prevId}`))}
+                    />
+                  </Tooltip>
+                  <Tooltip content="下一个" position="bottom">
+                    <Button
+                      icon={<ChevronRight size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      disabled={!nextId}
+                      onClick={() => nextId && (embedded ? onEmbeddedNavigate?.(nextId) : navigate(`${basePath}/detail/${nextId}`))}
+                    />
+                  </Tooltip>
+                  <div style={{ width: 1, height: 16, background: 'var(--semi-color-border)', margin: '0 4px' }} />
+                  <Tooltip content={fullscreen ? '退出全屏' : '全屏'} position="bottom">
+                    <Button
+                      icon={fullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      onClick={() => setFullscreen((v) => !v)}
+                    />
+                  </Tooltip>
+                  <Tooltip content="关闭" position="bottom">
+                    <Button
+                      icon={<X size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      onClick={() => (embedded ? onEmbeddedClose?.() : navigate(basePath))}
+                    />
+                  </Tooltip>
+                </>
+              );
+            })()
           ) : (
             <>
               <Button
