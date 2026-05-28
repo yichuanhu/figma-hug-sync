@@ -382,13 +382,13 @@ const RequirementCreatePage = () => {
       if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
     });
     // 成本基线快照（STORY-003 v6 / STORY-014 v5）：整体聚合到 form_data.cost_baseline
-    const execFreq = values.execution_frequency;
-    const singleDur = values.single_duration;
-    if (costItems.length > 0 || execFreq !== undefined || singleDur !== undefined) {
+    const monthlyCount = values.monthly_execution_count;
+    const singleDur = values.single_manual_duration_minutes;
+    if (costItems.length > 0 || monthlyCount !== undefined || singleDur !== undefined) {
       form_data.cost_baseline = {
         items: costItems,
-        execution_frequency: execFreq,
-        single_duration: singleDur,
+        monthly_execution_count: monthlyCount,
+        single_manual_duration_minutes: singleDur,
       };
     }
     const submitValues = {
