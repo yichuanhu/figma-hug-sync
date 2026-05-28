@@ -118,6 +118,13 @@ const mockTemplates: MockTemplate[] = [
   { title: 'Contract Approval Workflow', description: 'End-to-end contract approval workflow with legal review, e-signature integration and archival.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'MEDIUM', status: 'REJECTED' },
   { title: 'Inventory Audit Robot', description: 'Daily inventory audit robot reconciling WMS and ERP with discrepancy escalation.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'MEDIUM', status: 'WITHDRAWN' },
   { title: 'Month-End Reconciliation Automation', description: 'Automate month-end reconciliation across GL, AR, AP and bank statements with variance reporting.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'LAUNCHED' },
+
+  // ===== 评估场景补充：覆盖多部门、不同优先级的 PENDING_ASSESSMENT =====
+  { title: 'HR Onboarding Document Auto-Collect', description: '自动汇集新员工入职材料并归档至 HR 系统，触发后续配置流程。', owning_department_name: 'HR', owning_department_id: 'dept-002', creatorId: 'user-002', priority: 'HIGH', status: 'PENDING_ASSESSMENT' },
+  { title: 'IT Asset Inventory Sync', description: '每日同步 IT 资产清单至 CMDB，校验缺失与异常状态。', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-003', priority: 'MEDIUM', status: 'PENDING_ASSESSMENT' },
+  { title: 'Procurement Quotation Aggregator', description: '聚合多家供应商报价并生成对比表，辅助采购决策。', owning_department_name: 'Procurement', owning_department_id: 'dept-004', creatorId: 'user-004', priority: 'MEDIUM', status: 'PENDING_ASSESSMENT' },
+  { title: 'Sales Daily Pipeline Snapshot', description: '每日抓取销售管道快照，自动生成日报推送给销售负责人。', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'LOW', status: 'PENDING_ASSESSMENT' },
+  { title: 'AP Three-Way Match Validator', description: '对应付账款进行 PO/收货/发票三方匹配校验，自动发起异常工单。', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'HIGH', status: 'PENDING_ASSESSMENT' },
 ];
 
 // 视为"开发中之后"的状态
