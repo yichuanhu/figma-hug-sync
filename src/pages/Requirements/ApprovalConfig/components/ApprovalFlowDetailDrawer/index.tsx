@@ -52,7 +52,7 @@ const ApprovalFlowDetailDrawer = ({
   onEdit,
   onActivate,
   onDelete,
-  onClone,
+  onClone: _onClone,
 }: Props) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('basic');
