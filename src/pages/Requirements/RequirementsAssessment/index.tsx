@@ -29,7 +29,7 @@ import {
   MOCK_CURRENT_USER_ID,
 } from '../RequirementsWorkbench/mockData';
 import RequirementDetailDrawer from '../RequirementsWorkbench/components/RequirementDetailDrawer';
-import { ClipboardCheck, ClipboardList, Ellipsis, Eye } from 'lucide-react';
+import { ClipboardCheck, ClipboardList, Ellipsis } from 'lucide-react';
 import iconPending from '@/assets/assessment-stats/pending.png';
 import iconAssessed from '@/assets/assessment-stats/assessed.png';
 import iconRecommend from '@/assets/assessment-stats/recommend.png';
