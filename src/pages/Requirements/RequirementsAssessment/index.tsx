@@ -64,6 +64,7 @@ const RequirementsAssessment = () => {
   const [allRequirements, setAllRequirements] = useState<RequirementItem[]>([]);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
+  const [initialTab, setInitialTab] = useState<string>('overview');
 
   const loadData = useCallback(async () => {
     setLoading(true);
