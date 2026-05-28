@@ -453,7 +453,8 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
             )}
           </div>
         );
-      })}
+      });
+      })()}
     </div>
   );
 };
