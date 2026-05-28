@@ -141,7 +141,16 @@ const CostBaselineSection = ({
         />
       )}
 
-      <Form.Slot label={t('requirements.form.costBaseline.selectorLabel')}>
+      <Form.Slot
+        label={{
+          text: (
+            <LabelWithHelp
+              text={t('requirements.form.costBaseline.selectorLabel')}
+              tip={t('requirements.form.costBaseline.tooltip.selector')}
+            />
+          ),
+        }}
+      >
         {isEmpty ? (
           <Empty
             image={<Wallet size={32} strokeWidth={1.5} />}
