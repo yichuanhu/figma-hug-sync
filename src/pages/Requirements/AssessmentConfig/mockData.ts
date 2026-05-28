@@ -249,6 +249,23 @@ export const fetchAssessmentFlows = async (keyword?: string): Promise<Assessment
 export const getAssessmentFlowById = (id: string): AssessmentFlowTemplate | undefined =>
   cache.find((f) => f.id === id);
 
+/**
+ * 根据部门 id 获取当前激活的评估流模板。
+ * - 优先匹配适用部门包含该 dept 的已激活模板
+ * - 若没有匹配，返回任意已激活模板（兜底）
+ * - 若仍没有，返回预设模板
+ */
+export const getActiveAssessmentFlowForDepartment = (
+  deptId?: string,
+): AssessmentFlowTemplate | undefined => {
+  const actives = cache.filter((f) => f.status === 'active');
+  if (deptId) {
+    const matched = actives.find((f) => f.applicable_department_ids.includes(deptId));
+    if (matched) return matched;
+  }
+  return actives[0] ?? cache.find((f) => f.is_preset);
+};
+
 const isNameDuplicate = (name: string, excludeId?: string) => {
   const n = name.trim().toLowerCase();
   return cache.some((f) => f.id !== excludeId && f.name.trim().toLowerCase() === n);
