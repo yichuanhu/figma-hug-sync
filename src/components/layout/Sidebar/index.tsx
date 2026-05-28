@@ -7,7 +7,7 @@ import { UserInfoDropdown } from '../UserInfoDropdown';
 import NotificationDrawer from '../NotificationDrawer';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
 import { useApprovalPendingCount } from '@/pages/SharingCenter/shared/useApprovalPendingCount';
-import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, Building2, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Columns3Cog, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, Gauge, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, NotepadTextDashed, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, Users, Wallet, Workflow, Wrench } from 'lucide-react';
+import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, Building2, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardCheck, ClipboardList, Cloud, CodeXml, Columns3Cog, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, Gauge, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, NotepadTextDashed, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, Users, Wallet, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -309,6 +309,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'requirementsConfig', labelKey: 'sidebar.requirementsConfig', isGroupLabel: true },
     { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <NotepadTextDashed size={18} strokeWidth={2} />, path: '/requirements/scheme' },
     { key: 'requirementsApprovalConfig', labelKey: 'sidebar.requirementsApprovalConfig', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/requirements/approval-config' },
+    { key: 'requirementsAssessmentConfig', labelKey: 'sidebar.requirementsAssessmentConfig', icon: <ClipboardCheck size={18} strokeWidth={2} />, path: '/requirements/assessment-config' },
     { key: 'requirementsCostBaseline', labelKey: 'sidebar.requirementsCostBaseline', icon: <Wallet size={18} strokeWidth={2} />, path: '/requirements/cost-baseline' },
 
 
@@ -439,8 +440,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname.startsWith('/sharing-center/admin/approval-levels')) return 'sharingApprovalLevels';
     if (pathname.startsWith('/sharing-center/admin/permissions')) return 'sharingPermissions';
     
-    if (pathname.startsWith('/requirements/approval-config')) return 'requirementsApprovalConfig';
-    if (pathname.startsWith('/requirements/cost-baseline')) return 'requirementsCostBaseline';
+   if (pathname.startsWith('/requirements/approval-config')) return 'requirementsApprovalConfig';
+   if (pathname.startsWith('/requirements/assessment-config')) return 'requirementsAssessmentConfig';
+   if (pathname.startsWith('/requirements/cost-baseline')) return 'requirementsCostBaseline';
 
     if (pathname.startsWith('/maintenance/config')) return 'mtConfigManagement';
     if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';

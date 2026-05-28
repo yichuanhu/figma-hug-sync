@@ -543,27 +543,7 @@ const ApprovalFlowBuilderPage = ({
             readOnly={isView}
           />
 
-          {!isProcessFlow && (
-            <ApproverListEditor
-              title="技术评估人配置"
-              approvers={draft.assessors}
-              onChange={(assessors) => patch({ assessors })}
-              emptyHint="暂无评估级，点击右上角添加"
-              defaultItemName="新评估级"
-              readOnly={isView}
-              extra={
-                draft.assessors.length > 0 ? (
-                  <AssessmentBuilder
-                    valueModel={draft.value_model}
-                    complexityModel={draft.complexity_model}
-                    fields={[]}
-                    onChange={(value_model, complexity_model) => patch({ value_model, complexity_model })}
-                    disabled={isView}
-                  />
-                ) : null
-              }
-            />
-          )}
+          {/* 评估配置已拆分到独立菜单「评估流配置」(STORY-021)，此处不再展示评估人/价值/复杂度模型 */}
         </div>
       </div>
     </div>
