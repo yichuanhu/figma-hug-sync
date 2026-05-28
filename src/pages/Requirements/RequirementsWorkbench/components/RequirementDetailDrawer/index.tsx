@@ -363,7 +363,7 @@ const RequirementDetailDrawer = ({
     if (!data) return;
     const isHistory = viewingVersion !== 'current';
     const availableTabs: string[] = ['overview'];
-    if (hasApproval && data.approvalFlowConfig && !isHistory) availableTabs.push('approval');
+    if ((hasApproval && data.approvalFlowConfig && !isHistory) || context === 'approval') availableTabs.push('approval');
     if ((hasAssessment || context === 'assessment') && context !== 'approval') availableTabs.push('assessment');
     if (hasAssessment && context !== 'assessment' && context !== 'approval') availableTabs.push('cost');
     if (!isHistory && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('effort');
@@ -645,13 +645,17 @@ const RequirementDetailDrawer = ({
               </div>
             </TabPane>
 
-            {hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode && context !== 'assessment' && (
+            {((hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode) || context === 'approval') && context !== 'assessment' && (
               <TabPane
                 tab={t('requirements.detail.tab.approval')}
                 itemKey="approval"
               >
                 <div className="requirement-detail-tab-content">
-                  <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
+                  {effectiveData.approvalFlowConfig ? (
+                    <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
+                  ) : (
+                    <Text type="tertiary">{t('common.noData', { defaultValue: '暂无审批流配置' })}</Text>
+                  )}
                 </div>
               </TabPane>
             )}
