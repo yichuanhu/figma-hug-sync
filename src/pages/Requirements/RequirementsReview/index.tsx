@@ -73,6 +73,7 @@ const RequirementsReview = () => {
   // 详情抽屉
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
+  const [initialTab, setInitialTab] = useState<string>('overview');
 
   // 内联审批弹窗
   const [approvalModalVisible, setApprovalModalVisible] = useState(false);
@@ -333,6 +334,7 @@ const RequirementsReview = () => {
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedRecord(record);
+                    setInitialTab('overview');
                     setDetailDrawerVisible(true);
                   }}
                 >
@@ -344,7 +346,9 @@ const RequirementsReview = () => {
                       icon={<CheckCircle size={16} strokeWidth={2} />}
                       onClick={(e) => {
                         e.stopPropagation();
-                        openApprovalModal(record, 'approve');
+                        setSelectedRecord(record);
+                        setInitialTab('approval');
+                        setDetailDrawerVisible(true);
                       }}
                     >
                       {t('requirements.detail.approve')}
@@ -354,7 +358,9 @@ const RequirementsReview = () => {
                       type="danger"
                       onClick={(e) => {
                         e.stopPropagation();
-                        openApprovalModal(record, 'reject');
+                        setSelectedRecord(record);
+                        setInitialTab('approval');
+                        setDetailDrawerVisible(true);
                       }}
                     >
                       {t('requirements.detail.reject')}
@@ -636,16 +642,21 @@ const RequirementsReview = () => {
       {/* 详情抽屉 */}
       <RequirementDetailDrawer
         visible={detailDrawerVisible}
-        onClose={() => setDetailDrawerVisible(false)}
+        onClose={() => {
+          setDetailDrawerVisible(false);
+          setInitialTab('overview');
+        }}
         data={selectedRecord}
         dataList={filteredData}
         onNavigate={(item) => setSelectedRecord(item)}
         onEdit={() => {}}
         onDelete={() => {}}
         onStatusChange={handleStatusChange}
+        onRefresh={loadData}
         pagination={pagination}
         onScrollToRow={() => {}}
         context="approval"
+        initialTab={initialTab}
       />
     </div>
   );

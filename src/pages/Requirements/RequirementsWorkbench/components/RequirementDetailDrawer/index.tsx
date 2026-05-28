@@ -47,7 +47,6 @@ const PropertyPanel = ({
   isHistoryMode,
   onOpenPicker,
   onCreateProject,
-  showApprovalSection,
 }: {
   data: RequirementItem;
   t: (key: string, options?: Record<string, unknown>) => string;
@@ -56,7 +55,6 @@ const PropertyPanel = ({
   isHistoryMode: boolean;
   onOpenPicker: () => void;
   onCreateProject: () => void;
-  showApprovalSection: boolean;
 }) => {
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
@@ -218,9 +216,7 @@ const PropertyPanel = ({
         );
       })()}
 
-      {showApprovalSection && (
-        <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
-      )}
+      {/* 审批操作区已迁移至「审批流程」Tab 内 */}
     </div>
   );
 };
@@ -342,7 +338,7 @@ const RequirementDetailDrawer = ({
   const [, setPendingLogs] = useState<RequirementChangeLog[]>([]);
   const [changeLogRefreshKey, setChangeLogRefreshKey] = useState(0);
   const location = useLocation();
-  const showApprovalSection = context === 'approval';
+  
   const assessmentReadonly = context !== 'assessment';
 
   // 抽屉关闭后重置 tab/版本视图；打开新数据时不重置 tab
@@ -656,6 +652,11 @@ const RequirementDetailDrawer = ({
                   ) : (
                     <Text type="tertiary">{t('common.noData', { defaultValue: '暂无审批流配置' })}</Text>
                   )}
+                  {context === 'approval' && (
+                    <div style={{ marginTop: 16 }}>
+                      <ApprovalSection data={effectiveData} onStatusChange={onStatusChange} onRefresh={onRefresh} />
+                    </div>
+                  )}
                 </div>
               </TabPane>
             )}
@@ -742,7 +743,7 @@ const RequirementDetailDrawer = ({
                 },
               })
             }
-            showApprovalSection={showApprovalSection}
+            
           />
         </div>
       </div>
