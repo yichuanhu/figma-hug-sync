@@ -738,7 +738,7 @@ const AssessmentConfigPage = () => {
           <div className="assessment-flow-builder-section">
             <Text strong style={{ display: 'block', marginBottom: 12 }}>基本信息</Text>
             <Form labelPosition="top">
-              <Form.Slot label="模板名称" required>
+              <Form.Slot label={{ text: '模板名称', required: true }}>
                 <Input
                   value={draft.name}
                   onChange={(v) => setDraft((d) => ({ ...d, name: v }))}
