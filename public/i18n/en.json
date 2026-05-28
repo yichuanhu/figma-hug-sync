@@ -1416,7 +1416,7 @@
       }
     },
     "review": {
-      "title": "Requirement Approval",
+      "title": "Requirement Review",
       "description": "Process pending approval steps",
       "searchPlaceholder": "Search requirements",
       "pendingMe": "Pending My Approval",
