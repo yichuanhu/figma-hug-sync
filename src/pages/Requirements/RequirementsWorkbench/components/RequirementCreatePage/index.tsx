@@ -42,13 +42,13 @@ const { Title, Text } = Typography;
  * Step 字段映射（用于 next 按钮分步校验 + 错误定位）
  *   0 基本信息：title / department / owner / priority / 分类标签
  *   1 业务补充字段：scheme 自定义字段（不在此列出，由各字段 rules 触发）
- *   2 成本基线：execution_frequency / single_duration
+ *   2 成本基线：monthly_execution_count / single_manual_duration_minutes
  *   3 发布变更（仅立项后编辑）
  */
 const STEP_FIELDS: Array<string[]> = [
   ["title", "department", "owner", "priority"],
   [],
-  ["execution_frequency", "single_duration"],
+  ["monthly_execution_count", "single_manual_duration_minutes"],
   [],
 ];
 
@@ -192,18 +192,21 @@ const RequirementCreatePage = () => {
     [],
   );
 
-  const executionFrequencyOptions = useMemo(
-    () => [
-      { value: "DAILY", label: "每天" },
-      { value: "WEEKLY", label: "每周" },
-      { value: "MONTHLY", label: "每月" },
-      { value: "QUARTERLY", label: "每季度" },
-      { value: "YEARLY", label: "每年" },
-    ],
-    [],
-  );
+  const OPTIONAL_FORM_KEYS = ["monthly_execution_count", "single_manual_duration_minutes"] as const;
 
-  const OPTIONAL_FORM_KEYS = ["execution_frequency", "single_duration"] as const;
+  /** 旧 execution_frequency 字符串枚举 → 月执行次数数值映射（兼容历史数据） */
+  const legacyFrequencyToCount = (v: unknown): number | undefined => {
+    if (typeof v === "number") return v;
+    if (typeof v !== "string") return undefined;
+    switch (v.toUpperCase()) {
+      case "DAILY": return 22;
+      case "WEEKLY": return 4;
+      case "MONTHLY": return 1;
+      case "QUARTERLY":
+      case "YEARLY": return 1;
+      default: return undefined;
+    }
+  };
 
   const baseInitialValues = useMemo(() => {
     if (isEdit && editData) {
@@ -237,13 +240,26 @@ const RequirementCreatePage = () => {
         // 还原成本基线快照（STORY-003 v6）：优先 cost_baseline.items；旧字段 position_costs 仅显示废弃提示
         const fd = (item.form_data ?? {}) as Record<string, unknown>;
         const cb = fd.cost_baseline as
-          | { items?: RequirementCostItemSnapshot[]; execution_frequency?: string; single_duration?: number }
+          | {
+              items?: RequirementCostItemSnapshot[];
+              monthly_execution_count?: number;
+              single_manual_duration_minutes?: number;
+              execution_frequency?: string | number;
+              single_duration?: number;
+            }
           | undefined;
         if (cb && Array.isArray(cb.items) && cb.items.length > 0) {
           setCostItems(cb.items);
         } else if (fd.position_costs || fd.position_level || fd.position_cost) {
           setLegacyDeprecated(true);
         }
+        // 编辑态回填新 key（兼容旧 key）
+        setTimeout(() => {
+          const mc = cb?.monthly_execution_count ?? legacyFrequencyToCount(cb?.execution_frequency);
+          if (mc !== undefined) formApi?.setValue?.("monthly_execution_count", mc);
+          const sd = cb?.single_manual_duration_minutes ?? cb?.single_duration;
+          if (sd !== undefined) formApi?.setValue?.("single_manual_duration_minutes", sd);
+        }, 0);
 
         // 立项后：尝试加载草稿合并
         if (isPostProjectStatus(item.status)) {
@@ -259,17 +275,21 @@ const RequirementCreatePage = () => {
               if (patch.form_data) {
                 Object.entries(patch.form_data).forEach(([k, v]) => formApi?.setValue?.(k, v));
                 const dcb = (patch.form_data as Record<string, unknown>).cost_baseline as
-                  | { items?: RequirementCostItemSnapshot[]; execution_frequency?: string; single_duration?: number }
+                  | {
+                      items?: RequirementCostItemSnapshot[];
+                      monthly_execution_count?: number;
+                      single_manual_duration_minutes?: number;
+                      execution_frequency?: string | number;
+                      single_duration?: number;
+                    }
                   | undefined;
                 if (dcb?.items && Array.isArray(dcb.items)) {
                   setCostItems(dcb.items);
                 }
-                if (dcb?.execution_frequency !== undefined) {
-                  formApi?.setValue?.("execution_frequency", dcb.execution_frequency);
-                }
-                if (dcb?.single_duration !== undefined) {
-                  formApi?.setValue?.("single_duration", dcb.single_duration);
-                }
+                const dmc = dcb?.monthly_execution_count ?? legacyFrequencyToCount(dcb?.execution_frequency);
+                if (dmc !== undefined) formApi?.setValue?.("monthly_execution_count", dmc);
+                const dsd = dcb?.single_manual_duration_minutes ?? dcb?.single_duration;
+                if (dsd !== undefined) formApi?.setValue?.("single_manual_duration_minutes", dsd);
               }
             }, 0);
           }
@@ -339,7 +359,7 @@ const RequirementCreatePage = () => {
 
   const locateFirstError = (errorFields: string[]) => {
     const step0 = new Set(["title", "department", "owner", "priority"]);
-    const step2 = new Set(["execution_frequency", "single_duration"]);
+    const step2 = new Set(["monthly_execution_count", "single_manual_duration_minutes"]);
     let target = 1;
     const first = errorFields[0];
     if (first) {
@@ -362,13 +382,13 @@ const RequirementCreatePage = () => {
       if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
     });
     // 成本基线快照（STORY-003 v6 / STORY-014 v5）：整体聚合到 form_data.cost_baseline
-    const execFreq = values.execution_frequency;
-    const singleDur = values.single_duration;
-    if (costItems.length > 0 || execFreq !== undefined || singleDur !== undefined) {
+    const monthlyCount = values.monthly_execution_count;
+    const singleDur = values.single_manual_duration_minutes;
+    if (costItems.length > 0 || monthlyCount !== undefined || singleDur !== undefined) {
       form_data.cost_baseline = {
         items: costItems,
-        execution_frequency: execFreq,
-        single_duration: singleDur,
+        monthly_execution_count: monthlyCount,
+        single_manual_duration_minutes: singleDur,
       };
     }
     const submitValues = {
@@ -712,7 +732,6 @@ const RequirementCreatePage = () => {
                   setDirty(true);
                 }}
                 legacyDeprecated={legacyDeprecated}
-                executionFrequencyOptions={executionFrequencyOptions}
               />
             </div>
           </Form>

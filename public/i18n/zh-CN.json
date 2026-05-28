@@ -952,13 +952,15 @@
         "publishChangeDesc": "填写变更说明并发布"
       },
       "costBaseline": {
-        "banner": "成本由「成本基线配置」自动带出并保存快照，不作为实际执行配置",
-        "selectorLabel": "成本项",
-        "selectorPlaceholder": "选择成本项（可多选）",
+        "banner": "用于描述当前人工处理该需求的成本基线，系统据此估算可节省工时和金额；不会影响机器人执行、流程调度或任务运行。",
+        "selectorLabel": "主要执行岗位/活动",
+        "selectorPlaceholder": "选择主要执行岗位或活动（可多选）",
         "empty": "暂无成本项，请先在「成本基线配置」中新建",
         "goConfig": "前往成本基线配置",
-        "executionFrequency": "执行频率",
-        "singleDuration": "单次时长（分钟）",
+        "monthlyExecutionCount": "月执行次数",
+        "monthlyExecutionCountUnit": "次/月",
+        "singleManualDuration": "单次人工耗时",
+        "singleManualDurationUnit": "分钟",
         "legacyDeprecated": "原岗位成本字段已废弃，请重新选择成本基线",
         "selectedTitle": "已选成本项",
         "colType": "类型",
@@ -966,7 +968,13 @@
         "colDailyCost": "人天成本",
         "colAction": "操作",
         "dailyCostUnit": "/ 人天",
-        "remove": "移除"
+        "remove": "移除",
+        "tooltip": {
+          "selector": "选择当前主要由哪类岗位或活动承担人工处理，系统会自动带出对应人天成本。",
+          "dailyCost": "由管理员在「成本基线配置」维护，当前需求保存时会记录快照，后续配置变更不影响本需求历史测算。",
+          "monthlyExecutionCount": "该业务场景平均每月人工执行次数，用于计算月均节省工时。",
+          "singleManualDuration": "当前人工每执行一次平均耗时，单位分钟，用于计算月均节省工时。"
+        }
       }
     },
     "detail": {
