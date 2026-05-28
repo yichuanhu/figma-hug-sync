@@ -38,7 +38,7 @@ import {
   withdrawRequirement,
   useSchemeFlags,
   MOCK_CURRENT_USER_ID,
-  MOCK_PROJECT_POOL,
+  
   getRequirementEffortSummary,
 } from './mockData';
 import { statusConfigV2, legacyStatusMap, statusOptionsV2 } from './statusConfig';
