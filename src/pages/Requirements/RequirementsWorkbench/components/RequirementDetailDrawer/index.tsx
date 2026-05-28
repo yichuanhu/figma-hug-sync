@@ -338,7 +338,7 @@ const RequirementDetailDrawer = ({
   const [, setPendingLogs] = useState<RequirementChangeLog[]>([]);
   const [changeLogRefreshKey, setChangeLogRefreshKey] = useState(0);
   const location = useLocation();
-  const showApprovalSection = context === 'approval';
+  const assessmentReadonly_unused_marker = false; void assessmentReadonly_unused_marker;
   const assessmentReadonly = context !== 'assessment';
 
   // 抽屉关闭后重置 tab/版本视图；打开新数据时不重置 tab
