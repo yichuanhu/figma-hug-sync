@@ -118,6 +118,13 @@ const mockTemplates: MockTemplate[] = [
   { title: 'Contract Approval Workflow', description: 'End-to-end contract approval workflow with legal review, e-signature integration and archival.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'MEDIUM', status: 'REJECTED' },
   { title: 'Inventory Audit Robot', description: 'Daily inventory audit robot reconciling WMS and ERP with discrepancy escalation.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'MEDIUM', status: 'WITHDRAWN' },
   { title: 'Month-End Reconciliation Automation', description: 'Automate month-end reconciliation across GL, AR, AP and bank statements with variance reporting.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'LAUNCHED' },
+
+  // ===== 评估场景补充：覆盖多部门、不同优先级的 PENDING_ASSESSMENT =====
+  { title: 'HR Onboarding Document Auto-Collect', description: '自动汇集新员工入职材料并归档至 HR 系统，触发后续配置流程。', owning_department_name: 'HR', owning_department_id: 'dept-002', creatorId: 'user-002', priority: 'HIGH', status: 'PENDING_ASSESSMENT' },
+  { title: 'IT Asset Inventory Sync', description: '每日同步 IT 资产清单至 CMDB，校验缺失与异常状态。', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-003', priority: 'MEDIUM', status: 'PENDING_ASSESSMENT' },
+  { title: 'Procurement Quotation Aggregator', description: '聚合多家供应商报价并生成对比表，辅助采购决策。', owning_department_name: 'Procurement', owning_department_id: 'dept-004', creatorId: 'user-004', priority: 'MEDIUM', status: 'PENDING_ASSESSMENT' },
+  { title: 'Sales Daily Pipeline Snapshot', description: '每日抓取销售管道快照，自动生成日报推送给销售负责人。', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'LOW', status: 'PENDING_ASSESSMENT' },
+  { title: 'AP Three-Way Match Validator', description: '对应付账款进行 PO/收货/发票三方匹配校验，自动发起异常工单。', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'HIGH', status: 'PENDING_ASSESSMENT' },
 ];
 
 // 视为"开发中之后"的状态
@@ -298,9 +305,31 @@ const generateMockDetailedAssessment = (
     { id: 'user-008', name: 'Angela Wu' },
   ];
 
-  const buildAnswers = (dims: typeof valueModel.dimensions, seed: number) =>
+  // 为了让"已评估"列表呈现多样的可行性结论，依据 index 决定本条需求倾向
+  // 0: feasible（高价值/低复杂度）  1: not_recommended（中性）  2: not_feasible（低价值/高复杂度）
+  const bias = index % 3;
+  const pickTierIdx = (
+    dim: typeof valueModel.dimensions[number],
+    type: 'value' | 'complexity',
+    seedOffset: number,
+  ) => {
+    const n = dim.tiers.length;
+    // value 维度：bias=0 偏向高分(idx 0/1)，bias=2 偏向低分(idx n-1/n-2)
+    // complexity 维度：bias=0 偏向低分(低复杂度，idx n-1/n-2)，bias=2 偏向高分(高复杂度)
+    const wantHigh = type === 'value' ? bias === 0 : bias === 2;
+    const wantLow = type === 'value' ? bias === 2 : bias === 0;
+    if (wantHigh) return seedOffset % 2; // 0 or 1
+    if (wantLow) return n - 1 - (seedOffset % 2);
+    return 1 + (seedOffset % 2); // 中段
+  };
+
+  const buildAnswers = (
+    dims: typeof valueModel.dimensions,
+    type: 'value' | 'complexity',
+    seed: number,
+  ) =>
     dims.map((d, i) => {
-      const tier = d.tiers[(seed + i) % d.tiers.length];
+      const tier = d.tiers[pickTierIdx(d, type, seed + i)];
       const isNumeric = d.input_type === 'numeric_input';
       const numeric = isNumeric
         ? Math.round(((tier.min_value ?? 0) + ((tier.max_value ?? (tier.min_value ?? 0) + 50))) / 2)
@@ -324,13 +353,12 @@ const generateMockDetailedAssessment = (
     const isLast = li === flow.levels.length - 1;
     const completed = !isLast || ['LAUNCHED', 'OFFLINE', 'DEVELOPING'].includes(status);
     const seed = index + li * 2;
-    const valueAnswers = buildAnswers(valueModel.dimensions, seed);
-    const complexityAnswers = buildAnswers(complexityModel.dimensions, seed + 1);
+    const valueAnswers = buildAnswers(valueModel.dimensions, 'value', seed);
+    const complexityAnswers = buildAnswers(complexityModel.dimensions, 'complexity', seed + 1);
     const valueScore = weightedSum(valueAnswers);
     const complexityScore = weightedSum(complexityAnswers);
-    const net = valueScore - complexityScore;
     const feasibility: import('./types').FeasibilityLevel =
-      net >= 30 ? 'feasible' : net >= 0 ? 'not_recommended' : 'not_feasible';
+      bias === 0 ? 'feasible' : bias === 1 ? 'not_recommended' : 'not_feasible';
     const assessor = mockUsers[(index + li) % mockUsers.length];
     return {
       level_id: lv.id,
@@ -347,7 +375,13 @@ const generateMockDetailedAssessment = (
       value_score: valueScore,
       complexity_score: complexityScore,
       feasibility: completed ? feasibility : undefined,
-      comment: completed ? '基于评估流自动生成的 mock 评估结论。' : undefined,
+      comment: completed
+        ? feasibility === 'feasible'
+          ? '业务价值显著且实现复杂度可控，建议立项。'
+          : feasibility === 'not_recommended'
+            ? '价值与复杂度处于中等区间，建议结合排期再决策。'
+            : '复杂度高且业务价值有限，暂不建议推进。'
+        : undefined,
     };
   });
 
