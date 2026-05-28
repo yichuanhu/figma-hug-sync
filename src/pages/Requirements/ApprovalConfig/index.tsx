@@ -278,15 +278,6 @@ const ApprovalConfigPage = ({
                             编辑
                           </Dropdown.Item>
                           <Dropdown.Item
-                            icon={<Copy size={14} />}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCloneFromPreset(f.id);
-                            }}
-                          >
-                            基于此模板创建
-                          </Dropdown.Item>
-                          <Dropdown.Item
                             icon={<Trash2 size={14} />}
                             type="danger"
                             onClick={(e) => {
