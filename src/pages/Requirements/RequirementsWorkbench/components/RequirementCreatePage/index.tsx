@@ -478,7 +478,7 @@ const RequirementCreatePage = () => {
       } catch {
         // 不阻塞
       }
-      setCurrentStep(4);
+      setCurrentStep(3);
       return;
     }
 
