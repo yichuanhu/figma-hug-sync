@@ -264,19 +264,20 @@ const FilterPopover = ({
   // 计算筛选数量（用于按钮显示，基于外部实际值）
   const filterCount = useMemo(() => {
     return sections.reduce((count, section) => {
-      if (section.type === 'dateRange') {
-        return count;
-      }
       const value = section.value;
-      if (Array.isArray(value)) {
-        return count + value.length;
+      if (section.type === 'dateRange') {
+        return Array.isArray(value) && value.length === 2 ? count + 1 : count;
       }
-      if (value !== null && value !== undefined) {
+      if (Array.isArray(value)) {
+        return count + (value.length > 0 ? 1 : 0);
+      }
+      if (value !== null && value !== undefined && value !== '') {
         return count + 1;
       }
       return count;
     }, 0);
   }, [sections]);
+
 
   // 检查是否可以重置（基于内部编辑值）
   const canReset = useMemo(() => {
