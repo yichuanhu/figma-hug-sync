@@ -346,7 +346,7 @@ const ApprovalFlowBuilderPage = ({
                       theme="borderless"
                       type="tertiary"
                       disabled={!prevId}
-                      onClick={() => prevId && navigate(`${basePath}/detail/${prevId}`)}
+                      onClick={() => prevId && (embedded ? onEmbeddedNavigate?.(prevId) : navigate(`${basePath}/detail/${prevId}`))}
                     />
                   </Tooltip>
                   <Tooltip content="下一个" position="bottom">
