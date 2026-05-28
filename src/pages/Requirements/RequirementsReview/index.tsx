@@ -334,6 +334,7 @@ const RequirementsReview = () => {
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedRecord(record);
+                    setInitialTab('overview');
                     setDetailDrawerVisible(true);
                   }}
                 >
