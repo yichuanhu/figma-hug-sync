@@ -25,9 +25,11 @@ import {
 } from '@douyinfe/semi-ui';
 
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Eye, Copy } from 'lucide-react';
+import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Eye, Copy, Building2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import { getDepartmentName } from '@/mocks/departmentData';
+
 import {
   fetchAssessmentFlows,
   deleteAssessmentFlow,
