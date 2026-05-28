@@ -141,14 +141,6 @@ const PropertyPanel = ({
           <Text>{data.owning_department_name}</Text>
         </div>
         <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">{t('requirements.fields.projectOwner')}</Text>
-          {data.owner_name ? (
-            <UserNameWithCard name={data.owner_name} userId={data.owner_id} />
-          ) : (
-            <Text type="tertiary">{t('requirements.detail.ownerUnassigned')}</Text>
-          )}
-        </div>
-        <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('common.creator')}</Text>
           <UserNameWithCard
             name={data.creatorName}
