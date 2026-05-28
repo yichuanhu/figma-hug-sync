@@ -240,13 +240,26 @@ const RequirementCreatePage = () => {
         // 还原成本基线快照（STORY-003 v6）：优先 cost_baseline.items；旧字段 position_costs 仅显示废弃提示
         const fd = (item.form_data ?? {}) as Record<string, unknown>;
         const cb = fd.cost_baseline as
-          | { items?: RequirementCostItemSnapshot[]; execution_frequency?: string; single_duration?: number }
+          | {
+              items?: RequirementCostItemSnapshot[];
+              monthly_execution_count?: number;
+              single_manual_duration_minutes?: number;
+              execution_frequency?: string | number;
+              single_duration?: number;
+            }
           | undefined;
         if (cb && Array.isArray(cb.items) && cb.items.length > 0) {
           setCostItems(cb.items);
         } else if (fd.position_costs || fd.position_level || fd.position_cost) {
           setLegacyDeprecated(true);
         }
+        // 编辑态回填新 key（兼容旧 key）
+        setTimeout(() => {
+          const mc = cb?.monthly_execution_count ?? legacyFrequencyToCount(cb?.execution_frequency);
+          if (mc !== undefined) formApi?.setValue?.("monthly_execution_count", mc);
+          const sd = cb?.single_manual_duration_minutes ?? cb?.single_duration;
+          if (sd !== undefined) formApi?.setValue?.("single_manual_duration_minutes", sd);
+        }, 0);
 
         // 立项后：尝试加载草稿合并
         if (isPostProjectStatus(item.status)) {
@@ -262,17 +275,21 @@ const RequirementCreatePage = () => {
               if (patch.form_data) {
                 Object.entries(patch.form_data).forEach(([k, v]) => formApi?.setValue?.(k, v));
                 const dcb = (patch.form_data as Record<string, unknown>).cost_baseline as
-                  | { items?: RequirementCostItemSnapshot[]; execution_frequency?: string; single_duration?: number }
+                  | {
+                      items?: RequirementCostItemSnapshot[];
+                      monthly_execution_count?: number;
+                      single_manual_duration_minutes?: number;
+                      execution_frequency?: string | number;
+                      single_duration?: number;
+                    }
                   | undefined;
                 if (dcb?.items && Array.isArray(dcb.items)) {
                   setCostItems(dcb.items);
                 }
-                if (dcb?.execution_frequency !== undefined) {
-                  formApi?.setValue?.("execution_frequency", dcb.execution_frequency);
-                }
-                if (dcb?.single_duration !== undefined) {
-                  formApi?.setValue?.("single_duration", dcb.single_duration);
-                }
+                const dmc = dcb?.monthly_execution_count ?? legacyFrequencyToCount(dcb?.execution_frequency);
+                if (dmc !== undefined) formApi?.setValue?.("monthly_execution_count", dmc);
+                const dsd = dcb?.single_manual_duration_minutes ?? dcb?.single_duration;
+                if (dsd !== undefined) formApi?.setValue?.("single_manual_duration_minutes", dsd);
               }
             }, 0);
           }
