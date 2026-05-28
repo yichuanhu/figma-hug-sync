@@ -288,18 +288,43 @@ const CostBaselineSection = ({
         </div>
       )}
 
-      <Form.Select
-        field="execution_frequency"
-        label={t('requirements.form.costBaseline.executionFrequency')}
-        placeholder={t('requirements.form.costBaseline.executionFrequency')}
-        optionList={executionFrequencyOptions}
-        showClear
+      <Form.InputNumber
+        field="monthly_execution_count"
+        label={{
+          text: (
+            <LabelWithHelp
+              text={t('requirements.form.costBaseline.monthlyExecutionCount')}
+              tip={t('requirements.form.costBaseline.tooltip.monthlyExecutionCount')}
+            />
+          ),
+        }}
+        placeholder={t('requirements.form.costBaseline.monthlyExecutionCount')}
+        suffix={
+          <span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)' }}>
+            {t('requirements.form.costBaseline.monthlyExecutionCountUnit')}
+          </span>
+        }
+        min={0}
+        precision={0}
+        hideButtons
         style={{ width: '100%' }}
       />
       <Form.InputNumber
-        field="single_duration"
-        label={t('requirements.form.costBaseline.singleDuration')}
-        placeholder={t('requirements.form.costBaseline.singleDuration')}
+        field="single_manual_duration_minutes"
+        label={{
+          text: (
+            <LabelWithHelp
+              text={t('requirements.form.costBaseline.singleManualDuration')}
+              tip={t('requirements.form.costBaseline.tooltip.singleManualDuration')}
+            />
+          ),
+        }}
+        placeholder={t('requirements.form.costBaseline.singleManualDuration')}
+        suffix={
+          <span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)' }}>
+            {t('requirements.form.costBaseline.singleManualDurationUnit')}
+          </span>
+        }
         min={0}
         precision={0}
         hideButtons
