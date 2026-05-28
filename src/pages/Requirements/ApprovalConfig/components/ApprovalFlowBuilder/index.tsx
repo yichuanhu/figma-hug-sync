@@ -106,17 +106,22 @@ const ApprovalFlowBuilderPage = ({
 
     if (isNew) {
       const now = new Date().toISOString();
+      // 支持 ?preset=xxx：基于预设模板创建
+      const presetId = new URLSearchParams(location.search).get('preset');
+      const preset = presetId ? getApprovalFlowById(presetId) : null;
       setDraft({
         id: 'new',
-        name: defaultName,
-        code: `${codePrefix}-${Date.now().toString(36).slice(-5).toUpperCase()}`,
-        description: '',
+        name: preset ? `${preset.name} 副本` : defaultName,
+        code: preset ? `${preset.code}-COPY` : `${codePrefix}-${Date.now().toString(36).slice(-5).toUpperCase()}`,
+        description: preset?.description ?? '',
         status: 'inactive',
         is_draft: true,
         business_type: businessType,
-        approval_enabled: true,
-        approvers: [],
-        assessors: [],
+        approval_enabled: preset?.approval_enabled ?? true,
+        approvers: preset ? preset.approvers.map((a, i) => ({ ...a, id: `appr-${Date.now().toString(36).slice(-4)}-${i + 1}` })) : [],
+        assessors: preset ? (preset.assessors ?? []).map((a, i) => ({ ...a, id: `asse-${Date.now().toString(36).slice(-4)}-${i + 1}` })) : [],
+        value_model: preset?.value_model,
+        complexity_model: preset?.complexity_model,
         applicable_department_ids: [],
         created_at: now,
         updated_at: now,
@@ -125,6 +130,7 @@ const ApprovalFlowBuilderPage = ({
       setLoading(false);
       return;
     }
+
 
     if (!id) return;
     const f = getApprovalFlowById(id);
