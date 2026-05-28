@@ -451,7 +451,7 @@ const RequirementsAssessment = () => {
                   onClick: () => {
                     if (record) {
                       setSelectedRecord(record as RequirementItem);
-                      if (!detailDrawerVisible) setDetailDrawerVisible(true);
+                      setInitialTab('overview'); if (!detailDrawerVisible) setDetailDrawerVisible(true);
                     }
                   },
                 })}
@@ -477,7 +477,7 @@ const RequirementsAssessment = () => {
                   onClick: () => {
                     if (record) {
                       setSelectedRecord(record as RequirementItem);
-                      if (!detailDrawerVisible) setDetailDrawerVisible(true);
+                      setInitialTab('overview'); if (!detailDrawerVisible) setDetailDrawerVisible(true);
                     }
                   },
                 })}
@@ -503,7 +503,7 @@ const RequirementsAssessment = () => {
                   onClick: () => {
                     if (record) {
                       setSelectedRecord(record as RequirementItem);
-                      if (!detailDrawerVisible) setDetailDrawerVisible(true);
+                      setInitialTab('overview'); if (!detailDrawerVisible) setDetailDrawerVisible(true);
                     }
                   },
                 })}
