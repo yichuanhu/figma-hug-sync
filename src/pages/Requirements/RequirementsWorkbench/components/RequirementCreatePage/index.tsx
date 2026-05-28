@@ -42,13 +42,13 @@ const { Title, Text } = Typography;
  * Step 字段映射（用于 next 按钮分步校验 + 错误定位）
  *   0 基本信息：title / department / owner / priority / 分类标签
  *   1 业务补充字段：scheme 自定义字段（不在此列出，由各字段 rules 触发）
- *   2 成本基线：execution_frequency / single_duration
+ *   2 成本基线：monthly_execution_count / single_manual_duration_minutes
  *   3 发布变更（仅立项后编辑）
  */
 const STEP_FIELDS: Array<string[]> = [
   ["title", "department", "owner", "priority"],
   [],
-  ["execution_frequency", "single_duration"],
+  ["monthly_execution_count", "single_manual_duration_minutes"],
   [],
 ];
 
