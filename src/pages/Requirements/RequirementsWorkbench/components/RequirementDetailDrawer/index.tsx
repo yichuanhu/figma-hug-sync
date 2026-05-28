@@ -654,6 +654,11 @@ const RequirementDetailDrawer = ({
                   ) : (
                     <Text type="tertiary">{t('common.noData', { defaultValue: '暂无审批流配置' })}</Text>
                   )}
+                  {context === 'approval' && (
+                    <div style={{ marginTop: 16 }}>
+                      <ApprovalSection data={effectiveData} onStatusChange={onStatusChange} onRefresh={onRefresh} />
+                    </div>
+                  )}
                 </div>
               </TabPane>
             )}
