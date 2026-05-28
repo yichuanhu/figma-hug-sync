@@ -124,7 +124,6 @@ const RequirementsWorkbench = () => {
       const response = await fetchRequirementList({
         ...queryParams,
         departmentFilter,
-        projectFilter,
         statusFilter,
       });
       setListResponse(response);
@@ -132,7 +131,7 @@ const RequirementsWorkbench = () => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, departmentFilter, projectFilter, statusFilter]);
+  }, [queryParams, departmentFilter, statusFilter]);
 
   useEffect(() => {
     loadData();
