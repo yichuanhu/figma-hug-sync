@@ -1,75 +1,101 @@
-## 背景
 
-根据 STORY-016/021/006/007 v5/v6 更新：审批流和评估流配置正式拆分为两个独立菜单；评估模型固定为「价值评估 + 复杂度评估」两个模型，每个模型含可配置维度（tier_select / numeric_input 混合输入），按权重自动计算；「技术评估」改名为「需求评估」；详情页操作区按新流程渲染。
+# 任务列表 - 筛选增强与批量取消方案
 
-## 实施范围
+涉及主文件：`src/pages/Scheduling/TaskManagement/TaskManagementPage/index.tsx`，共用组件 `src/components/FilterPopover`。
 
-### 1. 菜单与路由拆分
-- 在「需求中心 > 配置需求」下新增「评估流配置」菜单
-- 现有「审批与评估配置」更名为「审批流配置」
-- 路由：`/requirements/approval-config`（保留）+ 新增 `/requirements/assessment-config`
-- 在 `src/components/layout` 侧边栏配置中新增菜单项
+---
 
-### 2. 审批流配置页面（精简）
-- 当前 ApprovalConfig 页面已包含审批+评估的混合编辑，需移除「评估」相关 Tab/字段，仅保留多级串行审批阶段（name / approver_type / approval_mode / approver_ids）与适用部门
-- 列表列：模板名称、审批级数、绑定部门、状态、操作
+## 一、筛选增强（STORY-009）
 
-### 3. 评估流配置页面（新建，重绘）
-- 路径：`src/pages/Requirements/AssessmentConfig/`
-- 列表页：模板名称、评估级数、维度数量、绑定部门、状态、操作
-- 编辑页（与 ApprovalConfig 同结构）：
-  - **评估阶段**：多级串行（priority / name / assessor_type / assessment_mode / assessor_ids），与审批阶段结构一致，复用 `SchemeApprovalFlowEditor` 风格
-  - **评估模型**（固定 2 个 Tab：价值评估 / 复杂度评估）：
-    - 模型级：name、description
-    - 维度列表：name、key、description、input_type(tier_select/numeric_input)、weight（同模型权重和 = 1）、unit（数值时）
-    - 档位编辑：tier_select 时 label+score；numeric_input 时 label+min/max+score
-  - 适用部门多选
-  - 平台预设只读、复制、激活/停用/删除生命周期与审批流一致
-- Mock 数据：`mockData.ts` 提供 1 个平台预设 + 1-2 个租户模板，含完整价值+复杂度模型示例
+### 1. 顶部工具栏（常驻筛选）
+重排后顺序：
+- 搜索框（320px）
+- 流程选择 `process_id`（新增 Semi `Select` 多选）
+- 任务状态 `task_status`（从面板移到顶部，Semi `Select` 多选）
+- 所属部门 `owning_department_name`（**常驻**，沿用现有 `DepartmentSelect` 多选）
+- 任务创建时间 `created_at_start/end`（独立 `DatePicker type="dateTimeRange"`）
+- 筛选按钮（带生效条件数量徽标）
+- 刷新
+- 创建任务
 
-### 4. 需求详情页 — 评估 Tab 改造
-- 文案：所有「技术评估」改为「需求评估」（i18n key 保留，仅文案改）
-- `AssessmentTab` 重绘：
-  - 顶部 Banner：显示当前评估阶段 `L1/Lx · 阶段名` + 评估人列表 + 完成状态
-  - 「价值评估」「复杂度评估」两块卡片，按快照 `assessment_flow_config_snapshot.models` 动态渲染维度
-    - `tier_select`：RadioGroup 显示 label(score)
-    - `numeric_input`：InputNumber + 单位 + 实时显示命中档位
-  - 每个模型显示综合得分 = SUM(维度得分 × 权重)
-  - 评估意见 TextArea
-  - 「评估通过」「评估拒绝」按钮（拒绝需填原因）
-- 只读态：已评估或非当前评估人显示其他人提交的聚合结果（各维度平均值）
-- 详情页右侧操作区（`ApprovalSection` 兄弟 `AssessmentSection`）：
-  - 状态 = 待评估、当前用户为本级评估人：显示通过/拒绝按钮，跳转/聚焦到评估 Tab
-  - 不是评估人：显示「当前 L{x} {阶段名} 评估中」提示
+### 2. 筛选面板（收纳条件）
+`FilterPopover` 中放置：
+- 执行目标（类型 + 目标联动：机器人 / 机器人组）
+- 优先级（checkbox：HIGH/MEDIUM/LOW/MANUAL_QUEUE_BREAKER）
+- 触发来源 `trigger_source`（checkbox：MANUAL/SCHEDULED/QUEUE/TEMPLATE）
+- 所属触发器 `trigger_id`（Select，按当前触发来源动态过滤可选项）
+- 是否录屏 `enable_recording`（radio：不限 / 启用 / 关闭）
+- 包含任务截图 `has_screenshot`（checkbox 单项：仅 `true`，未选则不限）
 
-### 5. Mock 与类型调整
-- `mockData.ts`：
-  - 拆分 `approvalFlowTemplates` 与 `assessmentFlowTemplates`
-  - 拆分 `department_approval_flow_binding` 与 `department_assessment_flow_binding`
-  - `submitRequirement` 时分别快照 `approval_flow_config_snapshot` 与 `assessment_flow_config_snapshot`
-- 类型 (`types.ts`)：
-  - 新增 `AssessmentFlowConfig { levels[], models[] }`，`AssessmentModel { type:'value'|'complexity', name, description, dimensions[] }`，`AssessmentDimension { key, name, input_type, weight, unit?, tiers[] }`
-  - `RequirementItem` 增加 `assessment_flow_template_id` / `assessment_flow_config_snapshot` / `assessment_records[]`
-  - 旧 `DetailedAssessment` 兼容保留用于已评估展示
+注：所属部门已移至顶部常驻，不再放入面板。
 
-### 6. 国际化
-- `zh-CN.json` / `en.json`：新增 `requirements.assessmentConfig.*`，「技术评估」→「需求评估」（`requirements.assessment.title` 等）
+### 3. 活动筛选标签栏
+表格上方新增 `ActiveFilterChips` 行：把顶部 + 面板内全部已生效条件以可关闭 `Tag` 展示，提供"清除全部"。关闭单条 → 清除对应条件并刷新。
 
-## 不在本次范围
+### 4. FilterPopover 扩展
+为支持执行目标/触发器等下拉，给 `FilterSection` 新增类型：
+- `select`：单选 Select
+- `multiSelect`：多选 Select
+- `targetSelector`：执行目标专用（类型 + ID 联动）
+保留现有 `checkbox/radio/dateRange`。筛选按钮（Filter 图标）右上角以小徽标显示生效条件数量。
 
-- AI 辅助评估推荐、加签转签
-- 模板历史版本/导入导出
-- 真实后端联调（继续用 mock）
+### 5. Mock 与查询参数
+- `fetchTaskList` 新增对 `process_id`、`execution_target_type+id`、`trigger_id`、`enable_recording`、`has_screenshot`、`priority` 的过滤。
+- `created_at_start/end` 替换原 `start_time/end_time`。
+- mock 任务数据补充 `trigger_id / trigger_name / worker_id / worker_group_id`；提供 mock `processList / triggerList` 供下拉。
 
-## 技术风险
+### 6. 空状态
+任意筛选条件生效且结果为空时显示 `EmptyState variant="noResult"`，文案"未找到匹配任务"。
 
-- `RequirementDetailDrawer` 已较复杂，避免破坏审批 Tab 现有逻辑；评估 Tab 单独重写
-- mock 数据双绑定迁移需保证存量需求兼容（已有快照保留旧字段）
+---
 
-## 交付清单
+## 二、批量取消（STORY-010）
 
-- 新增 `src/pages/Requirements/AssessmentConfig/`（index.tsx/less/mockData.ts + components/）
-- 修改 `src/pages/Requirements/ApprovalConfig/`：移除评估模块
-- 修改 `RequirementDetailDrawer/AssessmentTab/`：动态模型渲染
-- 修改 `RequirementsWorkbench` mockData：双快照
-- 修改侧边栏菜单 + i18n
+### 1. 表格多选
+- `Table` 加 `rowSelection`，`selectedRowKeys` 状态在页面层；翻页/筛选切换时清空。
+- 行点击仍打开详情；勾选框 `onClick` `stopPropagation`。
+
+### 2. 批量操作栏
+`selectedRowKeys.length > 0` 时表格上方显示 `TaskBatchBar`（参考 `BatchOperationBar`）：
+- 左：`已选择 N 项`、`清除选择`
+- 右：`批量取消`按钮
+  - 选中无 `PENDING` 时禁用并 Tooltip"没有可取消任务"
+  - 无 `task_control` 权限时整条不渲染（mock 阶段默认有权限，预留 hook）
+
+### 3. 确认 Modal
+`Modal.confirm` 内容：
+- 已选择 N 个
+- 当前可取消 M 个（PENDING）
+- 不可取消 K 个
+- 提示"最终结果以服务端返回为准"
+确认按钮 `type=warning`。
+
+### 4. 提交与反馈
+- mock `bulkCancelTasks(ids)`：仅 `PENDING` 设为 `CANCELLED`，其余产生失败项。
+- 返回 `{ total, success_count, failed_count, items }`。
+- 完成后：刷新列表、清空选择、同步详情抽屉状态。
+- 全成功：`Toast.success`；部分失败：`Toast.warning` + 次级 Modal 列出失败明细。
+- 提交前若 >100 提示"单次最多取消 100 个任务"。
+
+### 5. 审计日志
+mock 阶段 console 输出占位，注释 TODO 接入。
+
+---
+
+## 三、技术细节
+
+- 新增子组件目录：
+  - `TaskManagementPage/components/ActiveFilterChips/`
+  - `TaskManagementPage/components/TaskBatchBar/`
+  - `TaskManagementPage/components/BulkCancelConfirm/`
+- 扩展 `src/components/FilterPopover/index.tsx`：新增 `select / multiSelect / targetSelector` 类型。
+- i18n：在 `public/i18n/zh-CN.json` / `en.json` 补 `task.filter.*` 与 `task.bulk.*` 文案。
+- 验证：勾选 → 操作栏出现；批量取消 → 确认 Modal 数量正确；筛选 → 标签与结果同步；清除全部 → 恢复默认。
+
+---
+
+## 四、范围外
+
+- 真实后端 `bulk-cancel` 接入（mock）
+- 批量中止/重新执行/删除/修改配置
+- 按执行记录开始/结束时间、实际录屏文件生成筛选
