@@ -19,6 +19,7 @@ import {
   Row,
   Col,
   Space,
+  SideSheet,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Eye, Copy } from 'lucide-react';
@@ -33,6 +34,7 @@ import {
   type ApprovalFlowTemplate,
   type ApprovalBusinessType,
 } from './mockData';
+import ApprovalFlowBuilder from './components/ApprovalFlowBuilder';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -59,6 +61,8 @@ const ApprovalConfigPage = ({
   const [keyword, setKeyword] = useState('');
   const [flows, setFlows] = useState<ApprovalFlowTemplate[]>([]);
   const [loading, setLoading] = useState(true);
+  const useDrawer = businessType === 'REQUIREMENT';
+  const [drawerState, setDrawerState] = useState<{ id: string; view: boolean } | null>(null);
 
   const isPublish = businessType === 'PROCESS_PUBLISH';
   const isOffline = businessType === 'PROCESS_OFFLINE';
@@ -88,16 +92,20 @@ const ApprovalConfigPage = ({
   useEffect(() => subscribeApprovalFlowChange(() => load(true)), [load]);
 
   const goEdit = (f: ApprovalFlowTemplate) => {
-    navigate(`${basePath}/builder/${f.id}`);
+    if (useDrawer) setDrawerState({ id: f.id, view: false });
+    else navigate(`${basePath}/builder/${f.id}`);
   };
 
   const goDetail = (f: ApprovalFlowTemplate) => {
-    navigate(`${basePath}/detail/${f.id}`);
+    if (useDrawer) setDrawerState({ id: f.id, view: true });
+    else navigate(`${basePath}/detail/${f.id}`);
   };
 
   const handleCreateNew = () => {
-    navigate(`${basePath}/builder/new`);
+    if (useDrawer) setDrawerState({ id: 'new', view: false });
+    else navigate(`${basePath}/builder/new`);
   };
+
 
 
   const handleActivate = (f: ApprovalFlowTemplate) => {
@@ -132,7 +140,8 @@ const ApprovalConfigPage = ({
     try {
       const draft = await cloneApprovalFlowAsDraft(f.id);
       Toast.success('已复制为草稿');
-      navigate(`${basePath}/builder/${draft.id}`);
+      if (useDrawer) setDrawerState({ id: draft.id, view: false });
+      else navigate(`${basePath}/builder/${draft.id}`);
     } catch (e) {
       Toast.error((e as Error).message ?? '复制失败');
     }
@@ -333,6 +342,39 @@ const ApprovalConfigPage = ({
           </div>
         )}
       </div>
+
+      {useDrawer && (
+        <SideSheet
+          visible={!!drawerState}
+          onCancel={() => setDrawerState(null)}
+          mask={false}
+          width={900}
+          headerStyle={{ display: 'none' }}
+          bodyStyle={{ padding: 0 }}
+          closeOnEsc
+        >
+          {drawerState && (
+            <ApprovalFlowBuilder
+              key={`${drawerState.id}-${drawerState.view ? 'v' : 'e'}`}
+              businessType={businessType}
+              basePath={basePath}
+              embedded
+              embeddedId={drawerState.id}
+              embeddedView={drawerState.view}
+              onEmbeddedClose={() => {
+                setDrawerState(null);
+                load(true);
+              }}
+              onEmbeddedSwitchEdit={(id) => setDrawerState({ id, view: false })}
+              onEmbeddedNavigate={(id) => setDrawerState({ id, view: true })}
+              onEmbeddedSaved={(saved) => {
+                setDrawerState({ id: saved.id, view: false });
+                load(true);
+              }}
+            />
+          )}
+        </SideSheet>
+      )}
     </div>
   );
 };

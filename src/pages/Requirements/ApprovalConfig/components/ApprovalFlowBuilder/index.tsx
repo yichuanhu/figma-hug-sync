@@ -40,17 +40,43 @@ const { Title } = Typography;
 interface ApprovalFlowBuilderPageProps {
   businessType?: ApprovalBusinessType;
   basePath?: string;
+  /** 嵌入模式（用于在抽屉内复用本组件） */
+  embedded?: boolean;
+  /** 嵌入模式下当前模板 id，可为 'new' */
+  embeddedId?: string;
+  /** 嵌入模式下是否查看态 */
+  embeddedView?: boolean;
+  /** 嵌入模式下关闭回调 */
+  onEmbeddedClose?: () => void;
+  /** 嵌入模式下切换到编辑（从详情态切到编辑态） */
+  onEmbeddedSwitchEdit?: (id: string) => void;
+  /** 嵌入模式下保存草稿成功后回调（用于把 new -> id 切换） */
+  onEmbeddedSaved?: (saved: ApprovalFlowTemplate) => void;
+  /** 嵌入模式下切换到另一个详情 */
+  onEmbeddedNavigate?: (id: string) => void;
 }
 
 const ApprovalFlowBuilderPage = ({
   businessType = 'REQUIREMENT',
   basePath = '/requirements/approval-config',
+  embedded = false,
+  embeddedId,
+  embeddedView,
+  onEmbeddedClose,
+  onEmbeddedSwitchEdit,
+  onEmbeddedSaved,
+  onEmbeddedNavigate,
 }: ApprovalFlowBuilderPageProps) => {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
-  const isView = location.pathname.includes('/detail/');
+  const id = embedded ? embeddedId : params.id;
+  const isView = embedded ? !!embeddedView : location.pathname.includes('/detail/');
+  const closeOrBack = () => {
+    if (embedded) onEmbeddedClose?.();
+    else navigate(basePath);
+  };
   const isPublish = businessType === 'PROCESS_PUBLISH';
   const isOffline = businessType === 'PROCESS_OFFLINE';
   const isProcessFlow = isPublish || isOffline;
@@ -122,9 +148,10 @@ const ApprovalFlowBuilderPage = ({
     setDirty(true);
   };
 
-  const guardedNavigate = (to: string) => {
+  const guardedClose = () => {
+    const doClose = () => (embedded ? onEmbeddedClose?.() : navigate(basePath));
     if (!dirty) {
-      navigate(to);
+      doClose();
       return;
     }
     Modal.confirm({
@@ -133,7 +160,7 @@ const ApprovalFlowBuilderPage = ({
       okText: '离开',
       cancelText: '继续编辑',
       okButtonProps: { type: 'danger' },
-      onOk: () => navigate(to),
+      onOk: doClose,
     });
   };
 
@@ -197,7 +224,8 @@ const ApprovalFlowBuilderPage = ({
       setDirty(false);
       Toast.success('已保存');
       if (isNew) {
-        navigate(`${basePath}/builder/${saved.id}`, { replace: true });
+        if (embedded) onEmbeddedSaved?.(saved);
+        else navigate(`${basePath}/builder/${saved.id}`, { replace: true });
       }
     } catch (e) {
       Toast.error((e as Error).message);
@@ -223,7 +251,8 @@ const ApprovalFlowBuilderPage = ({
       onOk: async () => {
         await activateApprovalFlow(draft.id);
         Toast.success('启用成功');
-        navigate(basePath);
+        if (embedded) onEmbeddedClose?.();
+        else navigate(basePath);
       },
     });
   };
@@ -245,7 +274,7 @@ const ApprovalFlowBuilderPage = ({
               icon={<ChevronLeft size={16} strokeWidth={2} />}
               theme="borderless"
               type="tertiary"
-              onClick={() => guardedNavigate(basePath)}
+              onClick={guardedClose}
             />
           </Tooltip>
           <div className="approval-flow-builder-title-block">
@@ -317,7 +346,7 @@ const ApprovalFlowBuilderPage = ({
                       theme="borderless"
                       type="tertiary"
                       disabled={!prevId}
-                      onClick={() => prevId && navigate(`${basePath}/detail/${prevId}`)}
+                      onClick={() => prevId && (embedded ? onEmbeddedNavigate?.(prevId) : navigate(`${basePath}/detail/${prevId}`))}
                     />
                   </Tooltip>
                   <Tooltip content="下一个" position="bottom">
@@ -326,7 +355,7 @@ const ApprovalFlowBuilderPage = ({
                       theme="borderless"
                       type="tertiary"
                       disabled={!nextId}
-                      onClick={() => nextId && navigate(`${basePath}/detail/${nextId}`)}
+                      onClick={() => nextId && (embedded ? onEmbeddedNavigate?.(nextId) : navigate(`${basePath}/detail/${nextId}`))}
                     />
                   </Tooltip>
                   <div style={{ width: 1, height: 16, background: 'var(--semi-color-border)', margin: '0 4px' }} />
@@ -343,7 +372,7 @@ const ApprovalFlowBuilderPage = ({
                       icon={<X size={16} strokeWidth={2} />}
                       theme="borderless"
                       type="tertiary"
-                      onClick={() => navigate(basePath)}
+                      onClick={() => (embedded ? onEmbeddedClose?.() : navigate(basePath))}
                     />
                   </Tooltip>
                 </>
@@ -354,7 +383,7 @@ const ApprovalFlowBuilderPage = ({
                   icon={<Pencil size={16} strokeWidth={2} />}
                   theme="light"
                   type="tertiary"
-                  onClick={() => navigate(`${basePath}/builder/${draft.id}`)}
+                  onClick={() => (embedded ? onEmbeddedSwitchEdit?.(draft.id) : navigate(`${basePath}/builder/${draft.id}`))}
                 >
                   编辑
                 </Button>
