@@ -4,11 +4,15 @@ import {
   Button,
   Popover,
   CheckboxGroup,
+  RadioGroup,
+  Radio,
   DatePicker,
+  Select,
   Typography,
 } from '@douyinfe/semi-ui';
 import './index.less';
 import { Filter } from 'lucide-react';
+
 
 const { Text } = Typography;
 
@@ -29,14 +33,19 @@ export interface FilterSection {
   /** 区块标题 */
   label: string;
   /** 筛选类型 */
-  type: 'checkbox' | 'radio' | 'dateRange';
-  /** 选项列表（checkbox/radio类型必填） */
+  type: 'checkbox' | 'radio' | 'dateRange' | 'select' | 'multiSelect' | 'booleanTri' | 'custom';
+  /** 选项列表（checkbox/radio/select/multiSelect 类型必填） */
   options?: FilterOption[];
   /** 当前选中值（由外部控制） */
   value: unknown;
   /** 日期快捷选项（dateRange类型可选） */
   datePresets?: Array<{ text: string; start: Date; end: Date }>;
+  /** 占位符（select/multiSelect 可选） */
+  placeholder?: string;
+  /** 自定义渲染（type=custom 时使用） */
+  render?: (value: unknown, onChange: (value: unknown) => void) => ReactNode;
 }
+
 
 export interface FilterPopoverProps {
   /** 筛选区块配置列表 */
@@ -60,9 +69,10 @@ export interface FilterPopoverProps {
  */
 interface InternalSectionState {
   key: string;
-  type: 'checkbox' | 'radio' | 'dateRange';
+  type: FilterSection['type'];
   value: unknown;
 }
+
 
 /**
  * 筛选区块项组件（使用 memo 优化，避免无关渲染）
@@ -72,10 +82,17 @@ const FilterSectionItem = memo(
     section,
     onChange,
   }: {
-    section: InternalSectionState & { label: string; options?: FilterOption[]; datePresets?: Array<{ text: string; start: Date; end: Date }> };
+    section: InternalSectionState & {
+      label: string;
+      options?: FilterOption[];
+      datePresets?: Array<{ text: string; start: Date; end: Date }>;
+      placeholder?: string;
+      render?: (value: unknown, onChange: (value: unknown) => void) => ReactNode;
+    };
     onChange: (value: unknown) => void;
   }) => {
     switch (section.type) {
+
       case 'checkbox':
         return (
           <CheckboxGroup
@@ -114,8 +131,53 @@ const FilterSectionItem = memo(
             style={{ width: '100%' }}
           />
         );
+      case 'select':
+        return (
+          <Select
+            value={(section.value ?? undefined) as string | number | undefined}
+            onChange={(v) => onChange(v ?? null)}
+            optionList={section.options as { value: string | number; label: string }[]}
+            placeholder={section.placeholder}
+            showClear
+            style={{ width: '100%' }}
+          />
+        );
+      case 'multiSelect':
+        return (
+          <Select
+            value={(section.value as (string | number)[]) || []}
+            onChange={(v) => onChange(v || [])}
+            optionList={section.options as { value: string | number; label: string }[]}
+            placeholder={section.placeholder}
+            multiple
+            maxTagCount={2}
+            showClear
+            style={{ width: '100%' }}
+          />
+        );
+      case 'booleanTri': {
+        // null=不限, true=是, false=否
+        const v = section.value;
+        const radioVal = v === true ? 'true' : v === false ? 'false' : 'all';
+        return (
+          <RadioGroup
+            value={radioVal}
+            onChange={(e) => {
+              const val = e.target.value;
+              onChange(val === 'true' ? true : val === 'false' ? false : null);
+            }}
+          >
+            <Radio value="all">不限</Radio>
+            <Radio value="true">是</Radio>
+            <Radio value="false">否</Radio>
+          </RadioGroup>
+        );
+      }
+      case 'custom':
+        return section.render ? <>{section.render(section.value, onChange)}</> : null;
       default:
         return null;
+
     }
   }
 );
@@ -202,19 +264,20 @@ const FilterPopover = ({
   // 计算筛选数量（用于按钮显示，基于外部实际值）
   const filterCount = useMemo(() => {
     return sections.reduce((count, section) => {
-      if (section.type === 'dateRange') {
-        return count;
-      }
       const value = section.value;
-      if (Array.isArray(value)) {
-        return count + value.length;
+      if (section.type === 'dateRange') {
+        return Array.isArray(value) && value.length === 2 ? count + 1 : count;
       }
-      if (value !== null && value !== undefined) {
+      if (Array.isArray(value)) {
+        return count + (value.length > 0 ? 1 : 0);
+      }
+      if (value !== null && value !== undefined && value !== '') {
         return count + 1;
       }
       return count;
     }, 0);
   }, [sections]);
+
 
   // 检查是否可以重置（基于内部编辑值）
   const canReset = useMemo(() => {
@@ -229,16 +292,15 @@ const FilterPopover = ({
   const handleReset = () => {
     const resetValues: Record<string, unknown> = {};
     sections.forEach((section) => {
-      if (section.type === 'checkbox') {
+      if (section.type === 'checkbox' || section.type === 'multiSelect') {
         resetValues[section.key] = [];
-      } else if (section.type === 'dateRange') {
-        resetValues[section.key] = null;
       } else {
         resetValues[section.key] = null;
       }
     });
     setInternalValues(resetValues);
   };
+
 
   // 处理确认（将内部值传递给外部）
   const handleConfirm = () => {

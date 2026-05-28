@@ -16,6 +16,8 @@ import {
   Toast,
   Space,
   Pagination,
+  Select,
+  DatePicker,
   
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
@@ -25,7 +27,8 @@ import FilterPopover from '@/components/FilterPopover';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
-import { Bot, ClipboardClock, Component, Ellipsis, History, MinusCircle, PlayCircle, Plus, RefreshCw, XCircle } from 'lucide-react';
+import { Bot, ClipboardClock, Component, Ellipsis, History, MinusCircle, PlayCircle, Plus, RefreshCw, X, XCircle } from 'lucide-react';
+
 import type { 
   LYTaskResponse, 
   GetTasksParams, 
@@ -61,7 +64,39 @@ const mockCreatorNameMap: Record<string, string> = {
   'user-005': 'Chris Qian',
 };
 
-const generateMockTaskResponse = (index: number): LYTaskResponse => {
+// 流程列表（与任务 mock 对齐）
+const mockProcessList = [
+  { process_id: 'proc-001', process_name: 'Auto Order Processing' },
+  { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval' },
+  { process_id: 'proc-003', process_name: 'Employee Onboarding Flow' },
+  { process_id: 'proc-004', process_name: 'Purchase Request Process' },
+  { process_id: 'proc-005', process_name: 'Contract Approval Process' },
+];
+
+// 执行目标 mock
+const mockWorkerList = [
+  { id: 'worker-001', name: 'RPA-BOT-001' },
+  { id: 'worker-002', name: 'RPA-BOT-002' },
+  { id: 'worker-003', name: 'RPA-BOT-003' },
+  { id: 'worker-004', name: 'RPA-BOT-004' },
+  { id: 'worker-005', name: 'RPA-BOT-005' },
+];
+
+const mockWorkerGroupList = [
+  { id: 'group-001', name: 'Order Processing Group' },
+  { id: 'group-002', name: 'Finance Approval Group' },
+  { id: 'group-003', name: 'HR Management Group' },
+];
+
+// 触发器 mock
+const mockTriggerList = [
+  { trigger_id: 'trg-001', trigger_name: 'Daily Order Sync', trigger_source: 'SCHEDULED' as const },
+  { trigger_id: 'trg-002', trigger_name: 'Weekly Report', trigger_source: 'SCHEDULED' as const },
+  { trigger_id: 'trg-003', trigger_name: 'Order Queue Trigger', trigger_source: 'QUEUE' as const },
+  { trigger_id: 'trg-004', trigger_name: 'Reimburse Queue', trigger_source: 'QUEUE' as const },
+];
+
+const generateMockTaskResponse = (index: number): LYTaskResponse & { trigger_id: string | null; trigger_name: string | null; worker_id: string | null; worker_group_id: string | null; has_screenshot: boolean } => {
   const processNames = [
     'Auto Order Processing',
     'Expense Reimbursement Approval',
@@ -85,6 +120,7 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
   const targetTypes = ['BOT_GROUP', 'BOT_IN_GROUP', 'UNGROUPED_BOT'] as const;
   const creatorIds = Object.keys(mockCreatorNameMap);
 
+
   const createDate = new Date(2026, 0, 1 + (index % 28), 10 + (index % 12), (index * 7) % 60);
   const expireDate = new Date(createDate.getTime() + 7 * 24 * 60 * 60 * 1000);
   const taskStatus = taskStatuses[index % taskStatuses.length];
@@ -93,16 +129,30 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
 
   const deptNames = ['Finance Department', 'Enterprise Business Center', 'Human Resources Department', 'R&D Center', 'Finance Department'];
 
+  const triggerSource = triggerSources[index % triggerSources.length];
+  const matchedTrigger =
+    triggerSource === 'SCHEDULED' || triggerSource === 'QUEUE'
+      ? mockTriggerList.filter((t) => t.trigger_source === triggerSource)[index % 2]
+      : null;
+  const targetType = targetTypes[index % targetTypes.length];
+  const isGroupTarget = targetType === 'BOT_GROUP';
+  const targetEntity = isGroupTarget
+    ? mockWorkerGroupList[index % mockWorkerGroupList.length]
+    : mockWorkerList[index % mockWorkerList.length];
+  const targetName = targetEntity.name;
+  const processEntity = mockProcessList[index % mockProcessList.length];
+
   return {
     task_id: `TASK-${String(100000 + index).substring(1)}`,
-    process_id: generateUUID(),
-    process_name: processNames[index % processNames.length],
+    process_id: processEntity.process_id,
+    process_name: processEntity.process_name,
     owning_department_name: deptNames[index % deptNames.length],
     process_version_id: generateUUID(),
     process_version: `v${(index % 5) + 1}.0.0`,
-    execution_target_type: targetTypes[index % targetTypes.length],
-    execution_target_id: generateUUID(),
-    execution_target_name: targetNames[index % targetNames.length],
+    execution_target_type: targetType,
+    execution_target_id: targetEntity.id,
+    execution_target_name: targetName,
+
     task_status: taskStatus,
     execution_status: hasExecution ? executionStatuses[index % executionStatuses.length] : null,
     priority: priorities[index % priorities.length],
@@ -144,16 +194,43 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
     })) : [],
     creator_id: creatorId,
     creator_name: mockCreatorNameMap[creatorId],
+    trigger_id: matchedTrigger?.trigger_id ?? null,
+    trigger_name: matchedTrigger?.trigger_name ?? null,
+    worker_id: isGroupTarget ? null : targetEntity.id,
+    worker_group_id: isGroupTarget ? targetEntity.id : null,
+    has_screenshot: hasExecution && (index % 3 !== 0),
   };
 };
 
-const generateMockTaskList = (): LYTaskResponse[] => {
+const generateMockTaskList = (): LYTaskResponseExt[] => {
   return Array(58).fill(null).map((_, index) => generateMockTaskResponse(index));
+};
+
+type LYTaskResponseExt = LYTaskResponse & {
+  trigger_id: string | null;
+  trigger_name: string | null;
+  worker_id: string | null;
+  worker_group_id: string | null;
+  has_screenshot: boolean;
 };
 
 let mockTaskData = generateMockTaskList();
 
-const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTaskResponse> => {
+
+type ExtTasksParams = GetTasksParams & {
+  owning_department_name?: string[];
+  process_ids?: string[];
+  trigger_id?: string | null;
+  execution_target_type?: 'WORKER' | 'WORKER_GROUP' | null;
+  execution_target_id?: string | null;
+  priorities?: string[];
+  enable_recording?: boolean | null;
+  has_screenshot?: boolean | null;
+  created_at_start?: string;
+  created_at_end?: string;
+};
+
+const fetchTaskList = async (params: ExtTasksParams): Promise<LYListResponseLYTaskResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
 
   let filteredData = [...mockTaskData];
@@ -165,6 +242,11 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
       item.task_id.toLowerCase().includes(keyword) ||
       item.process_name.toLowerCase().includes(keyword)
     );
+  }
+
+  // 流程过滤
+  if (params.process_ids && params.process_ids.length > 0) {
+    filteredData = filteredData.filter((item) => params.process_ids!.includes(item.process_id));
   }
 
   // taskStatusFilter
@@ -184,21 +266,52 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
     filteredData = filteredData.filter((item) => params.trigger_source!.includes(item.trigger_source));
   }
 
+  // 所属触发器
+  if (params.trigger_id) {
+    filteredData = filteredData.filter((item) => item.trigger_id === params.trigger_id);
+  }
+
+  // 执行目标
+  if (params.execution_target_type && params.execution_target_id) {
+    filteredData = filteredData.filter((item) => {
+      if (params.execution_target_type === 'WORKER_GROUP') {
+        return item.worker_group_id === params.execution_target_id;
+      }
+      return item.worker_id === params.execution_target_id;
+    });
+  }
+
+  // 优先级
+  if (params.priorities && params.priorities.length > 0) {
+    filteredData = filteredData.filter((item) => params.priorities!.includes(item.priority));
+  }
+
+  // 录屏
+  if (params.enable_recording === true || params.enable_recording === false) {
+    filteredData = filteredData.filter((item) => item.enable_recording === params.enable_recording);
+  }
+
+  // 截图
+  if (params.has_screenshot === true) {
+    filteredData = filteredData.filter((item) => item.has_screenshot === true);
+  }
+
   // 归属部门Filter
-  if ((params as any).owning_department_name && (params as any).owning_department_name.length > 0) {
-    const deptNames: string[] = (params as any).owning_department_name;
+  if (params.owning_department_name && params.owning_department_name.length > 0) {
+    const deptNames = params.owning_department_name;
     filteredData = filteredData.filter((item) => deptNames.includes((item as any).owning_department_name));
   }
 
-  // Time范围Filter
-  if (params.start_time) {
-    const startDate = new Date(params.start_time);
+  // 创建时间范围
+  if (params.created_at_start) {
+    const startDate = new Date(params.created_at_start);
     filteredData = filteredData.filter((item) => new Date(item.create_time) >= startDate);
   }
-  if (params.end_time) {
-    const endDate = new Date(params.end_time);
+  if (params.created_at_end) {
+    const endDate = new Date(params.created_at_end);
     filteredData = filteredData.filter((item) => new Date(item.create_time) <= endDate);
   }
+
 
   // Sort
   filteredData.sort((a, b) => {
@@ -264,12 +377,25 @@ const TaskManagementPage = () => {
   });
 
   // FilterStatus
+  // 顶部常驻
+  const [processFilter, setProcessFilter] = useState<string[]>([]);
   const [taskStatusFilter, setTaskStatusFilter] = useState<string[]>([]);
-  const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
-  const [triggerSourceFilter, setTriggerSourceFilter] = useState<string[]>([]);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
+  // 收纳面板
+  const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
+  const [triggerSourceFilter, setTriggerSourceFilter] = useState<string[]>([]);
+  const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
+  const [triggerIdFilter, setTriggerIdFilter] = useState<string | null>(null);
+  const [executionTargetType, setExecutionTargetType] = useState<'WORKER' | 'WORKER_GROUP' | null>(null);
+  const [executionTargetId, setExecutionTargetId] = useState<string | null>(null);
+  const [enableRecordingFilter, setEnableRecordingFilter] = useState<boolean | null>(null);
+  const [hasScreenshotFilter, setHasScreenshotFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+
+  // 批量选择
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+
 
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -319,6 +445,33 @@ const TaskManagementPage = () => {
 
   // departmentOptions removed - using DepartmentSelect with tree data
 
+  // 优先级选项
+  const priorityOptions = useMemo(() => [
+    { value: 'HIGH', label: t('task.priority.high') },
+    { value: 'MEDIUM', label: t('task.priority.medium') },
+    { value: 'LOW', label: t('task.priority.low') },
+    { value: 'MANUAL_QUEUE_BREAKER', label: t('task.priority.manualQueueBreaker') },
+  ], [t]);
+
+  // 触发器选项（根据触发来源动态过滤）
+  const triggerOptions = useMemo(() => {
+    return mockTriggerList
+      .filter((trg) => triggerSourceFilter.length === 0 || triggerSourceFilter.includes(trg.trigger_source))
+      .map((trg) => ({ value: trg.trigger_id, label: trg.trigger_name }));
+  }, [triggerSourceFilter]);
+
+  // 流程选项
+  const processOptions = useMemo(() =>
+    mockProcessList.map((p) => ({ value: p.process_id, label: p.process_name })), []);
+
+  // 执行目标选项（按 type）
+  const executionTargetOptions = useMemo(() => {
+    if (executionTargetType === 'WORKER_GROUP') {
+      return mockWorkerGroupList.map((g) => ({ value: g.id, label: g.name }));
+    }
+    return mockWorkerList.map((w) => ({ value: w.id, label: w.name }));
+  }, [executionTargetType]);
+
   // LoadingData
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -329,15 +482,23 @@ const TaskManagementPage = () => {
         execution_status: executionStatusFilter.length > 0 ? executionStatusFilter as ExecutionStatus[] : undefined,
         trigger_source: triggerSourceFilter.length > 0 ? triggerSourceFilter as TriggerSource[] : undefined,
         owning_department_name: departmentFilter,
-        start_time: dateRange?.[0]?.toISOString(),
-        end_time: dateRange?.[1]?.toISOString(),
-      } as any);
+        process_ids: processFilter,
+        priorities: priorityFilter,
+        trigger_id: triggerIdFilter,
+        execution_target_type: executionTargetType,
+        execution_target_id: executionTargetId,
+        enable_recording: enableRecordingFilter,
+        has_screenshot: hasScreenshotFilter,
+        created_at_start: dateRange?.[0]?.toISOString(),
+        created_at_end: dateRange?.[1]?.toISOString(),
+      });
       setListResponse(response);
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, departmentFilter, dateRange]);
+  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, departmentFilter, dateRange, processFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetId, enableRecordingFilter, hasScreenshotFilter]);
+
 
   useEffect(() => {
     loadData();
@@ -517,13 +678,88 @@ const TaskManagementPage = () => {
     });
   };
 
-  // FilterConfirm
+  // FilterConfirm（仅处理收纳面板内的条件）
   const handleFilterConfirm = (values: Record<string, unknown>) => {
-    setTaskStatusFilter((values.taskStatus as string[]) || []);
     setExecutionStatusFilter((values.executionStatus as string[]) || []);
     setTriggerSourceFilter((values.triggerSource as string[]) || []);
-    setDateRange((values.dateRange as [Date, Date] | null) || null);
+    setPriorityFilter((values.priority as string[]) || []);
+    setTriggerIdFilter((values.triggerId as string | null) ?? null);
+    setEnableRecordingFilter(values.enableRecording === true || values.enableRecording === false ? values.enableRecording as boolean : null);
+    setHasScreenshotFilter((values.hasScreenshot as boolean[] | undefined)?.includes(true) ? true : null);
+    const target = values.executionTarget as { type: 'WORKER' | 'WORKER_GROUP' | null; id: string | null } | null;
+    setExecutionTargetType(target?.type ?? null);
+    setExecutionTargetId(target?.id ?? null);
+    setQueryParams((prev) => ({ ...prev, offset: 0 }));
   };
+
+  // 清除所有筛选
+  const handleClearAllFilters = () => {
+    setSearchValue('');
+    setProcessFilter([]);
+    setTaskStatusFilter([]);
+    setDepartmentFilter([]);
+    setDateRange(null);
+    setExecutionStatusFilter([]);
+    setTriggerSourceFilter([]);
+    setPriorityFilter([]);
+    setTriggerIdFilter(null);
+    setExecutionTargetType(null);
+    setExecutionTargetId(null);
+    setEnableRecordingFilter(null);
+    setHasScreenshotFilter(null);
+    setQueryParams((prev) => ({ ...prev, offset: 0, keyword: '' }));
+  };
+
+  // 批量取消
+  const handleBulkCancel = () => {
+    const selectedTasks = list.filter((t) => selectedRowKeys.includes(t.task_id));
+    const cancellable = selectedTasks.filter((t) => t.task_status === 'PENDING');
+    const uncancellable = selectedTasks.length - cancellable.length;
+
+    if (selectedTasks.length > 100) {
+      Toast.warning('单次最多取消 100 个任务');
+      return;
+    }
+
+    Modal.confirm({
+      title: '批量取消任务',
+      content: (
+        <div style={{ lineHeight: '22px' }}>
+          <div>已选择 <strong>{selectedTasks.length}</strong> 个任务</div>
+          <div>当前可取消 <strong style={{ color: 'var(--semi-color-success)' }}>{cancellable.length}</strong> 个</div>
+          <div>不可取消 <strong style={{ color: 'var(--semi-color-text-2)' }}>{uncancellable}</strong> 个</div>
+          <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>最终结果以服务端返回为准</div>
+        </div>
+      ),
+      okText: '确认取消',
+      cancelText: '取消',
+      okButtonProps: { type: 'warning' },
+      onOk: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        const cancellableIds = new Set(cancellable.map((t) => t.task_id));
+        const items: Array<{ task_id: string; success: boolean; message?: string }> = [];
+        mockTaskData = mockTaskData.map((item) => {
+          if (cancellableIds.has(item.task_id)) {
+            items.push({ task_id: item.task_id, success: true });
+            return { ...item, task_status: 'CANCELLED' as TaskStatus };
+          }
+          if (selectedRowKeys.includes(item.task_id)) {
+            items.push({ task_id: item.task_id, success: false, message: '任务状态不可取消' });
+          }
+          return item;
+        });
+        console.log('[audit] bulk_cancel_tasks', { total: selectedTasks.length, items });
+        loadData();
+        setSelectedRowKeys([]);
+        if (uncancellable === 0) {
+          Toast.success(`已取消 ${cancellable.length} 个任务`);
+        } else {
+          Toast.warning(`成功 ${cancellable.length} 个，失败 ${uncancellable} 个`);
+        }
+      },
+    });
+  };
+
 
   // 分页Info
   const { range, list } = listResponse;
@@ -708,7 +944,7 @@ const TaskManagementPage = () => {
           </div>
           <Row type="flex" justify="space-between" align="middle" className="task-management-page-header-toolbar">
             <Col>
-              <Space>
+              <Space wrap>
                 <Input
                   prefix={<IconSearchStroked />}
                   placeholder={t('task.searchPlaceholder')}
@@ -717,18 +953,42 @@ const TaskManagementPage = () => {
                   onChange={handleSearch}
                   showClear
                 />
+                <Select
+                  placeholder="流程"
+                  value={processFilter}
+                  onChange={(v) => { setProcessFilter((v as string[]) || []); setQueryParams((p) => ({ ...p, offset: 0 })); }}
+                  optionList={processOptions}
+                  multiple
+                  maxTagCount={1}
+                  showClear
+                  style={{ minWidth: 160 }}
+                />
+                <Select
+                  placeholder="任务状态"
+                  value={taskStatusFilter}
+                  onChange={(v) => { setTaskStatusFilter((v as string[]) || []); setQueryParams((p) => ({ ...p, offset: 0 })); }}
+                  optionList={taskStatusOptions}
+                  multiple
+                  maxTagCount={1}
+                  showClear
+                  style={{ minWidth: 140 }}
+                />
                 <DepartmentSelect
                   placeholder={t('common.filterDepartment')}
                   value={departmentFilter}
-                  onChange={(v) => {
-                    setDepartmentFilter(v);
-                    setQueryParams(prev => ({ ...prev, offset: 0 }));
-                  }}
+                  onChange={(v) => { setDepartmentFilter(v); setQueryParams((p) => ({ ...p, offset: 0 })); }}
                   multiple
                   showClear
                   maxTagCount={1}
                   useNameAsValue
                   style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
+                />
+                <DatePicker
+                  type="dateTimeRange"
+                  value={dateRange ?? undefined}
+                  onChange={(d) => { setDateRange(Array.isArray(d) && d.length === 2 && d[0] && d[1] ? (d as [Date, Date]) : null); setQueryParams((p) => ({ ...p, offset: 0 })); }}
+                  placeholder={['创建开始时间', '结束时间']}
+                  style={{ width: 320 }}
                 />
                 <FilterPopover
                   visible={filterPopoverVisible}
@@ -736,18 +996,45 @@ const TaskManagementPage = () => {
                   onConfirm={handleFilterConfirm}
                   sections={[
                     {
-                      key: 'taskStatus',
-                      label: t('task.filter.taskStatus'),
-                      type: 'checkbox',
-                      options: taskStatusOptions,
-                      value: taskStatusFilter,
+                      key: 'executionTarget',
+                      label: '执行目标',
+                      type: 'custom',
+                      value: { type: executionTargetType, id: executionTargetId },
+                      render: (val, onChange) => {
+                        const v = (val as { type: 'WORKER' | 'WORKER_GROUP' | null; id: string | null }) || { type: null, id: null };
+                        const targetList = v.type === 'WORKER_GROUP' ? mockWorkerGroupList : mockWorkerList;
+                        return (
+                          <Space>
+                            <Select
+                              placeholder="目标类型"
+                              value={v.type ?? undefined}
+                              onChange={(t) => onChange({ type: (t as 'WORKER' | 'WORKER_GROUP') || null, id: null })}
+                              optionList={[
+                                { value: 'WORKER', label: '机器人' },
+                                { value: 'WORKER_GROUP', label: '机器人组' },
+                              ]}
+                              showClear
+                              style={{ width: 120 }}
+                            />
+                            <Select
+                              placeholder="选择目标"
+                              value={v.id ?? undefined}
+                              onChange={(id) => onChange({ type: v.type, id: (id as string) || null })}
+                              optionList={targetList.map((x) => ({ value: x.id, label: x.name }))}
+                              disabled={!v.type}
+                              showClear
+                              style={{ width: 180 }}
+                            />
+                          </Space>
+                        );
+                      },
                     },
                     {
-                      key: 'executionStatus',
-                      label: t('task.filter.executionStatus'),
+                      key: 'priority',
+                      label: t('task.table.priority'),
                       type: 'checkbox',
-                      options: executionStatusOptions,
-                      value: executionStatusFilter,
+                      options: priorityOptions,
+                      value: priorityFilter,
                     },
                     {
                       key: 'triggerSource',
@@ -757,10 +1044,32 @@ const TaskManagementPage = () => {
                       value: triggerSourceFilter,
                     },
                     {
-                      key: 'dateRange',
-                      label: t('task.filter.dateRange'),
-                      type: 'dateRange',
-                      value: dateRange,
+                      key: 'triggerId',
+                      label: '所属触发器',
+                      type: 'select',
+                      placeholder: '选择触发器',
+                      options: triggerOptions,
+                      value: triggerIdFilter,
+                    },
+                    {
+                      key: 'executionStatus',
+                      label: t('task.filter.executionStatus'),
+                      type: 'checkbox',
+                      options: executionStatusOptions,
+                      value: executionStatusFilter,
+                    },
+                    {
+                      key: 'enableRecording',
+                      label: '是否录屏',
+                      type: 'booleanTri',
+                      value: enableRecordingFilter,
+                    },
+                    {
+                      key: 'hasScreenshot',
+                      label: '包含任务截图',
+                      type: 'checkbox',
+                      options: [{ value: true, label: '仅包含截图' }],
+                      value: hasScreenshotFilter === true ? [true] : [],
                     },
                   ]}
                 />
@@ -782,6 +1091,59 @@ const TaskManagementPage = () => {
               </Space>
             </Col>
           </Row>
+
+          {/* 活动筛选标签 */}
+          {(() => {
+            const chips: Array<{ key: string; label: string; onClose: () => void }> = [];
+            if (searchValue) chips.push({ key: 'kw', label: `关键词: ${searchValue}`, onClose: () => { setSearchValue(''); setQueryParams((p) => ({ ...p, keyword: '', offset: 0 })); } });
+            processFilter.forEach((pid) => {
+              const p = mockProcessList.find((x) => x.process_id === pid);
+              chips.push({ key: `proc-${pid}`, label: `流程: ${p?.process_name || pid}`, onClose: () => setProcessFilter((arr) => arr.filter((x) => x !== pid)) });
+            });
+            taskStatusFilter.forEach((s) => chips.push({ key: `ts-${s}`, label: `任务状态: ${t(taskStatusConfig[s as TaskStatus]?.i18nKey || s)}`, onClose: () => setTaskStatusFilter((arr) => arr.filter((x) => x !== s)) }));
+            departmentFilter.forEach((d) => chips.push({ key: `dept-${d}`, label: `部门: ${d}`, onClose: () => setDepartmentFilter((arr) => arr.filter((x) => x !== d)) }));
+            if (dateRange) chips.push({ key: 'date', label: `创建时间: ${dateRange[0].toLocaleDateString()} ~ ${dateRange[1].toLocaleDateString()}`, onClose: () => setDateRange(null) });
+            if (executionTargetType && executionTargetId) {
+              const list = executionTargetType === 'WORKER_GROUP' ? mockWorkerGroupList : mockWorkerList;
+              const entity = list.find((x) => x.id === executionTargetId);
+              chips.push({ key: 'target', label: `执行目标: ${entity?.name || executionTargetId}`, onClose: () => { setExecutionTargetType(null); setExecutionTargetId(null); } });
+            }
+            priorityFilter.forEach((p) => chips.push({ key: `pr-${p}`, label: `优先级: ${t(priorityConfig[p as TaskPriority]?.i18nKey || p)}`, onClose: () => setPriorityFilter((arr) => arr.filter((x) => x !== p)) }));
+            triggerSourceFilter.forEach((s) => chips.push({ key: `tr-${s}`, label: `触发来源: ${t(`task.triggerSource.${s.toLowerCase()}`)}`, onClose: () => setTriggerSourceFilter((arr) => arr.filter((x) => x !== s)) }));
+            if (triggerIdFilter) {
+              const trg = mockTriggerList.find((x) => x.trigger_id === triggerIdFilter);
+              chips.push({ key: 'trg', label: `触发器: ${trg?.trigger_name || triggerIdFilter}`, onClose: () => setTriggerIdFilter(null) });
+            }
+            executionStatusFilter.forEach((s) => chips.push({ key: `es-${s}`, label: `执行状态: ${t(executionStatusConfig[s as ExecutionStatus]?.i18nKey || s)}`, onClose: () => setExecutionStatusFilter((arr) => arr.filter((x) => x !== s)) }));
+            if (enableRecordingFilter !== null) chips.push({ key: 'rec', label: `录屏: ${enableRecordingFilter ? '启用' : '关闭'}`, onClose: () => setEnableRecordingFilter(null) });
+            if (hasScreenshotFilter === true) chips.push({ key: 'shot', label: '仅包含截图', onClose: () => setHasScreenshotFilter(null) });
+            if (chips.length === 0) return null;
+            return (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12, alignItems: 'center' }}>
+                {chips.map((c) => (
+                  <Tag key={c.key} closable onClose={c.onClose} color="blue" type="light">{c.label}</Tag>
+                ))}
+                <Button theme="borderless" type="tertiary" size="small" onClick={handleClearAllFilters}>清除全部</Button>
+              </div>
+            );
+          })()}
+
+          {/* 批量操作栏 */}
+          {selectedRowKeys.length > 0 && (() => {
+            const selectedTasks = list.filter((t) => selectedRowKeys.includes(t.task_id));
+            const cancellableCount = selectedTasks.filter((t) => t.task_status === 'PENDING').length;
+            return (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: 'var(--semi-color-fill-0)', borderRadius: 8, marginBottom: 16 }}>
+                <Space>
+                  <Text>已选择 {selectedRowKeys.length} 项</Text>
+                  <Button icon={<X size={14} strokeWidth={2} />} size="small" theme="borderless" onClick={() => setSelectedRowKeys([])}>清除选择</Button>
+                </Space>
+                <Tooltip content={cancellableCount === 0 ? '没有可取消任务' : ''} trigger={cancellableCount === 0 ? 'hover' : 'custom'}>
+                  <Button icon={<XCircle size={16} strokeWidth={2} />} type="warning" disabled={cancellableCount === 0} onClick={handleBulkCancel}>批量取消</Button>
+                </Tooltip>
+              </div>
+            );
+          })()}
         </div>
 
         <div className="task-management-page-table">
@@ -794,12 +1156,16 @@ const TaskManagementPage = () => {
               dataSource={list}
               rowKey="task_id"
               loading={loading && !isInitialLoad}
+              rowSelection={{
+                selectedRowKeys,
+                onChange: (keys) => setSelectedRowKeys((keys as string[]) || []),
+              }}
               empty={
                 <EmptyState
-                  variant={searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange ? 'noResult' : 'noData'}
+                  variant={searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter || executionTargetId || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange ? 'noResult' : 'noData'}
                   description={
-                    searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange
-                      ? t('task.empty.filterDescription')
+                    searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter || executionTargetId || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange
+                      ? '未找到匹配任务'
                       : t('task.empty.defaultDescription')
                   }
                 />
@@ -812,6 +1178,7 @@ const TaskManagementPage = () => {
               })}
             />
           )}
+
           {total > 0 && (
             <div className="list-pagination">
               <Text type="tertiary">
