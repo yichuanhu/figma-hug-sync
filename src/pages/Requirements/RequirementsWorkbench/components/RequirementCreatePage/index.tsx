@@ -434,16 +434,6 @@ const RequirementCreatePage = () => {
       return false;
     }
     if (classificationStatus === "empty") return true;
-    const total = Object.values(classificationValue).reduce((sum, ids) => sum + (ids?.length ?? 0), 0);
-    if (total === 0) {
-      setForceClsError(true);
-      setCurrentStep(0);
-      setTimeout(() => {
-        const el = document.querySelector("[data-classification-anchor]");
-        el?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 100);
-      return false;
-    }
     return true;
   };
 
