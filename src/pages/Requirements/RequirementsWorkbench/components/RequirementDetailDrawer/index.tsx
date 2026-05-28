@@ -645,13 +645,17 @@ const RequirementDetailDrawer = ({
               </div>
             </TabPane>
 
-            {hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode && context !== 'assessment' && (
+            {((hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode) || context === 'approval') && context !== 'assessment' && (
               <TabPane
                 tab={t('requirements.detail.tab.approval')}
                 itemKey="approval"
               >
                 <div className="requirement-detail-tab-content">
-                  <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
+                  {effectiveData.approvalFlowConfig ? (
+                    <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
+                  ) : (
+                    <Text type="tertiary">{t('common.noData', { defaultValue: '暂无审批流配置' })}</Text>
+                  )}
                 </div>
               </TabPane>
             )}
