@@ -445,6 +445,33 @@ const TaskManagementPage = () => {
 
   // departmentOptions removed - using DepartmentSelect with tree data
 
+  // 优先级选项
+  const priorityOptions = useMemo(() => [
+    { value: 'HIGH', label: t('task.priority.high') },
+    { value: 'MEDIUM', label: t('task.priority.medium') },
+    { value: 'LOW', label: t('task.priority.low') },
+    { value: 'MANUAL_QUEUE_BREAKER', label: t('task.priority.manualQueueBreaker') },
+  ], [t]);
+
+  // 触发器选项（根据触发来源动态过滤）
+  const triggerOptions = useMemo(() => {
+    return mockTriggerList
+      .filter((trg) => triggerSourceFilter.length === 0 || triggerSourceFilter.includes(trg.trigger_source))
+      .map((trg) => ({ value: trg.trigger_id, label: trg.trigger_name }));
+  }, [triggerSourceFilter]);
+
+  // 流程选项
+  const processOptions = useMemo(() =>
+    mockProcessList.map((p) => ({ value: p.process_id, label: p.process_name })), []);
+
+  // 执行目标选项（按 type）
+  const executionTargetOptions = useMemo(() => {
+    if (executionTargetType === 'WORKER_GROUP') {
+      return mockWorkerGroupList.map((g) => ({ value: g.id, label: g.name }));
+    }
+    return mockWorkerList.map((w) => ({ value: w.id, label: w.name }));
+  }, [executionTargetType]);
+
   // LoadingData
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -455,15 +482,23 @@ const TaskManagementPage = () => {
         execution_status: executionStatusFilter.length > 0 ? executionStatusFilter as ExecutionStatus[] : undefined,
         trigger_source: triggerSourceFilter.length > 0 ? triggerSourceFilter as TriggerSource[] : undefined,
         owning_department_name: departmentFilter,
-        start_time: dateRange?.[0]?.toISOString(),
-        end_time: dateRange?.[1]?.toISOString(),
-      } as any);
+        process_ids: processFilter,
+        priorities: priorityFilter,
+        trigger_id: triggerIdFilter,
+        execution_target_type: executionTargetType,
+        execution_target_id: executionTargetId,
+        enable_recording: enableRecordingFilter,
+        has_screenshot: hasScreenshotFilter,
+        created_at_start: dateRange?.[0]?.toISOString(),
+        created_at_end: dateRange?.[1]?.toISOString(),
+      });
       setListResponse(response);
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, departmentFilter, dateRange]);
+  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, departmentFilter, dateRange, processFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetId, enableRecordingFilter, hasScreenshotFilter]);
+
 
   useEffect(() => {
     loadData();
