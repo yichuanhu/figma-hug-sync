@@ -40,17 +40,43 @@ const { Title } = Typography;
 interface ApprovalFlowBuilderPageProps {
   businessType?: ApprovalBusinessType;
   basePath?: string;
+  /** 嵌入模式（用于在抽屉内复用本组件） */
+  embedded?: boolean;
+  /** 嵌入模式下当前模板 id，可为 'new' */
+  embeddedId?: string;
+  /** 嵌入模式下是否查看态 */
+  embeddedView?: boolean;
+  /** 嵌入模式下关闭回调 */
+  onEmbeddedClose?: () => void;
+  /** 嵌入模式下切换到编辑（从详情态切到编辑态） */
+  onEmbeddedSwitchEdit?: (id: string) => void;
+  /** 嵌入模式下保存草稿成功后回调（用于把 new -> id 切换） */
+  onEmbeddedSaved?: (saved: ApprovalFlowTemplate) => void;
+  /** 嵌入模式下切换到另一个详情 */
+  onEmbeddedNavigate?: (id: string) => void;
 }
 
 const ApprovalFlowBuilderPage = ({
   businessType = 'REQUIREMENT',
   basePath = '/requirements/approval-config',
+  embedded = false,
+  embeddedId,
+  embeddedView,
+  onEmbeddedClose,
+  onEmbeddedSwitchEdit,
+  onEmbeddedSaved,
+  onEmbeddedNavigate,
 }: ApprovalFlowBuilderPageProps) => {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
-  const isView = location.pathname.includes('/detail/');
+  const id = embedded ? embeddedId : params.id;
+  const isView = embedded ? !!embeddedView : location.pathname.includes('/detail/');
+  const closeOrBack = () => {
+    if (embedded) onEmbeddedClose?.();
+    else navigate(basePath);
+  };
   const isPublish = businessType === 'PROCESS_PUBLISH';
   const isOffline = businessType === 'PROCESS_OFFLINE';
   const isProcessFlow = isPublish || isOffline;
