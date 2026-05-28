@@ -440,6 +440,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname.startsWith('/sharing-center/admin/permissions')) return 'sharingPermissions';
     
     if (pathname.startsWith('/requirements/approval-config')) return 'requirementsApprovalConfig';
+    if (pathname.startsWith('/requirements/cost-baseline')) return 'requirementsCostBaseline';
+
     if (pathname.startsWith('/maintenance/config')) return 'mtConfigManagement';
     if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';
     if (pathname.startsWith('/maintenance/dashboard/middleware-status')) return 'mtMiddlewareStatus';
