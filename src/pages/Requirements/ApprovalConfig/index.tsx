@@ -443,7 +443,7 @@ const ApprovalConfigPage = ({
         footer={null}
         width={520}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 24 }}>
           {presetFlows.map((f) => (
             <div
               key={f.id}
