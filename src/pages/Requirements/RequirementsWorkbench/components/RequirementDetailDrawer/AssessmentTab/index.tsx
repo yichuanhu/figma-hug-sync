@@ -9,7 +9,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Banner,
   Button,
   Empty,
   InputNumber,
@@ -21,7 +20,8 @@ import {
   Toast,
   Typography,
 } from '@douyinfe/semi-ui';
-import { ClipboardCheck, CheckCircle2, Clock, Layers } from 'lucide-react';
+import { CheckCircle2, Clock } from 'lucide-react';
+
 import type {
   RequirementItem,
   DetailedAssessment,
