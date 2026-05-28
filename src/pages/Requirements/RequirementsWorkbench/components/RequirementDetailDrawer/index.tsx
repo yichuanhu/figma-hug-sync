@@ -656,7 +656,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {hasAssessment && context !== 'approval' && (
+            {(hasAssessment || context === 'assessment') && context !== 'approval' && (
               <TabPane
                 tab={t('requirements.detail.tab.assessment')}
                 itemKey="assessment"
