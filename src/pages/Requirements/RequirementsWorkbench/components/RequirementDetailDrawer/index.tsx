@@ -364,7 +364,7 @@ const RequirementDetailDrawer = ({
     const isHistory = viewingVersion !== 'current';
     const availableTabs: string[] = ['overview'];
     if (hasApproval && data.approvalFlowConfig && !isHistory) availableTabs.push('approval');
-    if (hasAssessment && context !== 'approval') availableTabs.push('assessment');
+    if ((hasAssessment || context === 'assessment') && context !== 'approval') availableTabs.push('assessment');
     if (hasAssessment && context !== 'assessment') availableTabs.push('cost');
     if (!isHistory && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('effort');
     if (!isHistory && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('devScheme');
@@ -656,7 +656,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {hasAssessment && context !== 'approval' && (
+            {(hasAssessment || context === 'assessment') && context !== 'approval' && (
               <TabPane
                 tab={t('requirements.detail.tab.assessment')}
                 itemKey="assessment"
