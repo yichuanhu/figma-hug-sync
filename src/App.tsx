@@ -72,6 +72,7 @@ import SchemeBuilderPage from "@/pages/Requirements/RequirementsScheme/component
 import ApprovalConfigPage from "@/pages/Requirements/ApprovalConfig";
 import ApprovalFlowBuilderPage from "@/pages/Requirements/ApprovalConfig/components/ApprovalFlowBuilder";
 import AssessmentConfigPage from "@/pages/Requirements/AssessmentConfig";
+import AssessmentFlowBuilderPage from "@/pages/Requirements/AssessmentConfig/components/AssessmentFlowBuilder";
 import CostBaselineConfigPage from "@/pages/Requirements/CostBaselineConfig";
 
 import ApprovalTemplatesPage from "@/pages/Development/ApprovalTemplates";
@@ -210,6 +211,8 @@ const App = () => {
           <Route path="/requirements/approval-config/detail/:id" element={<ApprovalFlowBuilderPage />} />
           <Route path="/requirements/approval-config/*" element={<Navigate to="/requirements/approval-config" replace />} />
           <Route path="/requirements/assessment-config" element={<AssessmentConfigPage />} />
+          <Route path="/requirements/assessment-config/builder/:id" element={<AssessmentFlowBuilderPage />} />
+          <Route path="/requirements/assessment-config/detail/:id" element={<AssessmentFlowBuilderPage />} />
           <Route path="/requirements/assessment-config/*" element={<Navigate to="/requirements/assessment-config" replace />} />
           <Route path="/requirements/cost-baseline" element={<CostBaselineConfigPage />} />
 
