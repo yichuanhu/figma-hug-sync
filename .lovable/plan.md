@@ -1,47 +1,75 @@
-## 目标
+## 背景
 
-在前一版基础上，将底层字段 key 同步翻译为与 R-31 文案语义一致的英文 key，避免「key 与含义错位」。
+根据 STORY-016/021/006/007 v5/v6 更新：审批流和评估流配置正式拆分为两个独立菜单；评估模型固定为「价值评估 + 复杂度评估」两个模型，每个模型含可配置维度（tier_select / numeric_input 混合输入），按权重自动计算；「技术评估」改名为「需求评估」；详情页操作区按新流程渲染。
 
-## 一、字段 key 重命名（form_data.cost_baseline）
+## 实施范围
 
-| 旧 key | 新 key | 中文标签 | 单位 |
-|---|---|---|---|
-| `execution_frequency` | `monthly_execution_count` | 月执行次数 | 次/月 |
-| `single_duration` | `single_manual_duration_minutes` | 单次人工耗时 | 分钟 |
+### 1. 菜单与路由拆分
+- 在「需求中心 > 配置需求」下新增「评估流配置」菜单
+- 现有「审批与评估配置」更名为「审批流配置」
+- 路由：`/requirements/approval-config`（保留）+ 新增 `/requirements/assessment-config`
+- 在 `src/components/layout` 侧边栏配置中新增菜单项
 
-成本项快照字段（`items[].id / cost_type / name / daily_cost / currency / snapshot_at`）不变。
+### 2. 审批流配置页面（精简）
+- 当前 ApprovalConfig 页面已包含审批+评估的混合编辑，需移除「评估」相关 Tab/字段，仅保留多级串行审批阶段（name / approver_type / approval_mode / approver_ids）与适用部门
+- 列表列：模板名称、审批级数、绑定部门、状态、操作
 
-## 二、改动范围
+### 3. 评估流配置页面（新建，重绘）
+- 路径：`src/pages/Requirements/AssessmentConfig/`
+- 列表页：模板名称、评估级数、维度数量、绑定部门、状态、操作
+- 编辑页（与 ApprovalConfig 同结构）：
+  - **评估阶段**：多级串行（priority / name / assessor_type / assessment_mode / assessor_ids），与审批阶段结构一致，复用 `SchemeApprovalFlowEditor` 风格
+  - **评估模型**（固定 2 个 Tab：价值评估 / 复杂度评估）：
+    - 模型级：name、description
+    - 维度列表：name、key、description、input_type(tier_select/numeric_input)、weight（同模型权重和 = 1）、unit（数值时）
+    - 档位编辑：tier_select 时 label+score；numeric_input 时 label+min/max+score
+  - 适用部门多选
+  - 平台预设只读、复制、激活/停用/删除生命周期与审批流一致
+- Mock 数据：`mockData.ts` 提供 1 个平台预设 + 1-2 个租户模板，含完整价值+复杂度模型示例
 
-1. `src/pages/Requirements/RequirementsWorkbench/components/RequirementCreatePage/components/CostBaselineSection/index.tsx`
-   - `Form.InputNumber field="monthly_execution_count"`（替换原下拉）
-   - `Form.InputNumber field="single_manual_duration_minutes"`
-   - tooltip 文案按 R-31
-2. `src/pages/Requirements/RequirementsWorkbench/components/RequirementCreatePage/index.tsx`
-   - `STEP_FIELDS[2]` 改为 `['monthly_execution_count', 'single_manual_duration_minutes']`
-   - `OPTIONAL_FORM_KEYS` 同步替换（如有）
-   - `buildSubmitValues` 拼装 `cost_baseline` 时使用新 key
-   - 编辑态回填：从 `form_data.cost_baseline.monthly_execution_count / single_manual_duration_minutes` 取值；兼容旧数据 `execution_frequency`（字符串 daily/weekly/monthly → 22/4/1 数值映射）与 `single_duration`（直接复用）写入新 key
-   - 移除 `executionFrequencyOptions` 引用
-3. `public/i18n/zh-CN.json` / `public/i18n/en.json`
-   - 更新 `requirements.form.costBaseline.banner / selectorLabel / executionFrequency → monthlyExecutionCount / singleDuration → singleManualDuration`
-   - 新增 unit 文案：`monthlyExecutionCountUnit`（次/月）、`singleManualDurationUnit`（分钟）
-   - 新增 tooltip 文案：`tooltip.section / tooltip.selector / tooltip.dailyCost / tooltip.monthlyExecutionCount / tooltip.singleManualDuration`
+### 4. 需求详情页 — 评估 Tab 改造
+- 文案：所有「技术评估」改为「需求评估」（i18n key 保留，仅文案改）
+- `AssessmentTab` 重绘：
+  - 顶部 Banner：显示当前评估阶段 `L1/Lx · 阶段名` + 评估人列表 + 完成状态
+  - 「价值评估」「复杂度评估」两块卡片，按快照 `assessment_flow_config_snapshot.models` 动态渲染维度
+    - `tier_select`：RadioGroup 显示 label(score)
+    - `numeric_input`：InputNumber + 单位 + 实时显示命中档位
+  - 每个模型显示综合得分 = SUM(维度得分 × 权重)
+  - 评估意见 TextArea
+  - 「评估通过」「评估拒绝」按钮（拒绝需填原因）
+- 只读态：已评估或非当前评估人显示其他人提交的聚合结果（各维度平均值）
+- 详情页右侧操作区（`ApprovalSection` 兄弟 `AssessmentSection`）：
+  - 状态 = 待评估、当前用户为本级评估人：显示通过/拒绝按钮，跳转/聚焦到评估 Tab
+  - 不是评估人：显示「当前 L{x} {阶段名} 评估中」提示
 
-## 三、Tooltip 落位（与前版一致）
+### 5. Mock 与类型调整
+- `mockData.ts`：
+  - 拆分 `approvalFlowTemplates` 与 `assessmentFlowTemplates`
+  - 拆分 `department_approval_flow_binding` 与 `department_assessment_flow_binding`
+  - `submitRequirement` 时分别快照 `approval_flow_config_snapshot` 与 `assessment_flow_config_snapshot`
+- 类型 (`types.ts`)：
+  - 新增 `AssessmentFlowConfig { levels[], models[] }`，`AssessmentModel { type:'value'|'complexity', name, description, dimensions[] }`，`AssessmentDimension { key, name, input_type, weight, unit?, tiers[] }`
+  - `RequirementItem` 增加 `assessment_flow_template_id` / `assessment_flow_config_snapshot` / `assessment_records[]`
+  - 旧 `DetailedAssessment` 兼容保留用于已评估展示
 
-| 位置 | 文案 |
-|---|---|
-| 顶部 Banner | 用于描述当前人工处理该需求的成本基线，系统据此估算可节省工时和金额；不会影响机器人执行、流程调度或任务运行。 |
-| 主要执行岗位/活动 label | 选择当前主要由哪类岗位或活动承担人工处理，系统会自动带出对应人天成本。 |
-| 已选表格「人天成本」列 title | 由管理员在「成本基线配置」维护，当前需求保存时会记录快照，后续配置变更不影响本需求历史测算。 |
-| 月执行次数 label | 该业务场景平均每月人工执行次数，用于计算月均节省工时。 |
-| 单次人工耗时 label | 当前人工每执行一次平均耗时，单位分钟，用于计算月均节省工时。 |
+### 6. 国际化
+- `zh-CN.json` / `en.json`：新增 `requirements.assessmentConfig.*`，「技术评估」→「需求评估」（`requirements.assessment.title` 等）
 
-统一：Lucide `HelpCircle` 14px stroke 2，`color="var(--semi-color-text-2)"`，`Tooltip position="top"`，`content` 用 `<div style={{ maxWidth: 280, lineHeight: 1.6 }}>`。
+## 不在本次范围
 
-## 四、不动项
+- AI 辅助评估推荐、加签转签
+- 模板历史版本/导入导出
+- 真实后端联调（继续用 mock）
 
-- step 顺序、提交接口、mock 层
-- 成本项选择器与已选表格的列字段、渲染
-- 其他步骤
+## 技术风险
+
+- `RequirementDetailDrawer` 已较复杂，避免破坏审批 Tab 现有逻辑；评估 Tab 单独重写
+- mock 数据双绑定迁移需保证存量需求兼容（已有快照保留旧字段）
+
+## 交付清单
+
+- 新增 `src/pages/Requirements/AssessmentConfig/`（index.tsx/less/mockData.ts + components/）
+- 修改 `src/pages/Requirements/ApprovalConfig/`：移除评估模块
+- 修改 `RequirementDetailDrawer/AssessmentTab/`：动态模型渲染
+- 修改 `RequirementsWorkbench` mockData：双快照
+- 修改侧边栏菜单 + i18n
