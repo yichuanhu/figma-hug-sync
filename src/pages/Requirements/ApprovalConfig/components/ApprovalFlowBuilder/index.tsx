@@ -251,7 +251,8 @@ const ApprovalFlowBuilderPage = ({
       onOk: async () => {
         await activateApprovalFlow(draft.id);
         Toast.success('启用成功');
-        navigate(basePath);
+        if (embedded) onEmbeddedClose?.();
+        else navigate(basePath);
       },
     });
   };
