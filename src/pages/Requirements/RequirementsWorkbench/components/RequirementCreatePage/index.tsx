@@ -594,11 +594,10 @@ const RequirementCreatePage = () => {
 
       <div className="requirement-create-page-steps">
         <Steps current={currentStep} type="basic">
-          <Steps.Step title="基础信息" description="标题、部门、归属人、优先级" />
-          <Steps.Step title="岗位与执行成本" description="人力级别、成本、执行频率、时长" />
-          <Steps.Step title="需求详情" description="按模版填写业务字段" />
-          <Steps.Step title="分类标签" description="按业务维度打标，便于后续筛选" />
-          {isPostProjectEdit && <Steps.Step title="发布变更" description="填写变更说明并发布" />}
+          <Steps.Step title={t("requirements.form.steps.basicInfo")} description="标题、部门、归属人、分类标签" />
+          <Steps.Step title={t("requirements.form.steps.businessFields")} description="按模版填写业务字段" />
+          <Steps.Step title={t("requirements.form.steps.costBaseline")} description="选择成本项与执行频率" />
+          {isPostProjectEdit && <Steps.Step title={t("requirements.form.steps.publishChange")} description="填写变更说明并发布" />}
         </Steps>
       </div>
 
@@ -611,7 +610,7 @@ const RequirementCreatePage = () => {
             onValueChange={() => setDirty(true)}
             key={editData?.id || "create"}
           >
-            {/* Step 0 */}
+            {/* Step 0：基本信息 + 分类标签 */}
             <div style={{ display: currentStep === 0 ? "block" : "none" }}>
               {activeScheme && departmentValue && (
                 <Banner
@@ -691,103 +690,44 @@ const RequirementCreatePage = () => {
                 optionList={priorityOptions}
                 style={{ width: "100%" }}
               />
+              <div data-classification-anchor style={{ marginTop: 8 }}>
+                <ClassificationTagsField
+                  entityType="requirement"
+                  entityId={editData?.id}
+                  value={classificationValue}
+                  onChange={handleClassificationChange}
+                  onStatusChange={setClassificationStatus}
+                  required
+                  forceShowError={forceClsError}
+                  readonly={!classificationEditable}
+                />
+              </div>
             </div>
 
-            {/* Step 1 */}
+            {/* Step 1：业务补充字段 */}
             <div style={{ display: currentStep === 1 ? "block" : "none" }}>
-              <Form.Slot label={{ text: "岗位级别与成本" }}>
-                <div className="position-cost-list">
-                  {positionCosts.map((row, idx) => (
-                    <div key={idx} className="position-cost-row">
-                      <Select
-                        placeholder="请选择岗位级别"
-                        value={row.level}
-                        onChange={(v) => updatePositionCost(idx, { level: v as string })}
-                        optionList={positionLevelOptions}
-                        showClear
-                        style={{ flex: 1 }}
-                      />
-                      <InputNumber
-                        placeholder="请输入岗位成本"
-                        value={row.cost}
-                        onChange={(v) => updatePositionCost(idx, { cost: v as number })}
-                        suffix={
-                          <span style={{ color: "var(--semi-color-text-2)", paddingRight: 8, whiteSpace: "nowrap" }}>
-                            元/人天
-                          </span>
-                        }
-                        min={0}
-                        precision={2}
-                        hideButtons
-                        style={{ flex: 1 }}
-                      />
-                      <Button
-                        icon={<Trash2 size={16} strokeWidth={2} />}
-                        theme="borderless"
-                        type="tertiary"
-                        disabled={positionCosts.length <= 1}
-                        onClick={() => removePositionCost(idx)}
-                      />
-                    </div>
-                  ))}
-                  <Button
-                    icon={<Plus size={16} strokeWidth={2} />}
-                    theme="borderless"
-                    type="primary"
-                    onClick={addPositionCost}
-                    style={{ alignSelf: "flex-start", paddingLeft: 0 }}
-                  >
-                    添加岗位
-                  </Button>
-                </div>
-              </Form.Slot>
-              <Form.Select
-                field="execution_frequency"
-                label="执行频率"
-                placeholder="请选择执行频率"
-                optionList={executionFrequencyOptions}
-                showClear
-                style={{ width: "100%" }}
-              />
-              <Form.InputNumber
-                field="single_duration"
-                label="单次时长"
-                placeholder="请输入"
-                suffix={
-                  <span style={{ color: "var(--semi-color-text-2)", paddingRight: 8, whiteSpace: "nowrap" }}>分钟</span>
-                }
-                min={0}
-                precision={0}
-                hideButtons
-                style={{ width: "100%" }}
-              />
-            </div>
-
-            {/* Step 2 */}
-            <div style={{ display: currentStep === 2 ? "block" : "none" }}>
               {activeScheme && activeScheme.custom_fields.length > 0 ? (
                 <SchemeFieldsRenderer fields={activeScheme.custom_fields} costConfig={activeScheme.cost_config} />
               ) : (
-                <Text type="tertiary">当前模版未配置自定义字段，可直接提交。</Text>
+                <Text type="tertiary">当前模版未配置自定义字段，可直接进入下一步。</Text>
               )}
+            </div>
+
+            {/* Step 2：成本基线 */}
+            <div style={{ display: currentStep === 2 ? "block" : "none" }}>
+              <CostBaselineSection
+                value={costItems}
+                onChange={(next) => {
+                  setCostItems(next);
+                  setDirty(true);
+                }}
+                legacyDeprecated={legacyDeprecated}
+                executionFrequencyOptions={executionFrequencyOptions}
+              />
             </div>
           </Form>
 
-          {/* Step 3：分类标签 */}
-          <div style={{ display: currentStep === 3 ? "block" : "none" }}>
-            <ClassificationTagsField
-              entityType="requirement"
-              entityId={editData?.id}
-              value={classificationValue}
-              onChange={handleClassificationChange}
-              onStatusChange={setClassificationStatus}
-              required
-              forceShowError={forceClsError}
-              readonly={!classificationEditable}
-            />
-          </div>
-
-          {/* Step 3: 发布变更（仅立项后编辑） */}
+          {/* Step 3：发布变更（仅立项后编辑） */}
           {isPublishStep && editData && <PublishChangePanel reason={publishReason} onReasonChange={setPublishReason} />}
         </div>
       </div>
