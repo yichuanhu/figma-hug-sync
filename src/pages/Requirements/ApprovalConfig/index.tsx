@@ -24,7 +24,6 @@ import {
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Eye, Copy } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
-import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import {
   fetchApprovalFlows,
   deleteApprovalFlow,
@@ -34,7 +33,7 @@ import {
   type ApprovalFlowTemplate,
   type ApprovalBusinessType,
 } from './mockData';
-import ApprovalFlowBuilder from './components/ApprovalFlowBuilder';
+import ApprovalFlowDetailDrawer from './components/ApprovalFlowDetailDrawer';
 import './index.less';
 
 const { Title, Text } = Typography;
