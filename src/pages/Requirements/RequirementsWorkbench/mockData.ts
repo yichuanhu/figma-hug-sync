@@ -285,9 +285,6 @@ const generateMockDetailedAssessment = (
   departmentId?: string,
 ): DetailedAssessment | undefined => {
   if (!POST_ASSESS.includes(status)) return undefined;
-  // 延迟引入以避免循环依赖
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { getActiveAssessmentFlowForDepartment } = require('../AssessmentConfig/mockData') as typeof import('../AssessmentConfig/mockData');
   const flow = getActiveAssessmentFlowForDepartment(departmentId);
   if (!flow) return undefined;
 
