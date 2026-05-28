@@ -323,11 +323,11 @@ const RequirementCreatePage = () => {
   };
 
   // 步骤布局：
-  //   0 基础信息 / 1 岗位与执行成本 / 2 需求详情 / 3 分类标签
-  //   立项后编辑追加 4 发布变更
-  const totalSteps = isPostProjectEdit ? 5 : 4;
-  const lastFormStep = 3; // 提交按钮所在步骤（分类标签）
-  const isPublishStep = isPostProjectEdit && currentStep === 4;
+  //   0 基本信息（含分类标签）/ 1 业务补充字段 / 2 成本基线
+  //   立项后编辑追加 3 发布变更
+  const totalSteps = isPostProjectEdit ? 4 : 3;
+  const lastFormStep = 2; // 提交按钮所在步骤（成本基线）
+  const isPublishStep = isPostProjectEdit && currentStep === 3;
 
   const handleNext = async () => {
     const ok = await validateCurrentStep();
@@ -339,12 +339,12 @@ const RequirementCreatePage = () => {
 
   const locateFirstError = (errorFields: string[]) => {
     const step0 = new Set(["title", "department", "owner", "priority"]);
-    const step1 = new Set(["execution_frequency", "single_duration"]);
-    let target = 2;
+    const step2 = new Set(["execution_frequency", "single_duration"]);
+    let target = 1;
     const first = errorFields[0];
     if (first) {
       if (step0.has(first)) target = 0;
-      else if (step1.has(first)) target = 1;
+      else if (step2.has(first)) target = 2;
     }
     setCurrentStep(target);
     setTimeout(() => {
@@ -361,14 +361,15 @@ const RequirementCreatePage = () => {
     activeScheme?.custom_fields.forEach((f) => {
       if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
     });
-    OPTIONAL_FORM_KEYS.forEach((k) => {
-      if (values[k] !== undefined) form_data[k] = values[k];
-    });
-    const cleanedPositionCosts = positionCosts
-      .filter((r) => r.level !== undefined || (typeof r.cost === "number" && !Number.isNaN(r.cost)))
-      .map((r) => ({ level: r.level, cost: r.cost }));
-    if (cleanedPositionCosts.length > 0) {
-      form_data.position_costs = cleanedPositionCosts;
+    // 成本基线快照（STORY-003 v6 / STORY-014 v5）：整体聚合到 form_data.cost_baseline
+    const execFreq = values.execution_frequency;
+    const singleDur = values.single_duration;
+    if (costItems.length > 0 || execFreq !== undefined || singleDur !== undefined) {
+      form_data.cost_baseline = {
+        items: costItems,
+        execution_frequency: execFreq,
+        single_duration: singleDur,
+      };
     }
     const submitValues = {
       ...values,
