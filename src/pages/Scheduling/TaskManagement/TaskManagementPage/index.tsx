@@ -981,18 +981,18 @@ const TaskManagementPage = () => {
               {t('template.entryButton')}
             </Button>
           </div>
-          <Row type="flex" justify="space-between" align="middle" className="task-management-page-header-toolbar">
-            <Col>
-              <Space wrap>
+          <div className="task-management-page-toolbar">
+            <div className="toolbar-filters">
                 <Input
+                  className="toolbar-search"
                   prefix={<IconSearchStroked />}
                   placeholder={t('task.searchPlaceholder')}
-                  style={{ width: 320 }}
                   value={searchValue}
                   onChange={handleSearch}
                   showClear
                 />
                 <Select
+                  className="toolbar-select-process"
                   placeholder="流程"
                   value={processFilter}
                   onChange={(v) => { setProcessFilter((v as string[]) || []); setQueryParams((p) => ({ ...p, offset: 0 })); }}
@@ -1000,9 +1000,9 @@ const TaskManagementPage = () => {
                   multiple
                   maxTagCount={1}
                   showClear
-                  style={{ minWidth: 160 }}
                 />
                 <Select
+                  className="toolbar-select-status"
                   placeholder="任务状态"
                   value={taskStatusFilter}
                   onChange={(v) => { setTaskStatusFilter((v as string[]) || []); setQueryParams((p) => ({ ...p, offset: 0 })); }}
@@ -1010,9 +1010,9 @@ const TaskManagementPage = () => {
                   multiple
                   maxTagCount={1}
                   showClear
-                  style={{ minWidth: 140 }}
                 />
                 <DepartmentSelect
+                  className="toolbar-select-dept"
                   placeholder={t('common.filterDepartment')}
                   value={departmentFilter}
                   onChange={(v) => { setDepartmentFilter(v); setQueryParams((p) => ({ ...p, offset: 0 })); }}
@@ -1020,14 +1020,14 @@ const TaskManagementPage = () => {
                   showClear
                   maxTagCount={1}
                   useNameAsValue
-                  style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
                 />
                 <DatePicker
+                  className="toolbar-date-range"
                   type="dateTimeRange"
+                  density="compact"
                   value={dateRange ?? undefined}
                   onChange={(d) => { setDateRange(Array.isArray(d) && d.length === 2 && d[0] && d[1] ? (d as [Date, Date]) : null); setQueryParams((p) => ({ ...p, offset: 0 })); }}
-                  placeholder={['创建开始时间', '结束时间']}
-                  style={{ width: 320 }}
+                  placeholder={['开始时间', '结束时间']}
                 />
                 <FilterPopover
                   visible={filterPopoverVisible}
