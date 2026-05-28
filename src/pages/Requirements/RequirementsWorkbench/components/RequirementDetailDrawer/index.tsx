@@ -667,7 +667,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {hasAssessment && context !== 'assessment' && (
+            {hasAssessment && context !== 'assessment' && context !== 'approval' && (
               <TabPane
                 tab={t('requirements.detail.tab.cost')}
                 itemKey="cost"
@@ -689,7 +689,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {!isHistoryMode && context !== 'assessment' && isDevelopmentOrAfterStatus(effectiveData.status) && (
+            {!isHistoryMode && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(effectiveData.status) && (
               <TabPane
                 tab={t('requirements.detail.tab.devScheme')}
                 itemKey="devScheme"
@@ -703,7 +703,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {!isHistoryMode && context !== 'assessment' && isPostProjectStatus(effectiveData.status) && (
+            {!isHistoryMode && context !== 'approval' && context !== 'assessment' && isPostProjectStatus(effectiveData.status) && (
               <TabPane
                 tab={t('requirements.detail.tab.changeLog')}
                 itemKey="changeLog"
