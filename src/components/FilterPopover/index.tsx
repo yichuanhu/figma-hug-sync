@@ -69,9 +69,10 @@ export interface FilterPopoverProps {
  */
 interface InternalSectionState {
   key: string;
-  type: 'checkbox' | 'radio' | 'dateRange';
+  type: FilterSection['type'];
   value: unknown;
 }
+
 
 /**
  * 筛选区块项组件（使用 memo 优化，避免无关渲染）
