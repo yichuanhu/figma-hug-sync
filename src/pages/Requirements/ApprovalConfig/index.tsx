@@ -140,7 +140,8 @@ const ApprovalConfigPage = ({
     try {
       const draft = await cloneApprovalFlowAsDraft(f.id);
       Toast.success('已复制为草稿');
-      navigate(`${basePath}/builder/${draft.id}`);
+      if (useDrawer) setDrawerState({ id: draft.id, view: false });
+      else navigate(`${basePath}/builder/${draft.id}`);
     } catch (e) {
       Toast.error((e as Error).message ?? '复制失败');
     }
