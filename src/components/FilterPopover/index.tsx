@@ -298,10 +298,9 @@ const FilterPopover = ({
         resetValues[section.key] = null;
       }
     });
-
-    });
     setInternalValues(resetValues);
   };
+
 
   // 处理确认（将内部值传递给外部）
   const handleConfirm = () => {
