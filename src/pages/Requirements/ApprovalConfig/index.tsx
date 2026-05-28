@@ -342,6 +342,39 @@ const ApprovalConfigPage = ({
           </div>
         )}
       </div>
+
+      {useDrawer && (
+        <SideSheet
+          visible={!!drawerState}
+          onCancel={() => setDrawerState(null)}
+          mask={false}
+          width={900}
+          headerStyle={{ display: 'none' }}
+          bodyStyle={{ padding: 0 }}
+          closeOnEsc
+        >
+          {drawerState && (
+            <ApprovalFlowBuilder
+              key={`${drawerState.id}-${drawerState.view ? 'v' : 'e'}`}
+              businessType={businessType}
+              basePath={basePath}
+              embedded
+              embeddedId={drawerState.id}
+              embeddedView={drawerState.view}
+              onEmbeddedClose={() => {
+                setDrawerState(null);
+                load(true);
+              }}
+              onEmbeddedSwitchEdit={(id) => setDrawerState({ id, view: false })}
+              onEmbeddedNavigate={(id) => setDrawerState({ id, view: true })}
+              onEmbeddedSaved={(saved) => {
+                setDrawerState({ id: saved.id, view: false });
+                load(true);
+              }}
+            />
+          )}
+        </SideSheet>
+      )}
     </div>
   );
 };
