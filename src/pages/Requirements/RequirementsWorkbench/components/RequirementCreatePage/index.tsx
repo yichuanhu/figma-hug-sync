@@ -732,7 +732,6 @@ const RequirementCreatePage = () => {
                   setDirty(true);
                 }}
                 legacyDeprecated={legacyDeprecated}
-                executionFrequencyOptions={executionFrequencyOptions}
               />
             </div>
           </Form>
