@@ -5,11 +5,11 @@
  * - 成本项多选（来源「成本基线配置」），选中后以表格展示快照
  * - 执行频率 / 单次时长（Semi Form 字段，由父级 Form 管理）
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Banner, Form, Select, Table, Tag, Typography, Button, Empty } from '@douyinfe/semi-ui';
-import { Trash2, Wallet, ArrowUpRight } from 'lucide-react';
+import { Banner, Form, Select, Table, Tag, Typography, Button, Empty, Tooltip } from '@douyinfe/semi-ui';
+import { Trash2, Wallet, ArrowUpRight, HelpCircle } from 'lucide-react';
 import {
   listCostBaselineItems,
   subscribeCostBaselineChange,
@@ -36,15 +36,22 @@ interface Props {
   onChange: (next: RequirementCostItemSnapshot[]) => void;
   /** 编辑态：旧数据仅含 position_costs 等遗留字段时展示提示 */
   legacyDeprecated?: boolean;
-  /** 执行频率选项 */
-  executionFrequencyOptions: Array<{ value: string; label: string }>;
 }
+
+/** 标签 + tooltip 帮助图标 */
+const LabelWithHelp = ({ text, tip }: { text: ReactNode; tip: ReactNode }) => (
+  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+    {text}
+    <Tooltip position="top" content={<div style={{ maxWidth: 280, lineHeight: 1.6 }}>{tip}</div>}>
+      <HelpCircle size={14} strokeWidth={2} color="var(--semi-color-text-2)" style={{ cursor: 'help' }} />
+    </Tooltip>
+  </span>
+);
 
 const CostBaselineSection = ({
   value,
   onChange,
   legacyDeprecated,
-  executionFrequencyOptions,
 }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
