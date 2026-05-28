@@ -272,7 +272,7 @@ const ApprovalFlowBuilderPage = ({
               icon={<ChevronLeft size={16} strokeWidth={2} />}
               theme="borderless"
               type="tertiary"
-              onClick={() => guardedNavigate(basePath)}
+              onClick={guardedClose}
             />
           </Tooltip>
           <div className="approval-flow-builder-title-block">
