@@ -35,7 +35,7 @@ import {
 } from '../RequirementsWorkbench/mockData';
 import RequirementDetailDrawer from '../RequirementsWorkbench/components/RequirementDetailDrawer';
 import './index.less';
-import { CheckCircle, Ellipsis, Eye, Undo2, XCircle } from 'lucide-react';
+import { CheckCircle, Ellipsis, Undo2 } from 'lucide-react';
 import pendingIcon from '@/assets/review-stats/pending.png';
 import reviewedIcon from '@/assets/review-stats/reviewed.png';
 import approvedIcon from '@/assets/review-stats/approved.png';
