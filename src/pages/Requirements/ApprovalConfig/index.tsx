@@ -70,12 +70,12 @@ const ApprovalConfigPage = ({
   const isOffline = businessType === 'PROCESS_OFFLINE';
   const flowLabel = isPublish ? '发布审批模板' : isOffline ? '停用审批模板' : '审批流';
   const businessLabel = isPublish ? '流程发布' : isOffline ? '流程停用' : '需求';
-  const resolvedTitle = pageTitle ?? (isPublish ? '发布审批模板' : isOffline ? '停用审批模板' : '评审与评估流程配置');
+  const resolvedTitle = pageTitle ?? (isPublish ? '发布审批模板' : isOffline ? '停用审批模板' : '审批流配置');
   const resolvedDescription = pageDescription ?? (isPublish
     ? '管理流程发布审批模板。通过模板中的「适用部门」决定哪些部门的流程发布需要走审批。'
     : isOffline
     ? '管理流程停用审批模板。通过模板中的「适用部门」决定哪些部门的流程下线需要走审批。'
-    : '集中管理需求审批流模板。支持同时启用多个模板；通过模板中的「适用部门」决定哪些部门走该流程。');
+    : '集中管理需求审批流模板，支持多级串行审批。通过模板中的「适用部门」决定哪些部门的需求提交后需要走该审批流程；评估流程在「评估流配置」中独立管理。');
   const resolvedCreateText = createButtonText ?? (isPublish ? '新建发布审批' : isOffline ? '新建停用审批' : '新建审批流');
 
   const load = useCallback(async (silent = false) => {
