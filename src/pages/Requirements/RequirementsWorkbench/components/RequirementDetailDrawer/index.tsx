@@ -363,7 +363,7 @@ const RequirementDetailDrawer = ({
     if (!data) return;
     const isHistory = viewingVersion !== 'current';
     const availableTabs: string[] = ['overview'];
-    if (hasApproval && data.approvalFlowConfig && !isHistory) availableTabs.push('approval');
+    if ((hasApproval && data.approvalFlowConfig && !isHistory) || context === 'approval') availableTabs.push('approval');
     if ((hasAssessment || context === 'assessment') && context !== 'approval') availableTabs.push('assessment');
     if (hasAssessment && context !== 'assessment' && context !== 'approval') availableTabs.push('cost');
     if (!isHistory && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('effort');
