@@ -281,21 +281,12 @@ const RequirementsAssessment = () => {
           clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item
-                icon={<Eye size={16} strokeWidth={2} />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openAssess(record);
-                }}
-              >
-                {t('common.viewDetail')}
-              </Dropdown.Item>
               {isPendingMine(record) && (
                 <Dropdown.Item
                   icon={<ClipboardCheck size={16} strokeWidth={2} />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    openAssess(record);
+                    openAssess(record, 'assessment');
                   }}
                 >
                   {t('requirements.assessment.startAssessment')}
@@ -306,7 +297,7 @@ const RequirementsAssessment = () => {
                   icon={<ClipboardList size={16} strokeWidth={2} />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    openAssess(record);
+                    openAssess(record, 'assessment');
                   }}
                 >
                   {t('requirements.assessment.viewAssessment')}
