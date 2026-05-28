@@ -383,7 +383,7 @@ const ApprovalFlowBuilderPage = ({
                   icon={<Pencil size={16} strokeWidth={2} />}
                   theme="light"
                   type="tertiary"
-                  onClick={() => navigate(`${basePath}/builder/${draft.id}`)}
+                  onClick={() => (embedded ? onEmbeddedSwitchEdit?.(draft.id) : navigate(`${basePath}/builder/${draft.id}`))}
                 >
                   编辑
                 </Button>
