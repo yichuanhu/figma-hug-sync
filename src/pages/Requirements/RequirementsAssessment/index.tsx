@@ -526,11 +526,27 @@ const RequirementsAssessment = () => {
         onEdit={() => {}}
         onDelete={() => {}}
         onStatusChange={handleStatusChange}
+        onRefresh={async () => {
+          const response = await fetchRequirementList({
+            offset: 0,
+            size: 200,
+            keyword: '',
+            sort_by: 'created_at',
+            sort_order: 'desc',
+          });
+          setAllRequirements(response.list);
+          if (selectedRecord) {
+            const updated = response.list.find((r) => r.id === selectedRecord.id);
+            if (updated) setSelectedRecord(updated);
+          }
+          setActiveTab('assessed');
+        }}
         pagination={pagination}
         onScrollToRow={() => {}}
         initialTab="assessment"
         context="assessment"
       />
+
     </div>
   );
 };
