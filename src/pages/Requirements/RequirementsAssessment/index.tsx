@@ -541,7 +541,7 @@ const RequirementsAssessment = () => {
         }}
         pagination={pagination}
         onScrollToRow={() => {}}
-        initialTab="assessment"
+        initialTab={initialTab}
         context="assessment"
       />
 
