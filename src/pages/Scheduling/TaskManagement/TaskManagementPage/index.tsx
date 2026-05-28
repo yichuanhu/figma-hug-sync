@@ -194,14 +194,28 @@ const generateMockTaskResponse = (index: number): LYTaskResponse & { trigger_id:
     })) : [],
     creator_id: creatorId,
     creator_name: mockCreatorNameMap[creatorId],
+    trigger_id: matchedTrigger?.trigger_id ?? null,
+    trigger_name: matchedTrigger?.trigger_name ?? null,
+    worker_id: isGroupTarget ? null : targetEntity.id,
+    worker_group_id: isGroupTarget ? targetEntity.id : null,
+    has_screenshot: hasExecution && (index % 3 !== 0),
   };
 };
 
-const generateMockTaskList = (): LYTaskResponse[] => {
+const generateMockTaskList = (): LYTaskResponseExt[] => {
   return Array(58).fill(null).map((_, index) => generateMockTaskResponse(index));
 };
 
+type LYTaskResponseExt = LYTaskResponse & {
+  trigger_id: string | null;
+  trigger_name: string | null;
+  worker_id: string | null;
+  worker_group_id: string | null;
+  has_screenshot: boolean;
+};
+
 let mockTaskData = generateMockTaskList();
+
 
 const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTaskResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
