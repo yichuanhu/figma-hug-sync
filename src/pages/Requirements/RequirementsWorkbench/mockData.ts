@@ -298,9 +298,31 @@ const generateMockDetailedAssessment = (
     { id: 'user-008', name: 'Angela Wu' },
   ];
 
-  const buildAnswers = (dims: typeof valueModel.dimensions, seed: number) =>
+  // 为了让"已评估"列表呈现多样的可行性结论，依据 index 决定本条需求倾向
+  // 0: feasible（高价值/低复杂度）  1: not_recommended（中性）  2: not_feasible（低价值/高复杂度）
+  const bias = index % 3;
+  const pickTierIdx = (
+    dim: typeof valueModel.dimensions[number],
+    type: 'value' | 'complexity',
+    seedOffset: number,
+  ) => {
+    const n = dim.tiers.length;
+    // value 维度：bias=0 偏向高分(idx 0/1)，bias=2 偏向低分(idx n-1/n-2)
+    // complexity 维度：bias=0 偏向低分(低复杂度，idx n-1/n-2)，bias=2 偏向高分(高复杂度)
+    const wantHigh = type === 'value' ? bias === 0 : bias === 2;
+    const wantLow = type === 'value' ? bias === 2 : bias === 0;
+    if (wantHigh) return seedOffset % 2; // 0 or 1
+    if (wantLow) return n - 1 - (seedOffset % 2);
+    return 1 + (seedOffset % 2); // 中段
+  };
+
+  const buildAnswers = (
+    dims: typeof valueModel.dimensions,
+    type: 'value' | 'complexity',
+    seed: number,
+  ) =>
     dims.map((d, i) => {
-      const tier = d.tiers[(seed + i) % d.tiers.length];
+      const tier = d.tiers[pickTierIdx(d, type, seed + i)];
       const isNumeric = d.input_type === 'numeric_input';
       const numeric = isNumeric
         ? Math.round(((tier.min_value ?? 0) + ((tier.max_value ?? (tier.min_value ?? 0) + 50))) / 2)
@@ -324,13 +346,12 @@ const generateMockDetailedAssessment = (
     const isLast = li === flow.levels.length - 1;
     const completed = !isLast || ['LAUNCHED', 'OFFLINE', 'DEVELOPING'].includes(status);
     const seed = index + li * 2;
-    const valueAnswers = buildAnswers(valueModel.dimensions, seed);
-    const complexityAnswers = buildAnswers(complexityModel.dimensions, seed + 1);
+    const valueAnswers = buildAnswers(valueModel.dimensions, 'value', seed);
+    const complexityAnswers = buildAnswers(complexityModel.dimensions, 'complexity', seed + 1);
     const valueScore = weightedSum(valueAnswers);
     const complexityScore = weightedSum(complexityAnswers);
-    const net = valueScore - complexityScore;
     const feasibility: import('./types').FeasibilityLevel =
-      net >= 30 ? 'feasible' : net >= 0 ? 'not_recommended' : 'not_feasible';
+      bias === 0 ? 'feasible' : bias === 1 ? 'not_recommended' : 'not_feasible';
     const assessor = mockUsers[(index + li) % mockUsers.length];
     return {
       level_id: lv.id,
@@ -347,7 +368,13 @@ const generateMockDetailedAssessment = (
       value_score: valueScore,
       complexity_score: complexityScore,
       feasibility: completed ? feasibility : undefined,
-      comment: completed ? '基于评估流自动生成的 mock 评估结论。' : undefined,
+      comment: completed
+        ? feasibility === 'feasible'
+          ? '业务价值显著且实现复杂度可控，建议立项。'
+          : feasibility === 'not_recommended'
+            ? '价值与复杂度处于中等区间，建议结合排期再决策。'
+            : '复杂度高且业务价值有限，暂不建议推进。'
+        : undefined,
     };
   });
 
