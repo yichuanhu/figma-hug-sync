@@ -355,7 +355,7 @@ const ApprovalFlowBuilderPage = ({
                       theme="borderless"
                       type="tertiary"
                       disabled={!nextId}
-                      onClick={() => nextId && navigate(`${basePath}/detail/${nextId}`)}
+                      onClick={() => nextId && (embedded ? onEmbeddedNavigate?.(nextId) : navigate(`${basePath}/detail/${nextId}`))}
                     />
                   </Tooltip>
                   <div style={{ width: 1, height: 16, background: 'var(--semi-color-border)', margin: '0 4px' }} />
