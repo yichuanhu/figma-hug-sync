@@ -1036,7 +1036,34 @@
       "attachmentSizeError": "File size cannot exceed 10MB",
       "baselineSection": "Business Baseline (Automation ROI)",
       "baselineHint": "Defined by the active template; savings will be auto-calculated.",
-      "sectionDetails": "Requirement Details"
+      "sectionDetails": "Requirement Details",
+      "steps": {
+        "basicInfo": "Basic Information",
+        "basicInfoDesc": "Title, department, owner, priority, classification",
+        "businessFields": "Business Fields",
+        "businessFieldsDesc": "Fill scheme-defined business fields",
+        "costBaseline": "Cost Baseline",
+        "costBaselineDesc": "Select cost items, daily cost snapshot is captured",
+        "publishChange": "Publish Change",
+        "publishChangeDesc": "Provide change reason and publish"
+      },
+      "costBaseline": {
+        "banner": "Daily cost is captured from Cost Baseline Configuration as a snapshot, not actual execution config.",
+        "selectorLabel": "Cost Items",
+        "selectorPlaceholder": "Select cost items (multi-select)",
+        "empty": "No cost items yet. Please create them in Cost Baseline Configuration first.",
+        "goConfig": "Go to Cost Baseline Configuration",
+        "executionFrequency": "Execution Frequency",
+        "singleDuration": "Single Duration (minutes)",
+        "legacyDeprecated": "Legacy position cost fields are deprecated. Please re-select cost baseline items.",
+        "selectedTitle": "Selected Cost Items",
+        "colType": "Type",
+        "colName": "Name",
+        "colDailyCost": "Daily Cost",
+        "colAction": "Action",
+        "dailyCostUnit": "/ person-day",
+        "remove": "Remove"
+      }
     },
     "detail": {
       "activityStream": "Activity",

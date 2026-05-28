@@ -2,10 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Typography, Steps, Button, Form, Toast, Modal, Tag, Spin, useFormState } from "@douyinfe/semi-ui";
-import { ArrowLeft, Plus, Trash2, Building2 } from "lucide-react";
-import { Select, InputNumber, Banner } from "@douyinfe/semi-ui";
+import { ArrowLeft, Building2 } from "lucide-react";
+import { Banner } from "@douyinfe/semi-ui";
 import DepartmentSearchSelect from "@/components/DepartmentSearchSelect";
-// EmptyState 不再使用：v3 改为在 Step 0 内联 Banner 提示
 import { getSchemeIdByDepartment, subscribeSchemeBindingChange } from "@/mocks/departmentSchemeBinding";
 import { getDepartmentName } from "@/mocks/departmentData";
 import OwnerSearchSelect from "@/components/OwnerSearchSelect";
@@ -32,17 +31,27 @@ import ClassificationTagsField, {
   type ClassificationLoadStatus,
 } from "@/components/ClassificationTagsField";
 import { assignEntityClassifications, removeEntityClassifications } from "@/mocks/classification/service";
+import CostBaselineSection, {
+  type RequirementCostItemSnapshot,
+} from "./components/CostBaselineSection";
 import "./index.less";
 
 const { Title, Text } = Typography;
 
+/**
+ * Step 字段映射（用于 next 按钮分步校验 + 错误定位）
+ *   0 基本信息：title / department / owner / priority / 分类标签
+ *   1 业务补充字段：scheme 自定义字段（不在此列出，由各字段 rules 触发）
+ *   2 成本基线：execution_frequency / single_duration
+ *   3 发布变更（仅立项后编辑）
+ */
 const STEP_FIELDS: Array<string[]> = [
   ["title", "department", "owner", "priority"],
   [],
+  ["execution_frequency", "single_duration"],
   [],
-  [], // Step 3: 分类标签
-  [], // Step 4 (post-project edit only): 发布变更
 ];
+
 
 /** 动态 scheme 字段渲染器 */
 const SchemeFieldsRenderer = ({
@@ -112,25 +121,17 @@ const RequirementCreatePage = () => {
     dirtyRef.current = v;
     forceTick((k) => k + 1);
   };
-  const [positionCosts, setPositionCosts] = useState<Array<{ level?: string; cost?: number }>>([
-    { level: undefined, cost: undefined },
-  ]);
+  // 成本基线快照（STORY-003 v6）
+  const [costItems, setCostItems] = useState<RequirementCostItemSnapshot[]>([]);
+  const [legacyDeprecated, setLegacyDeprecated] = useState(false);
 
   // 草稿 / 发布变更 状态
   const [hasDraft, setHasDraft] = useState(false);
   const [draftLoadedAt, setDraftLoadedAt] = useState<string | null>(null);
   const [publishReason, setPublishReason] = useState("");
 
-  const updatePositionCost = (idx: number, patch: Partial<{ level: string; cost: number }>) => {
-    setPositionCosts((prev) => prev.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
-    setDirty(true);
-  };
-  const addPositionCost = () => {
-    setPositionCosts((prev) => [...prev, { level: undefined, cost: undefined }]);
-    setDirty(true);
-  };
-  const removePositionCost = (idx: number) => {
-    setPositionCosts((prev) => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== idx)));
+  const handleCostItemsChange = (next: RequirementCostItemSnapshot[]) => {
+    setCostItems(next);
     setDirty(true);
   };
 
@@ -233,15 +234,15 @@ const RequirementCreatePage = () => {
         setEditData(item);
         setDepartmentValue(item.owning_department_id || undefined);
         setOwnerId(item.owner_id || MOCK_CURRENT_USER.id);
-        // 还原岗位成本：优先 form_data.position_costs 数组；否则尝试从 position_level/position_cost 兼容
+        // 还原成本基线快照（STORY-003 v6）：优先 cost_baseline.items；旧字段 position_costs 仅显示废弃提示
         const fd = (item.form_data ?? {}) as Record<string, unknown>;
-        const arr = fd.position_costs as Array<{ level?: string; cost?: number }> | undefined;
-        if (Array.isArray(arr) && arr.length > 0) {
-          setPositionCosts(arr.map((r) => ({ level: r?.level, cost: r?.cost })));
-        } else if (fd.position_level || fd.position_cost) {
-          setPositionCosts([
-            { level: fd.position_level as string | undefined, cost: fd.position_cost as number | undefined },
-          ]);
+        const cb = fd.cost_baseline as
+          | { items?: RequirementCostItemSnapshot[]; execution_frequency?: string; single_duration?: number }
+          | undefined;
+        if (cb && Array.isArray(cb.items) && cb.items.length > 0) {
+          setCostItems(cb.items);
+        } else if (fd.position_costs || fd.position_level || fd.position_cost) {
+          setLegacyDeprecated(true);
         }
 
         // 立项后：尝试加载草稿合并
@@ -257,11 +258,17 @@ const RequirementCreatePage = () => {
               if (patch.priority !== undefined) formApi?.setValue?.("priority", patch.priority);
               if (patch.form_data) {
                 Object.entries(patch.form_data).forEach(([k, v]) => formApi?.setValue?.(k, v));
-                const da = (patch.form_data as Record<string, unknown>).position_costs as
-                  | Array<{ level?: string; cost?: number }>
+                const dcb = (patch.form_data as Record<string, unknown>).cost_baseline as
+                  | { items?: RequirementCostItemSnapshot[]; execution_frequency?: string; single_duration?: number }
                   | undefined;
-                if (Array.isArray(da) && da.length > 0) {
-                  setPositionCosts(da.map((r) => ({ level: r?.level, cost: r?.cost })));
+                if (dcb?.items && Array.isArray(dcb.items)) {
+                  setCostItems(dcb.items);
+                }
+                if (dcb?.execution_frequency !== undefined) {
+                  formApi?.setValue?.("execution_frequency", dcb.execution_frequency);
+                }
+                if (dcb?.single_duration !== undefined) {
+                  formApi?.setValue?.("single_duration", dcb.single_duration);
                 }
               }
             }, 0);
@@ -316,11 +323,11 @@ const RequirementCreatePage = () => {
   };
 
   // 步骤布局：
-  //   0 基础信息 / 1 岗位与执行成本 / 2 需求详情 / 3 分类标签
-  //   立项后编辑追加 4 发布变更
-  const totalSteps = isPostProjectEdit ? 5 : 4;
-  const lastFormStep = 3; // 提交按钮所在步骤（分类标签）
-  const isPublishStep = isPostProjectEdit && currentStep === 4;
+  //   0 基本信息（含分类标签）/ 1 业务补充字段 / 2 成本基线
+  //   立项后编辑追加 3 发布变更
+  const totalSteps = isPostProjectEdit ? 4 : 3;
+  const lastFormStep = 2; // 提交按钮所在步骤（成本基线）
+  const isPublishStep = isPostProjectEdit && currentStep === 3;
 
   const handleNext = async () => {
     const ok = await validateCurrentStep();
@@ -332,12 +339,12 @@ const RequirementCreatePage = () => {
 
   const locateFirstError = (errorFields: string[]) => {
     const step0 = new Set(["title", "department", "owner", "priority"]);
-    const step1 = new Set(["execution_frequency", "single_duration"]);
-    let target = 2;
+    const step2 = new Set(["execution_frequency", "single_duration"]);
+    let target = 1;
     const first = errorFields[0];
     if (first) {
       if (step0.has(first)) target = 0;
-      else if (step1.has(first)) target = 1;
+      else if (step2.has(first)) target = 2;
     }
     setCurrentStep(target);
     setTimeout(() => {
@@ -354,14 +361,15 @@ const RequirementCreatePage = () => {
     activeScheme?.custom_fields.forEach((f) => {
       if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
     });
-    OPTIONAL_FORM_KEYS.forEach((k) => {
-      if (values[k] !== undefined) form_data[k] = values[k];
-    });
-    const cleanedPositionCosts = positionCosts
-      .filter((r) => r.level !== undefined || (typeof r.cost === "number" && !Number.isNaN(r.cost)))
-      .map((r) => ({ level: r.level, cost: r.cost }));
-    if (cleanedPositionCosts.length > 0) {
-      form_data.position_costs = cleanedPositionCosts;
+    // 成本基线快照（STORY-003 v6 / STORY-014 v5）：整体聚合到 form_data.cost_baseline
+    const execFreq = values.execution_frequency;
+    const singleDur = values.single_duration;
+    if (costItems.length > 0 || execFreq !== undefined || singleDur !== undefined) {
+      form_data.cost_baseline = {
+        items: costItems,
+        execution_frequency: execFreq,
+        single_duration: singleDur,
+      };
     }
     const submitValues = {
       ...values,
@@ -418,19 +426,18 @@ const RequirementCreatePage = () => {
     if (!classificationEditable) return true;
     if (classificationStatus === "error") {
       Toast.error("分类标签加载失败，请稍后重试");
-      setCurrentStep(3);
+      setCurrentStep(0);
       return false;
     }
     if (classificationStatus === "loading") {
       Toast.info("分类标签加载中，请稍候");
       return false;
     }
-    if (classificationStatus === "empty") return true; // AF1：无适用分类键
-    // ready 态：合计至少 1 个
+    if (classificationStatus === "empty") return true;
     const total = Object.values(classificationValue).reduce((sum, ids) => sum + (ids?.length ?? 0), 0);
     if (total === 0) {
       setForceClsError(true);
-      setCurrentStep(3);
+      setCurrentStep(0);
       setTimeout(() => {
         const el = document.querySelector("[data-classification-anchor]");
         el?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -471,7 +478,7 @@ const RequirementCreatePage = () => {
       } catch {
         // 不阻塞
       }
-      setCurrentStep(4);
+      setCurrentStep(3);
       return;
     }
 

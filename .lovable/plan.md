@@ -1,104 +1,133 @@
 ## 目标
 
-按 STORY-020 在「需求中心 > 配置需求」下新增一个轻量页面「成本基线配置」，用于维护租户级通用成本项清单（岗位 / 活动），供 STORY-003 新建/编辑需求时选择。
+按 STORY-003 v6（2026-05-28）与 STORY-014 v5（2026-05-28）修订，重构「新建/编辑需求」表单：
 
-v1 范围：只做**列表查看 + 新建 + 编辑**，无删除、无启用/停用、无部门范围、无版本管理。
+- 新表单顺序：**基本信息 → 业务补充字段 → 成本基线**
+- 分类标签**归入基本信息**，不再单独成步
+- 岗位/执行频率/单次时长等字段**调整为成本基线**字段
+- 成本由「成本基线配置」选择并保存快照（`cost_baseline`），不作为实际执行配置
+- 立项后双步编辑同样开放成本基线为业务字段（可重新选择成本项并更新快照）
 
-## 一、路由与侧边栏
+## 一、Steps 调整
 
-- `src/App.tsx`：新增 `/requirements/cost-baseline` → 新页面 `CostBaselineConfigPage`。
-- `src/components/layout/Sidebar/index.tsx`：在 `requirementsCenterMenu` 的「配置需求」分组内、`requirementsApprovalConfig` 之后增加：
-  - key: `requirementsCostBaseline`
-  - labelKey: `sidebar.requirementsCostBaseline`（i18n 文案：成本基线配置 / Cost Baseline）
-  - icon: Lucide `Wallet`（stroke 2，size 18）
-  - path: `/requirements/cost-baseline`
-- `getActiveMenuKey` 加上 `pathname.startsWith('/requirements/cost-baseline')` → `requirementsCostBaseline`。
-- `public/i18n/zh-CN.json`、`public/i18n/en.json` 补 `sidebar.requirementsCostBaseline`。
+文件：`src/pages/Requirements/RequirementsWorkbench/components/RequirementCreatePage/index.tsx`
 
-## 二、Mock 层
+| 序号 | 标题 | 描述 | 内容 |
+|---|---|---|---|
+| 0 | 基本信息 | 标题、部门、归属人、优先级、分类标签 | 现 Step 0 字段 + 内嵌 `ClassificationTagsField` |
+| 1 | 业务补充字段 | 按模版填写业务字段 | 现 Step 2 的 `SchemeFieldsRenderer` |
+| 2 | 成本基线 | 选择成本项，自动带出人天成本快照 | 新「成本基线选择器」+ 执行频率 + 单次时长 |
+| 3 | 发布变更（仅立项后编辑） | 变更说明 ≥10 字符 | 保留现 `PublishChangePanel` |
 
-新建 `src/mocks/requirementCostBaseline.ts`：
+- `totalSteps`：新建/草稿编辑 = 3；立项后编辑 = 4
+- `lastFormStep` = 2
+- `STEP_FIELDS` / `locateFirstError` 同步更新（业务字段 step=1，成本基线 step=2）
 
-- 类型：
-  - `CostItemType = 'role' | 'activity'`
-  - `CostBaselineItem`：`id / cost_type / name / daily_cost / currency / description? / created_at / updated_at / created_by_name / updated_by_name`
-  - `CreateCostBaselineItemInput` / `UpdateCostBaselineItemInput`
-- 内存 store + 种子数据：财务专员、高级专员（岗位）、发票录入（活动）等 5 条，币种全部 CNY。
-- 方法：
-  - `listCostBaselineItems({ keyword?, costTypes? })` — 按 `updated_at desc` 排序，支持关键字（匹配 name / description）与类型多选过滤
-  - `getCostBaselineItem(id)`
-  - `createCostBaselineItem(input)` — 名称唯一性校验，重复抛 `CostItemNameDuplicatedError`
-  - `updateCostBaselineItem(id, input)` — 同名校验（排除自身）
-  - `subscribeCostBaselineChange(cb)` — 列表事件订阅，方便弹窗保存后刷新
-- 常量 `CURRENCY_OPTIONS = [{ value: 'CNY', label: 'CNY 人民币' }, { value: 'USD', label: 'USD 美元' }, { value: 'EUR', label: 'EUR 欧元' }]`，默认 `CNY`。
-- 常量 `COST_TYPE_LABEL: Record<CostItemType, string>`（岗位 / 活动），并附 Tag 颜色映射（role: blue，activity: violet）。
+## 二、基本信息内嵌分类标签
 
-> 注：本 Story 不实际改 STORY-003 的需求基线选择逻辑，仅保留对外暴露的 `listCostBaselineItems` 给后续接入使用。
+- Step 0 末尾追加 `ClassificationTagsField`（沿用现有状态 `classificationValue / Status / forceClsError / editable`）
+- `validateClassification()` 错误时定位 `setCurrentStep(0)` 并滚动到 `[data-classification-anchor]`
+- 删除原独立 Step 3 渲染块
 
-## 三、页面结构
+## 三、成本基线步骤（替代「岗位与执行成本」）
 
-新建目录 `src/pages/Requirements/CostBaselineConfig/`，约定：
+### 3.1 数据模型
 
+`form_data` 中：
+
+- **新增** `cost_baseline`：`{ items: Array<{ id, cost_type, name, daily_cost, currency, snapshot_at }>, execution_frequency?, single_duration? }`（按 STORY-014 v5「`cost_baseline` 快照」口径，聚合在一个对象里，便于 ChangeLog `changed_fields` 整体 diff）
+- **移除** `position_costs / position_level / position_cost`（保留旧字段读取兼容）
+- 兼容：编辑态若仅有旧 `position_costs`，转换为空 `items` 并在步骤顶部显示 Banner「原岗位成本字段已废弃，请重新选择成本基线」
+
+### 3.2 UI
+
+- 顶部 `Banner type="info"`：「成本由「成本基线配置」自动带出并保存快照，不作为实际执行配置」+ 跳转链接「前往成本基线配置」(`navigate('/requirements/cost-baseline')`)
+- **成本项选择器** `Form.Slot label="成本项"`：
+  - Semi `Select`（`multiple filter`），`optionList` = `listCostBaselineItems()`
+  - `renderOptionItem`：类型 Tag（复用 `COST_TYPE_TAG_COLOR`）+ 名称 + `{currency} {daily_cost.toLocaleString()} / 人天`
+  - 选中变化时通过 `getCostBaselineItem(id)` 拼装快照写入本地 state `costItems`，附 `snapshot_at = new Date().toISOString()`
+  - 选中列表下方紧凑表格（4 列：类型 Tag / 名称 / 人天成本 / 操作-移除按钮）
+  - 空数据态：「暂无成本项，请先在「成本基线配置」中新建」+ 跳转按钮
+- **执行频率** `Form.Select`：复用 `executionFrequencyOptions`，可选
+- **单次时长** `Form.InputNumber`：分钟，可选
+- 删除旧 state（`positionCosts / addPositionCost / removePositionCost / updatePositionCost / positionLevelOptions`）
+
+### 3.3 submitValues / patch / 编辑还原
+
+`buildSubmitValues`：
+
+- 移除 `position_costs` 相关逻辑
+- 拼装：
+
+```ts
+const cost_baseline = (costItems.length || values.execution_frequency || values.single_duration)
+  ? {
+      items: costItems,
+      execution_frequency: values.execution_frequency,
+      single_duration: values.single_duration,
+    }
+  : undefined;
+if (cost_baseline) form_data.cost_baseline = cost_baseline;
 ```
-CostBaselineConfig/
-  index.tsx           # 列表页（标题 + 搜索 + FilterPopover + Table + 分页）
-  index.less
-  components/
-    CostItemFormModal/
-      index.tsx       # 使用 FormModal 抽象，新建/编辑共用
-      index.less
+
+- `execution_frequency / single_duration` 从 `OPTIONAL_FORM_KEYS` 中移除（统一收编到 `cost_baseline`），避免顶层重复
+
+`useEffect` 加载编辑数据：
+
+- 优先读取 `form_data.cost_baseline.items` → `setCostItems`
+- 写回 form：`execution_frequency / single_duration` 通过 `formApi.setValue` 从 `cost_baseline` 中回填
+- 兼容旧数据：见 3.1
+
+## 四、立项后双步编辑（STORY-014 v5）对齐
+
+- **业务字段判定**：`cost_baseline.*` 视为业务字段，立项后**可编辑**；Step 2「成本基线」在 `isPostProjectEdit` 时不再被锁
+- **草稿合并** (`getDraft`)：`patch.form_data.cost_baseline` 覆盖 `costItems` state；现已有的 `Object.entries(patch.form_data).forEach(setValue)` 逻辑不动，仅追加：
+
+```ts
+const cb = (patch.form_data as any).cost_baseline;
+if (cb?.items) setCostItems(cb.items);
 ```
 
-### 3.1 列表页（index.tsx）
+- **发布变更弹窗** (`PublishChangePanel`)：保持当前实现（仅变更说明 ≥10 字符；**不再区分 INFO_ONLY / DEV_IMPACT**，与 v1 修订一致），无需改动
+- **changed_fields**：mock 层 `publishChange` 本来按 `patch` 浅 diff，`cost_baseline` 整体作为一个字段比对即可，无需深入
 
-- 顶部：`Typography.Title heading={3}` 「成本基线配置」+ 一行 `Text type="tertiary"` 描述「维护租户级通用成本项，供新建/编辑需求时自动带出人天成本」。
-- 工具条：
-  - 左侧：320px 宽 `Input`（IconSearchStroked 前缀，placeholder「搜索成本项名称」，500ms 防抖）
-  - 左侧第二个：`FilterPopover`（按现有标准 280px），分组「成本类型」多选（岗位 / 活动）
-  - 右侧：主按钮「新建成本项」（icon Plus）
-- 表格（`size="small"`）：
-  - 成本类型（Tag，按 `COST_TYPE_LABEL` + 颜色映射）
-  - 成本项名称（黑色文本，单行 ellipsis + tooltip）
-  - 人天成本（右对齐展示「{currency} {daily_cost.toLocaleString()} / 人天」，例如 `CNY 500 / 人天`）
-  - 说明（灰色，单行 ellipsis + tooltip，空值显示 `--`）
-  - 更新时间（YYYY-MM-DD HH:mm）
-  - 操作（borderless 按钮「编辑」，点击打开 `CostItemFormModal`）
-- 空状态：复用 `EmptyState`（`type="no-data"` / `no-result`），文案区分「暂无成本项，点击右上角新建」/「无匹配结果」。
-- 分页：项目标准外置 `.list-pagination`，10/20/50。
-- 数据通过 `subscribeCostBaselineChange` 自动刷新。
+## 五、文案 i18n
 
-### 3.2 CostItemFormModal
+`public/i18n/zh-CN.json` 与 `en.json` 新增：
 
-- 基于 `FormModal`：
-  - 宽度 520px（标准小模态）
-  - 标题：`新建成本项` / `编辑成本项`
-  - 字段顺序（与 Story §6.2 一致）：
-    1. **成本类型** `Form.RadioGroup type="button"`（岗位 / 活动），必填
-    2. **成本项名称** `Form.Input`，必填，maxLength 100，trim 后做唯一性校验（提交时由 mock 抛错 → Toast「成本项名称已存在」）
-    3. **人天成本** `Form.InputNumber`，必填，min 0，precision 0，suffix「元/人天」，width 100%
-    4. **币种** `Form.Select`，默认 `CNY`，可选 `CNY/USD/EUR`
-    5. **说明** `Form.TextArea`，可选，maxLength 500，showClear，autosize {minRows:3,maxRows:6}
-  - Semi UI 原生校验（`trigger=['blur', 'change']`），不弹「请填写完整信息」Toast。
-- 保存：
-  - 新建调用 `createCostBaselineItem`，成功后 `Toast.success('新建成功')` 并关闭弹窗。
-  - 编辑调用 `updateCostBaselineItem`，成功后 `Toast.success('修改成功')`。
-  - 捕获 `CostItemNameDuplicatedError` → 在「成本项名称」字段下展示「成本项名称已存在」（用 Form 实例 `setError`）。
+- `requirements.form.steps.basicInfo` 基本信息
+- `requirements.form.steps.businessFields` 业务补充字段
+- `requirements.form.steps.costBaseline` 成本基线
+- `requirements.form.steps.publishChange` 发布变更
+- `requirements.form.costBaseline.banner` 成本由「成本基线配置」自动带出并保存快照，不作为实际执行配置
+- `requirements.form.costBaseline.selectorLabel` 成本项
+- `requirements.form.costBaseline.selectorPlaceholder` 选择成本项（可多选）
+- `requirements.form.costBaseline.empty` 暂无成本项，请先在「成本基线配置」中新建
+- `requirements.form.costBaseline.goConfig` 前往成本基线配置
+- `requirements.form.costBaseline.executionFrequency` 执行频率
+- `requirements.form.costBaseline.singleDuration` 单次时长（分钟）
+- `requirements.form.costBaseline.legacyDeprecated` 原岗位成本字段已废弃，请重新选择成本基线
 
-## 四、权限与不动项
+Steps `Steps.Step` 的 `title` / `description` 改为 `t(...)`。
 
-- 不引入新权限点；管理员入口由侧边栏可见性兜底（与 ApprovalConfig 一致）。
-- 不改 STORY-003、不改 Dashboard、不改其他详情页。
-- Toast 全局 `theme: 'light'` 已配置，无需重复。
+## 六、不动项
 
-## 五、技术细节速览
+- 不改后端 mock 的 `createRequirement / updateRequirement / saveDraft / publishChange` 接口签名
+- 不改需求详情页（详情页 cost_baseline 展示按后续 Story）
+- 不改 `RequirementsAssessment / RequirementsReview / ApprovalConfig / CostBaselineConfig`
+- 不改 `statusConfig / fieldEditability / classificationEditable` 工具函数语义
 
-- 时间格式化复用项目内 `dayjs` 既有约定（与 `RequirementsWorkbench` 一致）。
-- 文件夹按项目规范使用 `index.tsx + index.less`，引用走 `@` 别名，无 barrel。
-- Tag 颜色取 Semi UI 内置（`color="blue" type="light"`、`color="violet" type="light"`）。
-- 列表与弹窗均使用 `.app-layout-content-card` 容器与项目标准 24px padding / 顶部居中 vignette。
-- 不引入额外依赖。
+## 七、技术细节
 
-## 六、收益
+- `listCostBaselineItems()` 全量拉取，前端本地过滤
+- 选项展示 / 已选表格颜色复用 `COST_TYPE_TAG_COLOR`
+- 跳转「成本基线配置」用 `navigate('/requirements/cost-baseline')`（非新窗口）
+- 表格 `Table size="small"`，无分页
+- Semi 原生校验 `trigger=['blur','change']`
 
-- 提供 STORY-020 v1 完整 UI（列表 + 新建 + 编辑），结构对齐 ApprovalConfig，便于后续接入 STORY-003 成本基线选择。
-- 复用 FormModal / FilterPopover / EmptyState，保持视觉与交互一致。
+## 八、收益
+
+- 表单结构对齐 STORY-003 v6 §1 第 6 条
+- 成本基线快照与 STORY-014 v5 「`cost_baseline` 快照」口径一致
+- 复用 STORY-020 配置数据源，避免双写
+- 新建/草稿编辑由 4 步缩减为 3 步，分类标签内嵌减少跳转
