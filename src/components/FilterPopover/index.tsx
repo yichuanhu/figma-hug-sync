@@ -292,13 +292,13 @@ const FilterPopover = ({
   const handleReset = () => {
     const resetValues: Record<string, unknown> = {};
     sections.forEach((section) => {
-      if (section.type === 'checkbox') {
+      if (section.type === 'checkbox' || section.type === 'multiSelect') {
         resetValues[section.key] = [];
-      } else if (section.type === 'dateRange') {
-        resetValues[section.key] = null;
       } else {
         resetValues[section.key] = null;
       }
+    });
+
     });
     setInternalValues(resetValues);
   };
