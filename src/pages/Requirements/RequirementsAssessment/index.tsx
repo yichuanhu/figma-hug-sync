@@ -99,8 +99,8 @@ const RequirementsAssessment = () => {
     allRequirements.forEach((r) => {
       const a = r.detailedAssessment;
       if (!a || a.assessorId !== MOCK_CURRENT_USER_ID) return;
-      if (a.conclusion === 'RECOMMEND') recommendCount += 1;
-      if (a.conclusion === 'REJECT') rejectCount += 1;
+      if (a.feasibility === 'feasible') recommendCount += 1;
+      if (a.feasibility === 'not_feasible') rejectCount += 1;
     });
     return { pendingCount, assessedCount, recommendCount, rejectCount };
   }, [allRequirements]);
