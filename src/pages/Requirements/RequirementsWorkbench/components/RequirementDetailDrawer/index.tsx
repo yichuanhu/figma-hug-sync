@@ -743,7 +743,7 @@ const RequirementDetailDrawer = ({
                 },
               })
             }
-            showApprovalSection={showApprovalSection}
+            
           />
         </div>
       </div>
