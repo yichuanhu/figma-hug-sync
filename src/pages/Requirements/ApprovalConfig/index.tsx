@@ -326,112 +326,32 @@ const ApprovalConfigPage = ({
         )}
       </div>
 
-      {/* 详情抽屉 —— 仅查看；编辑统一跳转新页面 */}
-      {(() => {
-        const current = detailId ? flows.find((x) => x.id === detailId) ?? null : null;
-        const extraActions = current ? (
-          <Space spacing={4}>
-            {current.is_preset ? (
-              <Tooltip content="基于此模板创建" position="bottom">
-                <Button
-                  icon={<Copy size={16} strokeWidth={2} />}
-                  theme="borderless"
-                  type="tertiary"
-                  size="small"
-                  onClick={() => handleCloneFromPreset(current.id)}
-                />
-              </Tooltip>
-            ) : (
-              <>
-                <Tooltip content={t('common.edit')} position="bottom">
-                  <Button
-                    icon={<Pencil size={16} strokeWidth={2} />}
-                    theme="borderless"
-                    type="tertiary"
-                    size="small"
-                    onClick={() => {
-                      setDetailId(null);
-                      navigate(`${basePath}/builder/${current.id}`);
-                    }}
-                  />
-                </Tooltip>
-                {current.status !== 'active' && (
-                  <Tooltip content="启用" position="bottom">
-                    <Button
-                      icon={<CheckCircle size={16} strokeWidth={2} />}
-                      theme="borderless"
-                      type="tertiary"
-                      size="small"
-                      onClick={() => handleActivate(current)}
-                    />
-                  </Tooltip>
-                )}
-              </>
-            )}
-          </Space>
-        ) : null;
-        const deleteAction = current && !current.is_preset ? (
-          <Button
-            icon={<Trash2 size={16} strokeWidth={2} />}
-            theme="borderless"
-            type="danger"
-            size="small"
-            onClick={() => {
-              setDetailId(null);
-              handleDelete(current);
-            }}
-          />
-        ) : null;
+      {/* 详情抽屉 —— 基本信息 + 审批流配置 双 Tab */}
+      <ApprovalFlowDetailDrawer
+        visible={!!detailId}
+        flow={detailId ? flows.find((x) => x.id === detailId) ?? null : null}
+        flows={flows}
+        businessType={businessType}
+        onClose={() => {
+          setDetailId(null);
+          load(true);
+        }}
+        onNavigate={(s) => setDetailId(s.id)}
+        onEdit={(f) => {
+          setDetailId(null);
+          navigate(`${basePath}/builder/${f.id}`);
+        }}
+        onActivate={(f) => handleActivate(f)}
+        onDelete={(f) => {
+          setDetailId(null);
+          handleDelete(f);
+        }}
+        onClone={(f) => {
+          setDetailId(null);
+          handleCloneFromPreset(f.id);
+        }}
+      />
 
-        return (
-          <DetailDrawerWrapper
-            visible={!!detailId}
-            onClose={() => {
-              setDetailId(null);
-              load(true);
-            }}
-            title={
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                {current?.name}
-                {current?.status === 'active' && !current?.is_preset && (
-                  <Tag color="green" type="solid" size="small">已启用</Tag>
-                )}
-                {current?.is_preset && <Tag color="blue" type="light" size="small">预设</Tag>}
-              </span>
-            }
-            defaultWidth={900}
-            minWidth={720}
-            storageKey="approvalFlowDetailDrawerWidth"
-            dataList={flows}
-            currentId={detailId ?? undefined}
-            onNavigate={(s) => setDetailId(s.id)}
-            extraActions={extraActions}
-            deleteAction={deleteAction}
-            className="approval-flow-detail-drawer"
-          >
-            {detailId && (
-              <ApprovalFlowBuilder
-                key={detailId}
-                businessType={businessType}
-                basePath={basePath}
-                embedded
-                embeddedId={detailId}
-                embeddedView
-                hideHeader
-                onEmbeddedClose={() => {
-                  setDetailId(null);
-                  load(true);
-                }}
-                onEmbeddedSwitchEdit={(id) => {
-                  setDetailId(null);
-                  navigate(`${basePath}/builder/${id}`);
-                }}
-                onEmbeddedNavigate={(id) => setDetailId(id)}
-              />
-            )}
-          </DetailDrawerWrapper>
-        );
-      })()}
 
 
       {/* 基于预设模板创建 */}
