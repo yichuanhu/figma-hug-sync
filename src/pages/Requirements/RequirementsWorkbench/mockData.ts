@@ -771,8 +771,43 @@ function applyClosureDemoData(): void {
 
   const findByTitle = (title: string) => mockRequirementData.find((r) => r.title === title);
 
+  // 兜底：若激活方案无审批流，则为 PENDING_APPROVAL 类需求合成一个最小审批流，
+  // 保证「需求评审」页面始终有「待我审批」数据可见。
+  const ensureApprovalFlow = (
+    r: RequirementItem | undefined,
+    otherApproverId = 'user-007',
+    otherApproverName = 'Robert Xu',
+  ): void => {
+    if (!r) return;
+    if (r.approvalFlowConfig && r.approvalFlowConfig.levels.length > 0) return;
+    r.approvalFlowConfig = {
+      currentLevel: 1,
+      levels: [
+        {
+          level: 1,
+          name: '部门主管审批',
+          mode: 'any_one',
+          approvers: [
+            { id: meId, name: me.name, status: 'PENDING' },
+            { id: otherApproverId, name: otherApproverName, status: 'PENDING' },
+          ],
+        },
+        {
+          level: 2,
+          name: '需求委员会评审',
+          mode: 'any_one',
+          approvers: [
+            { id: 'user-002', name: 'Emily Chen', status: 'PENDING' },
+            { id: 'user-006', name: 'Jessica Liu', status: 'PENDING' },
+          ],
+        },
+      ],
+    };
+  };
+
   // M1：待我审批 — 当前节点（L1）首位替换为当前用户
   const m1 = findByTitle('Financial Report Auto-Aggregation');
+  ensureApprovalFlow(m1);
   if (m1?.approvalFlowConfig) {
     const lv = m1.approvalFlowConfig.levels[0];
     if (lv) {
@@ -793,6 +828,7 @@ function applyClosureDemoData(): void {
   ];
   extraPendingTitles.forEach((title) => {
     const r = findByTitle(title);
+    ensureApprovalFlow(r);
     if (r?.approvalFlowConfig) {
       const lv0 = r.approvalFlowConfig.levels[0];
       if (lv0) {
@@ -804,8 +840,11 @@ function applyClosureDemoData(): void {
     }
   });
 
+
   // M2：多级流 — L1 已通过，L2 当前用户审批中
   const m2 = findByTitle('Customer Ticket Smart Classification');
+  ensureApprovalFlow(m2);
+
   if (m2?.approvalFlowConfig && m2.approvalFlowConfig.levels.length >= 2) {
     const flow = m2.approvalFlowConfig;
     const ts1 = new Date(2026, 1, 11, 10, 30).toISOString();
@@ -942,7 +981,55 @@ function applyClosureDemoData(): void {
       },
     ];
   }
+
+  // M7：我已审批的历史记录 — 多个已通过/已驳回的需求，覆盖「我已评审」Tab
+  type ReviewedSeed = {
+    title: string;
+    action: 'approve' | 'reject';
+    comment: string;
+    daysAgo: number;
+    targetStatus?: RequirementStatus;
+  };
+  const reviewedSeeds: ReviewedSeed[] = [
+    { title: 'Monthly Financial Report Automation', action: 'approve', comment: '业务价值高，同意立项。', daysAgo: 30 },
+    { title: 'Accounts Receivable Aging Report', action: 'approve', comment: '已对齐财务口径，通过。', daysAgo: 25 },
+    { title: 'Tax Filing Preparation', action: 'approve', comment: '合规材料齐备，通过。', daysAgo: 20 },
+    { title: 'Employee Performance Review Cycle', action: 'reject', comment: '范围过大，请拆分后再提交。', daysAgo: 15, targetStatus: 'REJECTED' },
+    { title: 'Payroll Data Validation', action: 'reject', comment: '与现有薪资系统冲突，需补充评估。', daysAgo: 12, targetStatus: 'REJECTED' },
+    { title: 'Budget Variance Analysis', action: 'approve', comment: '同意推进，请关注口径一致性。', daysAgo: 8 },
+  ];
+  reviewedSeeds.forEach((seed, idx) => {
+    const r = findByTitle(seed.title);
+    if (!r) return;
+    ensureApprovalFlow(r);
+    if (seed.targetStatus) r.status = seed.targetStatus;
+    const ts = new Date(Date.now() - seed.daysAgo * 24 * 3600 * 1000).toISOString();
+    const lv0 = r.approvalFlowConfig?.levels[0];
+    const levelName = lv0?.name ?? '部门主管审批';
+    r.approvalHistory = [
+      ...(r.approvalHistory ?? []),
+      {
+        id: `hist-m7-${idx}`,
+        level: 1,
+        levelName,
+        approverId: meId,
+        approverName: me.name,
+        action: seed.action,
+        comment: seed.comment,
+        timestamp: ts,
+      },
+    ];
+    // 同步把审批人位的状态推进，使详情页与统计一致
+    if (lv0) {
+      lv0.approvers = lv0.approvers.map((a, i) =>
+        i === 0
+          ? { ...a, id: meId, name: me.name, status: seed.action === 'approve' ? 'APPROVED' : 'REJECTED', actedAt: ts, comment: seed.comment }
+          : a,
+      );
+    }
+  });
 }
+
 
 
 // ============= 模拟 API 函数 =============
