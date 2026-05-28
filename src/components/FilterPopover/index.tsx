@@ -131,8 +131,53 @@ const FilterSectionItem = memo(
             style={{ width: '100%' }}
           />
         );
+      case 'select':
+        return (
+          <Select
+            value={(section.value ?? undefined) as string | number | undefined}
+            onChange={(v) => onChange(v ?? null)}
+            optionList={section.options as { value: string | number; label: string }[]}
+            placeholder={section.placeholder}
+            showClear
+            style={{ width: '100%' }}
+          />
+        );
+      case 'multiSelect':
+        return (
+          <Select
+            value={(section.value as (string | number)[]) || []}
+            onChange={(v) => onChange(v || [])}
+            optionList={section.options as { value: string | number; label: string }[]}
+            placeholder={section.placeholder}
+            multiple
+            maxTagCount={2}
+            showClear
+            style={{ width: '100%' }}
+          />
+        );
+      case 'booleanTri': {
+        // null=不限, true=是, false=否
+        const v = section.value;
+        const radioVal = v === true ? 'true' : v === false ? 'false' : 'all';
+        return (
+          <RadioGroup
+            value={radioVal}
+            onChange={(e) => {
+              const val = e.target.value;
+              onChange(val === 'true' ? true : val === 'false' ? false : null);
+            }}
+          >
+            <Radio value="all">不限</Radio>
+            <Radio value="true">是</Radio>
+            <Radio value="false">否</Radio>
+          </RadioGroup>
+        );
+      }
+      case 'custom':
+        return section.render ? <>{section.render(section.value, onChange)}</> : null;
       default:
         return null;
+
     }
   }
 );
