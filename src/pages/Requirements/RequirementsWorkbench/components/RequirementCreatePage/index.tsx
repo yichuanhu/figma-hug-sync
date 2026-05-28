@@ -697,7 +697,7 @@ const RequirementCreatePage = () => {
                   value={classificationValue}
                   onChange={handleClassificationChange}
                   onStatusChange={setClassificationStatus}
-                  required
+                  required={false}
                   forceShowError={forceClsError}
                   readonly={!classificationEditable}
                 />
