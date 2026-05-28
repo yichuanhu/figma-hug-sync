@@ -1,0 +1,51 @@
+.cost-baseline-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  &-header {
+    flex-shrink: 0;
+
+    &-title {
+      margin-bottom: 20px;
+
+      .title {
+        margin-bottom: 8px;
+      }
+    }
+
+    &-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+
+      &-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      &-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    }
+  }
+
+  &-search-input {
+    width: 320px;
+    min-width: 320px;
+  }
+
+  &-content {
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+}

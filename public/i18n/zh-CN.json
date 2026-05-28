@@ -133,6 +133,8 @@
     "requirementsConfig": "需求配置",
     "requirementsScheme": "需求模板",
     "requirementsApprovalConfig": "审批与评估配置",
+    "requirementsCostBaseline": "成本基线配置",
+
     "requirementsDeptApprovalBinding": "部门审批流绑定",
     "collaborationManagement": "协作管理",
     "teamMembers": "团队成员",

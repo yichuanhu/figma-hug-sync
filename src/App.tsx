@@ -71,6 +71,8 @@ import RequirementsScheme from "@/pages/Requirements/RequirementsScheme";
 import SchemeBuilderPage from "@/pages/Requirements/RequirementsScheme/components/SchemeBuilder";
 import ApprovalConfigPage from "@/pages/Requirements/ApprovalConfig";
 import ApprovalFlowBuilderPage from "@/pages/Requirements/ApprovalConfig/components/ApprovalFlowBuilder";
+import CostBaselineConfigPage from "@/pages/Requirements/CostBaselineConfig";
+
 import ApprovalTemplatesPage from "@/pages/Development/ApprovalTemplates";
 
 import RequirementsProjects from "@/pages/Requirements/RequirementsProjects";
@@ -206,6 +208,8 @@ const App = () => {
           <Route path="/requirements/approval-config/builder/:id" element={<ApprovalFlowBuilderPage />} />
           <Route path="/requirements/approval-config/detail/:id" element={<ApprovalFlowBuilderPage />} />
           <Route path="/requirements/approval-config/*" element={<Navigate to="/requirements/approval-config" replace />} />
+          <Route path="/requirements/cost-baseline" element={<CostBaselineConfigPage />} />
+
           
           <Route path="/requirements/projects" element={<RequirementsProjects />} />
           <Route path="/operations" element={<Navigate to="/operations/business-outcomes" replace />} />

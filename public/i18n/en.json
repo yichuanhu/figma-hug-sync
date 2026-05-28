@@ -173,6 +173,8 @@
     "requirementsConfig": "Requirements Configuration",
     "requirementsScheme": "Requirements Template",
     "requirementsApprovalConfig": "Approval & Assessment Config",
+    "requirementsCostBaseline": "Cost Baseline Config",
+
     "requirementsDeptApprovalBinding": "Dept Approval Binding",
     "collaborationManagement": "Collaboration Management",
     "teamMembers": "Team Members",
