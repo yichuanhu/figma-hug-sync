@@ -19,6 +19,7 @@ import {
   Row,
   Col,
   Space,
+  SideSheet,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause, Eye, Copy } from 'lucide-react';
@@ -33,6 +34,7 @@ import {
   type ApprovalFlowTemplate,
   type ApprovalBusinessType,
 } from './mockData';
+import ApprovalFlowBuilder from './components/ApprovalFlowBuilder';
 import './index.less';
 
 const { Title, Text } = Typography;
