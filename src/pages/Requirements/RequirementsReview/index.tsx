@@ -73,6 +73,7 @@ const RequirementsReview = () => {
   // 详情抽屉
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
+  const [initialTab, setInitialTab] = useState<string>('overview');
 
   // 内联审批弹窗
   const [approvalModalVisible, setApprovalModalVisible] = useState(false);
