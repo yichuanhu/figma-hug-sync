@@ -360,17 +360,14 @@ const RequirementDetailDrawer = ({
   useEffect(() => {
     if (!data) return;
     const isHistory = viewingVersion !== 'current';
-    const availableTabs: string[] = ['overview'];
-    if ((hasApproval && data.approvalFlowConfig && !isHistory) || context === 'approval') availableTabs.push('approval');
-    if ((hasAssessment || context === 'assessment') && context !== 'approval') availableTabs.push('assessment');
-    if (hasAssessment && context !== 'assessment' && context !== 'approval') availableTabs.push('cost');
-    if (!isHistory && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('effort');
-    if (!isHistory && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('devScheme');
-    if (!isHistory && context !== 'approval' && context !== 'assessment' && isPostProjectStatus(data.status)) availableTabs.push('changeLog');
+    const availableTabs: string[] = ['overview', 'approval', 'assessment', 'cost'];
+    if (!isHistory) {
+      availableTabs.push('effort', 'devScheme', 'changeLog');
+    }
     if (!availableTabs.includes(activeTab)) {
       setActiveTab('overview');
     }
-  }, [data?.id, data?.status, hasApproval, hasAssessment, context, viewingVersion, activeTab, data]);
+  }, [data?.id, viewingVersion, activeTab, data]);
 
   useEffect(() => {
     if (visible && data) {
