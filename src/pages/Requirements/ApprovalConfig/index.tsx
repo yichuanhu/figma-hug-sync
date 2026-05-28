@@ -92,16 +92,20 @@ const ApprovalConfigPage = ({
   useEffect(() => subscribeApprovalFlowChange(() => load(true)), [load]);
 
   const goEdit = (f: ApprovalFlowTemplate) => {
-    navigate(`${basePath}/builder/${f.id}`);
+    if (useDrawer) setDrawerState({ id: f.id, view: false });
+    else navigate(`${basePath}/builder/${f.id}`);
   };
 
   const goDetail = (f: ApprovalFlowTemplate) => {
-    navigate(`${basePath}/detail/${f.id}`);
+    if (useDrawer) setDrawerState({ id: f.id, view: true });
+    else navigate(`${basePath}/detail/${f.id}`);
   };
 
   const handleCreateNew = () => {
-    navigate(`${basePath}/builder/new`);
+    if (useDrawer) setDrawerState({ id: 'new', view: false });
+    else navigate(`${basePath}/builder/new`);
   };
+
 
 
   const handleActivate = (f: ApprovalFlowTemplate) => {
