@@ -87,6 +87,7 @@ const ApprovalFlowBuilderPage = ({
   const [nameDraft, setNameDraft] = useState('');
   const [activeTemplateIds, setActiveTemplateIds] = useState<string[]>([]);
   const [presetIds, setPresetIds] = useState<string[]>([]);
+  const [allIds, setAllIds] = useState<string[]>([]);
   const [fullscreen, setFullscreen] = useState(false);
 
   const isNew = id === 'new';
