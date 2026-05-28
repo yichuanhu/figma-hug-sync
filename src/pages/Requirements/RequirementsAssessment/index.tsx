@@ -29,7 +29,7 @@ import {
   MOCK_CURRENT_USER_ID,
 } from '../RequirementsWorkbench/mockData';
 import RequirementDetailDrawer from '../RequirementsWorkbench/components/RequirementDetailDrawer';
-import { ClipboardCheck, ClipboardList, Ellipsis, Eye } from 'lucide-react';
+import { ClipboardCheck, ClipboardList, Ellipsis } from 'lucide-react';
 import iconPending from '@/assets/assessment-stats/pending.png';
 import iconAssessed from '@/assets/assessment-stats/assessed.png';
 import iconRecommend from '@/assets/assessment-stats/recommend.png';
@@ -64,6 +64,7 @@ const RequirementsAssessment = () => {
   const [allRequirements, setAllRequirements] = useState<RequirementItem[]>([]);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
+  const [initialTab, setInitialTab] = useState<string>('overview');
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -150,8 +151,9 @@ const RequirementsAssessment = () => {
     if (updated) setSelectedRecord(updated);
   };
 
-  const openAssess = (record: RequirementItem) => {
+  const openAssess = (record: RequirementItem, tab: string = 'assessment') => {
     setSelectedRecord(record);
+    setInitialTab(tab);
     setDetailDrawerVisible(true);
   };
 
@@ -279,21 +281,12 @@ const RequirementsAssessment = () => {
           clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item
-                icon={<Eye size={16} strokeWidth={2} />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openAssess(record);
-                }}
-              >
-                {t('common.viewDetail')}
-              </Dropdown.Item>
               {isPendingMine(record) && (
                 <Dropdown.Item
                   icon={<ClipboardCheck size={16} strokeWidth={2} />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    openAssess(record);
+                    openAssess(record, 'assessment');
                   }}
                 >
                   {t('requirements.assessment.startAssessment')}
@@ -304,7 +297,7 @@ const RequirementsAssessment = () => {
                   icon={<ClipboardList size={16} strokeWidth={2} />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    openAssess(record);
+                    openAssess(record, 'assessment');
                   }}
                 >
                   {t('requirements.assessment.viewAssessment')}
@@ -458,7 +451,7 @@ const RequirementsAssessment = () => {
                   onClick: () => {
                     if (record) {
                       setSelectedRecord(record as RequirementItem);
-                      if (!detailDrawerVisible) setDetailDrawerVisible(true);
+                      setInitialTab('overview'); if (!detailDrawerVisible) setDetailDrawerVisible(true);
                     }
                   },
                 })}
@@ -484,7 +477,7 @@ const RequirementsAssessment = () => {
                   onClick: () => {
                     if (record) {
                       setSelectedRecord(record as RequirementItem);
-                      if (!detailDrawerVisible) setDetailDrawerVisible(true);
+                      setInitialTab('overview'); if (!detailDrawerVisible) setDetailDrawerVisible(true);
                     }
                   },
                 })}
@@ -510,7 +503,7 @@ const RequirementsAssessment = () => {
                   onClick: () => {
                     if (record) {
                       setSelectedRecord(record as RequirementItem);
-                      if (!detailDrawerVisible) setDetailDrawerVisible(true);
+                      setInitialTab('overview'); if (!detailDrawerVisible) setDetailDrawerVisible(true);
                     }
                   },
                 })}
@@ -548,7 +541,7 @@ const RequirementsAssessment = () => {
         }}
         pagination={pagination}
         onScrollToRow={() => {}}
-        initialTab="assessment"
+        initialTab={initialTab}
         context="assessment"
       />
 
