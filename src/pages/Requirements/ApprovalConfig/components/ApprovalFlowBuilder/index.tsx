@@ -68,6 +68,7 @@ const ApprovalFlowBuilderPage = ({
   onEmbeddedSwitchEdit,
   onEmbeddedSaved,
   onEmbeddedNavigate,
+  hideHeader = false,
 }: ApprovalFlowBuilderPageProps) => {
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
