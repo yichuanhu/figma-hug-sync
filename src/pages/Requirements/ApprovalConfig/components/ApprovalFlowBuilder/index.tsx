@@ -148,9 +148,10 @@ const ApprovalFlowBuilderPage = ({
     setDirty(true);
   };
 
-  const guardedNavigate = (to: string) => {
+  const guardedClose = () => {
+    const doClose = () => (embedded ? onEmbeddedClose?.() : navigate(basePath));
     if (!dirty) {
-      navigate(to);
+      doClose();
       return;
     }
     Modal.confirm({
@@ -159,7 +160,7 @@ const ApprovalFlowBuilderPage = ({
       okText: '离开',
       cancelText: '继续编辑',
       okButtonProps: { type: 'danger' },
-      onOk: () => navigate(to),
+      onOk: doClose,
     });
   };
 
