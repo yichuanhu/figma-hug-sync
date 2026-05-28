@@ -64,7 +64,39 @@ const mockCreatorNameMap: Record<string, string> = {
   'user-005': 'Chris Qian',
 };
 
-const generateMockTaskResponse = (index: number): LYTaskResponse => {
+// 流程列表（与任务 mock 对齐）
+const mockProcessList = [
+  { process_id: 'proc-001', process_name: 'Auto Order Processing' },
+  { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval' },
+  { process_id: 'proc-003', process_name: 'Employee Onboarding Flow' },
+  { process_id: 'proc-004', process_name: 'Purchase Request Process' },
+  { process_id: 'proc-005', process_name: 'Contract Approval Process' },
+];
+
+// 执行目标 mock
+const mockWorkerList = [
+  { id: 'worker-001', name: 'RPA-BOT-001' },
+  { id: 'worker-002', name: 'RPA-BOT-002' },
+  { id: 'worker-003', name: 'RPA-BOT-003' },
+  { id: 'worker-004', name: 'RPA-BOT-004' },
+  { id: 'worker-005', name: 'RPA-BOT-005' },
+];
+
+const mockWorkerGroupList = [
+  { id: 'group-001', name: 'Order Processing Group' },
+  { id: 'group-002', name: 'Finance Approval Group' },
+  { id: 'group-003', name: 'HR Management Group' },
+];
+
+// 触发器 mock
+const mockTriggerList = [
+  { trigger_id: 'trg-001', trigger_name: 'Daily Order Sync', trigger_source: 'SCHEDULED' as const },
+  { trigger_id: 'trg-002', trigger_name: 'Weekly Report', trigger_source: 'SCHEDULED' as const },
+  { trigger_id: 'trg-003', trigger_name: 'Order Queue Trigger', trigger_source: 'QUEUE' as const },
+  { trigger_id: 'trg-004', trigger_name: 'Reimburse Queue', trigger_source: 'QUEUE' as const },
+];
+
+const generateMockTaskResponse = (index: number): LYTaskResponse & { trigger_id: string | null; trigger_name: string | null; worker_id: string | null; worker_group_id: string | null; has_screenshot: boolean } => {
   const processNames = [
     'Auto Order Processing',
     'Expense Reimbursement Approval',
@@ -87,6 +119,7 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
   const triggerSources: TriggerSource[] = ['MANUAL', 'SCHEDULED', 'QUEUE', 'TEMPLATE'];
   const targetTypes = ['BOT_GROUP', 'BOT_IN_GROUP', 'UNGROUPED_BOT'] as const;
   const creatorIds = Object.keys(mockCreatorNameMap);
+
 
   const createDate = new Date(2026, 0, 1 + (index % 28), 10 + (index % 12), (index * 7) % 60);
   const expireDate = new Date(createDate.getTime() + 7 * 24 * 60 * 60 * 1000);
