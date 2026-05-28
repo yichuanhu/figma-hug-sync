@@ -504,6 +504,11 @@ const TaskManagementPage = () => {
     loadData();
   }, [loadData]);
 
+  // 切换筛选条件或分页时清空选中
+  useEffect(() => {
+    setSelectedRowKeys([]);
+  }, [queryParams.offset, queryParams.size, queryParams.keyword, processFilter, taskStatusFilter, departmentFilter, dateRange, executionStatusFilter, triggerSourceFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetId, enableRecordingFilter, hasScreenshotFilter]);
+
   // from URL Parameter恢复DrawerStatus(usefor from录屏页面Back)或open新建taskModal(fromTemplate页面跳转)
   useEffect(() => {
     const taskIdFromUrl = searchParams.get('taskId');
