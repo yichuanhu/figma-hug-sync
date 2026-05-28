@@ -930,7 +930,7 @@
       "businessBackgroundLabel": "业务背景",
       "businessBackgroundPlaceholder": "请描述业务背景和现状",
       "optionalSuffix": "（可选）",
-      "requirementOwnerLabel": "需求负责人",
+      "requirementOwnerLabel": "归属者",
       "requiredHint": "必填",
       "requiredFieldsHint": "提示：标题、描述、所属部门、联系人信息、期望上线时间为必填字段",
       "attachmentLabel": "附件",
