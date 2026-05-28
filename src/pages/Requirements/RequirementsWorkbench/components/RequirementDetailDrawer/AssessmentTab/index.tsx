@@ -1,43 +1,43 @@
-import { useMemo, useState } from 'react';
+/**
+ * 需求评估 Tab（配置驱动 + 多级串行 + A 模式：仅当前级别可编辑）
+ * - 根据需求归属部门拉取激活的评估流配置；
+ * - 各级别按 priority 顺序渲染卡片；
+ * - 仅 status='in_progress' 且 assessor_id 命中当前用户的级别允许编辑；
+ * - 维度按 input_type 渲染 tier_select 按钮 / numeric_input 数值输入；
+ * - 可行性 feasibility 为下拉选择，替代旧的 conclusion。
+ */
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Banner, Button, RadioGroup, Radio, Tag, Toast, Typography, TextArea } from '@douyinfe/semi-ui';
-import { ClipboardCheck } from 'lucide-react';
+import {
+  Banner,
+  Button,
+  Empty,
+  InputNumber,
+  RadioGroup,
+  Radio,
+  Select,
+  Tag,
+  TextArea,
+  Toast,
+  Typography,
+} from '@douyinfe/semi-ui';
+import { ClipboardCheck, CheckCircle2, Clock, Layers } from 'lucide-react';
 import type {
   RequirementItem,
-  AssessmentDimensionScore,
-  AssessmentScore,
-  AssessmentConclusionV2,
   DetailedAssessment,
+  LevelAssessmentRecord,
+  DimensionAnswer,
+  FeasibilityLevel,
 } from '../../../types';
+import {
+  getActiveAssessmentFlowForDepartment,
+  type AssessmentDimension,
+  type AssessmentModelConfig,
+} from '../../../../AssessmentConfig/mockData';
+import { MOCK_CURRENT_USER_ID } from '../../../mockData';
 import './index.less';
 
 const { Text, Title } = Typography;
-
-const VALUE_DIMS = [
-  { key: 'strategicAlignment', labelKey: 'requirements.assessmentV2.dim.strategicAlignment' },
-  { key: 'benefitScale', labelKey: 'requirements.assessmentV2.dim.benefitScale' },
-  { key: 'urgency', labelKey: 'requirements.assessmentV2.dim.urgency' },
-];
-const COMPLEX_DIMS = [
-  { key: 'implementationDifficulty', labelKey: 'requirements.assessmentV2.dim.implementationDifficulty' },
-  { key: 'dependencyComplexity', labelKey: 'requirements.assessmentV2.dim.dependencyComplexity' },
-  { key: 'risk', labelKey: 'requirements.assessmentV2.dim.risk' },
-];
-
-const initialScores = (dims: { key: string }[]): Record<string, AssessmentScore> =>
-  Object.fromEntries(dims.map((d) => [d.key, 3 as AssessmentScore]));
-
-const conclusionOf = (net: number): AssessmentConclusionV2 => {
-  if (net >= 5) return 'RECOMMEND';
-  if (net >= 0) return 'CAUTION';
-  return 'REJECT';
-};
-
-const conclusionTagColor: Record<AssessmentConclusionV2, 'green' | 'orange' | 'red'> = {
-  RECOMMEND: 'green',
-  CAUTION: 'orange',
-  REJECT: 'red',
-};
 
 interface Props {
   data: RequirementItem;
@@ -45,176 +45,401 @@ interface Props {
   forceReadonly?: boolean;
 }
 
+const FEASIBILITY_OPTIONS: { value: FeasibilityLevel; label: string; color: 'green' | 'orange' | 'red' }[] = [
+  { value: 'feasible', label: '可行', color: 'green' },
+  { value: 'not_recommended', label: '不建议', color: 'orange' },
+  { value: 'not_feasible', label: '不通过', color: 'red' },
+];
+
+const feasibilityMap: Record<FeasibilityLevel, { label: string; color: 'green' | 'orange' | 'red' }> = {
+  feasible: { label: '可行', color: 'green' },
+  not_recommended: { label: '不建议', color: 'orange' },
+  not_feasible: { label: '不通过', color: 'red' },
+};
+
+const buildEmptyAnswers = (dims: AssessmentDimension[]): DimensionAnswer[] =>
+  dims.map((d) => ({
+    dim_key: d.key,
+    dim_name: d.name,
+    tier_id: undefined,
+    matched_tier_id: undefined,
+    numeric_value: undefined,
+    score: 0,
+    weight: d.weight,
+  }));
+
+const matchNumericTier = (dim: AssessmentDimension, n: number | undefined) => {
+  if (n === undefined || n === null || Number.isNaN(n)) return undefined;
+  return dim.tiers.find((t) => {
+    const minOk = t.min_value === undefined || t.min_value === null || n >= t.min_value;
+    const maxOk = t.max_value === undefined || t.max_value === null || n < t.max_value;
+    return minOk && maxOk;
+  });
+};
+
+const weightedSum = (answers: DimensionAnswer[]) =>
+  Number(answers.reduce((s, a) => s + a.score * a.weight, 0).toFixed(2));
+
 const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
   const { t } = useTranslation();
-  const existing = data.detailedAssessment;
-  const readonly =
-    !!forceReadonly ||
-    !!existing ||
-    !(['PENDING_ASSESSMENT'] as string[]).includes(data.status);
 
-  const [valueScores, setValueScores] = useState<Record<string, AssessmentScore>>(
-    () => Object.fromEntries(
-      (existing?.valueDimensions ?? VALUE_DIMS.map((d) => ({ key: d.key, score: 3 as AssessmentScore })))
-        .map((d) => [d.key, d.score]),
-    ) as Record<string, AssessmentScore>,
+  const flow = useMemo(
+    () => getActiveAssessmentFlowForDepartment(data.owning_department_id),
+    [data.owning_department_id],
   );
-  const [complexityScores, setComplexityScores] = useState<Record<string, AssessmentScore>>(
-    () => Object.fromEntries(
-      (existing?.complexityDimensions ?? COMPLEX_DIMS.map((d) => ({ key: d.key, score: 3 as AssessmentScore })))
-        .map((d) => [d.key, d.score]),
-    ) as Record<string, AssessmentScore>,
-  );
-  const [comment, setComment] = useState(existing?.comment ?? '');
+
+  // 初始化记录：若需求已有 detailedAssessment 则复用，否则按 flow 初始化空记录
+  const initialAssessment: DetailedAssessment | null = useMemo(() => {
+    if (!flow) return null;
+    if (data.detailedAssessment && data.detailedAssessment.flow_id === flow.id) {
+      return data.detailedAssessment;
+    }
+    const valueModel = flow.models.find((m) => m.type === 'value')!;
+    const complexityModel = flow.models.find((m) => m.type === 'complexity')!;
+    const records: LevelAssessmentRecord[] = flow.levels.map((lv, idx) => ({
+      level_id: lv.id,
+      level_name: lv.name,
+      level_priority: lv.priority,
+      status: idx === 0 ? 'in_progress' : 'pending',
+      value_answers: buildEmptyAnswers(valueModel.dimensions),
+      complexity_answers: buildEmptyAnswers(complexityModel.dimensions),
+      value_score: 0,
+      complexity_score: 0,
+    }));
+    return {
+      flow_id: flow.id,
+      flow_name: flow.name,
+      records,
+      current_level_priority: 1,
+    };
+  }, [flow, data.detailedAssessment]);
+
+  const [assessment, setAssessment] = useState<DetailedAssessment | null>(initialAssessment);
+  useEffect(() => setAssessment(initialAssessment), [initialAssessment]);
+
   const [submitting, setSubmitting] = useState(false);
 
-  const valueTotal = useMemo(() => Object.values(valueScores).reduce((a, b) => a + b, 0), [valueScores]);
-  const complexityTotal = useMemo(() => Object.values(complexityScores).reduce((a, b) => a + b, 0), [complexityScores]);
-  const netScore = valueTotal - complexityTotal;
-  const conclusion = conclusionOf(netScore);
-
-  const renderScoreCard = (
-    title: string,
-    dims: { key: string; labelKey: string }[],
-    scores: Record<string, AssessmentScore>,
-    setScores: (next: Record<string, AssessmentScore>) => void,
-    subtotal: number,
-    accent: 'value' | 'complex',
-  ) => (
-    <div className={`assessment-card assessment-card-${accent}`}>
-      <div className="assessment-card-header">
-        <Text strong>{title}</Text>
-        <Tag color={accent === 'value' ? 'blue' : 'purple'} type="light" size="small">
-          {t('requirements.assessmentV2.subtotal')}: {subtotal}
-        </Tag>
+  if (!flow || !assessment) {
+    return (
+      <div style={{ padding: 24 }}>
+        <Empty
+          title="尚未配置评估流"
+          description="该需求所属部门暂未匹配到激活的评估流模板，请在「评估流配置」中先配置并启用。"
+        />
       </div>
-      {dims.map((dim) => (
-        <div key={dim.key} className="assessment-dim-row">
-          <Text size="small" strong>
-            {t(dim.labelKey)}
-          </Text>
-          <RadioGroup
-            type="button"
-            value={scores[dim.key]}
-            disabled={readonly}
-            onChange={(e) => setScores({ ...scores, [dim.key]: e.target.value as AssessmentScore })}
-          >
-            {[1, 2, 3, 4, 5].map((n) => (
-              <Radio key={n} value={n}>{n}</Radio>
-            ))}
-          </RadioGroup>
-        </div>
-      ))}
-    </div>
-  );
+    );
+  }
 
-  const handleSubmit = async () => {
+  const valueModel = flow.models.find((m) => m.type === 'value')!;
+  const complexityModel = flow.models.find((m) => m.type === 'complexity')!;
+
+  /** 当前用户可编辑的级别 */
+  const editableLevel = (record: LevelAssessmentRecord) => {
+    if (forceReadonly) return false;
+    if (record.status !== 'in_progress') return false;
+    const lv = flow.levels.find((l) => l.id === record.level_id);
+    if (!lv) return false;
+    if (lv.assessor_type === 'department_leader') return true; // mock：默认允许
+    return lv.assessor_ids.includes(MOCK_CURRENT_USER_ID);
+  };
+
+  const patchRecord = (recordIdx: number, patch: Partial<LevelAssessmentRecord>) => {
+    setAssessment((prev) => {
+      if (!prev) return prev;
+      const next = { ...prev, records: prev.records.map((r, i) => (i === recordIdx ? { ...r, ...patch } : r)) };
+      return next;
+    });
+  };
+
+  const patchAnswer = (
+    recordIdx: number,
+    modelType: 'value' | 'complexity',
+    dimKey: string,
+    patch: Partial<DimensionAnswer>,
+  ) => {
+    setAssessment((prev) => {
+      if (!prev) return prev;
+      const record = prev.records[recordIdx];
+      const key = modelType === 'value' ? 'value_answers' : 'complexity_answers';
+      const nextAnswers = record[key].map((a) => (a.dim_key === dimKey ? { ...a, ...patch } : a));
+      const nextRecord: LevelAssessmentRecord = { ...record, [key]: nextAnswers };
+      nextRecord.value_score = weightedSum(nextRecord.value_answers);
+      nextRecord.complexity_score = weightedSum(nextRecord.complexity_answers);
+      return { ...prev, records: prev.records.map((r, i) => (i === recordIdx ? nextRecord : r)) };
+    });
+  };
+
+  const handleSubmitLevel = async (recordIdx: number) => {
+    const record = assessment.records[recordIdx];
+    // 校验：每个维度必须有作答
+    const allDims = [...valueModel.dimensions, ...complexityModel.dimensions];
+    const allAnswers = [...record.value_answers, ...record.complexity_answers];
+    for (const dim of allDims) {
+      const ans = allAnswers.find((a) => a.dim_key === dim.key);
+      if (!ans) continue;
+      if (dim.input_type === 'tier_select' && !ans.tier_id) {
+        Toast.warning(`「${dim.name}」请选择档位`);
+        return;
+      }
+      if (dim.input_type === 'numeric_input' && (ans.numeric_value === undefined || ans.numeric_value === null)) {
+        Toast.warning(`「${dim.name}」请填写数值`);
+        return;
+      }
+    }
+    if (!record.feasibility) {
+      Toast.warning('请选择可行性判断');
+      return;
+    }
     setSubmitting(true);
     try {
-      const assessment: DetailedAssessment = {
-        valueDimensions: VALUE_DIMS.map((d) => ({ key: d.key, score: valueScores[d.key] })),
-        complexityDimensions: COMPLEX_DIMS.map((d) => ({ key: d.key, score: complexityScores[d.key] })),
-        netScore,
-        conclusion,
-        assessorId: 'user-008',
-        assessorName: 'Angela Wu',
-        assessedAt: new Date().toISOString(),
-        comment: comment.trim() || undefined,
+      const completed: LevelAssessmentRecord = {
+        ...record,
+        status: 'completed',
+        assessor_id: MOCK_CURRENT_USER_ID,
+        assessor_name: 'Angela Wu',
+        assessed_at: new Date().toISOString(),
       };
-      await onSaveAssessment(data.id, assessment);
-      Toast.success(t('requirements.assessmentV2.submitSuccess'));
+      const nextRecords = assessment.records.map((r, i) => {
+        if (i === recordIdx) return completed;
+        if (i === recordIdx + 1 && r.status === 'pending') return { ...r, status: 'in_progress' as const };
+        return r;
+      });
+      const completedCount = nextRecords.filter((r) => r.status === 'completed').length;
+      const next: DetailedAssessment = {
+        ...assessment,
+        records: nextRecords,
+        current_level_priority: Math.min(completedCount + 1, flow.levels.length),
+        feasibility: completed.feasibility,
+        netScore: Number((completed.value_score - completed.complexity_score).toFixed(2)),
+        assessorId: completed.assessor_id,
+        assessorName: completed.assessor_name,
+        assessedAt: completed.assessed_at,
+      };
+      await onSaveAssessment(data.id, next);
+      Toast.success('当前级别评估已提交');
     } finally {
       setSubmitting(false);
     }
   };
 
-  // 顶部状态 Banner
-  let bannerType: 'info' | 'warning' | 'success' | 'danger' = 'info';
-  let bannerText = t('requirements.assessmentV2.banner.notStarted');
-  if (existing) {
-    bannerType = existing.conclusion === 'REJECT' ? 'danger' : existing.conclusion === 'CAUTION' ? 'warning' : 'success';
-    bannerText = t('requirements.assessmentV2.banner.completedBy', {
-      name: existing.assessorName,
-      time: existing.assessedAt.replace('T', ' ').substring(0, 16),
-    });
-  } else if (data.status === 'PENDING_ASSESSMENT') {
-    bannerType = 'warning';
-    bannerText = t('requirements.assessmentV2.banner.assessing');
-  }
+  const renderDimension = (
+    dim: AssessmentDimension,
+    answer: DimensionAnswer,
+    editable: boolean,
+    onChange: (patch: Partial<DimensionAnswer>) => void,
+  ) => {
+    if (dim.input_type === 'tier_select') {
+      return (
+        <div className="assessment-dim-row" key={dim.key}>
+          <Text size="small" strong>
+            {dim.name} <Text type="tertiary" size="small">（权重 {dim.weight}）</Text>
+          </Text>
+          <RadioGroup
+            type="button"
+            value={answer.tier_id}
+            disabled={!editable}
+            onChange={(e) => {
+              const tier = dim.tiers.find((tt) => tt.id === e.target.value);
+              onChange({ tier_id: e.target.value as string, score: tier?.score ?? 0 });
+            }}
+          >
+            {dim.tiers.map((tier) => (
+              <Radio key={tier.id} value={tier.id}>
+                {tier.label} ({tier.score})
+              </Radio>
+            ))}
+          </RadioGroup>
+        </div>
+      );
+    }
+    return (
+      <div className="assessment-dim-row" key={dim.key}>
+        <Text size="small" strong>
+          {dim.name} <Text type="tertiary" size="small">（权重 {dim.weight}，单位 {dim.unit}）</Text>
+        </Text>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <InputNumber
+            value={answer.numeric_value}
+            disabled={!editable}
+            placeholder="填写数值"
+            style={{ width: 200 }}
+            onChange={(v) => {
+              const n = v === '' || v === undefined ? undefined : Number(v);
+              const matched = matchNumericTier(dim, n);
+              onChange({
+                numeric_value: n,
+                matched_tier_id: matched?.id,
+                score: matched?.score ?? 0,
+              });
+            }}
+          />
+          {answer.matched_tier_id && (
+            <Tag color="blue" type="light" size="small">
+              命中：{dim.tiers.find((tt) => tt.id === answer.matched_tier_id)?.label} ({answer.score})
+            </Tag>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderModelCard = (
+    model: AssessmentModelConfig,
+    answers: DimensionAnswer[],
+    score: number,
+    editable: boolean,
+    onChangeAnswer: (dimKey: string, patch: Partial<DimensionAnswer>) => void,
+  ) => (
+    <div className={`assessment-card assessment-card-${model.type === 'value' ? 'value' : 'complex'}`}>
+      <div className="assessment-card-header">
+        <Text strong>{model.name}</Text>
+        <Tag color={model.type === 'value' ? 'blue' : 'purple'} type="light" size="small">
+          加权得分：{score.toFixed(2)}
+        </Tag>
+      </div>
+      {model.dimensions.map((dim) => {
+        const ans =
+          answers.find((a) => a.dim_key === dim.key) ?? {
+            dim_key: dim.key,
+            dim_name: dim.name,
+            score: 0,
+            weight: dim.weight,
+          };
+        return renderDimension(dim, ans, editable, (p) => onChangeAnswer(dim.key, p));
+      })}
+    </div>
+  );
 
   return (
     <div className="assessment-tab-content">
       <Banner
-        type={bannerType}
-        description={bannerText}
-        icon={<ClipboardCheck size={16} strokeWidth={2} />}
+        type="info"
+        description={
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <Layers size={14} strokeWidth={2} />
+            评估流：<b>{flow.name}</b> · 共 {flow.levels.length} 级 · 当前进度 L{assessment.current_level_priority}
+          </span>
+        }
         closeIcon={null}
+        icon={<ClipboardCheck size={16} strokeWidth={2} />}
       />
 
-      <div className="assessment-cards-row">
-        {renderScoreCard(
-          t('requirements.assessmentV2.valueCard'),
-          VALUE_DIMS,
-          valueScores,
-          setValueScores,
-          valueTotal,
-          'value',
-        )}
-        {renderScoreCard(
-          t('requirements.assessmentV2.complexityCard'),
-          COMPLEX_DIMS,
-          complexityScores,
-          setComplexityScores,
-          complexityTotal,
-          'complex',
-        )}
-      </div>
+      {assessment.records.map((record, idx) => {
+        const editable = editableLevel(record);
+        const statusTag =
+          record.status === 'completed' ? (
+            <Tag color="green" type="light" prefixIcon={<CheckCircle2 size={12} strokeWidth={2} />}>
+              已完成
+            </Tag>
+          ) : record.status === 'in_progress' ? (
+            <Tag color="blue" type="light" prefixIcon={<Clock size={12} strokeWidth={2} />}>
+              进行中
+            </Tag>
+          ) : (
+            <Tag color="grey" type="light">
+              待开始
+            </Tag>
+          );
 
-      <div className="assessment-result">
-        <div className="assessment-result-row">
-          <Text type="tertiary">{t('requirements.assessmentV2.netScore')}</Text>
-          <Title heading={4} style={{ margin: 0 }}>
-            {netScore > 0 ? `+${netScore}` : netScore}
-          </Title>
-        </div>
-        <div className="assessment-result-row">
-          <Text type="tertiary">{t('requirements.assessmentV2.recommendation')}</Text>
-          <Tag color={conclusionTagColor[conclusion]} type="light" size="large">
-            {t(`requirements.assessmentV2.conclusion.${conclusion}`)}
-          </Tag>
-        </div>
-        {!readonly && (
-          <>
-            <TextArea
-              placeholder={t('requirements.assessmentV2.commentPlaceholder')}
-              value={comment}
-              onChange={setComment}
-              autosize={{ minRows: 2, maxRows: 4 }}
-              maxCount={500}
-              showClear
-              style={{ marginTop: 12 }}
-            />
-            <Button
-              theme="solid"
-              type="primary"
-              loading={submitting}
-              onClick={handleSubmit}
-              style={{ marginTop: 12 }}
-              block
-            >
-              {t('requirements.assessmentV2.submit')}
-            </Button>
-          </>
-        )}
-        {readonly && existing?.comment && (
-          <div style={{ marginTop: 12 }}>
-            <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 4 }}>
-              {t('requirements.assessmentV2.commentLabel')}
-            </Text>
-            <Text>{existing.comment}</Text>
+        return (
+          <div key={record.level_id} className="assessment-level-card">
+            <div className="assessment-level-card-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Tag color="blue" type="light" size="small">L{record.level_priority}</Tag>
+                <Title heading={6} style={{ margin: 0 }}>{record.level_name}</Title>
+                {statusTag}
+              </div>
+              {record.status === 'completed' && record.feasibility && (
+                <Tag color={feasibilityMap[record.feasibility].color} type="light">
+                  {feasibilityMap[record.feasibility].label}
+                </Tag>
+              )}
+            </div>
+
+            {record.status === 'pending' ? (
+              <Text type="tertiary">前序级别评估通过后开放。</Text>
+            ) : (
+              <>
+                <div className="assessment-cards-row">
+                  {renderModelCard(
+                    valueModel,
+                    record.value_answers,
+                    record.value_score,
+                    editable,
+                    (key, p) => patchAnswer(idx, 'value', key, p),
+                  )}
+                  {renderModelCard(
+                    complexityModel,
+                    record.complexity_answers,
+                    record.complexity_score,
+                    editable,
+                    (key, p) => patchAnswer(idx, 'complexity', key, p),
+                  )}
+                </div>
+
+                <div className="assessment-result">
+                  <div className="assessment-result-row">
+                    <Text type="tertiary">净得分（价值 − 复杂度）</Text>
+                    <Title heading={4} style={{ margin: 0 }}>
+                      {(record.value_score - record.complexity_score).toFixed(2)}
+                    </Title>
+                  </div>
+                  <div className="assessment-result-row">
+                    <Text type="tertiary">可行性判断</Text>
+                    <Select
+                      value={record.feasibility}
+                      disabled={!editable}
+                      placeholder="请选择"
+                      style={{ width: 200 }}
+                      optionList={FEASIBILITY_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+                      onChange={(v) => patchRecord(idx, { feasibility: v as FeasibilityLevel })}
+                    />
+                  </div>
+                  {editable ? (
+                    <>
+                      <TextArea
+                        placeholder="评估说明（可选，最多 500 字）"
+                        value={record.comment ?? ''}
+                        onChange={(v) => patchRecord(idx, { comment: v })}
+                        autosize={{ minRows: 2, maxRows: 4 }}
+                        maxCount={500}
+                        showClear
+                        style={{ marginTop: 12 }}
+                      />
+                      <Button
+                        theme="solid"
+                        type="primary"
+                        loading={submitting}
+                        onClick={() => handleSubmitLevel(idx)}
+                        style={{ marginTop: 12 }}
+                        block
+                      >
+                        提交本级评估
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      {record.comment && (
+                        <div style={{ marginTop: 12 }}>
+                          <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 4 }}>
+                            评估说明
+                          </Text>
+                          <Text>{record.comment}</Text>
+                        </div>
+                      )}
+                      {record.assessor_name && (
+                        <Text type="tertiary" size="small" style={{ marginTop: 8, display: 'block' }}>
+                          {record.assessor_name} · {record.assessed_at?.replace('T', ' ').substring(0, 16)}
+                        </Text>
+                      )}
+                    </>
+                  )}
+                </div>
+              </>
+            )}
           </div>
-        )}
-      </div>
+        );
+      })}
     </div>
   );
 };
