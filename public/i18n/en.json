@@ -168,11 +168,11 @@
     "platformOperations": "Platform Operations",
     "requirementsManagement": "Requirements Management",
     "requirementsList": "Requirements List",
-    "requirementsReview": "Requirement Approval",
-    "requirementsAssessment": "Requirement Assessment",
+    "requirementsReview": "Requirement Review",
+    "requirementsAssessment": "Technical Assessment",
     "requirementsConfig": "Requirements Configuration",
     "requirementsScheme": "Requirements Template",
-    "requirementsApprovalConfig": "Approval & Assessment Config",
+    "requirementsApprovalConfig": "Review & Assessment Flow Config",
     "requirementsCostBaseline": "Cost Baseline Config",
 
     "requirementsDeptApprovalBinding": "Dept Approval Binding",
@@ -1349,7 +1349,7 @@
       }
     },
     "assessment": {
-      "title": "Requirement Assessment",
+      "title": "Technical Assessment",
       "description": "Score business value and technical complexity",
       "searchPlaceholder": "Search requirements",
       "pendingMe": "Pending My Assessment",
@@ -1416,7 +1416,7 @@
       }
     },
     "review": {
-      "title": "Requirement Approval",
+      "title": "Requirement Review",
       "description": "Process pending approval steps",
       "searchPlaceholder": "Search requirements",
       "pendingMe": "Pending My Approval",

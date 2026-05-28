@@ -64,7 +64,7 @@ const ApprovalConfigPage = ({
   const isOffline = businessType === 'PROCESS_OFFLINE';
   const flowLabel = isPublish ? '发布审批模板' : isOffline ? '停用审批模板' : '审批流';
   const businessLabel = isPublish ? '流程发布' : isOffline ? '流程停用' : '需求';
-  const resolvedTitle = pageTitle ?? (isPublish ? '发布审批模板' : isOffline ? '停用审批模板' : '审批配置');
+  const resolvedTitle = pageTitle ?? (isPublish ? '发布审批模板' : isOffline ? '停用审批模板' : '评审与评估流程配置');
   const resolvedDescription = pageDescription ?? (isPublish
     ? '管理流程发布审批模板。通过模板中的「适用部门」决定哪些部门的流程发布需要走审批。'
     : isOffline
