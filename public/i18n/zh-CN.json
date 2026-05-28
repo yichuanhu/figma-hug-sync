@@ -1241,7 +1241,7 @@
       }
     },
     "assessment": {
-      "title": "需求评估",
+      "title": "技术评估",
       "description": "完成业务价值与技术复杂度评估",
       "searchPlaceholder": "搜索需求名称",
       "pendingMe": "待我评估",
