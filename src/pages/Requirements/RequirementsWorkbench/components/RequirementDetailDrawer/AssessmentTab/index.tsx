@@ -354,8 +354,6 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
           <div key={record.level_id} className="assessment-level-card">
             <div className="assessment-level-card-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Tag color="blue" type="light" size="small">L{record.level_priority}</Tag>
-                <Title heading={6} style={{ margin: 0 }}>{record.level_name}</Title>
                 {statusTag}
               </div>
               {record.status === 'completed' && record.feasibility && (
@@ -364,6 +362,7 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
                 </Tag>
               )}
             </div>
+
 
             {record.status === 'pending' ? (
               <Text type="tertiary">前序级别评估通过后开放。</Text>
