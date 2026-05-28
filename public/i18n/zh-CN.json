@@ -940,7 +940,34 @@
       "attachmentSizeError": "文件大小不能超过10MB",
       "baselineSection": "业务基线（自动化收益评估）",
       "baselineHint": "由激活模板定义；填写后将自动计算节省收益",
-      "sectionDetails": "需求详情"
+      "sectionDetails": "需求详情",
+      "steps": {
+        "basicInfo": "基本信息",
+        "basicInfoDesc": "标题、部门、归属人、优先级、分类标签",
+        "businessFields": "业务补充字段",
+        "businessFieldsDesc": "按模板填写业务字段",
+        "costBaseline": "成本基线",
+        "costBaselineDesc": "选择成本项，自动带出人天成本快照",
+        "publishChange": "发布变更",
+        "publishChangeDesc": "填写变更说明并发布"
+      },
+      "costBaseline": {
+        "banner": "成本由「成本基线配置」自动带出并保存快照，不作为实际执行配置",
+        "selectorLabel": "成本项",
+        "selectorPlaceholder": "选择成本项（可多选）",
+        "empty": "暂无成本项，请先在「成本基线配置」中新建",
+        "goConfig": "前往成本基线配置",
+        "executionFrequency": "执行频率",
+        "singleDuration": "单次时长（分钟）",
+        "legacyDeprecated": "原岗位成本字段已废弃，请重新选择成本基线",
+        "selectedTitle": "已选成本项",
+        "colType": "类型",
+        "colName": "名称",
+        "colDailyCost": "人天成本",
+        "colAction": "操作",
+        "dailyCostUnit": "/ 人天",
+        "remove": "移除"
+      }
     },
     "detail": {
       "activityStream": "活动记录",
