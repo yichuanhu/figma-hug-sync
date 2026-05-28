@@ -645,49 +645,43 @@ const RequirementDetailDrawer = ({
               </div>
             </TabPane>
 
-            {((hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode) || context === 'approval') && context !== 'assessment' && (
-              <TabPane
-                tab={t('requirements.detail.tab.approval')}
-                itemKey="approval"
-              >
-                <div className="requirement-detail-tab-content">
-                  {effectiveData.approvalFlowConfig ? (
-                    <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
-                  ) : (
-                    <Text type="tertiary">{t('common.noData', { defaultValue: '暂无审批流配置' })}</Text>
-                  )}
-                  {context === 'approval' && (
-                    <div style={{ marginTop: 16 }}>
-                      <ApprovalSection data={effectiveData} onStatusChange={onStatusChange} onRefresh={onRefresh} />
-                    </div>
-                  )}
-                </div>
-              </TabPane>
-            )}
+            <TabPane
+              tab={t('requirements.detail.tab.approval')}
+              itemKey="approval"
+            >
+              <div className="requirement-detail-tab-content">
+                {effectiveData.approvalFlowConfig ? (
+                  <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
+                ) : (
+                  <Text type="tertiary">{t('common.noData', { defaultValue: '暂无审批流配置' })}</Text>
+                )}
+                {context === 'approval' && (
+                  <div style={{ marginTop: 16 }}>
+                    <ApprovalSection data={effectiveData} onStatusChange={onStatusChange} onRefresh={onRefresh} />
+                  </div>
+                )}
+              </div>
+            </TabPane>
 
-            {(hasAssessment || context === 'assessment') && context !== 'approval' && (
-              <TabPane
-                tab={t('requirements.detail.tab.assessment')}
-                itemKey="assessment"
-              >
-                <div className="requirement-detail-tab-content">
-                  <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} forceReadonly={assessmentReadonly} />
-                </div>
-              </TabPane>
-            )}
+            <TabPane
+              tab={t('requirements.detail.tab.assessment')}
+              itemKey="assessment"
+            >
+              <div className="requirement-detail-tab-content">
+                <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} forceReadonly={assessmentReadonly} />
+              </div>
+            </TabPane>
 
-            {hasAssessment && context !== 'assessment' && context !== 'approval' && (
-              <TabPane
-                tab={t('requirements.detail.tab.cost')}
-                itemKey="cost"
-              >
-                <div className="requirement-detail-tab-content">
-                  <CostEstimateTab data={effectiveData} />
-                </div>
-              </TabPane>
-            )}
+            <TabPane
+              tab={t('requirements.detail.tab.cost')}
+              itemKey="cost"
+            >
+              <div className="requirement-detail-tab-content">
+                <CostEstimateTab data={effectiveData} />
+              </div>
+            </TabPane>
 
-            {!isHistoryMode && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(effectiveData.status) && (
+            {!isHistoryMode && (
               <TabPane
                 tab={t('requirements.detail.tab.effort')}
                 itemKey="effort"
@@ -698,7 +692,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {!isHistoryMode && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(effectiveData.status) && (
+            {!isHistoryMode && (
               <TabPane
                 tab={t('requirements.detail.tab.devScheme')}
                 itemKey="devScheme"
@@ -712,7 +706,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {!isHistoryMode && context !== 'approval' && context !== 'assessment' && isPostProjectStatus(effectiveData.status) && (
+            {!isHistoryMode && (
               <TabPane
                 tab={t('requirements.detail.tab.changeLog')}
                 itemKey="changeLog"
