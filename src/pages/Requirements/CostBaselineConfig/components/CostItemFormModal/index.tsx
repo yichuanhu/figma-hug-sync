@@ -129,12 +129,15 @@ const CostItemFormModal = ({ visible, editing, onCancel, onSuccess }: CostItemFo
           field="cost_type"
           label="成本类型"
           type="button"
+          options={[
+            { value: 'role', label: COST_TYPE_LABEL.role },
+            { value: 'activity', label: COST_TYPE_LABEL.activity },
+          ]}
           rules={[{ required: true, message: '请选择成本类型' }]}
           trigger={['blur', 'change']}
-        >
-          <Form.RadioGroup.Radio value="role">{COST_TYPE_LABEL.role}</Form.RadioGroup.Radio>
-          <Form.RadioGroup.Radio value="activity">{COST_TYPE_LABEL.activity}</Form.RadioGroup.Radio>
-        </Form.RadioGroup>
+        />
+
+
 
         <Form.Input
           field="name"
