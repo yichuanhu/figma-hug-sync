@@ -1308,7 +1308,7 @@
       }
     },
     "review": {
-      "title": "需求审批",
+      "title": "需求评审",
       "description": "处理待审批的需求节点",
       "searchPlaceholder": "搜索需求名称",
       "pendingMe": "待我审批",
