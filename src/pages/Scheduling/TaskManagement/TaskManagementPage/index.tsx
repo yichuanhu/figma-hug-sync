@@ -377,12 +377,25 @@ const TaskManagementPage = () => {
   });
 
   // FilterStatus
+  // 顶部常驻
+  const [processFilter, setProcessFilter] = useState<string[]>([]);
   const [taskStatusFilter, setTaskStatusFilter] = useState<string[]>([]);
-  const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
-  const [triggerSourceFilter, setTriggerSourceFilter] = useState<string[]>([]);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
+  // 收纳面板
+  const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
+  const [triggerSourceFilter, setTriggerSourceFilter] = useState<string[]>([]);
+  const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
+  const [triggerIdFilter, setTriggerIdFilter] = useState<string | null>(null);
+  const [executionTargetType, setExecutionTargetType] = useState<'WORKER' | 'WORKER_GROUP' | null>(null);
+  const [executionTargetId, setExecutionTargetId] = useState<string | null>(null);
+  const [enableRecordingFilter, setEnableRecordingFilter] = useState<boolean | null>(null);
+  const [hasScreenshotFilter, setHasScreenshotFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+
+  // 批量选择
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+
 
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
