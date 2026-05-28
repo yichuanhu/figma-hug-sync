@@ -476,6 +476,8 @@ const ApprovalFlowBuilderPage = ({
           )}
         </Space>
       </div>
+      )}
+
 
       <div className="approval-flow-builder-body">
         <div className="workflow-builder">
