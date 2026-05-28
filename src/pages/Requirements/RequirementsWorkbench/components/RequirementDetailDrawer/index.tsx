@@ -645,7 +645,7 @@ const RequirementDetailDrawer = ({
               </div>
             </TabPane>
 
-            {hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode && (
+            {hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode && context !== 'assessment' && (
               <TabPane
                 tab={t('requirements.detail.tab.approval')}
                 itemKey="approval"
@@ -689,7 +689,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {!isHistoryMode && isDevelopmentOrAfterStatus(effectiveData.status) && (
+            {!isHistoryMode && context !== 'assessment' && isDevelopmentOrAfterStatus(effectiveData.status) && (
               <TabPane
                 tab={t('requirements.detail.tab.devScheme')}
                 itemKey="devScheme"
@@ -703,7 +703,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {!isHistoryMode && isPostProjectStatus(effectiveData.status) && (
+            {!isHistoryMode && context !== 'assessment' && isPostProjectStatus(effectiveData.status) && (
               <TabPane
                 tab={t('requirements.detail.tab.changeLog')}
                 itemKey="changeLog"
@@ -717,6 +717,7 @@ const RequirementDetailDrawer = ({
                 </div>
               </TabPane>
             )}
+
           </Tabs>
         </div>
 

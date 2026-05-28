@@ -9,7 +9,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Banner,
   Button,
   Empty,
   InputNumber,
@@ -21,7 +20,8 @@ import {
   Toast,
   Typography,
 } from '@douyinfe/semi-ui';
-import { ClipboardCheck, CheckCircle2, Clock, Layers } from 'lucide-react';
+import { CheckCircle2, Clock } from 'lucide-react';
+
 import type {
   RequirementItem,
   DetailedAssessment,
@@ -316,17 +316,8 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
 
   return (
     <div className="assessment-tab-content">
-      <Banner
-        type="info"
-        description={
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <Layers size={14} strokeWidth={2} />
-            评估流：<b>{flow.name}</b> · 共 {flow.levels.length} 级 · 当前进度 L{assessment.current_level_priority}
-          </span>
-        }
-        closeIcon={null}
-        icon={<ClipboardCheck size={16} strokeWidth={2} />}
-      />
+
+
 
       {(() => {
         const myRecords = assessment.records
@@ -363,8 +354,6 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
           <div key={record.level_id} className="assessment-level-card">
             <div className="assessment-level-card-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Tag color="blue" type="light" size="small">L{record.level_priority}</Tag>
-                <Title heading={6} style={{ margin: 0 }}>{record.level_name}</Title>
                 {statusTag}
               </div>
               {record.status === 'completed' && record.feasibility && (
@@ -373,6 +362,7 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
                 </Tag>
               )}
             </div>
+
 
             {record.status === 'pending' ? (
               <Text type="tertiary">前序级别评估通过后开放。</Text>
