@@ -257,7 +257,12 @@ const CostBaselineSection = ({
                 ellipsis: { showTitle: true },
               },
               {
-                title: t('requirements.form.costBaseline.colDailyCost'),
+                title: (
+                  <LabelWithHelp
+                    text={t('requirements.form.costBaseline.colDailyCost')}
+                    tip={t('requirements.form.costBaseline.tooltip.dailyCost')}
+                  />
+                ),
                 dataIndex: 'daily_cost',
                 width: 180,
                 align: 'right',
