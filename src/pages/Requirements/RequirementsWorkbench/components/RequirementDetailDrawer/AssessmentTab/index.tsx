@@ -236,6 +236,8 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
           </Text>
           <RadioGroup
             type="button"
+            direction="vertical"
+            className="assessment-tier-group"
             value={answer.tier_id}
             disabled={!editable}
             onChange={(e) => {
@@ -245,7 +247,9 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
           >
             {dim.tiers.map((tier) => (
               <Radio key={tier.id} value={tier.id}>
-                {tier.label} ({tier.score})
+                <span className="assessment-tier-label">
+                  {tier.label} ({tier.score})
+                </span>
               </Radio>
             ))}
           </RadioGroup>
