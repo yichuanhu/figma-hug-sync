@@ -10,7 +10,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tabs, TabPane, Typography, Tag, Button, Tooltip, Empty } from '@douyinfe/semi-ui';
-import { Pencil, CheckCircle, Trash2, Copy, Building2 } from 'lucide-react';
+import { Pencil, CheckCircle, Trash2, Building2 } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import { getDepartmentName } from '@/mocks/departmentData';
 import { listDepartmentsByTemplate } from '@/mocks/departmentApprovalFlowBinding';
@@ -52,7 +52,7 @@ const ApprovalFlowDetailDrawer = ({
   onEdit,
   onActivate,
   onDelete,
-  onClone,
+  onClone: _onClone,
 }: Props) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('basic');
@@ -73,19 +73,7 @@ const ApprovalFlowDetailDrawer = ({
 
   const extraActions = useMemo(() => {
     if (!flow) return null;
-    if (flow.is_preset) {
-      return (
-        <Tooltip content="基于此模板创建" position="bottom">
-          <Button
-            icon={<Copy size={16} strokeWidth={2} />}
-            theme="borderless"
-            type="tertiary"
-            size="small"
-            onClick={() => onClone(flow)}
-          />
-        </Tooltip>
-      );
-    }
+    if (flow.is_preset) return null;
     return (
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
         <Tooltip content={t('common.edit')} position="bottom">
@@ -110,7 +98,8 @@ const ApprovalFlowDetailDrawer = ({
         )}
       </span>
     );
-  }, [flow, onClone, onEdit, onActivate, t]);
+  }, [flow, onEdit, onActivate, t]);
+
 
   const deleteAction = useMemo(() => {
     if (!flow || flow.is_preset) return null;

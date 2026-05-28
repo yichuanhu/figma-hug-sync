@@ -250,47 +250,35 @@ const AssessmentConfigPage = () => {
 
       {/* 详情抽屉 —— 只读；编辑/启用通过抽屉顶部操作转到独立页面或调用启用 */}
       {(() => {
-        const extraActions = current ? (
+        const extraActions = current && !current.is_preset ? (
           <Space spacing={4}>
-            {current.is_preset ? (
-              <Tooltip content="基于此模板创建" position="bottom">
+            <Tooltip content={t('common.edit')} position="bottom">
+              <Button
+                icon={<Pencil size={16} strokeWidth={2} />}
+                theme="borderless"
+                type="tertiary"
+                size="small"
+                onClick={() => {
+                  setDetailId(null);
+                  navigate(`${BASE_PATH}/builder/${current.id}`);
+                }}
+              />
+            </Tooltip>
+            {current.status !== 'active' && (
+              <Tooltip content="启用" position="bottom">
                 <Button
-                  icon={<Copy size={16} strokeWidth={2} />}
+                  icon={<CheckCircle size={16} strokeWidth={2} />}
                   theme="borderless"
                   type="tertiary"
                   size="small"
-                  onClick={() => handleCloneFromPreset(current.id)}
+                  onClick={() => handleActivate(current)}
                 />
               </Tooltip>
-            ) : (
-              <>
-                <Tooltip content={t('common.edit')} position="bottom">
-                  <Button
-                    icon={<Pencil size={16} strokeWidth={2} />}
-                    theme="borderless"
-                    type="tertiary"
-                    size="small"
-                    onClick={() => {
-                      setDetailId(null);
-                      navigate(`${BASE_PATH}/builder/${current.id}`);
-                    }}
-                  />
-                </Tooltip>
-                {current.status !== 'active' && (
-                  <Tooltip content="启用" position="bottom">
-                    <Button
-                      icon={<CheckCircle size={16} strokeWidth={2} />}
-                      theme="borderless"
-                      type="tertiary"
-                      size="small"
-                      onClick={() => handleActivate(current)}
-                    />
-                  </Tooltip>
-                )}
-              </>
             )}
           </Space>
         ) : null;
+
+
         const deleteAction = current && !current.is_preset ? (
           <Button
             icon={<Trash2 size={16} strokeWidth={2} />}
