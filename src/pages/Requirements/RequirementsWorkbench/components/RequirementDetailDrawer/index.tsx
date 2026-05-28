@@ -218,9 +218,7 @@ const PropertyPanel = ({
         );
       })()}
 
-      {showApprovalSection && (
-        <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
-      )}
+      {/* 审批操作区已迁移至「审批流程」Tab 内 */}
     </div>
   );
 };
