@@ -1217,9 +1217,9 @@ export const updateRequirementAssessment = async (
   const newVersion: VersionSnapshot = {
     version: (cur.historyVersions?.length ?? 0) + 1,
     createdAt: new Date().toISOString(),
-    actorId: assessment.assessorId,
-    actorName: assessment.assessorName,
-    summary: `Assessment completed (net ${assessment.netScore}, ${assessment.conclusion}).`,
+    actorId: assessment.assessorId ?? 'system',
+    actorName: assessment.assessorName ?? 'System',
+    summary: `Assessment updated (net ${assessment.netScore ?? '-'}, ${assessment.feasibility ?? 'in progress'}).`,
     snapshot: {
       title: cur.title,
       description: cur.description,
