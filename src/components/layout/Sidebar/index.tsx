@@ -405,6 +405,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname.startsWith('/requirements/review')) {
       return 'requirementsReview';
     }
+    if (pathname.startsWith('/requirements/assessment-config')) {
+      return 'requirementsAssessmentConfig';
+    }
     if (pathname.startsWith('/requirements/assessment')) {
       return 'requirementsAssessment';
     }
