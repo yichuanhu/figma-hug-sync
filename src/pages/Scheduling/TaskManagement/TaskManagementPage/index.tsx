@@ -1112,24 +1112,22 @@ const TaskManagementPage = () => {
                     },
                   ]}
                 />
-              </Space>
-            </Col>
-            <Col>
-              <Space>
-                <Button icon={<RefreshCw size={16} strokeWidth={2} />} onClick={handleRefresh}>
-                  {t('task.refresh')}
-                </Button>
-                <Button
-                  icon={<Plus size={16} strokeWidth={2} />}
-                  theme="solid"
-                  type="primary"
-                  onClick={() => setCreateModalVisible(true)}
-                >
-                  {t('task.createTask')}
-                </Button>
-              </Space>
-            </Col>
-          </Row>
+            </div>
+            <div className="toolbar-actions">
+              <Button icon={<RefreshCw size={16} strokeWidth={2} />} onClick={handleRefresh}>
+                {t('task.refresh')}
+              </Button>
+              <Button
+                icon={<Plus size={16} strokeWidth={2} />}
+                theme="solid"
+                type="primary"
+                onClick={() => setCreateModalVisible(true)}
+              >
+                {t('task.createTask')}
+              </Button>
+            </div>
+          </div>
+
 
           {/* 活动筛选标签 */}
           {(() => {
