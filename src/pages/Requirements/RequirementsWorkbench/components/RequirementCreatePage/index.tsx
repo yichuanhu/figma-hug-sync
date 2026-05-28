@@ -192,18 +192,21 @@ const RequirementCreatePage = () => {
     [],
   );
 
-  const executionFrequencyOptions = useMemo(
-    () => [
-      { value: "DAILY", label: "每天" },
-      { value: "WEEKLY", label: "每周" },
-      { value: "MONTHLY", label: "每月" },
-      { value: "QUARTERLY", label: "每季度" },
-      { value: "YEARLY", label: "每年" },
-    ],
-    [],
-  );
+  const OPTIONAL_FORM_KEYS = ["monthly_execution_count", "single_manual_duration_minutes"] as const;
 
-  const OPTIONAL_FORM_KEYS = ["execution_frequency", "single_duration"] as const;
+  /** 旧 execution_frequency 字符串枚举 → 月执行次数数值映射（兼容历史数据） */
+  const legacyFrequencyToCount = (v: unknown): number | undefined => {
+    if (typeof v === "number") return v;
+    if (typeof v !== "string") return undefined;
+    switch (v.toUpperCase()) {
+      case "DAILY": return 22;
+      case "WEEKLY": return 4;
+      case "MONTHLY": return 1;
+      case "QUARTERLY":
+      case "YEARLY": return 1;
+      default: return undefined;
+    }
+  };
 
   const baseInitialValues = useMemo(() => {
     if (isEdit && editData) {
