@@ -843,6 +843,8 @@ function applyClosureDemoData(): void {
 
   // M2：多级流 — L1 已通过，L2 当前用户审批中
   const m2 = findByTitle('Customer Ticket Smart Classification');
+  ensureApprovalFlow(m2);
+
   if (m2?.approvalFlowConfig && m2.approvalFlowConfig.levels.length >= 2) {
     const flow = m2.approvalFlowConfig;
     const ts1 = new Date(2026, 1, 11, 10, 30).toISOString();
