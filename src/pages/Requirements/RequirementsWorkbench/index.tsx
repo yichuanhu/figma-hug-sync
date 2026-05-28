@@ -14,7 +14,7 @@ import {
   Modal,
   Toast,
   Space,
-  Select,
+  
   Tooltip,
   Checkbox,
 } from '@douyinfe/semi-ui';
@@ -38,7 +38,7 @@ import {
   withdrawRequirement,
   useSchemeFlags,
   MOCK_CURRENT_USER_ID,
-  MOCK_PROJECT_POOL,
+  
   getRequirementEffortSummary,
 } from './mockData';
 import { statusConfigV2, legacyStatusMap, statusOptionsV2 } from './statusConfig';
@@ -75,7 +75,7 @@ const RequirementsWorkbench = () => {
 
   // 筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
-  const [projectFilter, setProjectFilter] = useState<string[]>([]);
+  
   const [statusFilter, setStatusFilter] = useState<RequirementStatus[]>([]);
   const [statusFilterVisible, setStatusFilterVisible] = useState(false);
 
@@ -124,7 +124,6 @@ const RequirementsWorkbench = () => {
       const response = await fetchRequirementList({
         ...queryParams,
         departmentFilter,
-        projectFilter,
         statusFilter,
       });
       setListResponse(response);
@@ -132,7 +131,7 @@ const RequirementsWorkbench = () => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, departmentFilter, projectFilter, statusFilter]);
+  }, [queryParams, departmentFilter, statusFilter]);
 
   useEffect(() => {
     loadData();
@@ -595,19 +594,6 @@ const RequirementsWorkbench = () => {
                 useNameAsValue
                 style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
               />
-              <Select
-                placeholder={t('common.filterProject')}
-                value={projectFilter}
-                onChange={(v) => {
-                  setProjectFilter((v as string[]) || []);
-                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
-                }}
-                multiple
-                showClear
-                maxTagCount={1}
-                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
-                optionList={MOCK_PROJECT_POOL.map((p) => ({ label: p.name, value: p.id }))}
-              />
               <FilterPopover
                 visible={statusFilterVisible}
                 onVisibleChange={setStatusFilterVisible}
@@ -748,13 +734,13 @@ const RequirementsWorkbench = () => {
           await updateRequirementStatus(id, newStatus, comment);
           loadData();
           // Refresh the selected record
-          const updated = (await fetchRequirementList({ ...queryParams, departmentFilter, projectFilter })).list.find(r => r.id === id);
+          const updated = (await fetchRequirementList({ ...queryParams, departmentFilter })).list.find(r => r.id === id);
           if (updated) setSelectedRecord(updated);
         }}
         onRefresh={async () => {
           loadData();
           if (selectedRecord) {
-            const updated = (await fetchRequirementList({ ...queryParams, departmentFilter, projectFilter })).list.find(r => r.id === selectedRecord.id);
+            const updated = (await fetchRequirementList({ ...queryParams, departmentFilter })).list.find(r => r.id === selectedRecord.id);
             if (updated) setSelectedRecord(updated);
           }
         }}
