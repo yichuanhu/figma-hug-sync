@@ -4,14 +4,15 @@
  * 维护租户级通用成本项：列表 + 新建 + 编辑。
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Typography, Button, Input, Tag, Table, Tooltip, Pagination } from '@douyinfe/semi-ui';
+import { Typography, Button, Input, Tag, Table, Tooltip, Pagination, Dropdown, Modal, Toast } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Plus, Pencil } from 'lucide-react';
+import { Plus, Pencil, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import {
   listCostBaselineItems,
   subscribeCostBaselineChange,
+  deleteCostBaselineItem,
   type CostBaselineItem,
   type CostItemType,
   COST_TYPE_LABEL,
@@ -93,6 +94,29 @@ const CostBaselineConfigPage = () => {
     setModalVisible(true);
   };
 
+  const handleDelete = (item: CostBaselineItem) => {
+    Modal.confirm({
+      title: '删除成本项',
+      content: (
+        <div>
+          确定删除成本项「{item.name}」吗？已引用该成本项的需求快照不受影响。
+        </div>
+      ),
+      okText: '删除',
+      cancelText: '取消',
+      okButtonProps: { type: 'danger' },
+      centered: true,
+      onOk: async () => {
+        try {
+          await deleteCostBaselineItem(item.id);
+          Toast.success('删除成功');
+        } catch {
+          Toast.error('删除失败');
+        }
+      },
+    });
+  };
+
   const columns = [
     {
       title: '成本类型',
@@ -146,20 +170,44 @@ const CostBaselineConfigPage = () => {
     },
     {
       title: '操作',
-      width: 100,
+      width: 80,
       render: (_: unknown, record: CostBaselineItem) => (
-        <Button
-          theme="borderless"
-          type="primary"
-          size="small"
-          icon={<Pencil size={14} strokeWidth={2} />}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleEdit(record);
-          }}
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          clickToHide
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item
+                icon={<Pencil size={14} strokeWidth={2} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEdit(record);
+                }}
+              >
+                编辑
+              </Dropdown.Item>
+              <Dropdown.Item
+                icon={<Trash2 size={14} strokeWidth={2} />}
+                type="danger"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(record);
+                }}
+              >
+                删除
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          }
         >
-          编辑
-        </Button>
+          <Button
+            icon={<Ellipsis size={16} strokeWidth={2} />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </Dropdown>
       ),
     },
   ];
