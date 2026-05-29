@@ -371,14 +371,14 @@ const RequirementDetailDrawer = ({
   useEffect(() => {
     if (!data) return;
     const isHistory = viewingVersion !== 'current';
-    const availableTabs: string[] = ['overview', 'approval', 'assessment', 'cost'];
+    const availableTabs: string[] = ['overview', 'approval', 'assessment', 'cost'].filter(showTab);
     if (!isHistory) {
-      availableTabs.push('effort', 'devScheme', 'changeLog');
+      ['effort', 'devScheme', 'changeLog'].forEach((k) => { if (showTab(k)) availableTabs.push(k); });
     }
     if (!availableTabs.includes(activeTab)) {
       setActiveTab('overview');
     }
-  }, [data?.id, viewingVersion, activeTab, data]);
+  }, [data?.id, viewingVersion, activeTab, data, visibleTabs]);
 
   useEffect(() => {
     if (visible && data) {
