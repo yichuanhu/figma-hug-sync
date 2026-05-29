@@ -341,6 +341,17 @@ const RequirementDetailDrawer = ({
   
   const assessmentReadonly = context !== 'assessment';
 
+  // 根据入口上下文决定可见的 Tab：
+  // - assessment（需求评估）：概览 + 需求评估
+  // - approval（需求评审）：概览 + 审批流程
+  // - list（需求列表，默认）：全部
+  const visibleTabs = useMemo<Set<string>>(() => {
+    if (context === 'assessment') return new Set(['overview', 'assessment']);
+    if (context === 'approval') return new Set(['overview', 'approval']);
+    return new Set(['overview', 'approval', 'assessment', 'cost', 'effort', 'devScheme', 'changeLog']);
+  }, [context]);
+  const showTab = (key: string) => visibleTabs.has(key);
+
   // 抽屉关闭/打开时按 initialTab 同步当前 Tab
   useEffect(() => {
     if (visible) {
