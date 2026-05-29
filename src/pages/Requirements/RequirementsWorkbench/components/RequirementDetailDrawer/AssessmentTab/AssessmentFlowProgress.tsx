@@ -16,7 +16,7 @@ const { Text } = Typography;
 type LevelStatus = 'finish' | 'error' | 'process' | 'wait';
 
 interface Props {
-  flow: AssessmentFlowConfig;
+  flow: AssessmentFlowTemplate;
   assessment: DetailedAssessment;
 }
 
@@ -40,7 +40,7 @@ const renderNodeIcon = (status: LevelStatus) => {
   return <span className="afp-node-icon afp-node-icon--wait"><Circle size={10} strokeWidth={2} /></span>;
 };
 
-const assessorTypeLabel = (lv: AssessmentLevelConfig) =>
+const assessorTypeLabel = (lv: AssessmentLevel) =>
   lv.assessor_type === 'department_leader' ? '部门负责人' : '指定评估人';
 
 const AssessmentFlowProgress = ({ flow, assessment }: Props) => {
