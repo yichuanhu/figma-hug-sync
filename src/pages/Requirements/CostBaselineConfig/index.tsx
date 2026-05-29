@@ -170,20 +170,44 @@ const CostBaselineConfigPage = () => {
     },
     {
       title: '操作',
-      width: 100,
+      width: 80,
       render: (_: unknown, record: CostBaselineItem) => (
-        <Button
-          theme="borderless"
-          type="primary"
-          size="small"
-          icon={<Pencil size={14} strokeWidth={2} />}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleEdit(record);
-          }}
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          clickToHide
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item
+                icon={<Pencil size={14} strokeWidth={2} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEdit(record);
+                }}
+              >
+                编辑
+              </Dropdown.Item>
+              <Dropdown.Item
+                icon={<Trash2 size={14} strokeWidth={2} />}
+                type="danger"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(record);
+                }}
+              >
+                删除
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          }
         >
-          编辑
-        </Button>
+          <Button
+            icon={<Ellipsis size={16} strokeWidth={2} />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </Dropdown>
       ),
     },
   ];
