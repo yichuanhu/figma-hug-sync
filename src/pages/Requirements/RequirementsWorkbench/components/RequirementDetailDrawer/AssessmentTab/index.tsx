@@ -35,6 +35,7 @@ import {
   type AssessmentModelConfig,
 } from '../../../../AssessmentConfig/mockData';
 import { MOCK_CURRENT_USER_ID } from '../../../mockData';
+import AssessmentFlowProgress from './AssessmentFlowProgress';
 import './index.less';
 
 const { Text, Title } = Typography;
