@@ -35,6 +35,7 @@ import {
   type AssessmentModelConfig,
 } from '../../../../AssessmentConfig/mockData';
 import { MOCK_CURRENT_USER_ID } from '../../../mockData';
+import AssessmentFlowProgress from './AssessmentFlowProgress';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -316,6 +317,11 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
 
   return (
     <div className="assessment-tab-content">
+      <div className="assessment-flow-progress-wrapper">
+        <AssessmentFlowProgress flow={flow} assessment={assessment} />
+      </div>
+
+
 
 
 
