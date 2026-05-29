@@ -317,6 +317,11 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
 
   return (
     <div className="assessment-tab-content">
+      <div className="assessment-flow-progress-wrapper">
+        <AssessmentFlowProgress flow={flow} assessment={assessment} />
+      </div>
+
+
 
 
 
