@@ -653,6 +653,7 @@ const RequirementDetailDrawer = ({
               </div>
             </TabPane>
 
+            {showTab('approval') && (
             <TabPane
               tab={t('requirements.detail.tab.approval')}
               itemKey="approval"
@@ -670,7 +671,9 @@ const RequirementDetailDrawer = ({
                 )}
               </div>
             </TabPane>
+            )}
 
+            {showTab('assessment') && (
             <TabPane
               tab={t('requirements.detail.tab.assessment')}
               itemKey="assessment"
@@ -679,7 +682,9 @@ const RequirementDetailDrawer = ({
                 <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} forceReadonly={assessmentReadonly} />
               </div>
             </TabPane>
+            )}
 
+            {showTab('cost') && (
             <TabPane
               tab={t('requirements.detail.tab.cost')}
               itemKey="cost"
@@ -688,8 +693,9 @@ const RequirementDetailDrawer = ({
                 <CostEstimateTab data={effectiveData} />
               </div>
             </TabPane>
+            )}
 
-            {!isHistoryMode && (
+            {!isHistoryMode && showTab('effort') && (
               <TabPane
                 tab={t('requirements.detail.tab.effort')}
                 itemKey="effort"
@@ -700,7 +706,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {!isHistoryMode && (
+            {!isHistoryMode && showTab('devScheme') && (
               <TabPane
                 tab={t('requirements.detail.tab.devScheme')}
                 itemKey="devScheme"
@@ -714,7 +720,7 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {!isHistoryMode && (
+            {!isHistoryMode && showTab('changeLog') && (
               <TabPane
                 tab={t('requirements.detail.tab.changeLog')}
                 itemKey="changeLog"
@@ -728,6 +734,7 @@ const RequirementDetailDrawer = ({
                 </div>
               </TabPane>
             )}
+
 
           </Tabs>
         </div>
