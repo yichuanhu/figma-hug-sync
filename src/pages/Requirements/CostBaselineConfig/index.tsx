@@ -94,6 +94,29 @@ const CostBaselineConfigPage = () => {
     setModalVisible(true);
   };
 
+  const handleDelete = (item: CostBaselineItem) => {
+    Modal.confirm({
+      title: '删除成本项',
+      content: (
+        <div>
+          确定删除成本项「{item.name}」吗？已引用该成本项的需求快照不受影响。
+        </div>
+      ),
+      okText: '删除',
+      cancelText: '取消',
+      okButtonProps: { type: 'danger' },
+      centered: true,
+      onOk: async () => {
+        try {
+          await deleteCostBaselineItem(item.id);
+          Toast.success('删除成功');
+        } catch {
+          Toast.error('删除失败');
+        }
+      },
+    });
+  };
+
   const columns = [
     {
       title: '成本类型',
