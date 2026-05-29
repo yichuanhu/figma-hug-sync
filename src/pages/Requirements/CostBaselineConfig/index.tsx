@@ -4,14 +4,15 @@
  * 维护租户级通用成本项：列表 + 新建 + 编辑。
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Typography, Button, Input, Tag, Table, Tooltip, Pagination } from '@douyinfe/semi-ui';
+import { Typography, Button, Input, Tag, Table, Tooltip, Pagination, Dropdown, Modal, Toast } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Plus, Pencil } from 'lucide-react';
+import { Plus, Pencil, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import {
   listCostBaselineItems,
   subscribeCostBaselineChange,
+  deleteCostBaselineItem,
   type CostBaselineItem,
   type CostItemType,
   COST_TYPE_LABEL,
