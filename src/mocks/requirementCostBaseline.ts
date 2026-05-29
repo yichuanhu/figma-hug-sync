@@ -213,3 +213,10 @@ export const updateCostBaselineItem = async (
   notify();
   return next;
 };
+
+export const deleteCostBaselineItem = async (id: string): Promise<void> => {
+  const idx = store.findIndex((x) => x.id === id);
+  if (idx < 0) throw new Error('成本项不存在');
+  store.splice(idx, 1);
+  notify();
+};
