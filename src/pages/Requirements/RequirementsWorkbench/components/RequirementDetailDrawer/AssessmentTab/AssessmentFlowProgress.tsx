@@ -8,7 +8,7 @@
 import { Typography, Tag } from '@douyinfe/semi-ui';
 import { Check, X, Clock, Circle } from 'lucide-react';
 import type { DetailedAssessment, LevelAssessmentRecord } from '../../../types';
-import type { AssessmentFlowConfig, AssessmentLevelConfig } from '../../../../AssessmentConfig/mockData';
+import type { AssessmentFlowTemplate, AssessmentLevel } from '../../../../AssessmentConfig/mockData';
 import '../../ApprovalFlowProgress/index.less';
 
 const { Text } = Typography;
