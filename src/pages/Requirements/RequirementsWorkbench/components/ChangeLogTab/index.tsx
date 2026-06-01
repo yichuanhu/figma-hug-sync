@@ -58,7 +58,9 @@ const ChangeLogTab = ({ requirementId, refreshKey, highlightLogId }: Props) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState<RequirementChangeLog[]>([]);
+  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const DIFF_COLLAPSE_THRESHOLD = 3;
 
   useEffect(() => {
     if (!highlightLogId || loading) return;
