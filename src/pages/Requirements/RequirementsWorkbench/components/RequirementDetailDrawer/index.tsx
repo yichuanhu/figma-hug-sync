@@ -9,7 +9,7 @@ import type { RequirementItem, ActivityRecord, DetailedAssessment, RequirementCh
 import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, withdrawRequirement, MOCK_CURRENT_USER_ID, useSchemeFlags, listChangeLogs } from '../../mockData';
 import { PRESET_SCHEMES } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
-import { isPostProjectStatus, isDevelopmentOrAfterStatus } from '../../utils/fieldEditability';
+
 import ApprovalSection from './ApprovalSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
