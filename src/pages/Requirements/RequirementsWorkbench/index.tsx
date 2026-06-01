@@ -464,127 +464,169 @@ const RequirementsWorkbench = () => {
       key: 'action',
       width: 60,
       fixed: 'right' as const,
-      render: (_: unknown, record: RequirementItem) => (
-        <Dropdown
-          trigger="click"
-          position="bottomRight"
-          clickToHide
-          render={
-            <Dropdown.Menu>
-              {canEdit(record.status) && (
-                <Dropdown.Item
-                  icon={<Pencil size={16} strokeWidth={2} />}
-                  onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    navigate(`/requirements/list/edit/${record.id}`);
-                  }}
-                >
-                  {isPostProjectStatus(record.status) ? '变更需求' : t('common.edit')}
-                </Dropdown.Item>
-              )}
-              {(() => {
-                const isResubmit =
-                  (record.status === 'REJECTED' || record.status === 'WITHDRAWN') &&
-                  record.creatorId === MOCK_CURRENT_USER_ID;
-                const canSubmit = record.status === 'DRAFT';
-                if (!canSubmit && !isResubmit) return null;
-                if (isResubmit) {
-                  return (
-                    <Dropdown.Item
-                      icon={<Send size={16} strokeWidth={2} />}
-                      onClick={(e: React.MouseEvent) => {
-                        e.stopPropagation();
-                        handleResubmit(record);
-                      }}
-                    >
-                      {t('requirements.detail.resubmit', '重新提交')}
-                    </Dropdown.Item>
-                  );
-                }
-                const submitLabel = hasApproval
-                  ? t('requirements.detail.submitForApproval')
-                  : t('requirements.detail.submitRequirement');
-                return (
-                  <Dropdown.Item
-                    icon={<Send size={16} strokeWidth={2} />}
-                    onClick={(e: React.MouseEvent) => {
-                      e.stopPropagation();
-                      Modal.confirm({
-                        title: hasApproval
-                          ? t('requirements.detail.submitConfirmTitle')
-                          : t('requirements.detail.submitDirectConfirmTitle'),
-                        content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
-                        okText: submitLabel,
-                        cancelText: t('common.cancel'),
-                        onOk: async () => {
-                          await updateRequirementStatus(record.id, submittedStatus, 'Submitted.');
-                          loadData();
-                          Toast.success(
-                            hasApproval
-                              ? t('requirements.detail.submitSuccess')
-                              : t('requirements.detail.submitDirectSuccess'),
-                          );
-                        },
-                      });
-                    }}
-                  >
-                    {submitLabel}
-                  </Dropdown.Item>
-                );
-              })()}
-              {(record.status === 'PENDING_APPROVAL' || record.status === 'PENDING_ASSESSMENT') && record.creatorId === MOCK_CURRENT_USER_ID && (
-                <Dropdown.Item
-                  icon={<Undo2 size={16} strokeWidth={2} />}
-                  onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    handleWithdraw(record);
-                  }}
-                >
-                  {t('requirements.detail.withdraw')}
-                </Dropdown.Item>
-              )}
-              {record.status === 'PENDING_PROJECT' && !findWorkspaceByRequirementId(record.id) && (
-                <>
-                  <Dropdown.Item
-                    icon={<Link2 size={16} strokeWidth={2} />}
-                    onClick={(e: React.MouseEvent) => {
-                      e.stopPropagation();
-                      setPickerRecord(record);
-                    }}
-                  >
-                    {t('requirements.detail.pendingProject.linkExisting')}
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    icon={<FolderPlus size={16} strokeWidth={2} />}
-                    onClick={(e: React.MouseEvent) => {
-                      e.stopPropagation();
-                      navigate('/requirements/projects', {
-                        state: { openCreate: true, prefilledRequirementId: record.id },
-                      });
-                    }}
-                  >
-                    {t('requirements.detail.pendingProject.createProject')}
-                  </Dropdown.Item>
-                </>
-              )}
-              {canDelete(record.status) && (
-                <Dropdown.Item
-                  icon={<Trash2 size={16} strokeWidth={2} />}
-                  type="danger"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(record);
-                  }}
-                >
-                  {t('common.delete')}
-                </Dropdown.Item>
-              )}
-            </Dropdown.Menu>
-          }
-        >
-          <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
-        </Dropdown>
-      ),
+      render: (_: unknown, record: RequirementItem) => {
+        const status = normalizeStatus(record.status);
+        const cfg = statusConfigV2[status];
+        const isCreator = record.creatorId === MOCK_CURRENT_USER_ID;
+        const actions = cfg?.actions ?? [];
+
+        // 按矩阵筛选可见操作（部分操作叠加"提交人"权限）
+        const visible = actions.filter((a) => {
+          if (a === 'submit' || a === 'withdraw' || a === 'resubmit') return isCreator;
+          // edit / delete / cancel / createProcess / offline / relaunch：
+          // 矩阵未对身份做进一步限制，沿用现状（后续可叠加 owner / dept manager 校验）
+          return true;
+        });
+
+        if (visible.length === 0) {
+          return <span style={{ color: 'var(--semi-color-text-2)' }}>-</span>;
+        }
+
+        const submitLabel = hasApproval
+          ? t('requirements.detail.submitForApproval')
+          : t('requirements.detail.submitRequirement');
+
+        const items: Record<typeof visible[number], React.ReactNode> = {
+          edit: (
+            <Dropdown.Item
+              key="edit"
+              icon={<Pencil size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                navigate(`/requirements/list/edit/${record.id}`);
+              }}
+            >
+              {isBusinessOnlyEdit(status) ? '编辑（业务字段）' : t('common.edit')}
+            </Dropdown.Item>
+          ),
+          submit: (
+            <Dropdown.Item
+              key="submit"
+              icon={<Send size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                Modal.confirm({
+                  title: hasApproval
+                    ? t('requirements.detail.submitConfirmTitle')
+                    : t('requirements.detail.submitDirectConfirmTitle'),
+                  content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
+                  okText: submitLabel,
+                  cancelText: t('common.cancel'),
+                  onOk: async () => {
+                    await updateRequirementStatus(record.id, submittedStatus, 'Submitted.');
+                    loadData();
+                    Toast.success(
+                      hasApproval
+                        ? t('requirements.detail.submitSuccess')
+                        : t('requirements.detail.submitDirectSuccess'),
+                    );
+                  },
+                });
+              }}
+            >
+              {submitLabel}
+            </Dropdown.Item>
+          ),
+          withdraw: (
+            <Dropdown.Item
+              key="withdraw"
+              icon={<Undo2 size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleWithdraw(record);
+              }}
+            >
+              {t('requirements.detail.withdraw')}
+            </Dropdown.Item>
+          ),
+          resubmit: (
+            <Dropdown.Item
+              key="resubmit"
+              icon={<Send size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleResubmit(record);
+              }}
+            >
+              {t('requirements.detail.resubmit', '重新提交')}
+            </Dropdown.Item>
+          ),
+          createProcess: (
+            <Dropdown.Item
+              key="createProcess"
+              icon={<GitBranchPlus size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleCreateProcess(record);
+              }}
+            >
+              创建流程
+            </Dropdown.Item>
+          ),
+          cancel: (
+            <Dropdown.Item
+              key="cancel"
+              icon={<Ban size={16} strokeWidth={2} />}
+              type="danger"
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleCancel(record);
+              }}
+            >
+              取消需求
+            </Dropdown.Item>
+          ),
+          offline: (
+            <Dropdown.Item
+              key="offline"
+              icon={<PowerOff size={16} strokeWidth={2} />}
+              type="danger"
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleOffline(record);
+              }}
+            >
+              人工下线
+            </Dropdown.Item>
+          ),
+          relaunch: (
+            <Dropdown.Item
+              key="relaunch"
+              icon={<RotateCcw size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleRelaunch(record);
+              }}
+            >
+              重新上线
+            </Dropdown.Item>
+          ),
+          delete: (
+            <Dropdown.Item
+              key="delete"
+              icon={<Trash2 size={16} strokeWidth={2} />}
+              type="danger"
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleDelete(record);
+              }}
+            >
+              {t('common.delete')}
+            </Dropdown.Item>
+          ),
+        } as const;
+
+        return (
+          <Dropdown
+            trigger="click"
+            position="bottomRight"
+            clickToHide
+            render={<Dropdown.Menu>{visible.map((k) => items[k])}</Dropdown.Menu>}
+          >
+            <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+          </Dropdown>
+        );
+      },
     },
   ];
 
