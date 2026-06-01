@@ -1605,7 +1605,7 @@ export const resubmitRequirement = async (
     publisherName: submitter?.name ?? cur.creatorName,
     publishedAt: now,
     changeType: 'RESUBMIT',
-    changedFields: { round: nextRound, targetStatus },
+    meta: { round: nextRound, targetStatus },
   });
 
   return mockRequirementData[index];
@@ -1672,34 +1672,211 @@ const changeLogStore: RequirementChangeLog[] = [];
 
 const seedChangeLogs = async () => {
   if (changeLogStore.length > 0) return;
-  const targets = mockRequirementData.filter((r) =>
-    ['PENDING_PROJECT', 'DEVELOPING', 'LAUNCHED', 'OFFLINE'].includes(r.status),
-  );
-  if (targets.length === 0) return;
 
   const now = Date.now();
-  const daysAgo = (n: number) => new Date(now - n * 24 * 60 * 60 * 1000).toISOString();
-  const publisher = mockCreators[MOCK_CURRENT_USER_ID]?.name ?? '系统';
+  const at = (daysAgo: number, hours = 9) =>
+    new Date(now - daysAgo * 86400000 + hours * 3600000).toISOString();
+  const pick = <T,>(arr: T[], i: number) => arr[i % arr.length];
 
-  targets.forEach((req) => {
-    changeLogStore.push({
-      id: `chg-${req.id}-content`,
-      requirementId: req.id,
-      reason: '完善需求背景描述，补充上下游业务依赖说明，便于开发理解。',
-      publisherId: MOCK_CURRENT_USER_ID,
-      publisherName: publisher,
-      publishedAt: daysAgo(5),
-      changeType: 'CONTENT',
+  // 候选发布人池（覆盖提交人/审批人/评估人/项目成员）
+  const actorIds = ['user-001', 'user-002', 'user-003', 'user-007', 'user-008'];
+  const nameOf = (uid: string) => mockCreators[uid]?.name ?? uid;
+
+  // 选取每个状态的典型样本，确保不同生命周期阶段都有变更日志
+  const allReqs = mockRequirementData;
+  const byStatus = (st: string, limit: number) =>
+    allReqs.filter((r) => r.status === st).slice(0, limit);
+
+  const fullLifecycleTargets = [
+    ...byStatus('LAUNCHED', 3),
+    ...byStatus('OFFLINE', 2),
+    ...byStatus('DEVELOPING', 3),
+  ];
+  const midLifecycleTargets = byStatus('PENDING_PROJECT', 3);
+  const rejectedTargets = [...byStatus('REJECTED', 2), ...byStatus('WITHDRAWN', 2)];
+  const pendingTargets = [
+    ...byStatus('PENDING_APPROVAL', 2),
+    ...byStatus('PENDING_ASSESSMENT', 2),
+  ];
+
+  let seq = 0;
+  const push = (log: Omit<RequirementChangeLog, 'id'>) => {
+    seq += 1;
+    changeLogStore.push({ id: `chg-seed-${seq.toString().padStart(4, '0')}`, ...log });
+  };
+
+  // ============ 完整生命周期（创建→上线/下线）：每条 8-10 条日志 ============
+  fullLifecycleTargets.forEach((req, idx) => {
+    const submitter = req.creatorId;
+    const approver = pick(actorIds, idx + 1);
+    const assessor = pick(actorIds, idx + 2);
+    const dev = pick(actorIds, idx + 3);
+
+    push({
+      requirementId: req.id, changeType: 'SUBMITTED', oldStatus: 'DRAFT', newStatus: 'PENDING_APPROVAL',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(60 - idx, 9),
+      reason: '需求初稿完成，提交审批流程，请相关负责人评审业务范围与可行性。',
+      notifiedRoles: ['审批人'],
     });
-    changeLogStore.push({
-      id: `chg-${req.id}-priority`,
-      requirementId: req.id,
-      reason: '将优先级由中调整为高，请评估排期是否需要前置。',
-      publisherId: MOCK_CURRENT_USER_ID,
-      publisherName: publisher,
-      publishedAt: daysAgo(2),
-      changeType: 'CONTENT',
+    push({
+      requirementId: req.id, changeType: 'APPROVAL_PASSED', oldStatus: 'PENDING_APPROVAL', newStatus: 'PENDING_ASSESSMENT',
+      publisherId: approver, publisherName: nameOf(approver), publishedAt: at(58 - idx, 14),
+      reason: '业务背景清晰、价值明确，审批通过，进入技术评估。',
+      notifiedRoles: ['提交人', '评估人'],
     });
+    push({
+      requirementId: req.id, changeType: 'ASSESSMENT_PASSED', oldStatus: 'PENDING_ASSESSMENT', newStatus: 'PENDING_PROJECT',
+      publisherId: assessor, publisherName: nameOf(assessor), publishedAt: at(55 - idx, 11),
+      reason: '技术方案可行，预估工时合理，评估通过，可进入立项排期。',
+      notifiedRoles: ['提交人', '项目经理'],
+      changedFields: [
+        { field: 'detailedAssessment.score', label: '评估得分', oldValue: undefined, newValue: 18 },
+        { field: 'detailedAssessment.conclusion', label: '评估结论', oldValue: undefined, newValue: '通过' },
+      ],
+    });
+    push({
+      requirementId: req.id, changeType: 'PROCESS_CREATED', oldStatus: 'PENDING_PROJECT', newStatus: 'DEVELOPING',
+      publisherId: dev, publisherName: nameOf(dev), publishedAt: at(50 - idx, 10),
+      reason: `已创建研发流程「${req.title.slice(0, 10)}…」并完成排期，进入开发阶段。`,
+      notifiedRoles: ['提交人', '项目成员'],
+      meta: { processId: `proc-${req.id}-001`, processName: req.title },
+    });
+    push({
+      requirementId: req.id, changeType: 'EDIT_BUSINESS',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(40 - idx, 15),
+      reason: '根据评审意见，补充上下游接口说明与异常场景，细化业务规则。',
+      notifiedRoles: ['项目成员'],
+      changedFields: [
+        { field: 'description', label: '需求描述', oldValue: '初版业务描述（简略）', newValue: '补充上下游依赖、异常分支与回滚策略' },
+        { field: 'form_data.scope', label: '业务范围', oldValue: '总部财务', newValue: '总部财务 + 区域共享中心' },
+      ],
+    });
+    push({
+      requirementId: req.id, changeType: 'PRIORITY_CHANGED',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(38 - idx, 10),
+      reason: '业务方紧急上调优先级，需在月底前交付，请协调资源前置。',
+      notifiedRoles: ['项目经理', '项目成员'],
+      changedFields: [{ field: 'priority', label: '优先级', oldValue: '中', newValue: '高' }],
+    });
+    push({
+      requirementId: req.id, changeType: 'COST_BASELINE_UPDATED',
+      publisherId: pick(actorIds, idx + 4), publisherName: nameOf(pick(actorIds, idx + 4)), publishedAt: at(32 - idx, 16),
+      reason: '根据财务最新核算口径，更新人力时薪与运维成本基线。',
+      notifiedRoles: ['提交人', '财务'],
+      changedFields: [
+        { field: 'cost_baseline.hourly_rate', label: '人力时薪', oldValue: 280, newValue: 320 },
+        { field: 'cost_baseline.maintenance_yearly', label: '年度运维成本', oldValue: 12000, newValue: 18000 },
+      ],
+    });
+    push({
+      requirementId: req.id, changeType: 'DEV_SCHEME_DOC_UPLOADED',
+      publisherId: dev, publisherName: nameOf(dev), publishedAt: at(28 - idx, 11),
+      reason: '上传 v1 开发方案文档：含整体架构、接口契约、灰度方案。',
+      notifiedRoles: ['项目成员', '提交人'],
+      meta: { version: 1, fileName: '开发方案_v1.pdf', size: '1.2MB' },
+    });
+
+    if (req.status === 'LAUNCHED' || req.status === 'OFFLINE') {
+      push({
+        requirementId: req.id, changeType: 'LAUNCHED', oldStatus: 'DEVELOPING', newStatus: 'LAUNCHED',
+        publisherId: dev, publisherName: nameOf(dev), publishedAt: at(18 - idx, 19),
+        reason: '已完成 UAT 验收并通过灰度，正式上线生产环境。',
+        notifiedRoles: ['提交人', '业务方', '运维'],
+      });
+    }
+    if (req.status === 'OFFLINE') {
+      push({
+        requirementId: req.id, changeType: 'OFFLINE', oldStatus: 'LAUNCHED', newStatus: 'OFFLINE',
+        publisherId: pick(actorIds, idx + 5), publisherName: nameOf(pick(actorIds, idx + 5)), publishedAt: at(6 - idx, 14),
+        reason: '业务方反馈使用率持续偏低，先行下线，后续根据反馈决定是否重启。',
+        notifiedRoles: ['提交人', '业务方'],
+      });
+    }
+  });
+
+  // ============ 立项/开发中（PENDING_PROJECT）：3-5 条 ============
+  midLifecycleTargets.forEach((req, idx) => {
+    push({
+      requirementId: req.id, changeType: 'SUBMITTED', oldStatus: 'DRAFT', newStatus: 'PENDING_APPROVAL',
+      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(20 - idx, 10),
+      reason: '需求初稿完成，提交审批。', notifiedRoles: ['审批人'],
+    });
+    push({
+      requirementId: req.id, changeType: 'APPROVAL_PASSED', oldStatus: 'PENDING_APPROVAL', newStatus: 'PENDING_ASSESSMENT',
+      publisherId: pick(actorIds, idx), publisherName: nameOf(pick(actorIds, idx)), publishedAt: at(17 - idx, 14),
+      reason: '审批通过，转评估。', notifiedRoles: ['提交人', '评估人'],
+    });
+    push({
+      requirementId: req.id, changeType: 'ASSESSMENT_PASSED', oldStatus: 'PENDING_ASSESSMENT', newStatus: 'PENDING_PROJECT',
+      publisherId: pick(actorIds, idx + 1), publisherName: nameOf(pick(actorIds, idx + 1)), publishedAt: at(12 - idx, 15),
+      reason: '评估通过，等待立项排期。', notifiedRoles: ['提交人', '项目经理'],
+      changedFields: [{ field: 'detailedAssessment.score', label: '评估得分', oldValue: undefined, newValue: 16 }],
+    });
+    push({
+      requirementId: req.id, changeType: 'EDIT_BUSINESS',
+      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(8 - idx, 16),
+      reason: '补充验收标准与上线计划，便于排期。',
+      changedFields: [
+        { field: 'form_data.acceptance', label: '验收标准', oldValue: '—', newValue: 'P0：批处理一次性跑通；P1：失败可重试' },
+      ],
+    });
+  });
+
+  // ============ 已拒绝 / 已撤销：含驳回/撤回/重新提交链路 ============
+  rejectedTargets.forEach((req, idx) => {
+    const submitter = req.creatorId;
+    const approver = pick(actorIds, idx);
+    push({
+      requirementId: req.id, changeType: 'SUBMITTED', oldStatus: 'DRAFT', newStatus: 'PENDING_APPROVAL',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(15 - idx, 10),
+      reason: '提交审批，请评审。', notifiedRoles: ['审批人'],
+    });
+    if (req.status === 'REJECTED') {
+      push({
+        requirementId: req.id, changeType: 'APPROVAL_REJECTED', oldStatus: 'PENDING_APPROVAL', newStatus: 'REJECTED',
+        publisherId: approver, publisherName: nameOf(approver), publishedAt: at(12 - idx, 14),
+        reason: '业务价值阐述不够清晰，且与现有系统功能重叠，建议补充差异化说明后再提交。',
+        notifiedRoles: ['提交人'],
+      });
+    } else {
+      push({
+        requirementId: req.id, changeType: 'WITHDRAWN', oldStatus: 'PENDING_APPROVAL', newStatus: 'WITHDRAWN',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(11 - idx, 11),
+        reason: '业务侧需要重新核对范围，先行撤回，后续修改后再提交。',
+        notifiedRoles: ['审批人'],
+      });
+    }
+    push({
+      requirementId: req.id, changeType: 'EDIT_FULL',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(7 - idx, 16),
+      reason: '根据反馈调整业务范围、明确差异化价值，并补充优先级理由。',
+      changedFields: [
+        { field: 'title', label: '需求标题', oldValue: req.title + '（旧）', newValue: req.title },
+        { field: 'description', label: '需求描述', oldValue: '原始版本', newValue: '重写：突出差异化价值与紧迫性' },
+        { field: 'priority', label: '优先级', oldValue: '低', newValue: '中' },
+      ],
+    });
+  });
+
+  // ============ 待审批 / 待评估：仅提交记录 ============
+  pendingTargets.forEach((req, idx) => {
+    push({
+      requirementId: req.id, changeType: 'SUBMITTED',
+      oldStatus: 'DRAFT',
+      newStatus: req.status === 'PENDING_ASSESSMENT' ? 'PENDING_ASSESSMENT' : 'PENDING_APPROVAL',
+      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(5 - idx, 10),
+      reason: '需求初稿完成，提交审批/评估流程。',
+      notifiedRoles: [req.status === 'PENDING_ASSESSMENT' ? '评估人' : '审批人'],
+    });
+    if (req.status === 'PENDING_ASSESSMENT') {
+      push({
+        requirementId: req.id, changeType: 'APPROVAL_PASSED',
+        oldStatus: 'PENDING_APPROVAL', newStatus: 'PENDING_ASSESSMENT',
+        publisherId: pick(actorIds, idx + 1), publisherName: nameOf(pick(actorIds, idx + 1)), publishedAt: at(3 - idx, 14),
+        reason: '审批通过，转技术评估。',
+        notifiedRoles: ['提交人', '评估人'],
+      });
+    }
   });
 };
 
@@ -1794,7 +1971,7 @@ export const publishChange = async (
 export const listChangeLogs = async (
   requirementId: string,
 ): Promise<RequirementChangeLog[]> => {
-  ensureSeeded();
+  await ensureSeeded();
   await new Promise((r) => setTimeout(r, 80));
   return changeLogStore
     .filter((c) => c.requirementId === requirementId)
@@ -1962,7 +2139,7 @@ export const uploadDevSchemeDoc = async (
     publisherName: newDoc.uploaderName,
     publishedAt: newDoc.uploadedAt,
     changeType: 'DEV_SCHEME_DOC_UPLOADED',
-    changedFields: { version: newDoc.version, fileName: newDoc.fileName, note: newDoc.note },
+    meta: { version: newDoc.version, fileName: newDoc.fileName, note: newDoc.note },
   });
 
   // 触发 FEAT-022 通知（mock — 通知工作空间所有成员）
@@ -2030,7 +2207,7 @@ export const deleteDevSchemeDoc = async (
     publisherName: mockCreators[userId]?.name ?? '当前用户',
     publishedAt: new Date().toISOString(),
     changeType: 'DEV_SCHEME_DOC_DELETED',
-    changedFields: { version },
+    meta: { version },
   });
 };
 
