@@ -834,17 +834,7 @@ const RequirementsWorkbench = () => {
         }}
       />
 
-      {/* 关联到已有工作空间 */}
-      <WorkspacePickerModal
-        visible={!!pickerRecord}
-        requirementId={pickerRecord?.id ?? ''}
-        departmentId={pickerRecord?.owning_department_id ?? ''}
-        onClose={() => setPickerRecord(null)}
-        onSuccess={() => {
-          setPickerRecord(null);
-          loadData();
-        }}
-      />
+      {/* v1.0 已取消项目/工作空间概念，原"关联到已有工作空间" Modal 已下线 */}
       <ResubmitDialog
         visible={!!resubmitTarget}
         requirementTitle={resubmitTarget?.title}
