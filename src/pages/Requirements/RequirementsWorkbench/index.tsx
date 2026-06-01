@@ -21,13 +21,12 @@ import {
 import DepartmentSelect from '@/components/DepartmentSelect';
 import FilterPopover from '@/components/FilterPopover';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Pencil, Plus, Send, Trash2, RotateCcw, Undo2, Link2, FolderPlus, Columns3 } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Send, Trash2, Undo2, Columns3, GitBranchPlus, Ban, PowerOff, RotateCcw } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, RequirementQueryParams, RequirementStatus } from './types';
-import { isPostProjectStatus } from './utils/fieldEditability';
 import {
   fetchRequirementList,
   deleteRequirement,
@@ -41,15 +40,12 @@ import {
   
   getRequirementEffortSummary,
 } from './mockData';
-import { statusConfigV2, legacyStatusMap, statusOptionsV2 } from './statusConfig';
+import { statusConfigV2, legacyStatusMap, statusOptionsV2, isBusinessOnlyEdit } from './statusConfig';
 
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
-import WorkspacePickerModal from './components/RequirementDetailDrawer/WorkspacePickerModal';
 import ResubmitDialog from './components/ResubmitDialog';
-import { findWorkspaceByRequirementId } from '../RequirementsProjects/mockData';
 import StatusDot from './components/StatusDot';
 import TitleCell from './components/TitleCell';
-import RelativeTime from './components/RelativeTime';
 import { buildSubmitConfirmContent } from './utils/submitConfirm';
 import './index.less';
 
@@ -87,8 +83,6 @@ const RequirementsWorkbench = () => {
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
   const [initialDrawerTab, setInitialDrawerTab] = useState<string | undefined>(undefined);
-  
-  const [pickerRecord, setPickerRecord] = useState<RequirementItem | null>(null);
 
   // 可选列（持久化到 localStorage）
   const OPTIONAL_COLUMNS_KEY = 'requirements.list.optionalColumns';
@@ -273,25 +267,65 @@ const RequirementsWorkbench = () => {
     });
   };
 
+  // 取消（PENDING_PROJECT）—— 没有 CANCELED 状态，统一回到 WITHDRAWN
+  const handleCancel = (record: RequirementItem) => {
+    Modal.confirm({
+      title: '取消该需求？',
+      content: `取消后需求「${record.title}」将回到"已撤销"状态，可在已撤销列表中重新提交。`,
+      okText: '确认取消',
+      okButtonProps: { type: 'danger' },
+      cancelText: '保留',
+      onOk: async () => {
+        await updateRequirementStatus(record.id, 'WITHDRAWN', 'Cancelled by owner.');
+        loadData();
+        Toast.success('已取消需求');
+      },
+    });
+  };
+
+  // 人工下线（LAUNCHED）
+  const handleOffline = (record: RequirementItem) => {
+    Modal.confirm({
+      title: '将需求下线？',
+      content: `下线后需求「${record.title}」将进入"已下线"状态，关联流程的执行不受影响。`,
+      okText: '确认下线',
+      okButtonProps: { type: 'danger' },
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        await updateRequirementStatus(record.id, 'OFFLINE', 'Manually taken offline.');
+        loadData();
+        Toast.success('需求已下线');
+      },
+    });
+  };
+
+  // 重新上线（OFFLINE）
+  const handleRelaunch = (record: RequirementItem) => {
+    Modal.confirm({
+      title: '重新上线该需求？',
+      content: `需求「${record.title}」将恢复为"已上线"状态。`,
+      okText: '确认上线',
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        await updateRequirementStatus(record.id, 'LAUNCHED', 'Relaunched by owner.');
+        loadData();
+        Toast.success('需求已重新上线');
+      },
+    });
+  };
+
+  // 创建流程（PENDING_PROJECT / DEVELOPING）—— 跳转到开发中心流程创建入口
+  const handleCreateProcess = (record: RequirementItem) => {
+    navigate('/process-development', {
+      state: { openCreate: true, prefilledRequirementId: record.id, prefilledRequirementTitle: record.title },
+    });
+  };
 
   // 分页信息
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
-
-  // 操作可见性（兼容旧/新状态）
-  const canEdit = (status: string) =>
-    status === 'DRAFT' ||
-    status === 'WITHDRAWN' ||
-    status === 'REJECTED' ||
-    // STORY-014: 立项后阶段也允许编辑（走草稿 + 发布变更流程）
-    status === 'PENDING_PROJECT' ||
-    status === 'DEVELOPING' ||
-    status === 'LAUNCHED' ||
-    status === 'OFFLINE';
-  const canDelete = (status: string) =>
-    status === 'DRAFT' || status === 'REJECTED' || status === 'WITHDRAWN';
 
   // 兼容旧状态 → 新 9 状态映射
   const normalizeStatus = (s: string): RequirementStatus =>
@@ -428,127 +462,169 @@ const RequirementsWorkbench = () => {
       key: 'action',
       width: 60,
       fixed: 'right' as const,
-      render: (_: unknown, record: RequirementItem) => (
-        <Dropdown
-          trigger="click"
-          position="bottomRight"
-          clickToHide
-          render={
-            <Dropdown.Menu>
-              {canEdit(record.status) && (
-                <Dropdown.Item
-                  icon={<Pencil size={16} strokeWidth={2} />}
-                  onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    navigate(`/requirements/list/edit/${record.id}`);
-                  }}
-                >
-                  {isPostProjectStatus(record.status) ? '变更需求' : t('common.edit')}
-                </Dropdown.Item>
-              )}
-              {(() => {
-                const isResubmit =
-                  (record.status === 'REJECTED' || record.status === 'WITHDRAWN') &&
-                  record.creatorId === MOCK_CURRENT_USER_ID;
-                const canSubmit = record.status === 'DRAFT';
-                if (!canSubmit && !isResubmit) return null;
-                if (isResubmit) {
-                  return (
-                    <Dropdown.Item
-                      icon={<Send size={16} strokeWidth={2} />}
-                      onClick={(e: React.MouseEvent) => {
-                        e.stopPropagation();
-                        handleResubmit(record);
-                      }}
-                    >
-                      {t('requirements.detail.resubmit', '重新提交')}
-                    </Dropdown.Item>
-                  );
-                }
-                const submitLabel = hasApproval
-                  ? t('requirements.detail.submitForApproval')
-                  : t('requirements.detail.submitRequirement');
-                return (
-                  <Dropdown.Item
-                    icon={<Send size={16} strokeWidth={2} />}
-                    onClick={(e: React.MouseEvent) => {
-                      e.stopPropagation();
-                      Modal.confirm({
-                        title: hasApproval
-                          ? t('requirements.detail.submitConfirmTitle')
-                          : t('requirements.detail.submitDirectConfirmTitle'),
-                        content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
-                        okText: submitLabel,
-                        cancelText: t('common.cancel'),
-                        onOk: async () => {
-                          await updateRequirementStatus(record.id, submittedStatus, 'Submitted.');
-                          loadData();
-                          Toast.success(
-                            hasApproval
-                              ? t('requirements.detail.submitSuccess')
-                              : t('requirements.detail.submitDirectSuccess'),
-                          );
-                        },
-                      });
-                    }}
-                  >
-                    {submitLabel}
-                  </Dropdown.Item>
-                );
-              })()}
-              {(record.status === 'PENDING_APPROVAL' || record.status === 'PENDING_ASSESSMENT') && record.creatorId === MOCK_CURRENT_USER_ID && (
-                <Dropdown.Item
-                  icon={<Undo2 size={16} strokeWidth={2} />}
-                  onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    handleWithdraw(record);
-                  }}
-                >
-                  {t('requirements.detail.withdraw')}
-                </Dropdown.Item>
-              )}
-              {record.status === 'PENDING_PROJECT' && !findWorkspaceByRequirementId(record.id) && (
-                <>
-                  <Dropdown.Item
-                    icon={<Link2 size={16} strokeWidth={2} />}
-                    onClick={(e: React.MouseEvent) => {
-                      e.stopPropagation();
-                      setPickerRecord(record);
-                    }}
-                  >
-                    {t('requirements.detail.pendingProject.linkExisting')}
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    icon={<FolderPlus size={16} strokeWidth={2} />}
-                    onClick={(e: React.MouseEvent) => {
-                      e.stopPropagation();
-                      navigate('/requirements/projects', {
-                        state: { openCreate: true, prefilledRequirementId: record.id },
-                      });
-                    }}
-                  >
-                    {t('requirements.detail.pendingProject.createProject')}
-                  </Dropdown.Item>
-                </>
-              )}
-              {canDelete(record.status) && (
-                <Dropdown.Item
-                  icon={<Trash2 size={16} strokeWidth={2} />}
-                  type="danger"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(record);
-                  }}
-                >
-                  {t('common.delete')}
-                </Dropdown.Item>
-              )}
-            </Dropdown.Menu>
-          }
-        >
-          <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
-        </Dropdown>
-      ),
+      render: (_: unknown, record: RequirementItem) => {
+        const status = normalizeStatus(record.status);
+        const cfg = statusConfigV2[status];
+        const isCreator = record.creatorId === MOCK_CURRENT_USER_ID;
+        const actions = cfg?.actions ?? [];
+
+        // 按矩阵筛选可见操作（部分操作叠加"提交人"权限）
+        const visible = actions.filter((a) => {
+          if (a === 'submit' || a === 'withdraw' || a === 'resubmit') return isCreator;
+          // edit / delete / cancel / createProcess / offline / relaunch：
+          // 矩阵未对身份做进一步限制，沿用现状（后续可叠加 owner / dept manager 校验）
+          return true;
+        });
+
+        if (visible.length === 0) {
+          return <span style={{ color: 'var(--semi-color-text-2)' }}>-</span>;
+        }
+
+        const submitLabel = hasApproval
+          ? t('requirements.detail.submitForApproval')
+          : t('requirements.detail.submitRequirement');
+
+        const items: Record<typeof visible[number], React.ReactNode> = {
+          edit: (
+            <Dropdown.Item
+              key="edit"
+              icon={<Pencil size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                navigate(`/requirements/list/edit/${record.id}`);
+              }}
+            >
+              {isBusinessOnlyEdit(status) ? '编辑（业务字段）' : t('common.edit')}
+            </Dropdown.Item>
+          ),
+          submit: (
+            <Dropdown.Item
+              key="submit"
+              icon={<Send size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                Modal.confirm({
+                  title: hasApproval
+                    ? t('requirements.detail.submitConfirmTitle')
+                    : t('requirements.detail.submitDirectConfirmTitle'),
+                  content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
+                  okText: submitLabel,
+                  cancelText: t('common.cancel'),
+                  onOk: async () => {
+                    await updateRequirementStatus(record.id, submittedStatus, 'Submitted.');
+                    loadData();
+                    Toast.success(
+                      hasApproval
+                        ? t('requirements.detail.submitSuccess')
+                        : t('requirements.detail.submitDirectSuccess'),
+                    );
+                  },
+                });
+              }}
+            >
+              {submitLabel}
+            </Dropdown.Item>
+          ),
+          withdraw: (
+            <Dropdown.Item
+              key="withdraw"
+              icon={<Undo2 size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleWithdraw(record);
+              }}
+            >
+              {t('requirements.detail.withdraw')}
+            </Dropdown.Item>
+          ),
+          resubmit: (
+            <Dropdown.Item
+              key="resubmit"
+              icon={<Send size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleResubmit(record);
+              }}
+            >
+              {t('requirements.detail.resubmit', '重新提交')}
+            </Dropdown.Item>
+          ),
+          createProcess: (
+            <Dropdown.Item
+              key="createProcess"
+              icon={<GitBranchPlus size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleCreateProcess(record);
+              }}
+            >
+              创建流程
+            </Dropdown.Item>
+          ),
+          cancel: (
+            <Dropdown.Item
+              key="cancel"
+              icon={<Ban size={16} strokeWidth={2} />}
+              type="danger"
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleCancel(record);
+              }}
+            >
+              取消需求
+            </Dropdown.Item>
+          ),
+          offline: (
+            <Dropdown.Item
+              key="offline"
+              icon={<PowerOff size={16} strokeWidth={2} />}
+              type="danger"
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleOffline(record);
+              }}
+            >
+              人工下线
+            </Dropdown.Item>
+          ),
+          relaunch: (
+            <Dropdown.Item
+              key="relaunch"
+              icon={<RotateCcw size={16} strokeWidth={2} />}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleRelaunch(record);
+              }}
+            >
+              重新上线
+            </Dropdown.Item>
+          ),
+          delete: (
+            <Dropdown.Item
+              key="delete"
+              icon={<Trash2 size={16} strokeWidth={2} />}
+              type="danger"
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleDelete(record);
+              }}
+            >
+              {t('common.delete')}
+            </Dropdown.Item>
+          ),
+        } as const;
+
+        return (
+          <Dropdown
+            trigger="click"
+            position="bottomRight"
+            clickToHide
+            render={<Dropdown.Menu>{visible.map((k) => items[k])}</Dropdown.Menu>}
+          >
+            <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+          </Dropdown>
+        );
+      },
     },
   ];
 
@@ -756,17 +832,7 @@ const RequirementsWorkbench = () => {
         }}
       />
 
-      {/* 关联到已有工作空间 */}
-      <WorkspacePickerModal
-        visible={!!pickerRecord}
-        requirementId={pickerRecord?.id ?? ''}
-        departmentId={pickerRecord?.owning_department_id ?? ''}
-        onClose={() => setPickerRecord(null)}
-        onSuccess={() => {
-          setPickerRecord(null);
-          loadData();
-        }}
-      />
+      {/* v1.0 已取消项目/工作空间概念，原"关联到已有工作空间" Modal 已下线 */}
       <ResubmitDialog
         visible={!!resubmitTarget}
         requirementTitle={resubmitTarget?.title}
