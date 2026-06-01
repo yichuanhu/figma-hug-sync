@@ -1605,7 +1605,7 @@ export const resubmitRequirement = async (
     publisherName: submitter?.name ?? cur.creatorName,
     publishedAt: now,
     changeType: 'RESUBMIT',
-    changedFields: { round: nextRound, targetStatus },
+    meta: { round: nextRound, targetStatus },
   });
 
   return mockRequirementData[index];
