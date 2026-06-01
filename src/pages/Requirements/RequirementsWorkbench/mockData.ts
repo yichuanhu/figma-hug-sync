@@ -1971,7 +1971,7 @@ export const publishChange = async (
 export const listChangeLogs = async (
   requirementId: string,
 ): Promise<RequirementChangeLog[]> => {
-  ensureSeeded();
+  await ensureSeeded();
   await new Promise((r) => setTimeout(r, 80));
   return changeLogStore
     .filter((c) => c.requirementId === requirementId)
