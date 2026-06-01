@@ -458,24 +458,19 @@ const RequirementDetailDrawer = ({
       }
     : data;
 
-  const canEdit = !isHistoryMode && (
-    effectiveData.status === 'DRAFT' ||
-    effectiveData.status === 'REJECTED' ||
-    effectiveData.status === 'WITHDRAWN' ||
-    // STORY-014：立项后阶段允许编辑（走草稿 + 发布变更流程）
-    effectiveData.status === 'PENDING_PROJECT' ||
-    effectiveData.status === 'DEVELOPING' ||
-    effectiveData.status === 'LAUNCHED' ||
-    effectiveData.status === 'OFFLINE'
-  );
-  const canDelete = !isHistoryMode && (effectiveData.status === 'DRAFT' || effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN');
-  const canResubmit = !isHistoryMode && (effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN') && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
-  
-  const canWithdraw =
-    !isHistoryMode &&
-    (effectiveData.status === 'PENDING_APPROVAL' || effectiveData.status === 'PENDING_ASSESSMENT') &&
-    effectiveData.creatorId === MOCK_CURRENT_USER_ID;
-  const canLinkProject = !isHistoryMode && effectiveData.status === 'PENDING_PROJECT' && !findWorkspaceByRequirementId(effectiveData.id);
+  // 与列表行操作矩阵保持一致：以 statusConfigV2[status].actions 为唯一来源
+  const normalizedStatus: RequirementStatus =
+    (statusConfigV2[effectiveData.status as RequirementStatus]
+      ? (effectiveData.status as RequirementStatus)
+      : legacyStatusMap[effectiveData.status]) || 'DRAFT';
+  const matrixActions = isHistoryMode ? [] : (statusConfigV2[normalizedStatus]?.actions ?? []);
+  const isCreator = effectiveData.creatorId === MOCK_CURRENT_USER_ID;
+  const visibleActions = matrixActions.filter((a) => {
+    if (a === 'submit' || a === 'withdraw' || a === 'resubmit') return isCreator;
+    return true;
+  });
+
+  const canDelete = visibleActions.includes('delete');
 
   const handleSaveAssessment = async (id: string, assessment: DetailedAssessment) => {
     await updateRequirementAssessment(id, assessment);
@@ -483,6 +478,104 @@ const RequirementDetailDrawer = ({
   };
   // 成本预估完全由表单基线数据自动计算（STORY-010），无需保存回调
 
+  const submitLabel = hasApproval
+    ? t('requirements.detail.submitForApproval')
+    : t('requirements.detail.submitRequirement');
+
+  const renderAction = (a: typeof visibleActions[number]) => {
+    switch (a) {
+      case 'edit':
+        return (
+          <Tooltip key="edit" content={isBusinessOnlyEdit(normalizedStatus) ? '编辑（业务字段）' : t('common.edit')}>
+            <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(data)} />
+          </Tooltip>
+        );
+      case 'submit':
+        return (
+          <Tooltip key="submit" content={submitLabel}>
+            <Button
+              icon={<Send size={16} strokeWidth={2} />}
+              theme="borderless"
+              size="small"
+              type="tertiary"
+              onClick={() => {
+                Modal.confirm({
+                  title: hasApproval ? t('requirements.detail.submitConfirmTitle') : t('requirements.detail.submitDirectConfirmTitle'),
+                  content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
+                  okText: submitLabel,
+                  cancelText: t('common.cancel'),
+                  onOk: async () => {
+                    await onStatusChange(data.id, submittedStatus, 'Submitted.');
+                    Toast.success(hasApproval ? t('requirements.detail.submitSuccess') : t('requirements.detail.submitDirectSuccess'));
+                  },
+                });
+              }}
+            />
+          </Tooltip>
+        );
+      case 'withdraw':
+        return (
+          <Tooltip key="withdraw" content={t('requirements.detail.withdraw')}>
+            <Button
+              icon={<Undo2 size={16} strokeWidth={2} />}
+              theme="borderless"
+              size="small"
+              type="tertiary"
+              onClick={() => {
+                Modal.confirm({
+                  title: t('requirements.detail.withdrawConfirmTitle'),
+                  content: t('requirements.detail.withdrawConfirmContent'),
+                  okText: t('requirements.detail.withdraw'),
+                  okButtonProps: { type: 'danger' },
+                  cancelText: t('common.cancel'),
+                  onOk: async () => {
+                    try {
+                      await withdrawRequirement(data.id);
+                      Toast.success(t('requirements.detail.withdrawSuccess'));
+                      onRefresh?.();
+                    } catch (e) {
+                      Toast.error((e as Error).message);
+                    }
+                  },
+                });
+              }}
+            />
+          </Tooltip>
+        );
+      case 'resubmit':
+        return onResubmit ? (
+          <Tooltip key="resubmit" content={t('requirements.detail.resubmit', '重新提交')}>
+            <Button icon={<Send size={16} strokeWidth={2} />} theme="borderless" size="small" type="tertiary" onClick={() => onResubmit(data)} />
+          </Tooltip>
+        ) : null;
+      case 'createProcess':
+        return onCreateProcess ? (
+          <Tooltip key="createProcess" content="创建流程">
+            <Button icon={<GitBranchPlus size={16} strokeWidth={2} />} theme="borderless" size="small" type="tertiary" onClick={() => onCreateProcess(data)} />
+          </Tooltip>
+        ) : null;
+      case 'cancel':
+        return onCancel ? (
+          <Tooltip key="cancel" content="取消需求">
+            <Button icon={<Ban size={16} strokeWidth={2} />} theme="borderless" size="small" type="danger" onClick={() => onCancel(data)} />
+          </Tooltip>
+        ) : null;
+      case 'offline':
+        return onOffline ? (
+          <Tooltip key="offline" content="人工下线">
+            <Button icon={<PowerOff size={16} strokeWidth={2} />} theme="borderless" size="small" type="danger" onClick={() => onOffline(data)} />
+          </Tooltip>
+        ) : null;
+      case 'relaunch':
+        return onRelaunch ? (
+          <Tooltip key="relaunch" content="重新上线">
+            <Button icon={<RotateCcw size={16} strokeWidth={2} />} theme="borderless" size="small" type="tertiary" onClick={() => onRelaunch(data)} />
+          </Tooltip>
+        ) : null;
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
@@ -502,117 +595,7 @@ const RequirementDetailDrawer = ({
       className="requirement-detail-drawer"
       extraActions={
         context === 'approval' || context === 'assessment' ? null : (
-        <>
-          {!isHistoryMode && effectiveData.status === 'DRAFT' && (() => {
-            const submitLabel = hasApproval
-              ? t('requirements.detail.submitForApproval')
-              : t('requirements.detail.submitRequirement');
-            return (
-              <Tooltip content={submitLabel}>
-                <Button
-                  icon={<Send size={16} strokeWidth={2} />}
-                  theme="borderless"
-                  size="small"
-                  type="tertiary"
-                  onClick={() => {
-                    Modal.confirm({
-                      title: hasApproval
-                        ? t('requirements.detail.submitConfirmTitle')
-                        : t('requirements.detail.submitDirectConfirmTitle'),
-                      content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
-                      okText: submitLabel,
-                      cancelText: t('common.cancel'),
-                      onOk: async () => {
-                        await onStatusChange(data.id, submittedStatus, 'Submitted.');
-                        Toast.success(
-                          hasApproval
-                            ? t('requirements.detail.submitSuccess')
-                            : t('requirements.detail.submitDirectSuccess'),
-                        );
-                      },
-                    });
-                  }}
-                />
-              </Tooltip>
-            );
-          })()}
-          {canWithdraw && (
-            <Tooltip content={t('requirements.detail.withdraw')}>
-              <Button
-                icon={<Undo2 size={16} strokeWidth={2} />}
-                theme="borderless"
-                size="small"
-                type="tertiary"
-                onClick={() => {
-                  Modal.confirm({
-                    title: t('requirements.detail.withdrawConfirmTitle'),
-                    content: t('requirements.detail.withdrawConfirmContent'),
-                    okText: t('requirements.detail.withdraw'),
-                    okButtonProps: { type: 'danger' },
-                    cancelText: t('common.cancel'),
-                    onOk: async () => {
-                      try {
-                        await withdrawRequirement(data.id);
-                        Toast.success(t('requirements.detail.withdrawSuccess'));
-                        onRefresh?.();
-                      } catch (e) {
-                        Toast.error((e as Error).message);
-                      }
-                    },
-                  });
-                }}
-              />
-            </Tooltip>
-          )}
-          {canResubmit && onResubmit && (
-            <Tooltip content={t('requirements.detail.resubmit')}>
-              <Button
-                icon={<Send size={16} strokeWidth={2} />}
-                theme="borderless"
-                size="small"
-                type="tertiary"
-                onClick={() => onResubmit(data)}
-              />
-            </Tooltip>
-          )}
-          {canLinkProject && (
-            <>
-              <Tooltip content={t('requirements.detail.pendingProject.linkExisting')}>
-                <Button
-                  icon={<Link2 size={16} strokeWidth={2} />}
-                  theme="borderless"
-                  size="small"
-                  type="tertiary"
-                  onClick={() => setPickerVisible(true)}
-                />
-              </Tooltip>
-              <Tooltip content={t('requirements.detail.pendingProject.createProject')}>
-                <Button
-                  icon={<FolderPlus size={16} strokeWidth={2} />}
-                  theme="borderless"
-                  size="small"
-                  type="tertiary"
-                  onClick={() =>
-                    navigate('/requirements/projects', {
-                      state: { openCreate: true, prefilledRequirementId: data.id },
-                    })
-                  }
-                />
-              </Tooltip>
-            </>
-          )}
-          {canEdit && (
-            <Tooltip content={isPostProjectStatus(effectiveData.status) ? '变更需求' : t('common.edit')}>
-              <Button
-                icon={<Pencil size={16} strokeWidth={2} />}
-                theme="borderless"
-                type="tertiary"
-                size="small"
-                onClick={() => onEdit(data)}
-              />
-            </Tooltip>
-          )}
-        </>
+          <>{visibleActions.filter((a) => a !== 'delete').map((a) => renderAction(a))}</>
         )
       }
       deleteAction={
