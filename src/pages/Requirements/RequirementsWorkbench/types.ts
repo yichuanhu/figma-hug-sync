@@ -767,10 +767,46 @@ export interface RequirementListResponse {
 
 // ============= STORY-014 / STORY-015 立项后变更 =============
 
-/** 变更日志类型枚举（'CONTENT' 为旧版默认） */
-export type RequirementChangeType = "CONTENT" | "RESUBMIT" | "DEV_SCHEME_DOC_UPLOADED" | "DEV_SCHEME_DOC_DELETED";
+/**
+ * 变更日志类型枚举（STORY-014 v2）
+ * 覆盖需求从创建 → 审批 → 评估 → 立项 → 开发 → 上线 → 下线 全生命周期。
+ */
+export type RequirementChangeType =
+  // 基础内容变更
+  | "CONTENT"                      // 内容变更（兼容旧版默认）
+  | "EDIT_FULL"                    // 全量字段编辑（草稿/已拒绝/已撤销）
+  | "EDIT_BUSINESS"                // 业务字段编辑（立项后）
+  | "PRIORITY_CHANGED"             // 优先级调整
+  | "COST_BASELINE_UPDATED"        // 成本基线变更
+  | "FORM_DATA_UPDATED"            // 自定义字段变更
+  // 提交 / 审批 / 评估
+  | "SUBMITTED"                    // 提交进入审批/评估
+  | "RESUBMIT"                     // 重新提交（已拒绝/已撤销）
+  | "WITHDRAWN"                    // 撤回
+  | "APPROVAL_PASSED"              // 审批通过
+  | "APPROVAL_REJECTED"            // 审批拒绝
+  | "ASSESSMENT_PASSED"            // 评估通过
+  | "ASSESSMENT_REJECTED"          // 评估拒绝
+  // 立项 / 开发 / 上线
+  | "PROCESS_CREATED"              // 创建流程
+  | "LAUNCHED"                     // 上线
+  | "OFFLINE"                      // 人工下线
+  | "RELAUNCHED"                   // 重新上线
+  // 开发方案文档
+  | "DEV_SCHEME_DOC_UPLOADED"
+  | "DEV_SCHEME_DOC_DELETED";
 
-/** 变更日志条目（仅记录变更说明，不再包含字段对比与开发响应） */
+/** 字段级变更明细 */
+export interface RequirementChangeFieldDiff {
+  /** 字段路径，如 'title' / 'priority' / 'form_data.scope' / 'cost_baseline.hourly_rate' */
+  field: string;
+  /** 字段中文标签 */
+  label: string;
+  oldValue?: unknown;
+  newValue?: unknown;
+}
+
+/** 变更日志条目（STORY-014 v2） */
 export interface RequirementChangeLog {
   id: string;
   requirementId: string;
@@ -781,8 +817,16 @@ export interface RequirementChangeLog {
   publishedAt: string;
   /** 变更类型；缺省按 'CONTENT' 兼容历史 mock */
   changeType?: RequirementChangeType;
-  /** 变更字段细节（DevSchemeDoc 上传/删除时记录 {version, fileName?, note?}） */
-  changedFields?: Record<string, unknown>;
+  /** 字段级变更列表（业务字段编辑/成本基线变更等场景） */
+  changedFields?: RequirementChangeFieldDiff[];
+  /** 状态流转：旧状态 */
+  oldStatus?: RequirementStatus;
+  /** 状态流转：新状态 */
+  newStatus?: RequirementStatus;
+  /** 通知接收角色（提交人 / 审批人 / 评估人 / 项目成员 等） */
+  notifiedRoles?: string[];
+  /** 额外元数据（DevSchemeDoc 等场景使用） */
+  meta?: Record<string, unknown>;
 }
 
 // ============= STORY-015 开发方案文档 =============
