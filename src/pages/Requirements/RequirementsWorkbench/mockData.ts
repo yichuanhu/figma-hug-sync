@@ -1684,20 +1684,21 @@ const seedChangeLogs = async () => {
 
   // 选取每个状态的典型样本，确保不同生命周期阶段都有变更日志
   const allReqs = mockRequirementData;
-  const byStatus = (st: string, limit: number) =>
-    allReqs.filter((r) => r.status === st).slice(0, limit);
+  const byStatus = (st: string) => allReqs.filter((r) => r.status === st);
 
+  // 全量覆盖：每条需求都至少有变更日志
   const fullLifecycleTargets = [
-    ...byStatus('LAUNCHED', 3),
-    ...byStatus('OFFLINE', 2),
-    ...byStatus('DEVELOPING', 3),
+    ...byStatus('LAUNCHED'),
+    ...byStatus('OFFLINE'),
+    ...byStatus('DEVELOPING'),
   ];
-  const midLifecycleTargets = byStatus('PENDING_PROJECT', 3);
-  const rejectedTargets = [...byStatus('REJECTED', 2), ...byStatus('WITHDRAWN', 2)];
+  const midLifecycleTargets = byStatus('PENDING_PROJECT');
+  const rejectedTargets = [...byStatus('REJECTED'), ...byStatus('WITHDRAWN')];
   const pendingTargets = [
-    ...byStatus('PENDING_APPROVAL', 2),
-    ...byStatus('PENDING_ASSESSMENT', 2),
+    ...byStatus('PENDING_APPROVAL'),
+    ...byStatus('PENDING_ASSESSMENT'),
   ];
+  const draftTargets = byStatus('DRAFT');
 
   let seq = 0;
   const push = (log: Omit<RequirementChangeLog, 'id'>) => {
