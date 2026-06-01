@@ -298,6 +298,10 @@ interface RequirementDetailDrawerProps {
   onDelete: (record: RequirementItem) => void;
   onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
   onResubmit?: (record: RequirementItem) => void;
+  onCreateProcess?: (record: RequirementItem) => void;
+  onCancel?: (record: RequirementItem) => void;
+  onOffline?: (record: RequirementItem) => void;
+  onRelaunch?: (record: RequirementItem) => void;
   
   onRefresh?: () => void;
   pagination: PaginationInfo;
