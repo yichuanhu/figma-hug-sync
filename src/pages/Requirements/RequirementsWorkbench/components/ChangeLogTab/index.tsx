@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Timeline, Typography, Spin, Tag } from '@douyinfe/semi-ui';
+import { Timeline, Typography, Spin, Tag, Button } from '@douyinfe/semi-ui';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import {
   FileEdit, FilePlus2, FileX2, Send, Undo2, RotateCcw, CheckCircle2, XCircle,
   GitBranchPlus, Power, PowerOff, Pencil, ArrowUpDown, Coins, ListChecks, FileText,
@@ -57,7 +58,9 @@ const ChangeLogTab = ({ requirementId, refreshKey, highlightLogId }: Props) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState<RequirementChangeLog[]>([]);
+  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const DIFF_COLLAPSE_THRESHOLD = 3;
 
   useEffect(() => {
     if (!highlightLogId || loading) return;
@@ -93,15 +96,20 @@ const ChangeLogTab = ({ requirementId, refreshKey, highlightLogId }: Props) => {
     return <Tag size="small" color={cfg?.color ?? 'grey'} type="light">{t(cfg?.i18nKey ?? '')}</Tag>;
   };
 
-  const renderDiffs = (diffs?: RequirementChangeFieldDiff[]) => {
+  const renderDiffs = (logId: string, diffs?: RequirementChangeFieldDiff[]) => {
     if (!diffs || diffs.length === 0) return null;
+    const total = diffs.length;
+    const collapsible = total > DIFF_COLLAPSE_THRESHOLD;
+    const expanded = !!expandedIds[logId];
+    const visible = collapsible && !expanded ? diffs.slice(0, DIFF_COLLAPSE_THRESHOLD) : diffs;
     return (
       <div className="change-log-item-section">
         <div className="change-log-item-section-title">
           {t('requirements.detail.changeLog.changedFieldsTitle')}
+          <span className="change-log-diff-count">({total})</span>
         </div>
         <ul className="change-log-diffs">
-          {diffs.map((d) => (
+          {visible.map((d) => (
             <li key={d.field}>
               <span className="change-log-diff-key">{d.label}</span>
               {d.oldValue !== undefined && (
@@ -114,6 +122,21 @@ const ChangeLogTab = ({ requirementId, refreshKey, highlightLogId }: Props) => {
             </li>
           ))}
         </ul>
+        {collapsible && (
+          <Button
+            theme="borderless"
+            size="small"
+            type="primary"
+            className="change-log-diff-toggle"
+            icon={expanded ? <ChevronUp size={14} strokeWidth={2} /> : <ChevronDown size={14} strokeWidth={2} />}
+            iconPosition="right"
+            onClick={() => setExpandedIds((p) => ({ ...p, [logId]: !expanded }))}
+          >
+            {expanded
+              ? t('requirements.detail.changeLog.collapse')
+              : t('requirements.detail.changeLog.expandMore', { count: total - DIFF_COLLAPSE_THRESHOLD })}
+          </Button>
+        )}
       </div>
     );
   };
@@ -154,7 +177,7 @@ const ChangeLogTab = ({ requirementId, refreshKey, highlightLogId }: Props) => {
                   <div className="change-log-item-reason">{log.reason}</div>
                 </div>
 
-                {renderDiffs(log.changedFields)}
+                {renderDiffs(log.id, log.changedFields)}
 
                 {log.meta && (log.changeType === 'DEV_SCHEME_DOC_UPLOADED' || log.changeType === 'DEV_SCHEME_DOC_DELETED') && (
                   <div className="change-log-item-section">
