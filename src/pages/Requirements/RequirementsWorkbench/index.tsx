@@ -21,7 +21,7 @@ import {
 import DepartmentSelect from '@/components/DepartmentSelect';
 import FilterPopover from '@/components/FilterPopover';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Pencil, Plus, Send, Trash2, RotateCcw, Undo2, Link2, FolderPlus, Columns3 } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Send, Trash2, Undo2, Columns3, GitBranchPlus, Ban, PowerOff, RotateCcw } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 
