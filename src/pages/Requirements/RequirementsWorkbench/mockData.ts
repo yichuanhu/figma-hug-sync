@@ -1962,7 +1962,7 @@ export const uploadDevSchemeDoc = async (
     publisherName: newDoc.uploaderName,
     publishedAt: newDoc.uploadedAt,
     changeType: 'DEV_SCHEME_DOC_UPLOADED',
-    changedFields: { version: newDoc.version, fileName: newDoc.fileName, note: newDoc.note },
+    meta: { version: newDoc.version, fileName: newDoc.fileName, note: newDoc.note },
   });
 
   // 触发 FEAT-022 通知（mock — 通知工作空间所有成员）
@@ -2030,7 +2030,7 @@ export const deleteDevSchemeDoc = async (
     publisherName: mockCreators[userId]?.name ?? '当前用户',
     publishedAt: new Date().toISOString(),
     changeType: 'DEV_SCHEME_DOC_DELETED',
-    changedFields: { version },
+    meta: { version },
   });
 };
 
