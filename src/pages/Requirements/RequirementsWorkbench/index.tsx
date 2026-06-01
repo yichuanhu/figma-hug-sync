@@ -27,7 +27,6 @@ import TableSkeleton from '@/components/TableSkeleton';
 
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, RequirementQueryParams, RequirementStatus } from './types';
-import { isPostProjectStatus } from './utils/fieldEditability';
 import {
   fetchRequirementList,
   deleteRequirement,
