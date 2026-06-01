@@ -1052,6 +1052,8 @@
         "publishedBy": "{{name}} 发布于 {{time}}",
         "reasonTitle": "变更说明",
         "changedFieldsTitle": "字段变更",
+        "expandMore": "展开剩余 {{count}} 项",
+        "collapse": "收起",
         "statusTransition": "状态：{{from}} → {{to}}",
         "notifiedRoles": "通知：{{roles}}",
         "emptyValue": "（空）",
