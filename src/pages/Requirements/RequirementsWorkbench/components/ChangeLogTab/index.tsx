@@ -177,7 +177,7 @@ const ChangeLogTab = ({ requirementId, refreshKey, highlightLogId }: Props) => {
                   <div className="change-log-item-reason">{log.reason}</div>
                 </div>
 
-                {renderDiffs(log.changedFields)}
+                {renderDiffs(log.id, log.changedFields)}
 
                 {log.meta && (log.changeType === 'DEV_SCHEME_DOC_UPLOADED' || log.changeType === 'DEV_SCHEME_DOC_DELETED') && (
                   <div className="change-log-item-section">
