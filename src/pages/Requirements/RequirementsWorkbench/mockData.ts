@@ -1779,10 +1779,45 @@ const seedChangeLogs = async () => {
 
     if (req.status === 'LAUNCHED' || req.status === 'OFFLINE') {
       push({
+        requirementId: req.id, changeType: 'DEV_SCHEME_DOC_UPLOADED',
+        publisherId: dev, publisherName: nameOf(dev), publishedAt: at(22 - idx, 10),
+        reason: '上传 v2 开发方案文档：合并 Code Review 意见并细化灰度回滚步骤。',
+        notifiedRoles: ['项目成员', '提交人'],
+        meta: { version: 2, fileName: '开发方案_v2.pdf', size: '1.4MB' },
+      });
+      push({
+        requirementId: req.id, changeType: 'FORM_DATA_UPDATED',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(20 - idx, 11),
+        reason: '依据测试反馈调整表单字段配置，新增数据脱敏开关。',
+        changedFields: [
+          { field: 'form_data.mask_pii', label: '敏感数据脱敏', oldValue: '关闭', newValue: '开启' },
+          { field: 'form_data.batch_size', label: '批次大小', oldValue: 100, newValue: 200 },
+        ],
+      });
+      push({
         requirementId: req.id, changeType: 'LAUNCHED', oldStatus: 'DEVELOPING', newStatus: 'LAUNCHED',
         publisherId: dev, publisherName: nameOf(dev), publishedAt: at(18 - idx, 19),
         reason: '已完成 UAT 验收并通过灰度，正式上线生产环境。',
         notifiedRoles: ['提交人', '业务方', '运维'],
+      });
+      push({
+        requirementId: req.id, changeType: 'EDIT_BUSINESS',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(15 - idx, 14),
+        reason: '上线后业务方反馈微调使用说明与告警阈值。',
+        changedFields: [
+          { field: 'form_data.alert_threshold', label: '告警阈值', oldValue: '95%', newValue: '90%' },
+          { field: 'description', label: '需求描述', oldValue: '初版业务描述（简略）', newValue: '增加上线后使用注意事项' },
+        ],
+      });
+      push({
+        requirementId: req.id, changeType: 'COST_BASELINE_UPDATED',
+        publisherId: pick(actorIds, idx + 2), publisherName: nameOf(pick(actorIds, idx + 2)), publishedAt: at(12 - idx, 9),
+        reason: '上线一周后复盘人力实际投入，回填实际成本基线。',
+        notifiedRoles: ['提交人', '财务'],
+        changedFields: [
+          { field: 'cost_baseline.actual_hours', label: '实际工时', oldValue: 120, newValue: 156 },
+          { field: 'cost_baseline.dev_cost', label: '开发成本', oldValue: 38400, newValue: 49920 },
+        ],
       });
     }
     if (req.status === 'OFFLINE') {
@@ -1792,10 +1827,22 @@ const seedChangeLogs = async () => {
         reason: '业务方反馈使用率持续偏低，先行下线，后续根据反馈决定是否重启。',
         notifiedRoles: ['提交人', '业务方'],
       });
+      push({
+        requirementId: req.id, changeType: 'RELAUNCHED', oldStatus: 'OFFLINE', newStatus: 'LAUNCHED',
+        publisherId: dev, publisherName: nameOf(dev), publishedAt: at(4 - idx, 10),
+        reason: '业务流程调整后试运行，重新上线小范围验证。',
+        notifiedRoles: ['提交人', '业务方', '运维'],
+      });
+      push({
+        requirementId: req.id, changeType: 'OFFLINE', oldStatus: 'LAUNCHED', newStatus: 'OFFLINE',
+        publisherId: pick(actorIds, idx + 5), publisherName: nameOf(pick(actorIds, idx + 5)), publishedAt: at(2 - idx, 16),
+        reason: '试运行未达预期，再次下线，等待新一轮业务方案。',
+        notifiedRoles: ['提交人', '业务方'],
+      });
     }
   });
 
-  // ============ 立项/开发中（PENDING_PROJECT）：3-5 条 ============
+  // ============ 立项/开发中（PENDING_PROJECT）：4-6 条 ============
   midLifecycleTargets.forEach((req, idx) => {
     push({
       requirementId: req.id, changeType: 'SUBMITTED', oldStatus: 'DRAFT', newStatus: 'PENDING_APPROVAL',
@@ -1819,6 +1866,22 @@ const seedChangeLogs = async () => {
       reason: '补充验收标准与上线计划，便于排期。',
       changedFields: [
         { field: 'form_data.acceptance', label: '验收标准', oldValue: '—', newValue: 'P0：批处理一次性跑通；P1：失败可重试' },
+      ],
+    });
+    push({
+      requirementId: req.id, changeType: 'PRIORITY_CHANGED',
+      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(5 - idx, 11),
+      reason: '业务方临时调整优先级，便于项目经理重新排期。',
+      notifiedRoles: ['项目经理'],
+      changedFields: [{ field: 'priority', label: '优先级', oldValue: '中', newValue: '高' }],
+    });
+    push({
+      requirementId: req.id, changeType: 'COST_BASELINE_UPDATED',
+      publisherId: pick(actorIds, idx + 2), publisherName: nameOf(pick(actorIds, idx + 2)), publishedAt: at(3 - idx, 9),
+      reason: '排期前补全成本基线，便于立项审批。',
+      changedFields: [
+        { field: 'cost_baseline.hourly_rate', label: '人力时薪', oldValue: 280, newValue: 300 },
+        { field: 'cost_baseline.estimate_hours', label: '预估工时', oldValue: 80, newValue: 120 },
       ],
     });
   });
@@ -1855,11 +1918,20 @@ const seedChangeLogs = async () => {
         { field: 'title', label: '需求标题', oldValue: req.title + '（旧）', newValue: req.title },
         { field: 'description', label: '需求描述', oldValue: '原始版本', newValue: '重写：突出差异化价值与紧迫性' },
         { field: 'priority', label: '优先级', oldValue: '低', newValue: '中' },
+        { field: 'form_data.scope', label: '业务范围', oldValue: '试点部门', newValue: '全集团' },
+        { field: 'cost_baseline.estimate_hours', label: '预估工时', oldValue: 40, newValue: 80 },
       ],
+    });
+    push({
+      requirementId: req.id, changeType: 'RESUBMIT',
+      oldStatus: req.status as RequirementStatus, newStatus: 'PENDING_APPROVAL',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(4 - idx, 10),
+      reason: '已根据反馈修订内容，重新提交审批。',
+      notifiedRoles: ['审批人'],
     });
   });
 
-  // ============ 待审批 / 待评估：仅提交记录 ============
+  // ============ 待审批 / 待评估：2-4 条 ============
   pendingTargets.forEach((req, idx) => {
     push({
       requirementId: req.id, changeType: 'SUBMITTED',
@@ -1878,6 +1950,50 @@ const seedChangeLogs = async () => {
         notifiedRoles: ['提交人', '评估人'],
       });
     }
+    push({
+      requirementId: req.id, changeType: 'EDIT_FULL',
+      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(2 - idx, 9),
+      reason: '审批/评估过程中按反馈补充资料。',
+      changedFields: [
+        { field: 'description', label: '需求描述', oldValue: '初版描述', newValue: '补充业务背景与预期收益' },
+      ],
+    });
+  });
+
+  // ============ 草稿（DRAFT）：编辑迭代 ============
+  draftTargets.forEach((req, idx) => {
+    push({
+      requirementId: req.id, changeType: 'EDIT_FULL',
+      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(4 - idx, 9),
+      reason: '创建需求初稿，填写基本信息。',
+      changedFields: [
+        { field: 'title', label: '需求标题', oldValue: undefined, newValue: req.title },
+        { field: 'priority', label: '优先级', oldValue: undefined, newValue: req.priority },
+      ],
+    });
+    push({
+      requirementId: req.id, changeType: 'EDIT_FULL',
+      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(2 - idx, 15),
+      reason: '完善需求描述与业务范围。',
+      changedFields: [
+        { field: 'description', label: '需求描述', oldValue: '占位描述', newValue: '完整业务背景与目标说明' },
+        { field: 'form_data.scope', label: '业务范围', oldValue: '—', newValue: '试点部门' },
+      ],
+    });
+  });
+
+  // ============ 兜底：任何还没生成日志的需求，至少补一条创建记录 ============
+  const covered = new Set(changeLogStore.map((c) => c.requirementId));
+  allReqs.forEach((req, idx) => {
+    if (covered.has(req.id)) return;
+    push({
+      requirementId: req.id, changeType: 'EDIT_FULL',
+      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(3 - (idx % 5), 10),
+      reason: '创建需求初稿。',
+      changedFields: [
+        { field: 'title', label: '需求标题', oldValue: undefined, newValue: req.title },
+      ],
+    });
   });
 };
 
