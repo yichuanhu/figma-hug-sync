@@ -805,6 +805,10 @@ const RequirementsWorkbench = () => {
         }}
         onDelete={(record) => handleDelete(record)}
         onResubmit={(record) => handleResubmit(record)}
+        onCreateProcess={(record) => handleCreateProcess(record)}
+        onCancel={(record) => handleCancel(record)}
+        onOffline={(record) => handleOffline(record)}
+        onRelaunch={(record) => handleRelaunch(record)}
         
         onStatusChange={async (id, newStatus, comment) => {
           await updateRequirementStatus(id, newStatus, comment);
