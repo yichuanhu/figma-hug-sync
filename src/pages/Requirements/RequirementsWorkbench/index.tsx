@@ -85,8 +85,6 @@ const RequirementsWorkbench = () => {
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
   const [initialDrawerTab, setInitialDrawerTab] = useState<string | undefined>(undefined);
-  
-  const [pickerRecord, setPickerRecord] = useState<RequirementItem | null>(null);
 
   // 可选列（持久化到 localStorage）
   const OPTIONAL_COLUMNS_KEY = 'requirements.list.optionalColumns';
