@@ -269,25 +269,65 @@ const RequirementsWorkbench = () => {
     });
   };
 
+  // 取消（PENDING_PROJECT）—— 没有 CANCELED 状态，统一回到 WITHDRAWN
+  const handleCancel = (record: RequirementItem) => {
+    Modal.confirm({
+      title: '取消该需求？',
+      content: `取消后需求「${record.title}」将回到"已撤销"状态，可在已撤销列表中重新提交。`,
+      okText: '确认取消',
+      okButtonProps: { type: 'danger' },
+      cancelText: '保留',
+      onOk: async () => {
+        await updateRequirementStatus(record.id, 'WITHDRAWN', 'Cancelled by owner.');
+        loadData();
+        Toast.success('已取消需求');
+      },
+    });
+  };
+
+  // 人工下线（LAUNCHED）
+  const handleOffline = (record: RequirementItem) => {
+    Modal.confirm({
+      title: '将需求下线？',
+      content: `下线后需求「${record.title}」将进入"已下线"状态，关联流程的执行不受影响。`,
+      okText: '确认下线',
+      okButtonProps: { type: 'danger' },
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        await updateRequirementStatus(record.id, 'OFFLINE', 'Manually taken offline.');
+        loadData();
+        Toast.success('需求已下线');
+      },
+    });
+  };
+
+  // 重新上线（OFFLINE）
+  const handleRelaunch = (record: RequirementItem) => {
+    Modal.confirm({
+      title: '重新上线该需求？',
+      content: `需求「${record.title}」将恢复为"已上线"状态。`,
+      okText: '确认上线',
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        await updateRequirementStatus(record.id, 'LAUNCHED', 'Relaunched by owner.');
+        loadData();
+        Toast.success('需求已重新上线');
+      },
+    });
+  };
+
+  // 创建流程（PENDING_PROJECT / DEVELOPING）—— 跳转到开发中心流程创建入口
+  const handleCreateProcess = (record: RequirementItem) => {
+    navigate('/process-development', {
+      state: { openCreate: true, prefilledRequirementId: record.id, prefilledRequirementTitle: record.title },
+    });
+  };
 
   // 分页信息
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
-
-  // 操作可见性（兼容旧/新状态）
-  const canEdit = (status: string) =>
-    status === 'DRAFT' ||
-    status === 'WITHDRAWN' ||
-    status === 'REJECTED' ||
-    // STORY-014: 立项后阶段也允许编辑（走草稿 + 发布变更流程）
-    status === 'PENDING_PROJECT' ||
-    status === 'DEVELOPING' ||
-    status === 'LAUNCHED' ||
-    status === 'OFFLINE';
-  const canDelete = (status: string) =>
-    status === 'DRAFT' || status === 'REJECTED' || status === 'WITHDRAWN';
 
   // 兼容旧状态 → 新 9 状态映射
   const normalizeStatus = (s: string): RequirementStatus =>
