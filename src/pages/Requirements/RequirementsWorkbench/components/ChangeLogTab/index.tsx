@@ -96,15 +96,20 @@ const ChangeLogTab = ({ requirementId, refreshKey, highlightLogId }: Props) => {
     return <Tag size="small" color={cfg?.color ?? 'grey'} type="light">{t(cfg?.i18nKey ?? '')}</Tag>;
   };
 
-  const renderDiffs = (diffs?: RequirementChangeFieldDiff[]) => {
+  const renderDiffs = (logId: string, diffs?: RequirementChangeFieldDiff[]) => {
     if (!diffs || diffs.length === 0) return null;
+    const total = diffs.length;
+    const collapsible = total > DIFF_COLLAPSE_THRESHOLD;
+    const expanded = !!expandedIds[logId];
+    const visible = collapsible && !expanded ? diffs.slice(0, DIFF_COLLAPSE_THRESHOLD) : diffs;
     return (
       <div className="change-log-item-section">
         <div className="change-log-item-section-title">
           {t('requirements.detail.changeLog.changedFieldsTitle')}
+          <span className="change-log-diff-count">({total})</span>
         </div>
         <ul className="change-log-diffs">
-          {diffs.map((d) => (
+          {visible.map((d) => (
             <li key={d.field}>
               <span className="change-log-diff-key">{d.label}</span>
               {d.oldValue !== undefined && (
@@ -117,6 +122,21 @@ const ChangeLogTab = ({ requirementId, refreshKey, highlightLogId }: Props) => {
             </li>
           ))}
         </ul>
+        {collapsible && (
+          <Button
+            theme="borderless"
+            size="small"
+            type="primary"
+            className="change-log-diff-toggle"
+            icon={expanded ? <ChevronUp size={14} strokeWidth={2} /> : <ChevronDown size={14} strokeWidth={2} />}
+            iconPosition="right"
+            onClick={() => setExpandedIds((p) => ({ ...p, [logId]: !expanded }))}
+          >
+            {expanded
+              ? t('requirements.detail.changeLog.collapse')
+              : t('requirements.detail.changeLog.expandMore', { count: total - DIFF_COLLAPSE_THRESHOLD })}
+          </Button>
+        )}
       </div>
     );
   };
