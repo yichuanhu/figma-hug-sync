@@ -41,12 +41,10 @@ import {
   
   getRequirementEffortSummary,
 } from './mockData';
-import { statusConfigV2, legacyStatusMap, statusOptionsV2 } from './statusConfig';
+import { statusConfigV2, legacyStatusMap, statusOptionsV2, isBusinessOnlyEdit } from './statusConfig';
 
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
-import WorkspacePickerModal from './components/RequirementDetailDrawer/WorkspacePickerModal';
 import ResubmitDialog from './components/ResubmitDialog';
-import { findWorkspaceByRequirementId } from '../RequirementsProjects/mockData';
 import StatusDot from './components/StatusDot';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
