@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Timeline, Typography, Spin, Tag } from '@douyinfe/semi-ui';
+import { Timeline, Typography, Spin, Tag, Button } from '@douyinfe/semi-ui';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import {
   FileEdit, FilePlus2, FileX2, Send, Undo2, RotateCcw, CheckCircle2, XCircle,
   GitBranchPlus, Power, PowerOff, Pencil, ArrowUpDown, Coins, ListChecks, FileText,
