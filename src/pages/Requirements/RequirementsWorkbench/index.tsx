@@ -46,7 +46,7 @@ import RequirementDetailDrawer from './components/RequirementDetailDrawer';
 import ResubmitDialog from './components/ResubmitDialog';
 import StatusDot from './components/StatusDot';
 import TitleCell from './components/TitleCell';
-import { buildSubmitConfirmContent } from './utils/submitConfirm';
+
 import './index.less';
 
 const { Title, Text } = Typography;
