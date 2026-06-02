@@ -507,7 +507,7 @@ const RequirementsWorkbench = () => {
                     ? t('requirements.detail.submitConfirmTitle')
                     : t('requirements.detail.submitDirectConfirmTitle'),
                   content: buildSubmitConfirmContent(record.title, t),
-                  okText: submitLabel,
+                  okText: t('common.confirm'),
                   cancelText: t('common.cancel'),
                   onOk: async () => {
                     await updateRequirementStatus(record.id, submittedStatus, 'Submitted.');

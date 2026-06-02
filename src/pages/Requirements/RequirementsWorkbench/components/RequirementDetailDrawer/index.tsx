@@ -197,7 +197,7 @@ const PropertyPanel = ({
                       ? t('requirements.detail.submitConfirmTitle')
                       : t('requirements.detail.submitDirectConfirmTitle'),
                     content: buildSubmitConfirmContent(data.title, t),
-                    okText: submitLabel,
+                    okText: t('common.confirm'),
                     cancelText: t('common.cancel'),
                     onOk: async () => {
                       await onStatusChange(data.id, submittedStatus, 'Submitted.');
@@ -499,7 +499,7 @@ const RequirementDetailDrawer = ({
                 Modal.confirm({
                   title: hasApproval ? t('requirements.detail.submitConfirmTitle') : t('requirements.detail.submitDirectConfirmTitle'),
                   content: buildSubmitConfirmContent(data.title, t),
-                  okText: submitLabel,
+                  okText: t('common.confirm'),
                   cancelText: t('common.cancel'),
                   onOk: async () => {
                     await onStatusChange(data.id, submittedStatus, 'Submitted.');
