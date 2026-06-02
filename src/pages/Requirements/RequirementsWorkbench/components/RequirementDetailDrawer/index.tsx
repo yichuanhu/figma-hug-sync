@@ -197,7 +197,6 @@ const PropertyPanel = ({
                     title: hasApproval
                       ? t('requirements.detail.submitConfirmTitle')
                       : t('requirements.detail.submitDirectConfirmTitle'),
-                    content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                     okText: submitLabel,
                     cancelText: t('common.cancel'),
                     onOk: async () => {
