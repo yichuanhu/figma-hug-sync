@@ -1674,31 +1674,58 @@ const seedChangeLogs = async () => {
   if (changeLogStore.length > 0) return;
 
   const now = Date.now();
-  const at = (daysAgo: number, hours = 9) =>
-    new Date(now - daysAgo * 86400000 + hours * 3600000).toISOString();
-  const pick = <T,>(arr: T[], i: number) => arr[i % arr.length];
+  const at = (daysAgo: number, hours = 9, minutes = 0) =>
+    new Date(now - daysAgo * 86400000 + hours * 3600000 + minutes * 60000).toISOString();
+  const pick = <T,>(arr: T[], i: number) => arr[((i % arr.length) + arr.length) % arr.length];
 
-  // 候选发布人池（覆盖提交人/审批人/评估人/项目成员）
-  const actorIds = ['user-001', 'user-002', 'user-003', 'user-007', 'user-008'];
+  const actorIds = ['user-001', 'user-002', 'user-003', 'user-004', 'user-005', 'user-006', 'user-007', 'user-008'];
   const nameOf = (uid: string) => mockCreators[uid]?.name ?? uid;
 
-  // 选取每个状态的典型样本，确保不同生命周期阶段都有变更日志
-  const allReqs = mockRequirementData;
-  const byStatus = (st: string) => allReqs.filter((r) => r.status === st);
-
-  // 全量覆盖：每条需求都至少有变更日志
-  const fullLifecycleTargets = [
-    ...byStatus('LAUNCHED'),
-    ...byStatus('OFFLINE'),
-    ...byStatus('DEVELOPING'),
-  ];
-  const midLifecycleTargets = byStatus('PENDING_PROJECT');
-  const rejectedTargets = [...byStatus('REJECTED'), ...byStatus('WITHDRAWN')];
-  const pendingTargets = [
-    ...byStatus('PENDING_APPROVAL'),
-    ...byStatus('PENDING_ASSESSMENT'),
-  ];
-  const draftTargets = byStatus('DRAFT');
+  const priorityCN = (p: string) => (p === 'HIGH' ? '高' : p === 'MEDIUM' ? '中' : '低');
+  const reasonPool = {
+    submit: [
+      '需求初稿已完成，提交审批流程，请相关负责人评审业务范围与可行性。',
+      '业务方已确认范围，正式提交进入审批流程。',
+      '完成与业务方对齐后提交审批，请评审优先级与上线节奏。',
+    ],
+    approvalPass: [
+      '业务背景清晰、价值明确，审批通过，进入技术评估。',
+      '已确认与战略路线一致，审批通过转评估。',
+      '审批通过：ROI 测算合理，价值明确，进入评估。',
+    ],
+    assessmentPass: [
+      '技术方案可行、预估工时合理，评估通过，可进入立项排期。',
+      '评估通过：依赖系统具备改造条件，资源可协调。',
+    ],
+    editBiz: [
+      '根据评审意见补充上下游接口说明与异常场景，细化业务规则。',
+      '依据业务方反馈调整范围说明，明确试点与全量两个阶段。',
+      '补充验收标准与上线计划，便于项目经理排期。',
+      '更新使用说明与告警阈值，覆盖上线后业务反馈。',
+      '梳理灰度策略与回滚步骤，便于后续发布。',
+    ],
+    priority: [
+      '业务方紧急上调优先级，需在月底前交付，请协调资源前置。',
+      '与业务路线对齐后下调优先级，让位给更紧急的需求。',
+      '业务节奏调整，优先级回升至高。',
+    ],
+    cost: [
+      '根据财务最新核算口径，更新人力时薪与运维成本基线。',
+      '排期前补全成本基线，便于立项审批。',
+      '上线一周后复盘人力实际投入，回填实际成本基线。',
+    ],
+    upload: [
+      '上传开发方案文档，含整体架构、接口契约、灰度方案。',
+      '合并 Code Review 意见后更新开发方案文档。',
+      '补充上线 Checklist 与回滚预案的最新版方案。',
+    ],
+    formData: [
+      '依据测试反馈调整表单字段配置，新增数据脱敏开关。',
+      '调整批次大小与重试策略，提升异常恢复能力。',
+      '补充必填项校验规则与提示文案。',
+    ],
+  };
+  const reason = (k: keyof typeof reasonPool, i: number) => pick(reasonPool[k], i);
 
   let seq = 0;
   const push = (log: Omit<RequirementChangeLog, 'id'>) => {
@@ -1706,46 +1733,208 @@ const seedChangeLogs = async () => {
     changeLogStore.push({ id: `chg-seed-${seq.toString().padStart(4, '0')}`, ...log });
   };
 
-  // ============ 完整生命周期（创建→上线/下线）：每条 8-10 条日志 ============
-  fullLifecycleTargets.forEach((req, idx) => {
+  // ========================================================================
+  // 为每条需求按"状态生命周期"生成一组覆盖完整路径的变更记录
+  // ========================================================================
+  mockRequirementData.forEach((req, idx) => {
     const submitter = req.creatorId;
     const approver = pick(actorIds, idx + 1);
     const assessor = pick(actorIds, idx + 2);
-    const dev = pick(actorIds, idx + 3);
+    const pm = pick(actorIds, idx + 3);
+    const dev = pick(actorIds, idx + 4);
+    const finance = pick(actorIds, idx + 5);
 
+    // ---- 阶段 1：草稿期编辑（所有需求都经历，最少 2 条） ----
+    push({
+      requirementId: req.id, changeType: 'EDIT_FULL',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(80 - (idx % 10), 9, 15),
+      reason: '创建需求初稿，填写基本信息与业务背景。',
+      changedFields: [
+        { field: 'title', label: '需求标题', oldValue: undefined, newValue: req.title },
+        { field: 'priority', label: '优先级', oldValue: undefined, newValue: priorityCN(req.priority) },
+        { field: 'owning_department_name', label: '归属部门', oldValue: undefined, newValue: req.owning_department_name },
+      ],
+    });
+    push({
+      requirementId: req.id, changeType: 'EDIT_FULL',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(78 - (idx % 10), 15, 32),
+      reason: '完善需求描述与业务范围，补充预期价值。',
+      changedFields: [
+        { field: 'description', label: '需求描述', oldValue: '占位描述', newValue: '完整业务背景与目标说明' },
+        { field: 'form_data.scope', label: '业务范围', oldValue: '—', newValue: '试点部门' },
+      ],
+    });
+    push({
+      requirementId: req.id, changeType: 'EDIT_FULL',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(76 - (idx % 10), 11),
+      reason: '与业务方对齐后调整业务范围与上线计划。',
+      changedFields: [
+        { field: 'form_data.scope', label: '业务范围', oldValue: '试点部门', newValue: '试点部门 + 区域中心' },
+        { field: 'expectedLaunchDate', label: '预期上线日期', oldValue: '—', newValue: req.expectedLaunchDate?.substring(0, 10) ?? '—' },
+      ],
+    });
+
+    if (req.status === 'DRAFT') {
+      // 草稿状态：额外几次编辑迭代
+      push({
+        requirementId: req.id, changeType: 'EDIT_FULL',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(40 - (idx % 8), 10),
+        reason: '补充验收标准与异常处理流程。',
+        changedFields: [
+          { field: 'form_data.acceptance', label: '验收标准', oldValue: '—', newValue: 'P0：批处理一次性跑通；P1：失败可重试' },
+        ],
+      });
+      push({
+        requirementId: req.id, changeType: 'EDIT_FULL',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(30 - (idx % 8), 14),
+        reason: '梳理依赖系统清单，便于评估资源可用性。',
+        changedFields: [
+          { field: 'form_data.related_systems', label: '关联系统', oldValue: 'SAP', newValue: 'SAP, OA, Excel' },
+        ],
+      });
+      return;
+    }
+
+    // ---- 阶段 2：提交审批 ----
     push({
       requirementId: req.id, changeType: 'SUBMITTED', oldStatus: 'DRAFT', newStatus: 'PENDING_APPROVAL',
-      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(60 - idx, 9),
-      reason: '需求初稿完成，提交审批流程，请相关负责人评审业务范围与可行性。',
-      notifiedRoles: ['审批人'],
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(70 - (idx % 10), 9, 5),
+      reason: reason('submit', idx), notifiedRoles: ['审批人'],
     });
+
+    if (req.status === 'PENDING_APPROVAL') {
+      push({
+        requirementId: req.id, changeType: 'EDIT_FULL',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(3 - (idx % 3), 9),
+        reason: '审批过程中按反馈补充资料。',
+        changedFields: [
+          { field: 'description', label: '需求描述', oldValue: '初版描述', newValue: '补充业务背景与预期收益' },
+        ],
+      });
+      return;
+    }
+
+    if (req.status === 'REJECTED') {
+      push({
+        requirementId: req.id, changeType: 'APPROVAL_REJECTED', oldStatus: 'PENDING_APPROVAL', newStatus: 'REJECTED',
+        publisherId: approver, publisherName: nameOf(approver), publishedAt: at(65 - (idx % 10), 14),
+        reason: '业务价值阐述不够清晰，且与现有系统功能重叠，建议补充差异化说明后再提交。',
+        notifiedRoles: ['提交人'],
+      });
+      push({
+        requirementId: req.id, changeType: 'EDIT_FULL',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(60 - (idx % 10), 16),
+        reason: '根据驳回意见调整业务范围、明确差异化价值，并补充优先级理由。',
+        changedFields: [
+          { field: 'title', label: '需求标题', oldValue: req.title + '（旧）', newValue: req.title },
+          { field: 'description', label: '需求描述', oldValue: '原始版本', newValue: '重写：突出差异化价值与紧迫性' },
+          { field: 'priority', label: '优先级', oldValue: '低', newValue: priorityCN(req.priority) },
+          { field: 'form_data.scope', label: '业务范围', oldValue: '试点部门', newValue: '全集团' },
+        ],
+      });
+      return;
+    }
+
+    if (req.status === 'WITHDRAWN') {
+      push({
+        requirementId: req.id, changeType: 'WITHDRAWN', oldStatus: 'PENDING_APPROVAL', newStatus: 'WITHDRAWN',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(65 - (idx % 10), 11),
+        reason: '业务侧需要重新核对范围，先行撤回，后续修改后再提交。',
+        notifiedRoles: ['审批人'],
+      });
+      push({
+        requirementId: req.id, changeType: 'EDIT_FULL',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(50 - (idx % 10), 15),
+        reason: '撤回后重新梳理业务流程，补全方案要点。',
+        changedFields: [
+          { field: 'description', label: '需求描述', oldValue: '撤回前版本', newValue: '重新梳理后的版本' },
+          { field: 'form_data.scope', label: '业务范围', oldValue: '试点部门', newValue: '试点 + 周边支撑部门' },
+        ],
+      });
+      return;
+    }
+
+    // ---- 阶段 3：审批通过 ----
     push({
       requirementId: req.id, changeType: 'APPROVAL_PASSED', oldStatus: 'PENDING_APPROVAL', newStatus: 'PENDING_ASSESSMENT',
-      publisherId: approver, publisherName: nameOf(approver), publishedAt: at(58 - idx, 14),
-      reason: '业务背景清晰、价值明确，审批通过，进入技术评估。',
+      publisherId: approver, publisherName: nameOf(approver), publishedAt: at(65 - (idx % 10), 14, 22),
+      reason: reason('approvalPass', idx),
       notifiedRoles: ['提交人', '评估人'],
     });
+
+    if (req.status === 'PENDING_ASSESSMENT') {
+      push({
+        requirementId: req.id, changeType: 'EDIT_FULL',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(2 - (idx % 2), 10),
+        reason: '评估阶段按反馈补充技术细节。',
+        changedFields: [
+          { field: 'description', label: '需求描述', oldValue: '审批版本', newValue: '补充关键技术细节' },
+        ],
+      });
+      return;
+    }
+
+    // ---- 阶段 4：评估通过 ----
     push({
       requirementId: req.id, changeType: 'ASSESSMENT_PASSED', oldStatus: 'PENDING_ASSESSMENT', newStatus: 'PENDING_PROJECT',
-      publisherId: assessor, publisherName: nameOf(assessor), publishedAt: at(55 - idx, 11),
-      reason: '技术方案可行，预估工时合理，评估通过，可进入立项排期。',
+      publisherId: assessor, publisherName: nameOf(assessor), publishedAt: at(58 - (idx % 10), 11),
+      reason: reason('assessmentPass', idx),
       notifiedRoles: ['提交人', '项目经理'],
       changedFields: [
-        { field: 'detailedAssessment.score', label: '评估得分', oldValue: undefined, newValue: 18 },
+        { field: 'detailedAssessment.score', label: '评估得分', oldValue: undefined, newValue: 15 + (idx % 8) },
         { field: 'detailedAssessment.conclusion', label: '评估结论', oldValue: undefined, newValue: '通过' },
       ],
     });
     push({
+      requirementId: req.id, changeType: 'COST_BASELINE_UPDATED',
+      publisherId: finance, publisherName: nameOf(finance), publishedAt: at(55 - (idx % 10), 9, 40),
+      reason: reason('cost', idx),
+      notifiedRoles: ['提交人', '财务'],
+      changedFields: [
+        { field: 'cost_baseline.hourly_rate', label: '人力时薪', oldValue: 280, newValue: 300 + (idx % 4) * 20 },
+        { field: 'cost_baseline.estimate_hours', label: '预估工时', oldValue: 80, newValue: 100 + (idx % 6) * 20 },
+      ],
+    });
+
+    if (req.status === 'PENDING_PROJECT') {
+      push({
+        requirementId: req.id, changeType: 'PRIORITY_CHANGED',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(20 - (idx % 5), 11),
+        reason: reason('priority', idx),
+        notifiedRoles: ['项目经理'],
+        changedFields: [{ field: 'priority', label: '优先级', oldValue: '中', newValue: priorityCN(req.priority) }],
+      });
+      push({
+        requirementId: req.id, changeType: 'EDIT_BUSINESS',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(15 - (idx % 5), 16),
+        reason: reason('editBiz', idx),
+        changedFields: [
+          { field: 'form_data.acceptance', label: '验收标准', oldValue: '—', newValue: 'P0：批处理一次性跑通；P1：失败可重试' },
+        ],
+      });
+      push({
+        requirementId: req.id, changeType: 'FORM_DATA_UPDATED',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(8 - (idx % 5), 10),
+        reason: reason('formData', idx),
+        changedFields: [
+          { field: 'form_data.batch_size', label: '批次大小', oldValue: 100, newValue: 200 },
+        ],
+      });
+      return;
+    }
+
+    // ---- 阶段 5：进入开发（PROCESS_CREATED） ----
+    push({
       requirementId: req.id, changeType: 'PROCESS_CREATED', oldStatus: 'PENDING_PROJECT', newStatus: 'DEVELOPING',
-      publisherId: dev, publisherName: nameOf(dev), publishedAt: at(50 - idx, 10),
-      reason: `已创建研发流程「${req.title.slice(0, 10)}…」并完成排期，进入开发阶段。`,
+      publisherId: pm, publisherName: nameOf(pm), publishedAt: at(50 - (idx % 10), 10),
+      reason: `已创建研发流程「${req.title.slice(0, 16)}…」并完成排期，进入开发阶段。`,
       notifiedRoles: ['提交人', '项目成员'],
-      meta: { processId: `proc-${req.id}-001`, processName: req.title },
+      meta: { processId: `proc-${req.id.slice(0, 8)}-001`, processName: req.title },
     });
     push({
       requirementId: req.id, changeType: 'EDIT_BUSINESS',
-      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(40 - idx, 15),
-      reason: '根据评审意见，补充上下游接口说明与异常场景，细化业务规则。',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(45 - (idx % 10), 15),
+      reason: reason('editBiz', idx),
       notifiedRoles: ['项目成员'],
       changedFields: [
         { field: 'description', label: '需求描述', oldValue: '初版业务描述（简略）', newValue: '补充上下游依赖、异常分支与回滚策略' },
@@ -1754,246 +1943,112 @@ const seedChangeLogs = async () => {
     });
     push({
       requirementId: req.id, changeType: 'PRIORITY_CHANGED',
-      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(38 - idx, 10),
-      reason: '业务方紧急上调优先级，需在月底前交付，请协调资源前置。',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(42 - (idx % 10), 10),
+      reason: reason('priority', idx),
       notifiedRoles: ['项目经理', '项目成员'],
-      changedFields: [{ field: 'priority', label: '优先级', oldValue: '中', newValue: '高' }],
-    });
-    push({
-      requirementId: req.id, changeType: 'COST_BASELINE_UPDATED',
-      publisherId: pick(actorIds, idx + 4), publisherName: nameOf(pick(actorIds, idx + 4)), publishedAt: at(32 - idx, 16),
-      reason: '根据财务最新核算口径，更新人力时薪与运维成本基线。',
-      notifiedRoles: ['提交人', '财务'],
-      changedFields: [
-        { field: 'cost_baseline.hourly_rate', label: '人力时薪', oldValue: 280, newValue: 320 },
-        { field: 'cost_baseline.maintenance_yearly', label: '年度运维成本', oldValue: 12000, newValue: 18000 },
-      ],
+      changedFields: [{ field: 'priority', label: '优先级', oldValue: '中', newValue: priorityCN(req.priority) }],
     });
     push({
       requirementId: req.id, changeType: 'DEV_SCHEME_DOC_UPLOADED',
-      publisherId: dev, publisherName: nameOf(dev), publishedAt: at(28 - idx, 11),
-      reason: '上传 v1 开发方案文档：含整体架构、接口契约、灰度方案。',
+      publisherId: dev, publisherName: nameOf(dev), publishedAt: at(38 - (idx % 10), 11),
+      reason: reason('upload', 0),
       notifiedRoles: ['项目成员', '提交人'],
       meta: { version: 1, fileName: '开发方案_v1.pdf', size: '1.2MB' },
     });
+    push({
+      requirementId: req.id, changeType: 'COST_BASELINE_UPDATED',
+      publisherId: finance, publisherName: nameOf(finance), publishedAt: at(35 - (idx % 10), 16),
+      reason: reason('cost', idx + 1),
+      notifiedRoles: ['提交人', '财务'],
+      changedFields: [
+        { field: 'cost_baseline.hourly_rate', label: '人力时薪', oldValue: 300, newValue: 320 },
+        { field: 'cost_baseline.maintenance_yearly', label: '年度运维成本', oldValue: 12000, newValue: 18000 },
+      ],
+    });
 
-    if (req.status === 'LAUNCHED' || req.status === 'OFFLINE') {
+    if (req.status === 'DEVELOPING') {
       push({
         requirementId: req.id, changeType: 'DEV_SCHEME_DOC_UPLOADED',
-        publisherId: dev, publisherName: nameOf(dev), publishedAt: at(22 - idx, 10),
-        reason: '上传 v2 开发方案文档：合并 Code Review 意见并细化灰度回滚步骤。',
+        publisherId: dev, publisherName: nameOf(dev), publishedAt: at(20 - (idx % 5), 10),
+        reason: reason('upload', 1),
         notifiedRoles: ['项目成员', '提交人'],
         meta: { version: 2, fileName: '开发方案_v2.pdf', size: '1.4MB' },
       });
       push({
         requirementId: req.id, changeType: 'FORM_DATA_UPDATED',
-        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(20 - idx, 11),
-        reason: '依据测试反馈调整表单字段配置，新增数据脱敏开关。',
+        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(10 - (idx % 5), 14),
+        reason: reason('formData', idx + 1),
         changedFields: [
           { field: 'form_data.mask_pii', label: '敏感数据脱敏', oldValue: '关闭', newValue: '开启' },
           { field: 'form_data.batch_size', label: '批次大小', oldValue: 100, newValue: 200 },
         ],
       });
-      push({
-        requirementId: req.id, changeType: 'LAUNCHED', oldStatus: 'DEVELOPING', newStatus: 'LAUNCHED',
-        publisherId: dev, publisherName: nameOf(dev), publishedAt: at(18 - idx, 19),
-        reason: '已完成 UAT 验收并通过灰度，正式上线生产环境。',
-        notifiedRoles: ['提交人', '业务方', '运维'],
-      });
-      push({
-        requirementId: req.id, changeType: 'EDIT_BUSINESS',
-        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(15 - idx, 14),
-        reason: '上线后业务方反馈微调使用说明与告警阈值。',
-        changedFields: [
-          { field: 'form_data.alert_threshold', label: '告警阈值', oldValue: '95%', newValue: '90%' },
-          { field: 'description', label: '需求描述', oldValue: '初版业务描述（简略）', newValue: '增加上线后使用注意事项' },
-        ],
-      });
-      push({
-        requirementId: req.id, changeType: 'COST_BASELINE_UPDATED',
-        publisherId: pick(actorIds, idx + 2), publisherName: nameOf(pick(actorIds, idx + 2)), publishedAt: at(12 - idx, 9),
-        reason: '上线一周后复盘人力实际投入，回填实际成本基线。',
-        notifiedRoles: ['提交人', '财务'],
-        changedFields: [
-          { field: 'cost_baseline.actual_hours', label: '实际工时', oldValue: 120, newValue: 156 },
-          { field: 'cost_baseline.dev_cost', label: '开发成本', oldValue: 38400, newValue: 49920 },
-        ],
-      });
+      return;
     }
+
+    // ---- 阶段 6：上线 + 后续微调 ----
+    push({
+      requirementId: req.id, changeType: 'DEV_SCHEME_DOC_UPLOADED',
+      publisherId: dev, publisherName: nameOf(dev), publishedAt: at(30 - (idx % 10), 10),
+      reason: reason('upload', 1),
+      notifiedRoles: ['项目成员', '提交人'],
+      meta: { version: 2, fileName: '开发方案_v2.pdf', size: '1.4MB' },
+    });
+    push({
+      requirementId: req.id, changeType: 'FORM_DATA_UPDATED',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(28 - (idx % 10), 11),
+      reason: reason('formData', idx + 1),
+      changedFields: [
+        { field: 'form_data.mask_pii', label: '敏感数据脱敏', oldValue: '关闭', newValue: '开启' },
+        { field: 'form_data.batch_size', label: '批次大小', oldValue: 100, newValue: 200 },
+      ],
+    });
+    push({
+      requirementId: req.id, changeType: 'LAUNCHED', oldStatus: 'DEVELOPING', newStatus: 'LAUNCHED',
+      publisherId: dev, publisherName: nameOf(dev), publishedAt: at(25 - (idx % 10), 19),
+      reason: '已完成 UAT 验收并通过灰度，正式上线生产环境。',
+      notifiedRoles: ['提交人', '业务方', '运维'],
+    });
+    push({
+      requirementId: req.id, changeType: 'EDIT_BUSINESS',
+      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(20 - (idx % 10), 14),
+      reason: '上线后业务方反馈微调使用说明与告警阈值。',
+      changedFields: [
+        { field: 'form_data.alert_threshold', label: '告警阈值', oldValue: '95%', newValue: '90%' },
+        { field: 'description', label: '需求描述', oldValue: '上线前版本', newValue: '增加上线后使用注意事项' },
+      ],
+    });
+    push({
+      requirementId: req.id, changeType: 'COST_BASELINE_UPDATED',
+      publisherId: finance, publisherName: nameOf(finance), publishedAt: at(15 - (idx % 10), 9),
+      reason: '上线一周后复盘人力实际投入，回填实际成本基线。',
+      notifiedRoles: ['提交人', '财务'],
+      changedFields: [
+        { field: 'cost_baseline.actual_hours', label: '实际工时', oldValue: 120, newValue: 156 },
+        { field: 'cost_baseline.dev_cost', label: '开发成本', oldValue: 38400, newValue: 49920 },
+      ],
+    });
+
     if (req.status === 'OFFLINE') {
       push({
         requirementId: req.id, changeType: 'OFFLINE', oldStatus: 'LAUNCHED', newStatus: 'OFFLINE',
-        publisherId: pick(actorIds, idx + 5), publisherName: nameOf(pick(actorIds, idx + 5)), publishedAt: at(6 - idx, 14),
+        publisherId: pm, publisherName: nameOf(pm), publishedAt: at(10 - (idx % 5), 14),
         reason: '业务方反馈使用率持续偏低，先行下线，后续根据反馈决定是否重启。',
         notifiedRoles: ['提交人', '业务方'],
       });
       push({
         requirementId: req.id, changeType: 'RELAUNCHED', oldStatus: 'OFFLINE', newStatus: 'LAUNCHED',
-        publisherId: dev, publisherName: nameOf(dev), publishedAt: at(4 - idx, 10),
+        publisherId: dev, publisherName: nameOf(dev), publishedAt: at(6 - (idx % 5), 10),
         reason: '业务流程调整后试运行，重新上线小范围验证。',
         notifiedRoles: ['提交人', '业务方', '运维'],
       });
       push({
         requirementId: req.id, changeType: 'OFFLINE', oldStatus: 'LAUNCHED', newStatus: 'OFFLINE',
-        publisherId: pick(actorIds, idx + 5), publisherName: nameOf(pick(actorIds, idx + 5)), publishedAt: at(2 - idx, 16),
+        publisherId: pm, publisherName: nameOf(pm), publishedAt: at(2 - (idx % 5), 16),
         reason: '试运行未达预期，再次下线，等待新一轮业务方案。',
         notifiedRoles: ['提交人', '业务方'],
       });
     }
-  });
-
-  // ============ 立项/开发中（PENDING_PROJECT）：4-6 条 ============
-  midLifecycleTargets.forEach((req, idx) => {
-    push({
-      requirementId: req.id, changeType: 'SUBMITTED', oldStatus: 'DRAFT', newStatus: 'PENDING_APPROVAL',
-      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(20 - idx, 10),
-      reason: '需求初稿完成，提交审批。', notifiedRoles: ['审批人'],
-    });
-    push({
-      requirementId: req.id, changeType: 'APPROVAL_PASSED', oldStatus: 'PENDING_APPROVAL', newStatus: 'PENDING_ASSESSMENT',
-      publisherId: pick(actorIds, idx), publisherName: nameOf(pick(actorIds, idx)), publishedAt: at(17 - idx, 14),
-      reason: '审批通过，转评估。', notifiedRoles: ['提交人', '评估人'],
-    });
-    push({
-      requirementId: req.id, changeType: 'ASSESSMENT_PASSED', oldStatus: 'PENDING_ASSESSMENT', newStatus: 'PENDING_PROJECT',
-      publisherId: pick(actorIds, idx + 1), publisherName: nameOf(pick(actorIds, idx + 1)), publishedAt: at(12 - idx, 15),
-      reason: '评估通过，等待立项排期。', notifiedRoles: ['提交人', '项目经理'],
-      changedFields: [{ field: 'detailedAssessment.score', label: '评估得分', oldValue: undefined, newValue: 16 }],
-    });
-    push({
-      requirementId: req.id, changeType: 'EDIT_BUSINESS',
-      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(8 - idx, 16),
-      reason: '补充验收标准与上线计划，便于排期。',
-      changedFields: [
-        { field: 'form_data.acceptance', label: '验收标准', oldValue: '—', newValue: 'P0：批处理一次性跑通；P1：失败可重试' },
-      ],
-    });
-    push({
-      requirementId: req.id, changeType: 'PRIORITY_CHANGED',
-      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(5 - idx, 11),
-      reason: '业务方临时调整优先级，便于项目经理重新排期。',
-      notifiedRoles: ['项目经理'],
-      changedFields: [{ field: 'priority', label: '优先级', oldValue: '中', newValue: '高' }],
-    });
-    push({
-      requirementId: req.id, changeType: 'COST_BASELINE_UPDATED',
-      publisherId: pick(actorIds, idx + 2), publisherName: nameOf(pick(actorIds, idx + 2)), publishedAt: at(3 - idx, 9),
-      reason: '排期前补全成本基线，便于立项审批。',
-      changedFields: [
-        { field: 'cost_baseline.hourly_rate', label: '人力时薪', oldValue: 280, newValue: 300 },
-        { field: 'cost_baseline.estimate_hours', label: '预估工时', oldValue: 80, newValue: 120 },
-      ],
-    });
-  });
-
-  // ============ 已拒绝 / 已撤销：含驳回/撤回/重新提交链路 ============
-  rejectedTargets.forEach((req, idx) => {
-    const submitter = req.creatorId;
-    const approver = pick(actorIds, idx);
-    push({
-      requirementId: req.id, changeType: 'SUBMITTED', oldStatus: 'DRAFT', newStatus: 'PENDING_APPROVAL',
-      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(15 - idx, 10),
-      reason: '提交审批，请评审。', notifiedRoles: ['审批人'],
-    });
-    if (req.status === 'REJECTED') {
-      push({
-        requirementId: req.id, changeType: 'APPROVAL_REJECTED', oldStatus: 'PENDING_APPROVAL', newStatus: 'REJECTED',
-        publisherId: approver, publisherName: nameOf(approver), publishedAt: at(12 - idx, 14),
-        reason: '业务价值阐述不够清晰，且与现有系统功能重叠，建议补充差异化说明后再提交。',
-        notifiedRoles: ['提交人'],
-      });
-    } else {
-      push({
-        requirementId: req.id, changeType: 'WITHDRAWN', oldStatus: 'PENDING_APPROVAL', newStatus: 'WITHDRAWN',
-        publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(11 - idx, 11),
-        reason: '业务侧需要重新核对范围，先行撤回，后续修改后再提交。',
-        notifiedRoles: ['审批人'],
-      });
-    }
-    push({
-      requirementId: req.id, changeType: 'EDIT_FULL',
-      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(7 - idx, 16),
-      reason: '根据反馈调整业务范围、明确差异化价值，并补充优先级理由。',
-      changedFields: [
-        { field: 'title', label: '需求标题', oldValue: req.title + '（旧）', newValue: req.title },
-        { field: 'description', label: '需求描述', oldValue: '原始版本', newValue: '重写：突出差异化价值与紧迫性' },
-        { field: 'priority', label: '优先级', oldValue: '低', newValue: '中' },
-        { field: 'form_data.scope', label: '业务范围', oldValue: '试点部门', newValue: '全集团' },
-        { field: 'cost_baseline.estimate_hours', label: '预估工时', oldValue: 40, newValue: 80 },
-      ],
-    });
-    push({
-      requirementId: req.id, changeType: 'RESUBMIT',
-      oldStatus: req.status as RequirementStatus, newStatus: 'PENDING_APPROVAL',
-      publisherId: submitter, publisherName: nameOf(submitter), publishedAt: at(4 - idx, 10),
-      reason: '已根据反馈修订内容，重新提交审批。',
-      notifiedRoles: ['审批人'],
-    });
-  });
-
-  // ============ 待审批 / 待评估：2-4 条 ============
-  pendingTargets.forEach((req, idx) => {
-    push({
-      requirementId: req.id, changeType: 'SUBMITTED',
-      oldStatus: 'DRAFT',
-      newStatus: req.status === 'PENDING_ASSESSMENT' ? 'PENDING_ASSESSMENT' : 'PENDING_APPROVAL',
-      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(5 - idx, 10),
-      reason: '需求初稿完成，提交审批/评估流程。',
-      notifiedRoles: [req.status === 'PENDING_ASSESSMENT' ? '评估人' : '审批人'],
-    });
-    if (req.status === 'PENDING_ASSESSMENT') {
-      push({
-        requirementId: req.id, changeType: 'APPROVAL_PASSED',
-        oldStatus: 'PENDING_APPROVAL', newStatus: 'PENDING_ASSESSMENT',
-        publisherId: pick(actorIds, idx + 1), publisherName: nameOf(pick(actorIds, idx + 1)), publishedAt: at(3 - idx, 14),
-        reason: '审批通过，转技术评估。',
-        notifiedRoles: ['提交人', '评估人'],
-      });
-    }
-    push({
-      requirementId: req.id, changeType: 'EDIT_FULL',
-      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(2 - idx, 9),
-      reason: '审批/评估过程中按反馈补充资料。',
-      changedFields: [
-        { field: 'description', label: '需求描述', oldValue: '初版描述', newValue: '补充业务背景与预期收益' },
-      ],
-    });
-  });
-
-  // ============ 草稿（DRAFT）：编辑迭代 ============
-  draftTargets.forEach((req, idx) => {
-    push({
-      requirementId: req.id, changeType: 'EDIT_FULL',
-      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(4 - idx, 9),
-      reason: '创建需求初稿，填写基本信息。',
-      changedFields: [
-        { field: 'title', label: '需求标题', oldValue: undefined, newValue: req.title },
-        { field: 'priority', label: '优先级', oldValue: undefined, newValue: req.priority },
-      ],
-    });
-    push({
-      requirementId: req.id, changeType: 'EDIT_FULL',
-      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(2 - idx, 15),
-      reason: '完善需求描述与业务范围。',
-      changedFields: [
-        { field: 'description', label: '需求描述', oldValue: '占位描述', newValue: '完整业务背景与目标说明' },
-        { field: 'form_data.scope', label: '业务范围', oldValue: '—', newValue: '试点部门' },
-      ],
-    });
-  });
-
-  // ============ 兜底：任何还没生成日志的需求，至少补一条创建记录 ============
-  const covered = new Set(changeLogStore.map((c) => c.requirementId));
-  allReqs.forEach((req, idx) => {
-    if (covered.has(req.id)) return;
-    push({
-      requirementId: req.id, changeType: 'EDIT_FULL',
-      publisherId: req.creatorId, publisherName: nameOf(req.creatorId), publishedAt: at(3 - (idx % 5), 10),
-      reason: '创建需求初稿。',
-      changedFields: [
-        { field: 'title', label: '需求标题', oldValue: undefined, newValue: req.title },
-      ],
-    });
   });
 };
 
