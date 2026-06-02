@@ -996,7 +996,7 @@
       "submitForApproval": "提交审批",
       "submitRequirement": "提交需求",
       "submitConfirmTitle": "提交审批确认",
-      "submitConfirmContent": "提交后需求将进入审批流程，确定要提交吗？",
+      "submitConfirmContent": "确认将当前【{{name}}】需求提交审批吗？",
       "submitDirectConfirmTitle": "提交需求确认",
       "submitDirectConfirmContent": "当前模板未配置审批流程，提交后将自动跳过审批，直接进入「评估」阶段。如需走审批流程，请先在「需求模板」中配置 approval_flow。",
       "submitDirectNoAssessmentContent": "当前模板未配置审批流程，也未配置评估模型，提交后将自动跳过审批与评估，直接进入「待开发」阶段。如需走审批/评估流程，请先在「审批流管理」中配置审批级与评估模型。",

@@ -1104,7 +1104,7 @@
       "submitForApproval": "Submit for Approval",
       "submitRequirement": "Submit Requirement",
       "submitConfirmTitle": "Submit for Approval",
-      "submitConfirmContent": "Once submitted, the requirement will enter the approval process. Continue?",
+      "submitConfirmContent": "Confirm submitting requirement [{{name}}] for approval?",
       "submitDirectConfirmTitle": "Submit Requirement",
       "submitDirectConfirmContent": "The active template has no approval flow. Approval will be skipped and the requirement will move directly to the Assessment stage. To enable approval, configure approval_flow in the Requirement Template.",
       "submitDirectNoAssessmentContent": "The active template has neither an approval flow nor an assessment model. Both stages will be skipped and the requirement will move directly to the Pending Development stage. Configure approval levels / assessment models under Approval Flow Management to enable them.",
