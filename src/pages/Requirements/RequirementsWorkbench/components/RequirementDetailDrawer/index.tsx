@@ -26,6 +26,7 @@ import { Lightbulb, Pencil, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X
 import { useNavigate, useLocation } from 'react-router-dom';
 import WorkspacePickerModal from './WorkspacePickerModal';
 import { statusConfigV2, isBusinessOnlyEdit, legacyStatusMap } from '../../statusConfig';
+import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import type { RequirementStatus } from '../../types';
 
 const { Text } = Typography;
@@ -179,9 +180,7 @@ const PropertyPanel = ({
       </div>
 
       {data.status === 'DRAFT' && (() => {
-        const submitLabel = hasApproval
-          ? t('requirements.detail.submitForApproval')
-          : t('requirements.detail.submitRequirement');
+        const submitLabel = t('requirements.detail.submitForApproval');
         return (
           <>
             <div className="requirement-detail-property-divider" />
@@ -197,6 +196,7 @@ const PropertyPanel = ({
                     title: hasApproval
                       ? t('requirements.detail.submitConfirmTitle')
                       : t('requirements.detail.submitDirectConfirmTitle'),
+                    content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                     okText: submitLabel,
                     cancelText: t('common.cancel'),
                     onOk: async () => {
@@ -477,9 +477,7 @@ const RequirementDetailDrawer = ({
   };
   // 成本预估完全由表单基线数据自动计算（STORY-010），无需保存回调
 
-  const submitLabel = hasApproval
-    ? t('requirements.detail.submitForApproval')
-    : t('requirements.detail.submitRequirement');
+  const submitLabel = t('requirements.detail.submitForApproval');
 
   const renderAction = (a: typeof visibleActions[number]) => {
     switch (a) {
@@ -500,6 +498,7 @@ const RequirementDetailDrawer = ({
               onClick={() => {
                 Modal.confirm({
                   title: hasApproval ? t('requirements.detail.submitConfirmTitle') : t('requirements.detail.submitDirectConfirmTitle'),
+                  content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                   okText: submitLabel,
                   cancelText: t('common.cancel'),
                   onOk: async () => {
