@@ -477,9 +477,7 @@ const RequirementDetailDrawer = ({
   };
   // 成本预估完全由表单基线数据自动计算（STORY-010），无需保存回调
 
-  const submitLabel = hasApproval
-    ? t('requirements.detail.submitForApproval')
-    : t('requirements.detail.submitRequirement');
+  const submitLabel = t('requirements.detail.submitForApproval');
 
   const renderAction = (a: typeof visibleActions[number]) => {
     switch (a) {
@@ -500,6 +498,7 @@ const RequirementDetailDrawer = ({
               onClick={() => {
                 Modal.confirm({
                   title: hasApproval ? t('requirements.detail.submitConfirmTitle') : t('requirements.detail.submitDirectConfirmTitle'),
+                  content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                   okText: submitLabel,
                   cancelText: t('common.cancel'),
                   onOk: async () => {
