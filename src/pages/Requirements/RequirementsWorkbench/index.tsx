@@ -481,9 +481,7 @@ const RequirementsWorkbench = () => {
           return <span style={{ color: 'var(--semi-color-text-2)' }}>-</span>;
         }
 
-        const submitLabel = hasApproval
-          ? t('requirements.detail.submitForApproval')
-          : t('requirements.detail.submitRequirement');
+        const submitLabel = t('requirements.detail.submitForApproval');
 
         const items: Record<typeof visible[number], React.ReactNode> = {
           edit: (
@@ -508,6 +506,7 @@ const RequirementsWorkbench = () => {
                   title: hasApproval
                     ? t('requirements.detail.submitConfirmTitle')
                     : t('requirements.detail.submitDirectConfirmTitle'),
+                  content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                   okText: submitLabel,
                   cancelText: t('common.cancel'),
                   onOk: async () => {
