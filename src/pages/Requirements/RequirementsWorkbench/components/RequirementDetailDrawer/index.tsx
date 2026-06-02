@@ -180,9 +180,7 @@ const PropertyPanel = ({
       </div>
 
       {data.status === 'DRAFT' && (() => {
-        const submitLabel = hasApproval
-          ? t('requirements.detail.submitForApproval')
-          : t('requirements.detail.submitRequirement');
+        const submitLabel = t('requirements.detail.submitForApproval');
         return (
           <>
             <div className="requirement-detail-property-divider" />
@@ -198,6 +196,7 @@ const PropertyPanel = ({
                     title: hasApproval
                       ? t('requirements.detail.submitConfirmTitle')
                       : t('requirements.detail.submitDirectConfirmTitle'),
+                    content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                     okText: submitLabel,
                     cancelText: t('common.cancel'),
                     onOk: async () => {
