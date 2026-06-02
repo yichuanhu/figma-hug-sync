@@ -20,7 +20,7 @@ import DevSchemeDocsTab from '../DevSchemeDocsTab';
 import ClassificationTagsField from '@/components/ClassificationTagsField';
 
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
-import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
+
 import './index.less';
 import { Lightbulb, Pencil, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X, Ban, PowerOff, GitBranchPlus } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -197,7 +197,6 @@ const PropertyPanel = ({
                     title: hasApproval
                       ? t('requirements.detail.submitConfirmTitle')
                       : t('requirements.detail.submitDirectConfirmTitle'),
-                    content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                     okText: submitLabel,
                     cancelText: t('common.cancel'),
                     onOk: async () => {
@@ -501,7 +500,6 @@ const RequirementDetailDrawer = ({
               onClick={() => {
                 Modal.confirm({
                   title: hasApproval ? t('requirements.detail.submitConfirmTitle') : t('requirements.detail.submitDirectConfirmTitle'),
-                  content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                   okText: submitLabel,
                   cancelText: t('common.cancel'),
                   onOk: async () => {
