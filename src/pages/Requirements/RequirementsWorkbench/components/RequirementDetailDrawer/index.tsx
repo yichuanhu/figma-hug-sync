@@ -26,6 +26,7 @@ import { Lightbulb, Pencil, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X
 import { useNavigate, useLocation } from 'react-router-dom';
 import WorkspacePickerModal from './WorkspacePickerModal';
 import { statusConfigV2, isBusinessOnlyEdit, legacyStatusMap } from '../../statusConfig';
+import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import type { RequirementStatus } from '../../types';
 
 const { Text } = Typography;
