@@ -2177,9 +2177,9 @@ let devSchemeDocSeeded = false;
 const seedDevSchemeDocs = () => {
   if (devSchemeDocSeeded) return;
   devSchemeDocSeeded = true;
-  const targets = mockRequirementData
-    .filter((r) => ['DEVELOPING', 'LAUNCHED', 'OFFLINE'].includes(r.status))
-    .slice(0, 3);
+  const targets = mockRequirementData.filter((r) =>
+    ['DEVELOPING', 'LAUNCHED', 'OFFLINE'].includes(r.status),
+  );
   const now = Date.now();
   const daysAgo = (n: number) => new Date(now - n * 86400_000).toISOString();
   targets.forEach((req, i) => {
@@ -2195,24 +2195,43 @@ const seedDevSchemeDocs = () => {
       fileUrl: `mock://dev-scheme/${req.id}/v1`,
       uploadedBy: uploaderId,
       uploaderName,
-      uploadedAt: daysAgo(7 + i),
+      uploadedAt: daysAgo(7 + (i % 5)),
       note: '初版开发方案，与业务方对齐主流程及异常分支。',
       isDeleted: false,
     });
-    devSchemeDocStore.push({
-      id: `dsd-${req.id}-2`,
-      requirementId: req.id,
-      version: 2,
-      fileName: `scheme-v2.pdf`,
-      fileSize: 3_812_745,
-      fileType: 'PDF',
-      fileUrl: `mock://dev-scheme/${req.id}/v2`,
-      uploadedBy: uploaderId,
-      uploaderName,
-      uploadedAt: daysAgo(2 + i),
-      note: '新增银行回执校对环节，调整第 3 步抓取规则。',
-      isDeleted: false,
-    });
+    // 仅给前若干条加 v2，制造多版本场景
+    if (i % 2 === 0) {
+      devSchemeDocStore.push({
+        id: `dsd-${req.id}-2`,
+        requirementId: req.id,
+        version: 2,
+        fileName: `scheme-v2.pdf`,
+        fileSize: 3_812_745,
+        fileType: 'PDF',
+        fileUrl: `mock://dev-scheme/${req.id}/v2`,
+        uploadedBy: uploaderId,
+        uploaderName,
+        uploadedAt: daysAgo(2 + (i % 3)),
+        note: '新增银行回执校对环节，调整第 3 步抓取规则。',
+        isDeleted: false,
+      });
+    }
+    if (i % 3 === 0) {
+      devSchemeDocStore.push({
+        id: `dsd-${req.id}-3`,
+        requirementId: req.id,
+        version: 3,
+        fileName: `scheme-v3.md`,
+        fileSize: 18_240,
+        fileType: 'MD',
+        fileUrl: `mock://dev-scheme/${req.id}/v3`,
+        uploadedBy: uploaderId,
+        uploaderName,
+        uploadedAt: daysAgo(1),
+        note: '补充上线前 Checklist 与回滚预案。',
+        isDeleted: false,
+      });
+    }
   });
 };
 
