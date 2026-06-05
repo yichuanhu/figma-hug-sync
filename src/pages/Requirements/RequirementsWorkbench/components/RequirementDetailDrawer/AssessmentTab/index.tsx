@@ -374,13 +374,6 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
               <>
                 <div className="assessment-cards-row">
                   {renderModelCard(
-                    valueModel,
-                    record.value_answers,
-                    record.value_score,
-                    editable,
-                    (key, p) => patchAnswer(idx, 'value', key, p),
-                  )}
-                  {renderModelCard(
                     complexityModel,
                     record.complexity_answers,
                     record.complexity_score,
@@ -391,9 +384,9 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
 
                 <div className="assessment-result">
                   <div className="assessment-result-row">
-                    <Text type="tertiary">净得分（价值 − 复杂度）</Text>
+                    <Text type="tertiary">复杂度得分</Text>
                     <Title heading={4} style={{ margin: 0 }}>
-                      {(record.value_score - record.complexity_score).toFixed(2)}
+                      {record.complexity_score.toFixed(2)}
                     </Title>
                   </div>
                   <div className="assessment-result-row">
