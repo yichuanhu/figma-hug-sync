@@ -295,7 +295,6 @@ const generateMockDetailedAssessment = (
   const flow = getActiveAssessmentFlowForDepartment(departmentId);
   if (!flow) return undefined;
 
-  const valueModel = flow.models.find((m) => m.type === 'value')!;
   const complexityModel = flow.models.find((m) => m.type === 'complexity')!;
   const mockUsers = [
     { id: 'user-001', name: '张技术' },
