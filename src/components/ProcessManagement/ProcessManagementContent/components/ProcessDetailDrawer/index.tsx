@@ -366,6 +366,27 @@ const ProcessDetailDrawer = ({
     [processData?.id, lifecycleTick],
   );
 
+  // 异步加载「关联需求」brief（用于在基本信息中显示需求编号/标题）
+  useEffect(() => {
+    const reqId = processData?.requirement_id;
+    if (!reqId) {
+      setRequirementBrief(null);
+      return;
+    }
+    let cancelled = false;
+    import('@/pages/Requirements/RequirementsProjects/mockData').then(({ fetchRequirementBriefByIds }) =>
+      fetchRequirementBriefByIds([reqId]).then((list) => {
+        if (cancelled) return;
+        setRequirementBrief(list[0] || null);
+      }),
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [processData?.requirement_id]);
+
+
+
   // 版本数据按版本号降序排列
   const sortedVersionData = useMemo(() => {
     const data = [...versionData];
