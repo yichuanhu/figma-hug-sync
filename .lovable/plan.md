@@ -1,34 +1,51 @@
-## 需求评估添加「拒绝」按钮
+## 优化目标
 
-在需求评估 Tab 的本级操作区，于"提交本级评估"按钮旁新增「拒绝」按钮，点击后将整个需求置为 `REJECTED`（已拒绝），并终止后续评估流程。
+当前 `EditProcessModal` 字段较多（基本信息 + 归属 + 交付信息共 9 个），全部平铺在 520px 弹窗内，视觉密度高、层级不清；底部按钮也未完全对齐 FormModal 规范。建议两项最有性价比的优化：
 
-### 改动范围
+### 1. 按语义分组重构（最主要改动）
 
-- `src/pages/Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/AssessmentTab/index.tsx`
-- `src/pages/Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/AssessmentTab/index.less`（按钮并排布局微调）
-- 详情抽屉父层：复用现有 `onSaveAssessment` 通道，扩展为可携带状态变更标记，由父组件写回 `requirement.status = 'REJECTED'`（如无现成入口，则新增 `onReject` 回调贯穿至列表页 mockData 更新器）
+参考记忆 `mem://style/modal/form-layout-preference`（字段 > 6 时应使用分组），将字段拆分为两个清晰区块：
 
-### 交互细节
+```
+┌─ 基本信息 ─────────────────┐
+│  流程名称 *                │
+│  描述                      │
+│  关联需求                  │
+│  归属部门 *                │
+│  归属者 *                  │
+└────────────────────────────┘
 
-- 按钮位置：当前 `assessment-result-submit` 上方区域，改为两按钮并排：
-  - 左侧：`Button theme="light" type="danger"` 文案「拒绝」
-  - 右侧：`Button theme="solid" type="primary"` 文案「提交本级评估」
-- 拒绝点击：
-  1. `Modal.confirm` 二次确认（"拒绝后该需求将终止评估流程，是否继续？"）
-  2. 确认后：
-     - 当前 record 标记 `status='completed'`、`feasibility='not_feasible'`、写入 `assessor_id/name/assessed_at`，`comment` 取当前文本框内容（可为空）
-     - 其余 pending record 保持 pending
-     - 通过父回调将需求 `status` 置为 `REJECTED`
-     - Toast 提示「需求已拒绝」
-- 不强制要求填写拒绝说明（用户未答），仅复用当前评估说明文本框；后续如需必填可再补强。
+┌─ 交付信息 ─────────────────┐
+│  开发工程师                │
+│  代码审核员                │
+│  开发完成时间              │
+│  部署上线时间              │
+│  流程下线时间              │
+└────────────────────────────┘
+```
 
-### 仅 UI/前端
+- 复用 `FormModal` 已有的 `form-modal-section` + `form-modal-section-title`（左侧 3×14 竖条 + 标题）的视觉，在 `EditProcessModal` 内部用相同 DOM 结构实现，保证与项目其它弹窗一致。
+- 删除当前裸文本的 `edit-process-modal-section-title`（"交付信息"），改用标准分组头。
+- 在"基本信息"区块上方不再加标题（默认区块），仅"交付信息"作为可视化分组，避免视觉冗余。
 
-- 不动后端 API、不动审批流。
-- 仅 mock 数据流变更：在列表层 `RequirementsAssessment` 页面接收拒绝事件并 patch `status: 'REJECTED'`。
+### 2. 底部按钮规范化
 
-### 验收
+- 当前已是「取消(light) + 保存(solid primary)」，保留；
+- 统一 footer 间距：`padding-top: 20px; margin-top: 20px; border-top: 1px solid var(--semi-color-border)`，对齐 `form-modal-footer` 规范；
+- 移除 `padding-bottom: 12px`（Modal 自带 padding）。
 
-- 评估 Tab 在当前用户可编辑级别下展示「拒绝」+「提交本级评估」两个按钮。
-- 点击「拒绝」→ 确认弹窗 → 需求状态变为「已拒绝」，抽屉/列表标签同步刷新。
-- 已完成或他人负责的级别不显示拒绝按钮。
+### 3. 内容区滚动约束
+
+- 给表单内容包裹 `max-height: calc(100vh - 300px); overflow-y: auto`，避免在小屏（如 1305×853）下弹窗超出视口；底部按钮固定在可视区下方，与 `FormModal` 行为一致。
+
+## 不做的事
+
+- 不改弹窗宽度（保持 520px，与项目 Modal 规范一致）；
+- 不改字段顺序（已符合 Name → Dept → Owner → Desc 规范）；
+- 不改任何业务/校验逻辑、不动 mock 数据；
+- 不折叠交付信息（折叠会让"编辑时不知道有这些字段"，反而降低可发现性）。
+
+## 涉及文件
+
+- `src/components/ProcessManagement/ProcessManagementContent/components/EditProcessModal/index.tsx`：包裹两个分组容器，调整 DOM 结构。
+- `src/components/ProcessManagement/ProcessManagementContent/components/EditProcessModal/index.less`：新增 `-section` / `-section-title` / `-content` 样式，更新 `-footer` 边距，删除旧的 `-section-title` 裸样式。
