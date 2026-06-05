@@ -831,26 +831,54 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                   ]}
                 />
               )}
-              {/* 调度中心不显示筛选 */}
-              {!isSchedulingContext && (
-                <FilterPopover
-                  visible={filterPopoverVisible}
-                  onVisibleChange={setFilterPopoverVisible}
-                  onConfirm={(values) => {
+              <FilterPopover
+                visible={filterPopoverVisible}
+                onVisibleChange={setFilterPopoverVisible}
+                onConfirm={(values) => {
+                  if (!isSchedulingContext) {
                     setStatusFilter((values.status as string[]) || []);
-                    setQueryParams((prev) => ({ ...prev, offset: 0 }));
-                  }}
-                  sections={[
-                    {
-                      key: 'status',
-                      label: t('common.status'),
-                      type: 'checkbox',
-                      options: statusOptions,
-                      value: statusFilter,
-                    },
-                  ]}
-                />
-              )}
+                  }
+                  setOsFilter((values.os as string[]) || []);
+                  setDeveloperFilter((values.developer as string[]) || []);
+                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                }}
+                sections={[
+                  ...(!isSchedulingContext
+                    ? [
+                        {
+                          key: 'status',
+                          label: t('common.status'),
+                          type: 'checkbox' as const,
+                          options: statusOptions,
+                          value: statusFilter,
+                        },
+                      ]
+                    : []),
+                  {
+                    key: 'os',
+                    label: '适用操作系统',
+                    type: 'checkbox' as const,
+                    options: [
+                      { value: 'Windows', label: 'Windows' },
+                      { value: 'Linux', label: 'Linux' },
+                      { value: 'macOS', label: 'macOS' },
+                    ],
+                    value: osFilter,
+                  },
+                  {
+                    key: 'developer',
+                    label: '开发工程师',
+                    type: 'multiSelect' as const,
+                    placeholder: '请选择开发工程师',
+                    options: BASIC_INFO_USER_POOL.map((u) => ({
+                      value: u.id,
+                      label: u.department ? `${u.name} · ${u.department}` : u.name,
+                    })),
+                    value: developerFilter,
+                  },
+                ]}
+              />
+
             </Space>
           </Col>
           <Col>
