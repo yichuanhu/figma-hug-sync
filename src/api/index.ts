@@ -60,6 +60,10 @@ export interface LYCreateProcessRequest {
   requirement_id?: string | null;
   /** 归属部门ID */
   owning_department_id?: string | null;
+  /** 开发工程师ID列表 */
+  developer_ids?: string[] | null;
+  /** 适用操作系统 */
+  os?: string | null;
 }
 
 /**
