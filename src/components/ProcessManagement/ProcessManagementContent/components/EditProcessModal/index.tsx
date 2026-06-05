@@ -163,7 +163,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       // 写入交付信息：开发工程师 / 代码审核员
       updateProcessBasicInfo(processData.id, {
         developer_id: developerId,
-        code_reviewer_ids: Array.from(new Set(codeReviewerIds)),
+        code_reviewer_id: codeReviewerId,
       });
 
       // 写入生命周期时间（仅对发生变更的字段调用 adjust）
