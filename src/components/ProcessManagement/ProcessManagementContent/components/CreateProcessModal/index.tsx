@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast, Button, Select, Input } from '@douyinfe/semi-ui';
 import type { LYCreateProcessRequest, LYProcessResponse } from '@/api';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
+import { BASIC_INFO_USER_POOL } from '@/mocks/processBasicInfo';
 import {
   fetchAllLinkableRequirements,
   type LinkableRequirementBrief,
@@ -28,6 +29,12 @@ interface BuildContext {
   requirement?: LinkableRequirementBrief;
 }
 
+const OS_OPTIONS = [
+  { value: 'Windows', label: 'Windows' },
+  { value: 'Linux', label: 'Linux' },
+  { value: 'macOS', label: 'macOS' },
+];
+
 const generateMockLYProcessResponse = (
   request: LYCreateProcessRequest,
   ctx: BuildContext,
@@ -50,6 +57,8 @@ const generateMockLYProcessResponse = (
     owning_department_name: ctx.owningDepartmentName,
     owner_id: ctx.ownerId,
     owner_name: ctx.ownerName,
+    developer_ids: request.developer_ids ?? null,
+    os: request.os ?? null,
   };
 };
 
@@ -162,6 +171,8 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         description: (values.description as string) || undefined,
         owning_department_id: effectiveDepartmentId,
         requirement_id: selectedRequirement?.id,
+        developer_ids: (values.developer_ids as string[] | undefined) || undefined,
+        os: (values.os as string | undefined) || undefined,
       };
 
       await new Promise((resolve) => setTimeout(resolve, 300));
@@ -280,6 +291,29 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
             />
           )}
         </Form.Slot>
+
+        <Form.Select
+          field="developer_ids"
+          label={t('development.processDevelopment.createModal.fields.developerLabel')}
+          placeholder={t('development.processDevelopment.createModal.fields.developerPlaceholder')}
+          multiple
+          filter
+          showClear
+          optionList={BASIC_INFO_USER_POOL.map((u) => ({
+            value: u.id,
+            label: u.department ? `${u.name} · ${u.department}` : u.name,
+          }))}
+          style={{ width: '100%' }}
+        />
+
+        <Form.Select
+          field="os"
+          label={t('development.processDevelopment.createModal.fields.osLabel')}
+          placeholder={t('development.processDevelopment.createModal.fields.osPlaceholder')}
+          showClear
+          optionList={OS_OPTIONS}
+          style={{ width: '100%' }}
+        />
 
         <div className="create-process-modal-footer">
           <Button theme="light" onClick={onCancel}>

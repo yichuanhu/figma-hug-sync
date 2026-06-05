@@ -1733,7 +1733,11 @@
           "requirementGlobalEmpty": "No linkable requirements (only requirements within a project can be linked)",
           "requirementHelp": "Only shows requirements linked to this workspace and not yet bound to any process",
           "requirementAutoFillHelp": "After selecting a requirement, owning department, workspace and owner will be auto-filled",
-          "autoFillPlaceholder": "Auto-filled after selecting a linked requirement"
+          "autoFillPlaceholder": "Auto-filled after selecting a linked requirement",
+          "developerLabel": "Developers",
+          "developerPlaceholder": "Select developers (multiple)",
+          "osLabel": "Applicable OS",
+          "osPlaceholder": "Select applicable OS"
         },
         "validation": {
           "nameRequired": "Please enter process name",

@@ -60,6 +60,10 @@ export interface LYCreateProcessRequest {
   requirement_id?: string | null;
   /** 归属部门ID */
   owning_department_id?: string | null;
+  /** 开发工程师ID列表 */
+  developer_ids?: string[] | null;
+  /** 适用操作系统 */
+  os?: string | null;
 }
 
 /**
@@ -375,6 +379,10 @@ export interface LYProcessResponse {
   owner_id?: string | null;
   /** 归属者名称 */
   owner_name?: string | null;
+  /** 开发工程师ID列表 */
+  developer_ids?: string[] | null;
+  /** 适用操作系统 */
+  os?: string | null;
   /** 资源依赖列表（流程级别） */
   dependencies?: LYProcessDependency[];
   /** 预估总工时（人天），允许小数1位 */
