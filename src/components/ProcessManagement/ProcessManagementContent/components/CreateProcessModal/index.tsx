@@ -171,6 +171,8 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         description: (values.description as string) || undefined,
         owning_department_id: effectiveDepartmentId,
         requirement_id: selectedRequirement?.id,
+        developer_ids: (values.developer_ids as string[] | undefined) || undefined,
+        os: (values.os as string | undefined) || undefined,
       };
 
       await new Promise((resolve) => setTimeout(resolve, 300));
