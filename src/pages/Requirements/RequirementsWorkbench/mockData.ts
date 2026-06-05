@@ -269,7 +269,7 @@ const generateMockRequirements = (): RequirementItem[] => {
       linkedWorkspace: generateMockLinkedWorkspace(tpl.status, index),
       unboundProcessCount: generateMockUnboundCount(tpl.status, index),
       approvalFlowConfig: generateMockApprovalFlow(tpl.status, { creatorId: tpl.creatorId, owning_department_id: tpl.owning_department_id }),
-      value_score: hasScores ? mockScore(index, 50, 50) : undefined,
+      value_score: undefined,
       complexity_score: hasScores ? mockScore(index + 7, 30, 60) : undefined,
       version: 1,
       createdAt: createDate.toISOString(),
