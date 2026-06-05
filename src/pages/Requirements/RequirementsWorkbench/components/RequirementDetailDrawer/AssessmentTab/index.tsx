@@ -12,6 +12,7 @@ import {
   Button,
   Empty,
   InputNumber,
+  Modal,
   RadioGroup,
   Radio,
   Select,
@@ -43,6 +44,7 @@ const { Text, Title } = Typography;
 interface Props {
   data: RequirementItem;
   onSaveAssessment: (id: string, assessment: DetailedAssessment) => Promise<void>;
+  onRejectAssessment?: (id: string, assessment: DetailedAssessment) => Promise<void>;
   forceReadonly?: boolean;
 }
 
@@ -81,7 +83,7 @@ const matchNumericTier = (dim: AssessmentDimension, n: number | undefined) => {
 const weightedSum = (answers: DimensionAnswer[]) =>
   Number(answers.reduce((s, a) => s + a.score * a.weight, 0).toFixed(2));
 
-const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
+const AssessmentTab = ({ data, onSaveAssessment, onRejectAssessment, forceReadonly }: Props) => {
   const { t } = useTranslation();
 
   const flow = useMemo(
@@ -118,6 +120,50 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
   useEffect(() => setAssessment(initialAssessment), [initialAssessment]);
 
   const [submitting, setSubmitting] = useState(false);
+  const [rejecting, setRejecting] = useState(false);
+
+  const handleRejectLevel = (recordIdx: number) => {
+    const record = assessment?.records[recordIdx];
+    if (!record || !assessment) return;
+    Modal.confirm({
+      title: '确认拒绝该需求？',
+      content: '拒绝后将终止后续评估流程，需求状态将变更为「已拒绝」。',
+      okText: '确认拒绝',
+      cancelText: '取消',
+      okButtonProps: { type: 'danger' },
+      onOk: async () => {
+        setRejecting(true);
+        try {
+          const completed: LevelAssessmentRecord = {
+            ...record,
+            status: 'completed',
+            feasibility: 'not_feasible',
+            assessor_id: MOCK_CURRENT_USER_ID,
+            assessor_name: 'Angela Wu',
+            assessed_at: new Date().toISOString(),
+          };
+          const nextRecords = assessment.records.map((r, i) => (i === recordIdx ? completed : r));
+          const next: DetailedAssessment = {
+            ...assessment,
+            records: nextRecords,
+            feasibility: 'not_feasible',
+            netScore: Number((completed.value_score - completed.complexity_score).toFixed(2)),
+            assessorId: completed.assessor_id,
+            assessorName: completed.assessor_name,
+            assessedAt: completed.assessed_at,
+          };
+          if (onRejectAssessment) {
+            await onRejectAssessment(data.id, next);
+          } else {
+            await onSaveAssessment(data.id, next);
+          }
+          Toast.success('需求已拒绝');
+        } finally {
+          setRejecting(false);
+        }
+      },
+    });
+  };
 
   if (!flow || !assessment) {
     return (
@@ -411,16 +457,26 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
                         showClear
                         className="assessment-result-textarea"
                       />
-                      <Button
-                        theme="solid"
-                        type="primary"
-                        loading={submitting}
-                        onClick={() => handleSubmitLevel(idx)}
-                        className="assessment-result-submit"
-                        block
-                      >
-                        提交本级评估
-                      </Button>
+                      <div className="assessment-result-actions">
+                        <Button
+                          theme="light"
+                          type="danger"
+                          loading={rejecting}
+                          disabled={submitting}
+                          onClick={() => handleRejectLevel(idx)}
+                        >
+                          拒绝
+                        </Button>
+                        <Button
+                          theme="solid"
+                          type="primary"
+                          loading={submitting}
+                          disabled={rejecting}
+                          onClick={() => handleSubmitLevel(idx)}
+                        >
+                          提交本级评估
+                        </Button>
+                      </div>
                     </>
                   ) : (
                     (record.comment || record.assessor_name) && (

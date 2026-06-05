@@ -1,49 +1,34 @@
-## 目标
+## 需求评估添加「拒绝」按钮
 
-把任务列表顶部筛选区从当前 3 行压到 **一行**，且"创建时间区间"保持常驻（不收纳进筛选弹层）。
+在需求评估 Tab 的本级操作区，于"提交本级评估"按钮旁新增「拒绝」按钮，点击后将整个需求置为 `REJECTED`（已拒绝），并终止后续评估流程。
 
-## 现状
+### 改动范围
 
-一行需容纳：搜索 + 流程 + 任务状态 + 归属部门 + 创建时间区间 + 筛选按钮（左侧组），右侧：刷新 + 新建任务。当前用 `Space wrap` 在 847px 视口下换成 3 行，所以"不好看"。
+- `src/pages/Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/AssessmentTab/index.tsx`
+- `src/pages/Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/AssessmentTab/index.less`（按钮并排布局微调）
+- 详情抽屉父层：复用现有 `onSaveAssessment` 通道，扩展为可携带状态变更标记，由父组件写回 `requirement.status = 'REJECTED'`（如无现成入口，则新增 `onReject` 回调贯穿至列表页 mockData 更新器）
 
-## 调整方案
+### 交互细节
 
-仅改 `src/pages/Scheduling/TaskManagement/TaskManagementPage/index.tsx` 与 `index.less`。
+- 按钮位置：当前 `assessment-result-submit` 上方区域，改为两按钮并排：
+  - 左侧：`Button theme="light" type="danger"` 文案「拒绝」
+  - 右侧：`Button theme="solid" type="primary"` 文案「提交本级评估」
+- 拒绝点击：
+  1. `Modal.confirm` 二次确认（"拒绝后该需求将终止评估流程，是否继续？"）
+  2. 确认后：
+     - 当前 record 标记 `status='completed'`、`feasibility='not_feasible'`、写入 `assessor_id/name/assessed_at`，`comment` 取当前文本框内容（可为空）
+     - 其余 pending record 保持 pending
+     - 通过父回调将需求 `status` 置为 `REJECTED`
+     - Toast 提示「需求已拒绝」
+- 不强制要求填写拒绝说明（用户未答），仅复用当前评估说明文本框；后续如需必填可再补强。
 
-### 1. 布局结构改造
-- 抛弃 `Row + Col + Space wrap` 双栏结构，改用一个单行 flex 容器 `.task-management-page-toolbar`，`display: flex; gap: 8px; align-items: center; flex-wrap: nowrap;`。
-- 左侧筛选组 `.toolbar-filters`：`display: flex; gap: 8px; flex: 1; min-width: 0;`（允许整体伸缩，内部允许子项收缩）。
-- 右侧操作组 `.toolbar-actions`：`flex-shrink: 0;`，放刷新 + 新建任务。
+### 仅 UI/前端
 
-### 2. 各控件宽度调整（紧凑化以容纳一行）
-- 搜索任务 ID：`flex: 1 1 200px; min-width: 160px; max-width: 280px`（自适应剩余空间）。
-- 流程：`width: 132px`。
-- 任务状态：`width: 120px`。
-- 归属部门：`width: 140px`（保留 `useNameAsValue`、`maxTagCount={1}`）。
-- 创建时间区间 `DatePicker dateTimeRange`：
-  - 占位从两段中文简化为 `['开始时间', '结束时间']`。
-  - 宽度 `width: 260px`，开启 `density="compact"`，确保两段时间能展示。
-- 筛选按钮：保持原样（带 badge）。
-- 刷新：保留图标+文字。
-- 新建任务：保留主按钮。
+- 不动后端 API、不动审批流。
+- 仅 mock 数据流变更：在列表层 `RequirementsAssessment` 页面接收拒绝事件并 patch `status: 'REJECTED'`。
 
-### 3. 文本与图标层面
-- 所有 Select 的 `maxTagCount={1}`，多选时只显示 1 个 + 数字 chip，避免撑宽。
-- 创建时间 DatePicker 旁不再额外加 Label，依靠 placeholder 表意。
-- 不引入新的下拉项目，不动 FilterPopover 内容。
+### 验收
 
-### 4. 极窄视口兜底
-- 当容器宽度低于阈值（约 980px）时通过 less 媒体查询：
-  - 搜索框 `min-width: 120px`，让其继续收缩；
-  - 时间区间 `width: 220px`；
-  - 其它下拉 `width: 108px`。
-- 仍优先保证一行不换行；只有在极端窄宽（<760px）时才允许 wrap 兜底。
-
-### 5. 不改动
-- FilterPopover 内的项目（执行目标 / 优先级 / 触发来源 / 触发器 / 执行状态 / 录屏 / 截图）不动。
-- 活动筛选 chips 行、批量取消栏、表格、Mock 数据全部不动。
-- 不新增 i18n。
-
-## 验证
-
-在 847px 视口下检查：搜索、流程、任务状态、归属部门、创建时间、筛选按钮、刷新、新建任务全部在同一行展示且不换行；点击日期选择能选出区间；筛选/清除全部行为与现状一致。
+- 评估 Tab 在当前用户可编辑级别下展示「拒绝」+「提交本级评估」两个按钮。
+- 点击「拒绝」→ 确认弹窗 → 需求状态变为「已拒绝」，抽屉/列表标签同步刷新。
+- 已完成或他人负责的级别不显示拒绝按钮。
