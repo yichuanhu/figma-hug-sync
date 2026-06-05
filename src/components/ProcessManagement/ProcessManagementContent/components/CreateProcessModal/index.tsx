@@ -29,6 +29,12 @@ interface BuildContext {
   requirement?: LinkableRequirementBrief;
 }
 
+const OS_OPTIONS = [
+  { value: 'Windows', label: 'Windows' },
+  { value: 'Linux', label: 'Linux' },
+  { value: 'macOS', label: 'macOS' },
+];
+
 const generateMockLYProcessResponse = (
   request: LYCreateProcessRequest,
   ctx: BuildContext,
@@ -51,6 +57,8 @@ const generateMockLYProcessResponse = (
     owning_department_name: ctx.owningDepartmentName,
     owner_id: ctx.ownerId,
     owner_name: ctx.ownerName,
+    developer_ids: request.developer_ids ?? null,
+    os: request.os ?? null,
   };
 };
 
