@@ -42,7 +42,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
   // 交付信息字段
   const [os, setOs] = useState<string | undefined>(undefined);
   const [developerId, setDeveloperId] = useState<string | null>(null);
-  const [codeReviewerIds, setCodeReviewerIds] = useState<string[]>([]);
+  const [codeReviewerId, setCodeReviewerId] = useState<string | null>(null);
   const [developmentCompletedAt, setDevelopmentCompletedAt] = useState<Date | null>(null);
   const [deployedAt, setDeployedAt] = useState<Date | null>(null);
   const [offlineAt, setOfflineAt] = useState<Date | null>(null);
