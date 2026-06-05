@@ -27,7 +27,7 @@ import { getDepartmentName } from '@/mocks/departmentData';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
-import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
+import { ExternalLink, HelpCircle, Link, Link2, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
