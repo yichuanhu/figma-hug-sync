@@ -130,7 +130,6 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
     );
   }
 
-  const valueModel = flow.models.find((m) => m.type === 'value')!;
   const complexityModel = flow.models.find((m) => m.type === 'complexity')!;
 
   /** 当前用户可编辑的级别 */
