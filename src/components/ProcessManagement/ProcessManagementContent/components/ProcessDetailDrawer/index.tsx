@@ -576,7 +576,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
               '代码审核员',
               '代码审核员可手工维护；若为空且发布审批存在"代码审核"节点，将在该节点审批通过后自动写入。',
             ),
-            value: renderPeopleValue(basicInfo.code_reviewer_ids),
+            value: renderPeopleValue(basicInfo.code_reviewer_id ? [basicInfo.code_reviewer_id] : []),
           },
         ]
       : []),
