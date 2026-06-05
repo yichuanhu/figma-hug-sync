@@ -1,31 +1,35 @@
-在流程详情抽屉的「基本信息」区块增加「关联需求」展示行。
+## 目标
 
-## 背景
-流程列表已支持「关联需求」列展示与筛选；详情抽屉（ProcessDetailDrawer）的「基本信息」区块目前缺少该字段。
+将「代码审核员」字段由多选改为单选，与「开发工程师」保持一致。
 
-## 变更范围
-仅修改 `ProcessDetailDrawer` 组件，不涉及 API 类型、编辑弹窗或列表逻辑。
+## 影响范围
 
-## 实施要点
+仅前端字段与展示调整，不改业务流程逻辑。
 
-### 1. 新增需求信息查询能力
-- 详情抽屉接收的是单个 `LYProcessResponse` 对象，其中仅有 `requirement_id` 字符串，不含需求标题/编号。
-- 方案：在 `ProcessDetailDrawer` 内部通过动态 `import('@/pages/Requirements/RequirementsProjects/mockData')` 调用 `fetchRequirementBriefByIds`，异步获取当前 `processData.requirement_id` 对应的 brief 信息（参考列表页已有做法）。
-- 使用 `useEffect` + `useState` 管理异步加载状态，避免同步阻塞渲染。
+### 1. 数据层 `src/mocks/processBasicInfo.ts`
+- `ProcessBasicInfo.code_reviewer_ids: string[]` → `code_reviewer_id: string | null`
+- 种子数据：`code_reviewer_ids: ['user-007']` → `code_reviewer_id: 'user-007'`
+- `updateProcessBasicInfo` 的 `Pick` 类型对应改为 `code_reviewer_id`
+- `writeCodeReviewerFromApproval`：判空改为 `prev.code_reviewer_id` 为空才写入；写入值改为 `approverId`（字符串，不再是数组）
 
-### 2. 「基本信息」增加「关联需求」行
-- 在 `basicGroupData` 数组中插入一项，key 为「关联需求」。
-- value 展示逻辑与列表列保持一致：
-  - 无 `requirement_id`：显示 `-`（Text type="tertiary"）
-  - 有 `requirement_id`：蓝色 Tag，前缀 Link2 图标，内容为 `[req_no] title` 或 `title`，点击后 `navigate('/requirements/list', { state: { openRequirementId: reqId } })` 跳转到需求详情。
-  - 加载中：显示简短 loading 状态或保持 `-`。
+### 2. 编辑弹窗 `EditProcessModal/index.tsx`
+- 状态：`codeReviewerIds: string[]` → `codeReviewerId: string | null`
+- 初始化：`setCodeReviewerId(basicInfo.code_reviewer_id ?? null)`
+- 提交：`code_reviewer_id: codeReviewerId`（去掉 `Array.from(new Set(...))`）
+- 第 392-… 的 `Form.Slot` 中 `Select`：去掉 `multiple`，placeholder 改为「请选择代码审核员」，`value`/`onChange` 改为单值
 
-### 3. 样式与交互
-- 完全复用列表列中的 Tag + Link2 + ellipsis 样式模式。
-- 点击跳转使用 `useNavigate` 或 window 导航，与列表列行为一致。
+### 3. 基本信息单字段编辑弹窗 `BasicInfoEditModal/index.tsx`
+- 移除 `code_reviewer_ids` 分支的多选逻辑：`isMulti` 删除
+- `field: 'developer_id' | 'code_reviewer_id'`
+- `initialValue: string | null`
+- 提交统一用单值写回 `updateProcessBasicInfo`
+- 调用方（详情抽屉中触发该编辑的入口）若传 `'code_reviewer_ids'` 一并改为 `'code_reviewer_id'`
 
-## 无变更项
-- `LYProcessResponse` / `LYCreateProcessRequest` API 类型（已有 `requirement_id`）
-- 编辑弹窗 `EditProcessModal`（已有关联需求字段）
-- 列表页筛选/列展示
-- Mock 数据生成逻辑
+### 4. 详情抽屉 `ProcessDetailDrawer/index.tsx`
+- 第 579 行：`renderPeopleValue(basicInfo.code_reviewer_ids)` → `renderPeopleValue(basicInfo.code_reviewer_id ? [basicInfo.code_reviewer_id] : [])`
+- 检查并更新打开 `BasicInfoEditModal` 时传入的 `field` 与 `initialValue`，改为单值
+
+## 不改动
+- API 类型（该字段仅在 mock 层）
+- 流程列表、筛选、需求/部门联动
+- 创建弹窗（本无该字段）
