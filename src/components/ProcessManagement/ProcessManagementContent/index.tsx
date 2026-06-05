@@ -905,8 +905,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
             rowKey="id"
             empty={
               <EmptyState 
-                variant={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0 || requirementFilter.length > 0) ? 'noResult' : 'noData'}
-                description={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0 || requirementFilter.length > 0) ? t('common.noResult') : t('development.processDevelopment.noData')} 
+                variant={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0 || requirementFilter.length > 0 || osFilter.length > 0 || developerFilter.length > 0) ? 'noResult' : 'noData'}
+                description={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0 || requirementFilter.length > 0 || osFilter.length > 0 || developerFilter.length > 0) ? t('common.noResult') : t('development.processDevelopment.noData')} 
               />
             }
             onRow={(record) => {
