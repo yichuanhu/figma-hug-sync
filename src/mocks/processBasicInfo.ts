@@ -79,7 +79,7 @@ export const getProcessBasicInfo = (processId: string): ProcessBasicInfo => {
 
 export const updateProcessBasicInfo = (
   processId: string,
-  patch: Partial<Pick<ProcessBasicInfo, 'developer_id' | 'code_reviewer_ids'>>,
+  patch: Partial<Pick<ProcessBasicInfo, 'developer_id' | 'code_reviewer_id'>>,
   source: string = 'manual',
 ): ProcessBasicInfo => {
   const prev = ensureSeeded(processId);
