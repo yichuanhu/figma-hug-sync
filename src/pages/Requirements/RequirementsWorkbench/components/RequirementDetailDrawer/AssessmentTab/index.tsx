@@ -459,22 +459,24 @@ const AssessmentTab = ({ data, onSaveAssessment, onRejectAssessment, forceReadon
                       />
                       <div className="assessment-result-actions">
                         <Button
-                          theme="light"
-                          type="danger"
-                          loading={rejecting}
-                          disabled={submitting}
-                          onClick={() => handleRejectLevel(idx)}
-                        >
-                          拒绝
-                        </Button>
-                        <Button
                           theme="solid"
                           type="primary"
                           loading={submitting}
                           disabled={rejecting}
                           onClick={() => handleSubmitLevel(idx)}
+                          block
                         >
                           提交本级评估
+                        </Button>
+                        <Button
+                          theme="solid"
+                          type="danger"
+                          loading={rejecting}
+                          disabled={submitting}
+                          onClick={() => handleRejectLevel(idx)}
+                          block
+                        >
+                          拒绝
                         </Button>
                       </div>
                     </>
