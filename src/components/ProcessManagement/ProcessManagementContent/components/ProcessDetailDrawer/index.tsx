@@ -494,6 +494,36 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       key: t('development.processDevelopment.createModal.fields.osLabel'),
       value: processData.os ? <Text>{processData.os}</Text> : <Text type="tertiary">-</Text>,
     },
+    {
+      key: t('development.processDevelopment.fields.linkedRequirement'),
+      value: (() => {
+        const reqId = processData.requirement_id;
+        if (!reqId) return <Text type="tertiary">-</Text>;
+        const label = requirementBrief
+          ? (requirementBrief.req_no ? `[${requirementBrief.req_no}] ${requirementBrief.title}` : requirementBrief.title)
+          : reqId;
+        return (
+          <Tag
+            color="blue"
+            type="light"
+            prefixIcon={<Link2 size={12} strokeWidth={2} />}
+            style={{ maxWidth: 240, cursor: 'pointer' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate('/requirements/list', { state: { openRequirementId: reqId } });
+            }}
+          >
+            <Text
+              ellipsis={{ showTooltip: { opts: { content: label } } }}
+              size="small"
+              style={{ maxWidth: 210, color: 'inherit' }}
+            >
+              {label}
+            </Text>
+          </Tag>
+        );
+      })(),
+    },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
   ];
