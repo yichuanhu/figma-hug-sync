@@ -6,7 +6,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, ActivityRecord, DetailedAssessment, RequirementChangeLog } from '../../types';
-import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, withdrawRequirement, MOCK_CURRENT_USER_ID, useSchemeFlags, listChangeLogs } from '../../mockData';
+import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, updateRequirementStatus, withdrawRequirement, MOCK_CURRENT_USER_ID, useSchemeFlags, listChangeLogs } from '../../mockData';
 import { PRESET_SCHEMES } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
 
@@ -475,6 +475,11 @@ const RequirementDetailDrawer = ({
     await updateRequirementAssessment(id, assessment);
     onRefresh?.();
   };
+  const handleRejectAssessment = async (id: string, assessment: DetailedAssessment) => {
+    await updateRequirementAssessment(id, assessment);
+    await updateRequirementStatus(id, 'REJECTED');
+    onRefresh?.();
+  };
   // 成本预估完全由表单基线数据自动计算（STORY-010），无需保存回调
 
   const submitLabel = t('requirements.detail.submitForApproval');
@@ -669,7 +674,7 @@ const RequirementDetailDrawer = ({
               itemKey="assessment"
             >
               <div className="requirement-detail-tab-content">
-                <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} forceReadonly={assessmentReadonly} />
+                <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} onRejectAssessment={handleRejectAssessment} forceReadonly={assessmentReadonly} />
               </div>
             </TabPane>
             )}
