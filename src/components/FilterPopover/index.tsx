@@ -150,6 +150,7 @@ const FilterSectionItem = memo(
             optionList={section.options as { value: string | number; label: string }[]}
             placeholder={section.placeholder}
             multiple
+            filter
             maxTagCount={2}
             showClear
             style={{ width: '100%' }}
