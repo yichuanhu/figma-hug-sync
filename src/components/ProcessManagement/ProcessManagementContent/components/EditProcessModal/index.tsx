@@ -66,7 +66,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       // 加载交付信息初始值
       const basicInfo = getProcessBasicInfo(processData.id);
       setDeveloperId(basicInfo.developer_id ?? null);
-      setCodeReviewerIds(basicInfo.code_reviewer_ids || []);
+      setCodeReviewerId(basicInfo.code_reviewer_id ?? null);
 
       const ledger = getProcessLifecycleLedger(processData.id);
       const toDate = (iso: string | null) => (iso ? new Date(iso) : null);
