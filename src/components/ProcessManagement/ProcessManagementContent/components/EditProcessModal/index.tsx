@@ -41,7 +41,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
   // 交付信息字段
   const [os, setOs] = useState<string | undefined>(undefined);
-  const [developerIds, setDeveloperIds] = useState<string[]>([]);
+  const [developerId, setDeveloperId] = useState<string | null>(null);
   const [codeReviewerIds, setCodeReviewerIds] = useState<string[]>([]);
   const [developmentCompletedAt, setDevelopmentCompletedAt] = useState<Date | null>(null);
   const [deployedAt, setDeployedAt] = useState<Date | null>(null);
@@ -65,7 +65,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
       // 加载交付信息初始值
       const basicInfo = getProcessBasicInfo(processData.id);
-      setDeveloperIds(basicInfo.developer_ids || []);
+      setDeveloperId(basicInfo.developer_id ?? null);
       setCodeReviewerIds(basicInfo.code_reviewer_ids || []);
 
       const ledger = getProcessLifecycleLedger(processData.id);
@@ -162,7 +162,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
       // 写入交付信息：开发工程师 / 代码审核员
       updateProcessBasicInfo(processData.id, {
-        developer_ids: Array.from(new Set(developerIds)),
+        developer_id: developerId,
         code_reviewer_ids: Array.from(new Set(codeReviewerIds)),
       });
 
@@ -383,10 +383,9 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           >
             <Form.Slot label={{ text: '开发工程师' }}>
               <OwnerSearchSelect
-                multiple
-                value={developerIds}
-                onChange={(v: string[]) => setDeveloperIds(v || [])}
-                placeholder="请选择开发工程师（可多选）"
+                value={developerId ?? undefined}
+                onChange={(v) => setDeveloperId((v as string) ?? null)}
+                placeholder="请选择开发工程师"
               />
             </Form.Slot>
 

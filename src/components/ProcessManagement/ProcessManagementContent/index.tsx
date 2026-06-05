@@ -413,7 +413,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       list = list.filter((p) => !!p.os && osFilter.includes(p.os));
     }
     if (developerFilter.length > 0) {
-      list = list.filter((p) => (p.developer_ids ?? []).some((id) => developerFilter.includes(id)));
+      list = list.filter((p) => !!p.developer_id && developerFilter.includes(p.developer_id));
     }
     return list;
   }, [listResponse.list, requirementFilter, osFilter, developerFilter]);

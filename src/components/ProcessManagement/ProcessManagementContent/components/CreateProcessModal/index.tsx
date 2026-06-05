@@ -57,7 +57,7 @@ const generateMockLYProcessResponse = (
     owning_department_name: ctx.owningDepartmentName,
     owner_id: ctx.ownerId,
     owner_name: ctx.ownerName,
-    developer_ids: request.developer_ids ?? null,
+    developer_id: request.developer_id ?? null,
     os: request.os ?? null,
   };
 };
@@ -171,7 +171,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         description: (values.description as string) || undefined,
         owning_department_id: effectiveDepartmentId,
         requirement_id: selectedRequirement?.id,
-        developer_ids: (values.developer_ids as string[] | undefined) || undefined,
+        developer_id: (values.developer_id as string | undefined) || undefined,
         os: (values.os as string | undefined) || undefined,
       };
 
@@ -293,10 +293,9 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         </Form.Slot>
 
         <Form.Select
-          field="developer_ids"
+          field="developer_id"
           label={t('development.processDevelopment.createModal.fields.developerLabel')}
           placeholder={t('development.processDevelopment.createModal.fields.developerPlaceholder')}
-          multiple
           filter
           showClear
           optionList={BASIC_INFO_USER_POOL.map((u) => ({
