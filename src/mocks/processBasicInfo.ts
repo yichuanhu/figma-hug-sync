@@ -61,7 +61,7 @@ const ensureSeeded = (processId: string): ProcessBasicInfo => {
     store.set(processId, {
       process_id: processId,
       developer_id: 'user-001',
-      code_reviewer_ids: ['user-007'],
+      code_reviewer_id: 'user-007',
       last_release_reviewer: {
         user_id: 'user-008',
         user_name: 'Grace Hu',
