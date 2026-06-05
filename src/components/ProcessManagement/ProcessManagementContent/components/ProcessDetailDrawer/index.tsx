@@ -466,6 +466,10 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       key: t('common.owningDepartment'),
       value: getDepartmentName(processData.owning_department_id),
     },
+    {
+      key: t('development.processDevelopment.createModal.fields.osLabel'),
+      value: processData.os ? <Text>{processData.os}</Text> : <Text type="tertiary">-</Text>,
+    },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
   ];
