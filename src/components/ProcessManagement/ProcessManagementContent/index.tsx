@@ -331,6 +331,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   // 「关联需求」下拉多选筛选：值为需求 id 集合，包含特殊值 __UNLINKED__ 表示「未关联需求」
   const [requirementFilter, setRequirementFilter] = useState<string[]>([]);
+  const [osFilter, setOsFilter] = useState<string[]>([]);
+  const [developerFilter, setDeveloperFilter] = useState<string[]>([]);
   const [requirementBriefList, setRequirementBriefList] = useState<Array<{ id: string; title: string; req_no?: string }>>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
