@@ -3,23 +3,24 @@ import FormModal from '@/components/FormModal';
 import { BASIC_INFO_USER_POOL, updateProcessBasicInfo } from '@/mocks/processBasicInfo';
 import { Toast } from '@douyinfe/semi-ui';
 
-export type BasicInfoEditField = 'developer_ids' | 'code_reviewer_ids';
+export type BasicInfoEditField = 'developer_id' | 'code_reviewer_ids';
 
 interface BasicInfoEditModalProps {
   visible: boolean;
   field: BasicInfoEditField;
   processId: string;
-  initialValue: string[];
+  /** developer_id 时为 string | null；code_reviewer_ids 时为 string[] */
+  initialValue: string | string[] | null;
   onClose: () => void;
 }
 
 const FIELD_TITLE: Record<BasicInfoEditField, string> = {
-  developer_ids: '编辑开发工程师',
+  developer_id: '编辑开发工程师',
   code_reviewer_ids: '编辑代码审核员',
 };
 
 const FIELD_LABEL: Record<BasicInfoEditField, string> = {
-  developer_ids: '开发工程师',
+  developer_id: '开发工程师',
   code_reviewer_ids: '代码审核员',
 };
 
@@ -39,37 +40,40 @@ const BasicInfoEditModal = ({
     [],
   );
 
+  const isMulti = field === 'code_reviewer_ids';
+
   return (
     <FormModal
       visible={visible}
       title={FIELD_TITLE[field]}
       onCancel={onClose}
       formKey={`${field}-${visible}`}
-      initialValues={{ users: initialValue }}
+      initialValues={{ users: initialValue ?? (isMulti ? [] : undefined) }}
       successMessage="保存成功"
       fields={[
         {
           type: 'select',
           field: 'users',
           label: FIELD_LABEL[field],
-          placeholder: '请选择用户（可多选）',
+          placeholder: isMulti ? '请选择用户（可多选）' : '请选择用户',
           options,
           filter: true,
-          multiple: true,
+          multiple: isMulti,
         },
       ]}
       onSubmit={async (values) => {
-        const users = (values.users as string[] | undefined) || [];
-        // 去重校验
-        const unique = Array.from(new Set(users));
-        if (unique.length !== users.length) {
-          Toast.warning('不可重复选择同一用户');
-          throw new Error('duplicate');
+        if (isMulti) {
+          const users = (values.users as string[] | undefined) || [];
+          const unique = Array.from(new Set(users));
+          if (unique.length !== users.length) {
+            Toast.warning('不可重复选择同一用户');
+            throw new Error('duplicate');
+          }
+          updateProcessBasicInfo(processId, { code_reviewer_ids: unique });
+        } else {
+          const user = (values.users as string | undefined) || null;
+          updateProcessBasicInfo(processId, { developer_id: user });
         }
-        updateProcessBasicInfo(processId, { [field]: unique } as Partial<{
-          developer_ids: string[];
-          code_reviewer_ids: string[];
-        }>);
       }}
     />
   );

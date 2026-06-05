@@ -515,7 +515,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       ? [
           {
             key: '开发工程师',
-            value: renderPeopleValue(basicInfo.developer_ids),
+            value: renderPeopleValue(basicInfo.developer_id ? [basicInfo.developer_id] : []),
           },
           {
             key: labelWithTooltip(

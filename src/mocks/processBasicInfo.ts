@@ -18,7 +18,7 @@ export interface LastReleaseReviewer {
 
 export interface ProcessBasicInfo {
   process_id: string;
-  developer_ids: string[];
+  developer_id: string | null;
   code_reviewer_ids: string[];
   last_release_reviewer?: LastReleaseReviewer;
 }
@@ -60,7 +60,7 @@ const ensureSeeded = (processId: string): ProcessBasicInfo => {
   if (!store.has(processId)) {
     store.set(processId, {
       process_id: processId,
-      developer_ids: ['user-001', 'user-005'],
+      developer_id: 'user-001',
       code_reviewer_ids: ['user-007'],
       last_release_reviewer: {
         user_id: 'user-008',
@@ -79,7 +79,7 @@ export const getProcessBasicInfo = (processId: string): ProcessBasicInfo => {
 
 export const updateProcessBasicInfo = (
   processId: string,
-  patch: Partial<Pick<ProcessBasicInfo, 'developer_ids' | 'code_reviewer_ids'>>,
+  patch: Partial<Pick<ProcessBasicInfo, 'developer_id' | 'code_reviewer_ids'>>,
   source: string = 'manual',
 ): ProcessBasicInfo => {
   const prev = ensureSeeded(processId);
@@ -97,12 +97,12 @@ export const overrideDevelopersOnVersionUpload = (
   version: string,
 ): void => {
   const prev = ensureSeeded(processId);
-  const next = { ...prev, developer_ids: [uploaderId] };
+  const next = { ...prev, developer_id: uploaderId };
   store.set(processId, next);
   audit('override_developers_on_upload', {
     processId,
-    before: prev.developer_ids,
-    after: next.developer_ids,
+    before: prev.developer_id,
+    after: next.developer_id,
     uploader: uploaderId,
     version,
     at: new Date().toISOString(),
