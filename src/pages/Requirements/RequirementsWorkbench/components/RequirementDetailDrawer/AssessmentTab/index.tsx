@@ -95,14 +95,13 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
     if (data.detailedAssessment && data.detailedAssessment.flow_id === flow.id) {
       return data.detailedAssessment;
     }
-    const valueModel = flow.models.find((m) => m.type === 'value')!;
     const complexityModel = flow.models.find((m) => m.type === 'complexity')!;
     const records: LevelAssessmentRecord[] = flow.levels.map((lv, idx) => ({
       level_id: lv.id,
       level_name: lv.name,
       level_priority: lv.priority,
       status: idx === 0 ? 'in_progress' : 'pending',
-      value_answers: buildEmptyAnswers(valueModel.dimensions),
+      value_answers: [],
       complexity_answers: buildEmptyAnswers(complexityModel.dimensions),
       value_score: 0,
       complexity_score: 0,
@@ -131,7 +130,6 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
     );
   }
 
-  const valueModel = flow.models.find((m) => m.type === 'value')!;
   const complexityModel = flow.models.find((m) => m.type === 'complexity')!;
 
   /** 当前用户可编辑的级别 */
@@ -173,8 +171,8 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
   const handleSubmitLevel = async (recordIdx: number) => {
     const record = assessment.records[recordIdx];
     // 校验：每个维度必须有作答
-    const allDims = [...valueModel.dimensions, ...complexityModel.dimensions];
-    const allAnswers = [...record.value_answers, ...record.complexity_answers];
+    const allDims = complexityModel.dimensions;
+    const allAnswers = record.complexity_answers;
     for (const dim of allDims) {
       const ans = allAnswers.find((a) => a.dim_key === dim.key);
       if (!ans) continue;
@@ -376,13 +374,6 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
               <>
                 <div className="assessment-cards-row">
                   {renderModelCard(
-                    valueModel,
-                    record.value_answers,
-                    record.value_score,
-                    editable,
-                    (key, p) => patchAnswer(idx, 'value', key, p),
-                  )}
-                  {renderModelCard(
                     complexityModel,
                     record.complexity_answers,
                     record.complexity_score,
@@ -393,9 +384,9 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
 
                 <div className="assessment-result">
                   <div className="assessment-result-row">
-                    <Text type="tertiary">净得分（价值 − 复杂度）</Text>
+                    <Text type="tertiary">复杂度得分</Text>
                     <Title heading={4} style={{ margin: 0 }}>
-                      {(record.value_score - record.complexity_score).toFixed(2)}
+                      {record.complexity_score.toFixed(2)}
                     </Title>
                   </div>
                   <div className="assessment-result-row">
