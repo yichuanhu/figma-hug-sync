@@ -201,6 +201,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
         owner_id: ownerId ?? processData.owner_id,
         owner_name: hasRequirement ? (selectedRequirement!.owner_name ?? processData.owner_name) : processData.owner_name,
         requirement_id: requirementId ?? null,
+        os: os ?? null,
         updated_at: new Date().toISOString(),
       };
 
