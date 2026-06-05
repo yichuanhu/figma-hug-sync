@@ -391,10 +391,9 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
             <Form.Slot label={{ text: '代码审核员' }}>
               <OwnerSearchSelect
-                multiple
-                value={codeReviewerIds}
-                onChange={(v: string[]) => setCodeReviewerIds(v || [])}
-                placeholder="请选择代码审核员（可多选）"
+                value={codeReviewerId ?? undefined}
+                onChange={(v) => setCodeReviewerId((v as string) ?? null)}
+                placeholder="请选择代码审核员"
               />
             </Form.Slot>
 
