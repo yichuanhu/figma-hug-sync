@@ -171,8 +171,8 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
   const handleSubmitLevel = async (recordIdx: number) => {
     const record = assessment.records[recordIdx];
     // 校验：每个维度必须有作答
-    const allDims = [...valueModel.dimensions, ...complexityModel.dimensions];
-    const allAnswers = [...record.value_answers, ...record.complexity_answers];
+    const allDims = complexityModel.dimensions;
+    const allAnswers = record.complexity_answers;
     for (const dim of allDims) {
       const ans = allAnswers.find((a) => a.dim_key === dim.key);
       if (!ans) continue;
