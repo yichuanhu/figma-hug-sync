@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Toast, Button, Select, Input, DatePicker } from '@douyinfe/semi-ui';
+import { Modal, Form, Toast, Button, Select, Input, DatePicker, Collapse } from '@douyinfe/semi-ui';
 import type { LYUpdateProcessRequest, LYProcessResponse } from '@/api';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
@@ -368,64 +368,73 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
         </Form.Slot>
 
 
-        <div className="edit-process-modal-section">
-          <div className="edit-process-modal-section-title">
-            <span className="edit-process-modal-section-title-line" />
-            <span>交付信息</span>
-          </div>
+        <Collapse
+          className="edit-process-modal-collapse"
+          expandIconPosition="right"
+        >
+          <Collapse.Panel
+            itemKey="delivery"
+            header={
+              <div className="edit-process-modal-section-title">
+                <span className="edit-process-modal-section-title-line" />
+                <span>交付信息</span>
+              </div>
+            }
+          >
+            <Form.Slot label={{ text: '开发工程师' }}>
+              <OwnerSearchSelect
+                multiple
+                value={developerIds}
+                onChange={(v: string[]) => setDeveloperIds(v || [])}
+                placeholder="请选择开发工程师（可多选）"
+              />
+            </Form.Slot>
+
+            <Form.Slot label={{ text: '代码审核员' }}>
+              <OwnerSearchSelect
+                multiple
+                value={codeReviewerIds}
+                onChange={(v: string[]) => setCodeReviewerIds(v || [])}
+                placeholder="请选择代码审核员（可多选）"
+              />
+            </Form.Slot>
+
+            <Form.Slot label={{ text: '开发完成时间' }}>
+              <DatePicker
+                type="dateTime"
+                format="yyyy-MM-dd HH:mm"
+                value={developmentCompletedAt ?? undefined}
+                onChange={(v) => setDevelopmentCompletedAt((v as Date) ?? null)}
+                style={{ width: '100%' }}
+                placeholder="请选择开发完成时间"
+              />
+            </Form.Slot>
+
+            <Form.Slot label={{ text: '部署上线时间' }}>
+              <DatePicker
+                type="dateTime"
+                format="yyyy-MM-dd HH:mm"
+                value={deployedAt ?? undefined}
+                onChange={(v) => setDeployedAt((v as Date) ?? null)}
+                style={{ width: '100%' }}
+                placeholder="请选择部署上线时间"
+              />
+            </Form.Slot>
+
+            <Form.Slot label={{ text: '流程下线时间' }}>
+              <DatePicker
+                type="dateTime"
+                format="yyyy-MM-dd HH:mm"
+                value={offlineAt ?? undefined}
+                onChange={(v) => setOfflineAt((v as Date) ?? null)}
+                style={{ width: '100%' }}
+                placeholder="请选择流程下线时间"
+              />
+            </Form.Slot>
+          </Collapse.Panel>
+        </Collapse>
         </div>
 
-        <Form.Slot label={{ text: '开发工程师' }}>
-          <OwnerSearchSelect
-            multiple
-            value={developerIds}
-            onChange={(v: string[]) => setDeveloperIds(v || [])}
-            placeholder="请选择开发工程师（可多选）"
-          />
-        </Form.Slot>
-
-        <Form.Slot label={{ text: '代码审核员' }}>
-          <OwnerSearchSelect
-            multiple
-            value={codeReviewerIds}
-            onChange={(v: string[]) => setCodeReviewerIds(v || [])}
-            placeholder="请选择代码审核员（可多选）"
-          />
-        </Form.Slot>
-
-        <Form.Slot label={{ text: '开发完成时间' }}>
-          <DatePicker
-            type="dateTime"
-            format="yyyy-MM-dd HH:mm"
-            value={developmentCompletedAt ?? undefined}
-            onChange={(v) => setDevelopmentCompletedAt((v as Date) ?? null)}
-            style={{ width: '100%' }}
-            placeholder="请选择开发完成时间"
-          />
-        </Form.Slot>
-
-        <Form.Slot label={{ text: '部署上线时间' }}>
-          <DatePicker
-            type="dateTime"
-            format="yyyy-MM-dd HH:mm"
-            value={deployedAt ?? undefined}
-            onChange={(v) => setDeployedAt((v as Date) ?? null)}
-            style={{ width: '100%' }}
-            placeholder="请选择部署上线时间"
-          />
-        </Form.Slot>
-
-        <Form.Slot label={{ text: '流程下线时间' }}>
-          <DatePicker
-            type="dateTime"
-            format="yyyy-MM-dd HH:mm"
-            value={offlineAt ?? undefined}
-            onChange={(v) => setOfflineAt((v as Date) ?? null)}
-            style={{ width: '100%' }}
-            placeholder="请选择流程下线时间"
-          />
-        </Form.Slot>
-        </div>
 
         <div className="edit-process-modal-footer">
 
