@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import {
@@ -26,7 +27,7 @@ import { getDepartmentName } from '@/mocks/departmentData';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
-import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
+import { ExternalLink, HelpCircle, Link, Link2, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
@@ -329,8 +330,10 @@ const ProcessDetailDrawer = ({
 }: ProcessDetailDrawerProps) => {
   const isSchedulingContext = context === 'scheduling';
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(initialTab);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
+  const [requirementBrief, setRequirementBrief] = useState<{ id: string; title: string; req_no?: string } | null>(null);
   const [uploadVersionModalVisible, setUploadVersionModalVisible] = useState(false);
   const [versionData, setVersionData] = useState<VersionDetailData[]>(initialMockVersionData);
   const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
@@ -362,6 +365,27 @@ const ProcessDetailDrawer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [processData?.id, lifecycleTick],
   );
+
+  // 异步加载「关联需求」brief（用于在基本信息中显示需求编号/标题）
+  useEffect(() => {
+    const reqId = processData?.requirement_id;
+    if (!reqId) {
+      setRequirementBrief(null);
+      return;
+    }
+    let cancelled = false;
+    import('@/pages/Requirements/RequirementsProjects/mockData').then(({ fetchRequirementBriefByIds }) =>
+      fetchRequirementBriefByIds([reqId]).then((list) => {
+        if (cancelled) return;
+        setRequirementBrief(list[0] || null);
+      }),
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [processData?.requirement_id]);
+
+
 
   // 版本数据按版本号降序排列
   const sortedVersionData = useMemo(() => {
@@ -469,6 +493,36 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     {
       key: t('development.processDevelopment.createModal.fields.osLabel'),
       value: processData.os ? <Text>{processData.os}</Text> : <Text type="tertiary">-</Text>,
+    },
+    {
+      key: t('development.processDevelopment.fields.linkedRequirement'),
+      value: (() => {
+        const reqId = processData.requirement_id;
+        if (!reqId) return <Text type="tertiary">-</Text>;
+        const label = requirementBrief
+          ? (requirementBrief.req_no ? `[${requirementBrief.req_no}] ${requirementBrief.title}` : requirementBrief.title)
+          : reqId;
+        return (
+          <Tag
+            color="blue"
+            type="light"
+            prefixIcon={<Link2 size={12} strokeWidth={2} />}
+            style={{ maxWidth: 240, cursor: 'pointer' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate('/requirements/list', { state: { openRequirementId: reqId } });
+            }}
+          >
+            <Text
+              ellipsis={{ showTooltip: { opts: { content: label } } }}
+              size="small"
+              style={{ maxWidth: 210, color: 'inherit' }}
+            >
+              {label}
+            </Text>
+          </Tag>
+        );
+      })(),
     },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
