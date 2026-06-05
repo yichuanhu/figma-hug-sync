@@ -398,16 +398,25 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
     };
   }, []);
 
-  // 客户端再过滤：「关联需求」多选 (OR 关系)
+  // 客户端再过滤：「关联需求」「适用操作系统」「开发工程师」
   const displayList = useMemo(() => {
-    if (!requirementFilter || requirementFilter.length === 0) return listResponse.list;
-    const wantUnlinked = requirementFilter.includes('__UNLINKED__');
-    const wantedIds = new Set(requirementFilter.filter((v) => v !== '__UNLINKED__'));
-    return listResponse.list.filter((p) => {
-      if (!p.requirement_id) return wantUnlinked;
-      return wantedIds.has(p.requirement_id);
-    });
-  }, [listResponse.list, requirementFilter]);
+    let list = listResponse.list;
+    if (requirementFilter && requirementFilter.length > 0) {
+      const wantUnlinked = requirementFilter.includes('__UNLINKED__');
+      const wantedIds = new Set(requirementFilter.filter((v) => v !== '__UNLINKED__'));
+      list = list.filter((p) => {
+        if (!p.requirement_id) return wantUnlinked;
+        return wantedIds.has(p.requirement_id);
+      });
+    }
+    if (osFilter.length > 0) {
+      list = list.filter((p) => !!p.os && osFilter.includes(p.os));
+    }
+    if (developerFilter.length > 0) {
+      list = list.filter((p) => (p.developer_ids ?? []).some((id) => developerFilter.includes(id)));
+    }
+    return list;
+  }, [listResponse.list, requirementFilter, osFilter, developerFilter]);
 
   // 需求 id -> brief 查询字典（用于列渲染）
   const requirementBriefMap = useMemo(() => {
