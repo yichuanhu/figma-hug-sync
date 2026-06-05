@@ -4,27 +4,43 @@
     padding-top: 4px;
   }
 
+  &-content {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+    padding: 0 4px;
+  }
+
   &-select-full {
     width: 100%;
   }
 
+  &-section {
+    margin-top: 8px;
+    margin-bottom: 16px;
+  }
+
   &-section-title {
-    margin-top: 16px;
-    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 14px;
     font-weight: 500;
     color: var(--semi-color-text-0);
+
+    &-line {
+      width: 3px;
+      height: 14px;
+      background: var(--semi-color-text-2);
+      border-radius: 2px;
+    }
   }
-
-
 
   &-footer {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    margin-top: 12px;
-    padding-top: 16px;
-    padding-bottom: 12px;
+    padding-top: 20px;
+    margin-top: 20px;
     border-top: 1px solid var(--semi-color-border);
   }
 }

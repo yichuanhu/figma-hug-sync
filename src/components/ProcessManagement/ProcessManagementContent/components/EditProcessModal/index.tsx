@@ -269,6 +269,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
         }}
         key={processData?.id}
       >
+        <div className="edit-process-modal-content">
         <Form.Input
           field="name"
           label={t('development.processDevelopment.fields.processName')}
@@ -347,7 +348,12 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           )}
         </Form.Slot>
 
-        <div className="edit-process-modal-section-title">交付信息</div>
+        <div className="edit-process-modal-section">
+          <div className="edit-process-modal-section-title">
+            <span className="edit-process-modal-section-title-line" />
+            <span>交付信息</span>
+          </div>
+        </div>
 
         <Form.Slot label={{ text: '开发工程师' }}>
           <OwnerSearchSelect
@@ -399,9 +405,10 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
             placeholder="请选择流程下线时间"
           />
         </Form.Slot>
-
+        </div>
 
         <div className="edit-process-modal-footer">
+
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
           </Button>
