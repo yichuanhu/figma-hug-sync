@@ -95,14 +95,13 @@ const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
     if (data.detailedAssessment && data.detailedAssessment.flow_id === flow.id) {
       return data.detailedAssessment;
     }
-    const valueModel = flow.models.find((m) => m.type === 'value')!;
     const complexityModel = flow.models.find((m) => m.type === 'complexity')!;
     const records: LevelAssessmentRecord[] = flow.levels.map((lv, idx) => ({
       level_id: lv.id,
       level_name: lv.name,
       level_priority: lv.priority,
       status: idx === 0 ? 'in_progress' : 'pending',
-      value_answers: buildEmptyAnswers(valueModel.dimensions),
+      value_answers: [],
       complexity_answers: buildEmptyAnswers(complexityModel.dimensions),
       value_score: 0,
       complexity_score: 0,
