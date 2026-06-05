@@ -1,51 +1,56 @@
-## 优化目标
+用户反馈编辑流程弹窗内容过多，选择「交付信息默认折叠」方向进行优化。
 
-当前 `EditProcessModal` 字段较多（基本信息 + 归属 + 交付信息共 9 个），全部平铺在 520px 弹窗内，视觉密度高、层级不清；底部按钮也未完全对齐 FormModal 规范。建议两项最有性价比的优化：
+## 背景
 
-### 1. 按语义分组重构（最主要改动）
+当前编辑流程弹窗共 11 个字段：
+- 基本信息：流程名称、描述、关联需求、归属部门、归属者、适用操作系统
+- 交付信息：开发工程师、代码审核员、开发完成时间、部署上线时间、流程下线时间
 
-参考记忆 `mem://style/modal/form-layout-preference`（字段 > 6 时应使用分组），将字段拆分为两个清晰区块：
+弹窗宽度固定 520px，全部字段纵向排列导致滚动区域很长。
+
+## 改动范围
+
+仅修改 `EditProcessModal` 组件及其样式，不涉及详情抽屉或其他页面。
+
+## 具体方案
+
+### 1. 引入 Semi UI Collapse 组件
+
+使用 `@douyinfe/semi-ui` 自带的 `Collapse` 组件对「交付信息」区块进行包裹，无需引入新依赖。
 
 ```
-┌─ 基本信息 ─────────────────┐
-│  流程名称 *                │
-│  描述                      │
-│  关联需求                  │
-│  归属部门 *                │
-│  归属者 *                  │
-└────────────────────────────┘
-
-┌─ 交付信息 ─────────────────┐
-│  开发工程师                │
-│  代码审核员                │
-│  开发完成时间              │
-│  部署上线时间              │
-│  流程下线时间              │
-└────────────────────────────┘
+import { ..., Collapse } from '@douyinfe/semi-ui';
 ```
 
-- 复用 `FormModal` 已有的 `form-modal-section` + `form-modal-section-title`（左侧 3×14 竖条 + 标题）的视觉，在 `EditProcessModal` 内部用相同 DOM 结构实现，保证与项目其它弹窗一致。
-- 删除当前裸文本的 `edit-process-modal-section-title`（"交付信息"），改用标准分组头。
-- 在"基本信息"区块上方不再加标题（默认区块），仅"交付信息"作为可视化分组，避免视觉冗余。
+### 2. 交付信息折叠面板
 
-### 2. 底部按钮规范化
+将现有的「交付信息」区块标题 + 下方 5 个字段整体移入 `Collapse.Panel`：
+- `header` 使用现有的 `edit-process-modal-section-title` 样式，左侧 3px 竖线 + "交付信息" 文字
+- 右侧追加折叠状态图标（展开时为 `ChevronDown`，收起时为 `ChevronRight`）
+- `defaultActiveKey` 不设值 → 默认收起
+- 保持内部字段逻辑、事件绑定、`Form.Slot` 用法完全不变
 
-- 当前已是「取消(light) + 保存(solid primary)」，保留；
-- 统一 footer 间距：`padding-top: 20px; margin-top: 20px; border-top: 1px solid var(--semi-color-border)`，对齐 `form-modal-footer` 规范；
-- 移除 `padding-bottom: 12px`（Modal 自带 padding）。
+### 3. 样式调整
 
-### 3. 内容区滚动约束
+在 `index.less` 中新增 `.edit-process-modal-collapse` 相关类：
+- 移除 `Collapse` 默认边框和背景色，使其融入弹窗内嵌风格
+- 标题区保持 `14px / 500` 字重，与当前区块标题一致
+- 展开/收起图标使用 `12px` 尺寸，颜色跟随 `var(--semi-color-text-2)`
+- 面板内容区左右保持与上方字段相同的水平对齐
+- 折叠状态下整体高度仅一行标题，大幅减少初始视觉压力
 
-- 给表单内容包裹 `max-height: calc(100vh - 300px); overflow-y: auto`，避免在小屏（如 1305×853）下弹窗超出视口；底部按钮固定在可视区下方，与 `FormModal` 行为一致。
+### 4. 保留行为不变
 
-## 不做的事
+- 弹窗宽度保持 520px
+- 基本信息 6 个字段保持原位
+- 保存逻辑、字段校验、联动规则（归属部门/归属者）均不受影响
+- 内容区滚动约束（`max-height: calc(100vh - 300px)`）仍生效
 
-- 不改弹窗宽度（保持 520px，与项目 Modal 规范一致）；
-- 不改字段顺序（已符合 Name → Dept → Owner → Desc 规范）；
-- 不改任何业务/校验逻辑、不动 mock 数据；
-- 不折叠交付信息（折叠会让"编辑时不知道有这些字段"，反而降低可发现性）。
+## 技术细节
 
-## 涉及文件
+- 使用 Semi UI `Collapse` 的受控模式或默认非受控模式均可；推荐非受控模式（不设 `activeKey`）以保持简洁
+- 如需受控（例如记住上次展开状态），可用本地 `useState` 管理 `activeKey`
 
-- `src/components/ProcessManagement/ProcessManagementContent/components/EditProcessModal/index.tsx`：包裹两个分组容器，调整 DOM 结构。
-- `src/components/ProcessManagement/ProcessManagementContent/components/EditProcessModal/index.less`：新增 `-section` / `-section-title` / `-content` 样式，更新 `-footer` 边距，删除旧的 `-section-title` 裸样式。
+## 预期效果
+
+打开编辑弹窗时，用户先看到基本信息 6 个字段 + 一个折叠的「交付信息」标题行。需要编辑交付信息时点击展开，展开后 5 个字段正常显示并可编辑。
