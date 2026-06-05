@@ -292,6 +292,29 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           )}
         </Form.Slot>
 
+        <Form.Select
+          field="developer_ids"
+          label={t('development.processDevelopment.createModal.fields.developerLabel')}
+          placeholder={t('development.processDevelopment.createModal.fields.developerPlaceholder')}
+          multiple
+          filter
+          showClear
+          optionList={BASIC_INFO_USER_POOL.map((u) => ({
+            value: u.id,
+            label: u.department ? `${u.name} · ${u.department}` : u.name,
+          }))}
+          style={{ width: '100%' }}
+        />
+
+        <Form.Select
+          field="os"
+          label={t('development.processDevelopment.createModal.fields.osLabel')}
+          placeholder={t('development.processDevelopment.createModal.fields.osPlaceholder')}
+          showClear
+          optionList={OS_OPTIONS}
+          style={{ width: '100%' }}
+        />
+
         <div className="create-process-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
