@@ -330,8 +330,10 @@ const ProcessDetailDrawer = ({
 }: ProcessDetailDrawerProps) => {
   const isSchedulingContext = context === 'scheduling';
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(initialTab);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
+  const [requirementBrief, setRequirementBrief] = useState<{ id: string; title: string; req_no?: string } | null>(null);
   const [uploadVersionModalVisible, setUploadVersionModalVisible] = useState(false);
   const [versionData, setVersionData] = useState<VersionDetailData[]>(initialMockVersionData);
   const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
