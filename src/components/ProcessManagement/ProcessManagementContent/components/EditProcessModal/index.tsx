@@ -61,6 +61,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       setOwningDepartmentId(processData.owning_department_id || undefined);
       setOwnerId(processData.owner_id || undefined);
       setRequirementId(processData.requirement_id || undefined);
+      setOs(processData.os || undefined);
 
       // 加载交付信息初始值
       const basicInfo = getProcessBasicInfo(processData.id);
