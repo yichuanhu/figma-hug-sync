@@ -1,56 +1,42 @@
-用户反馈编辑流程弹窗内容过多，选择「交付信息默认折叠」方向进行优化。
+## 目标
 
-## 背景
+在 `ProcessManagementContent`（开发中心-流程开发、调度中心-自动化流程）的筛选弹层中新增两个维度：
+- 适用操作系统（Windows / Linux / macOS）
+- 开发工程师（多选用户）
 
-当前编辑流程弹窗共 11 个字段：
-- 基本信息：流程名称、描述、关联需求、归属部门、归属者、适用操作系统
-- 交付信息：开发工程师、代码审核员、开发完成时间、部署上线时间、流程下线时间
+## 现状
 
-弹窗宽度固定 520px，全部字段纵向排列导致滚动区域很长。
+- 文件：`src/components/ProcessManagement/ProcessManagementContent/index.tsx`
+- 当前筛选弹层只有「状态」一个区块，且仅在 `!isSchedulingContext`（开发中心）时显示；调度中心未渲染 `FilterPopover`。
+- `LYProcessResponse` 已直接包含 `os?: string | null` 与 `developer_ids?: string[] | null`，可直接用于前端过滤。
+- 候选用户来自 `BASIC_INFO_USER_POOL`（`src/mocks/processBasicInfo.ts`）。
 
-## 改动范围
+## 改动方案
 
-仅修改 `EditProcessModal` 组件及其样式，不涉及详情抽屉或其他页面。
+### 1. 调度中心也显示筛选按钮
+去掉 `{!isSchedulingContext && <FilterPopover ... />}` 限制，两个上下文都渲染筛选：
+- 开发中心：状态 + 适用操作系统 + 开发工程师
+- 调度中心：适用操作系统 + 开发工程师（不显示状态区块，保持锁定 `PUBLISHED` 的逻辑）
 
-## 具体方案
-
-### 1. 引入 Semi UI Collapse 组件
-
-使用 `@douyinfe/semi-ui` 自带的 `Collapse` 组件对「交付信息」区块进行包裹，无需引入新依赖。
-
+### 2. 新增筛选状态
+```ts
+const [osFilter, setOsFilter] = useState<string[]>([]);
+const [developerFilter, setDeveloperFilter] = useState<string[]>([]);
 ```
-import { ..., Collapse } from '@douyinfe/semi-ui';
-```
 
-### 2. 交付信息折叠面板
+### 3. 新增筛选区块
+- 适用操作系统：`type: 'checkbox'`，选项 Windows / Linux / macOS
+- 开发工程师：`type: 'multiSelect'`，选项来自 `BASIC_INFO_USER_POOL`，支持搜索，label 显示 `姓名 · 部门`
 
-将现有的「交付信息」区块标题 + 下方 5 个字段整体移入 `Collapse.Panel`：
-- `header` 使用现有的 `edit-process-modal-section-title` 样式，左侧 3px 竖线 + "交付信息" 文字
-- 右侧追加折叠状态图标（展开时为 `ChevronDown`，收起时为 `ChevronRight`）
-- `defaultActiveKey` 不设值 → 默认收起
-- 保持内部字段逻辑、事件绑定、`Form.Slot` 用法完全不变
+### 4. 列表过滤
+在 `displayList` 计算中追加：
+- `osFilter.length === 0 || (process.os && osFilter.includes(process.os))`
+- `developerFilter.length === 0 || (process.developer_ids ?? []).some(id => developerFilter.includes(id))`
 
-### 3. 样式调整
+### 5. 空状态判定
+在 `EmptyState` 的 `noResult` 判定条件中加入 `osFilter.length > 0 || developerFilter.length > 0`。
 
-在 `index.less` 中新增 `.edit-process-modal-collapse` 相关类：
-- 移除 `Collapse` 默认边框和背景色，使其融入弹窗内嵌风格
-- 标题区保持 `14px / 500` 字重，与当前区块标题一致
-- 展开/收起图标使用 `12px` 尺寸，颜色跟随 `var(--semi-color-text-2)`
-- 面板内容区左右保持与上方字段相同的水平对齐
-- 折叠状态下整体高度仅一行标题，大幅减少初始视觉压力
+## 不改动
 
-### 4. 保留行为不变
-
-- 弹窗宽度保持 520px
-- 基本信息 6 个字段保持原位
-- 保存逻辑、字段校验、联动规则（归属部门/归属者）均不受影响
-- 内容区滚动约束（`max-height: calc(100vh - 300px)`）仍生效
-
-## 技术细节
-
-- 使用 Semi UI `Collapse` 的受控模式或默认非受控模式均可；推荐非受控模式（不设 `activeKey`）以保持简洁
-- 如需受控（例如记住上次展开状态），可用本地 `useState` 管理 `activeKey`
-
-## 预期效果
-
-打开编辑弹窗时，用户先看到基本信息 6 个字段 + 一个折叠的「交付信息」标题行。需要编辑交付信息时点击展开，展开后 5 个字段正常显示并可编辑。
+- 编辑弹窗、详情抽屉、表格列、API 类型
+- 其他页面（任务管理、Worker 等）的筛选

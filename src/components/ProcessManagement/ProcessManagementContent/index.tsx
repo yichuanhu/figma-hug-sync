@@ -34,6 +34,7 @@ import OfflineRequestModal from './components/OfflineRequestModal';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import type { LYProcessResponse, LYProcessDependency, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
+import { BASIC_INFO_USER_POOL } from '@/mocks/processBasicInfo';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -330,6 +331,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   // 「关联需求」下拉多选筛选：值为需求 id 集合，包含特殊值 __UNLINKED__ 表示「未关联需求」
   const [requirementFilter, setRequirementFilter] = useState<string[]>([]);
+  const [osFilter, setOsFilter] = useState<string[]>([]);
+  const [developerFilter, setDeveloperFilter] = useState<string[]>([]);
   const [requirementBriefList, setRequirementBriefList] = useState<Array<{ id: string; title: string; req_no?: string }>>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
@@ -395,16 +398,25 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
     };
   }, []);
 
-  // 客户端再过滤：「关联需求」多选 (OR 关系)
+  // 客户端再过滤：「关联需求」「适用操作系统」「开发工程师」
   const displayList = useMemo(() => {
-    if (!requirementFilter || requirementFilter.length === 0) return listResponse.list;
-    const wantUnlinked = requirementFilter.includes('__UNLINKED__');
-    const wantedIds = new Set(requirementFilter.filter((v) => v !== '__UNLINKED__'));
-    return listResponse.list.filter((p) => {
-      if (!p.requirement_id) return wantUnlinked;
-      return wantedIds.has(p.requirement_id);
-    });
-  }, [listResponse.list, requirementFilter]);
+    let list = listResponse.list;
+    if (requirementFilter && requirementFilter.length > 0) {
+      const wantUnlinked = requirementFilter.includes('__UNLINKED__');
+      const wantedIds = new Set(requirementFilter.filter((v) => v !== '__UNLINKED__'));
+      list = list.filter((p) => {
+        if (!p.requirement_id) return wantUnlinked;
+        return wantedIds.has(p.requirement_id);
+      });
+    }
+    if (osFilter.length > 0) {
+      list = list.filter((p) => !!p.os && osFilter.includes(p.os));
+    }
+    if (developerFilter.length > 0) {
+      list = list.filter((p) => (p.developer_ids ?? []).some((id) => developerFilter.includes(id)));
+    }
+    return list;
+  }, [listResponse.list, requirementFilter, osFilter, developerFilter]);
 
   // 需求 id -> brief 查询字典（用于列渲染）
   const requirementBriefMap = useMemo(() => {
@@ -819,26 +831,54 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                   ]}
                 />
               )}
-              {/* 调度中心不显示筛选 */}
-              {!isSchedulingContext && (
-                <FilterPopover
-                  visible={filterPopoverVisible}
-                  onVisibleChange={setFilterPopoverVisible}
-                  onConfirm={(values) => {
+              <FilterPopover
+                visible={filterPopoverVisible}
+                onVisibleChange={setFilterPopoverVisible}
+                onConfirm={(values) => {
+                  if (!isSchedulingContext) {
                     setStatusFilter((values.status as string[]) || []);
-                    setQueryParams((prev) => ({ ...prev, offset: 0 }));
-                  }}
-                  sections={[
-                    {
-                      key: 'status',
-                      label: t('common.status'),
-                      type: 'checkbox',
-                      options: statusOptions,
-                      value: statusFilter,
-                    },
-                  ]}
-                />
-              )}
+                  }
+                  setOsFilter((values.os as string[]) || []);
+                  setDeveloperFilter((values.developer as string[]) || []);
+                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                }}
+                sections={[
+                  ...(!isSchedulingContext
+                    ? [
+                        {
+                          key: 'status',
+                          label: t('common.status'),
+                          type: 'checkbox' as const,
+                          options: statusOptions,
+                          value: statusFilter,
+                        },
+                      ]
+                    : []),
+                  {
+                    key: 'os',
+                    label: '适用操作系统',
+                    type: 'checkbox' as const,
+                    options: [
+                      { value: 'Windows', label: 'Windows' },
+                      { value: 'Linux', label: 'Linux' },
+                      { value: 'macOS', label: 'macOS' },
+                    ],
+                    value: osFilter,
+                  },
+                  {
+                    key: 'developer',
+                    label: '开发工程师',
+                    type: 'multiSelect' as const,
+                    placeholder: '请选择开发工程师',
+                    options: BASIC_INFO_USER_POOL.map((u) => ({
+                      value: u.id,
+                      label: u.department ? `${u.name} · ${u.department}` : u.name,
+                    })),
+                    value: developerFilter,
+                  },
+                ]}
+              />
+
             </Space>
           </Col>
           <Col>
@@ -865,8 +905,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
             rowKey="id"
             empty={
               <EmptyState 
-                variant={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0 || requirementFilter.length > 0) ? 'noResult' : 'noData'}
-                description={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0 || requirementFilter.length > 0) ? t('common.noResult') : t('development.processDevelopment.noData')} 
+                variant={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0 || requirementFilter.length > 0 || osFilter.length > 0 || developerFilter.length > 0) ? 'noResult' : 'noData'}
+                description={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0 || requirementFilter.length > 0 || osFilter.length > 0 || developerFilter.length > 0) ? t('common.noResult') : t('development.processDevelopment.noData')} 
               />
             }
             onRow={(record) => {
