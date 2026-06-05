@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast, Button, Select, Input } from '@douyinfe/semi-ui';
 import type { LYCreateProcessRequest, LYProcessResponse } from '@/api';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
+import { BASIC_INFO_USER_POOL } from '@/mocks/processBasicInfo';
 import {
   fetchAllLinkableRequirements,
   type LinkableRequirementBrief,
