@@ -116,8 +116,8 @@ export const writeCodeReviewerFromApproval = (
   approverId: string,
 ): void => {
   const prev = ensureSeeded(processId);
-  if (prev.code_reviewer_ids.length > 0) return; // R-07
-  const next = { ...prev, code_reviewer_ids: [approverId] };
+  if (prev.code_reviewer_id) return; // R-07
+  const next = { ...prev, code_reviewer_id: approverId };
   store.set(processId, next);
   audit('write_code_reviewer_from_approval', {
     processId,
