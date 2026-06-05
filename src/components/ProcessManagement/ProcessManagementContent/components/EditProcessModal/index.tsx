@@ -42,7 +42,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
   // 交付信息字段
   const [os, setOs] = useState<string | undefined>(undefined);
   const [developerId, setDeveloperId] = useState<string | null>(null);
-  const [codeReviewerIds, setCodeReviewerIds] = useState<string[]>([]);
+  const [codeReviewerId, setCodeReviewerId] = useState<string | null>(null);
   const [developmentCompletedAt, setDevelopmentCompletedAt] = useState<Date | null>(null);
   const [deployedAt, setDeployedAt] = useState<Date | null>(null);
   const [offlineAt, setOfflineAt] = useState<Date | null>(null);
@@ -66,7 +66,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       // 加载交付信息初始值
       const basicInfo = getProcessBasicInfo(processData.id);
       setDeveloperId(basicInfo.developer_id ?? null);
-      setCodeReviewerIds(basicInfo.code_reviewer_ids || []);
+      setCodeReviewerId(basicInfo.code_reviewer_id ?? null);
 
       const ledger = getProcessLifecycleLedger(processData.id);
       const toDate = (iso: string | null) => (iso ? new Date(iso) : null);
@@ -163,7 +163,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       // 写入交付信息：开发工程师 / 代码审核员
       updateProcessBasicInfo(processData.id, {
         developer_id: developerId,
-        code_reviewer_ids: Array.from(new Set(codeReviewerIds)),
+        code_reviewer_id: codeReviewerId,
       });
 
       // 写入生命周期时间（仅对发生变更的字段调用 adjust）
@@ -391,10 +391,9 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
             <Form.Slot label={{ text: '代码审核员' }}>
               <OwnerSearchSelect
-                multiple
-                value={codeReviewerIds}
-                onChange={(v: string[]) => setCodeReviewerIds(v || [])}
-                placeholder="请选择代码审核员（可多选）"
+                value={codeReviewerId ?? undefined}
+                onChange={(v) => setCodeReviewerId((v as string) ?? null)}
+                placeholder="请选择代码审核员"
               />
             </Form.Slot>
 

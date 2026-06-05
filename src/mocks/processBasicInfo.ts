@@ -19,7 +19,7 @@ export interface LastReleaseReviewer {
 export interface ProcessBasicInfo {
   process_id: string;
   developer_id: string | null;
-  code_reviewer_ids: string[];
+  code_reviewer_id: string | null;
   last_release_reviewer?: LastReleaseReviewer;
 }
 
@@ -61,7 +61,7 @@ const ensureSeeded = (processId: string): ProcessBasicInfo => {
     store.set(processId, {
       process_id: processId,
       developer_id: 'user-001',
-      code_reviewer_ids: ['user-007'],
+      code_reviewer_id: 'user-007',
       last_release_reviewer: {
         user_id: 'user-008',
         user_name: 'Grace Hu',
@@ -79,7 +79,7 @@ export const getProcessBasicInfo = (processId: string): ProcessBasicInfo => {
 
 export const updateProcessBasicInfo = (
   processId: string,
-  patch: Partial<Pick<ProcessBasicInfo, 'developer_id' | 'code_reviewer_ids'>>,
+  patch: Partial<Pick<ProcessBasicInfo, 'developer_id' | 'code_reviewer_id'>>,
   source: string = 'manual',
 ): ProcessBasicInfo => {
   const prev = ensureSeeded(processId);
@@ -116,8 +116,8 @@ export const writeCodeReviewerFromApproval = (
   approverId: string,
 ): void => {
   const prev = ensureSeeded(processId);
-  if (prev.code_reviewer_ids.length > 0) return; // R-07
-  const next = { ...prev, code_reviewer_ids: [approverId] };
+  if (prev.code_reviewer_id) return; // R-07
+  const next = { ...prev, code_reviewer_id: approverId };
   store.set(processId, next);
   audit('write_code_reviewer_from_approval', {
     processId,
