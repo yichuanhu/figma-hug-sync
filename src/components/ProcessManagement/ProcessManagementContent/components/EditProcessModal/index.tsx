@@ -40,6 +40,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
   const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
 
   // 交付信息字段
+  const [os, setOs] = useState<string | undefined>(undefined);
   const [developerIds, setDeveloperIds] = useState<string[]>([]);
   const [codeReviewerIds, setCodeReviewerIds] = useState<string[]>([]);
   const [developmentCompletedAt, setDevelopmentCompletedAt] = useState<Date | null>(null);
@@ -60,6 +61,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       setOwningDepartmentId(processData.owning_department_id || undefined);
       setOwnerId(processData.owner_id || undefined);
       setRequirementId(processData.requirement_id || undefined);
+      setOs(processData.os || undefined);
 
       // 加载交付信息初始值
       const basicInfo = getProcessBasicInfo(processData.id);
@@ -199,6 +201,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
         owner_id: ownerId ?? processData.owner_id,
         owner_name: hasRequirement ? (selectedRequirement!.owner_name ?? processData.owner_name) : processData.owner_name,
         requirement_id: requirementId ?? null,
+        os: os ?? null,
         updated_at: new Date().toISOString(),
       };
 
@@ -347,6 +350,23 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
             <OwnerSearchSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
           )}
         </Form.Slot>
+
+        <Form.Slot label={{ text: t('development.processDevelopment.createModal.fields.osLabel') }}>
+          <Select
+            value={os}
+            onChange={(v) => setOs(v as string | undefined)}
+            placeholder={t('development.processDevelopment.createModal.fields.osPlaceholder')}
+            showClear
+            disabled={!canManage}
+            style={{ width: '100%' }}
+            optionList={[
+              { value: 'Windows', label: 'Windows' },
+              { value: 'Linux', label: 'Linux' },
+              { value: 'macOS', label: 'macOS' },
+            ]}
+          />
+        </Form.Slot>
+
 
         <div className="edit-process-modal-section">
           <div className="edit-process-modal-section-title">
