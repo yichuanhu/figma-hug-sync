@@ -350,6 +350,23 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           )}
         </Form.Slot>
 
+        <Form.Slot label={{ text: t('development.processDevelopment.createModal.fields.osLabel') }}>
+          <Select
+            value={os}
+            onChange={(v) => setOs(v as string | undefined)}
+            placeholder={t('development.processDevelopment.createModal.fields.osPlaceholder')}
+            showClear
+            disabled={!canManage}
+            style={{ width: '100%' }}
+            optionList={[
+              { value: 'Windows', label: 'Windows' },
+              { value: 'Linux', label: 'Linux' },
+              { value: 'macOS', label: 'macOS' },
+            ]}
+          />
+        </Form.Slot>
+
+
         <div className="edit-process-modal-section">
           <div className="edit-process-modal-section-title">
             <span className="edit-process-modal-section-title-line" />
