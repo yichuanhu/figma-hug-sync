@@ -405,9 +405,10 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
             placeholder="请选择流程下线时间"
           />
         </Form.Slot>
-
+        </div>
 
         <div className="edit-process-modal-footer">
+
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
           </Button>
