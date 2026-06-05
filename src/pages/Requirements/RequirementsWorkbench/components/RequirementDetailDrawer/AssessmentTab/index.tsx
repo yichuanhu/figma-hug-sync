@@ -457,16 +457,26 @@ const AssessmentTab = ({ data, onSaveAssessment, onRejectAssessment, forceReadon
                         showClear
                         className="assessment-result-textarea"
                       />
-                      <Button
-                        theme="solid"
-                        type="primary"
-                        loading={submitting}
-                        onClick={() => handleSubmitLevel(idx)}
-                        className="assessment-result-submit"
-                        block
-                      >
-                        提交本级评估
-                      </Button>
+                      <div className="assessment-result-actions">
+                        <Button
+                          theme="light"
+                          type="danger"
+                          loading={rejecting}
+                          disabled={submitting}
+                          onClick={() => handleRejectLevel(idx)}
+                        >
+                          拒绝
+                        </Button>
+                        <Button
+                          theme="solid"
+                          type="primary"
+                          loading={submitting}
+                          disabled={rejecting}
+                          onClick={() => handleSubmitLevel(idx)}
+                        >
+                          提交本级评估
+                        </Button>
+                      </div>
                     </>
                   ) : (
                     (record.comment || record.assessor_name) && (
