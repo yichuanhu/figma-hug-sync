@@ -40,6 +40,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
   const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
 
   // 交付信息字段
+  const [os, setOs] = useState<string | undefined>(undefined);
   const [developerIds, setDeveloperIds] = useState<string[]>([]);
   const [codeReviewerIds, setCodeReviewerIds] = useState<string[]>([]);
   const [developmentCompletedAt, setDevelopmentCompletedAt] = useState<Date | null>(null);
