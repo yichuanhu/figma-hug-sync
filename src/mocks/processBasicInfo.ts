@@ -19,7 +19,7 @@ export interface LastReleaseReviewer {
 export interface ProcessBasicInfo {
   process_id: string;
   developer_id: string | null;
-  code_reviewer_ids: string[];
+  code_reviewer_id: string | null;
   last_release_reviewer?: LastReleaseReviewer;
 }
 
