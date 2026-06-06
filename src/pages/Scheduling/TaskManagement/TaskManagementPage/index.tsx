@@ -1142,23 +1142,34 @@ const TaskManagementPage = () => {
             taskStatusFilter.forEach((s) => chips.push({ key: `ts-${s}`, label: `任务状态: ${t(taskStatusConfig[s as TaskStatus]?.i18nKey || s)}`, onClose: () => setTaskStatusFilter((arr) => arr.filter((x) => x !== s)) }));
             departmentFilter.forEach((d) => chips.push({ key: `dept-${d}`, label: `部门: ${d}`, onClose: () => setDepartmentFilter((arr) => arr.filter((x) => x !== d)) }));
             if (dateRange) chips.push({ key: 'date', label: `创建时间: ${dateRange[0].toLocaleDateString()} ~ ${dateRange[1].toLocaleDateString()}`, onClose: () => setDateRange(null) });
-            if (executionTargetType && executionTargetId) {
+            if (executionTargetType && executionTargetIds.length > 0) {
               const list = executionTargetType === 'WORKER_GROUP' ? mockWorkerGroupList : mockWorkerList;
-              const entity = list.find((x) => x.id === executionTargetId);
-              chips.push({ key: 'target', label: `执行目标: ${entity?.name || executionTargetId}`, onClose: () => { setExecutionTargetType(null); setExecutionTargetId(null); } });
+              executionTargetIds.forEach((tid) => {
+                const entity = list.find((x) => x.id === tid);
+                chips.push({
+                  key: `target-${tid}`,
+                  label: `执行目标: ${entity?.name || tid}`,
+                  onClose: () => setExecutionTargetIds((arr) => {
+                    const next = arr.filter((x) => x !== tid);
+                    if (next.length === 0) setExecutionTargetType(null);
+                    return next;
+                  }),
+                });
+              });
             }
             priorityFilter.forEach((p) => chips.push({ key: `pr-${p}`, label: `优先级: ${t(priorityConfig[p as TaskPriority]?.i18nKey || p)}`, onClose: () => setPriorityFilter((arr) => arr.filter((x) => x !== p)) }));
             triggerSourceFilter.forEach((s) => chips.push({ key: `tr-${s}`, label: `触发来源: ${t(`task.triggerSource.${s.toLowerCase()}`)}`, onClose: () => setTriggerSourceFilter((arr) => arr.filter((x) => x !== s)) }));
-            if (triggerIdFilter) {
-              const trg = mockTriggerList.find((x) => x.trigger_id === triggerIdFilter);
-              chips.push({ key: 'trg', label: `触发器: ${trg?.trigger_name || triggerIdFilter}`, onClose: () => setTriggerIdFilter(null) });
-            }
+            triggerIdFilter.forEach((tid) => {
+              const trg = mockTriggerList.find((x) => x.trigger_id === tid);
+              chips.push({ key: `trg-${tid}`, label: `触发器: ${trg?.trigger_name || tid}`, onClose: () => setTriggerIdFilter((arr) => arr.filter((x) => x !== tid)) });
+            });
             executionStatusFilter.forEach((s) => chips.push({ key: `es-${s}`, label: `执行状态: ${t(executionStatusConfig[s as ExecutionStatus]?.i18nKey || s)}`, onClose: () => setExecutionStatusFilter((arr) => arr.filter((x) => x !== s)) }));
             if (enableRecordingFilter !== null) chips.push({ key: 'rec', label: `录屏: ${enableRecordingFilter ? '启用' : '关闭'}`, onClose: () => setEnableRecordingFilter(null) });
             if (hasScreenshotFilter === true) chips.push({ key: 'shot', label: '仅包含截图', onClose: () => setHasScreenshotFilter(null) });
             if (chips.length === 0) return null;
             return (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12, alignItems: 'center' }}>
+                <Text type="tertiary" style={{ fontSize: 13 }}>搜索条件：</Text>
                 {chips.map((c) => (
                   <Tag key={c.key} closable onClose={c.onClose} color="blue" type="light">{c.label}</Tag>
                 ))}
