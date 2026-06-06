@@ -484,9 +484,9 @@ const TaskManagementPage = () => {
         owning_department_name: departmentFilter,
         process_ids: processFilter,
         priorities: priorityFilter,
-        trigger_id: triggerIdFilter,
+        trigger_ids: triggerIdFilter,
         execution_target_type: executionTargetType,
-        execution_target_id: executionTargetId,
+        execution_target_ids: executionTargetIds,
         enable_recording: enableRecordingFilter,
         has_screenshot: hasScreenshotFilter,
         created_at_start: dateRange?.[0]?.toISOString(),
@@ -497,7 +497,7 @@ const TaskManagementPage = () => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, departmentFilter, dateRange, processFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetId, enableRecordingFilter, hasScreenshotFilter]);
+  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, departmentFilter, dateRange, processFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetIds, enableRecordingFilter, hasScreenshotFilter]);
 
 
   useEffect(() => {
@@ -507,7 +507,7 @@ const TaskManagementPage = () => {
   // 切换筛选条件或分页时清空选中
   useEffect(() => {
     setSelectedRowKeys([]);
-  }, [queryParams.offset, queryParams.size, queryParams.keyword, processFilter, taskStatusFilter, departmentFilter, dateRange, executionStatusFilter, triggerSourceFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetId, enableRecordingFilter, hasScreenshotFilter]);
+  }, [queryParams.offset, queryParams.size, queryParams.keyword, processFilter, taskStatusFilter, departmentFilter, dateRange, executionStatusFilter, triggerSourceFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetIds, enableRecordingFilter, hasScreenshotFilter]);
 
   // from URL Parameter恢复DrawerStatus(usefor from录屏页面Back)或open新建taskModal(fromTemplate页面跳转)
   useEffect(() => {
