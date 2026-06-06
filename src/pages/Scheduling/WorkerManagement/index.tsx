@@ -19,7 +19,7 @@ import {
   Pagination,
   Popover,
 } from '@douyinfe/semi-ui';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -778,6 +778,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     group_id: [],
   });
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
   const [sortState, setSortState] = useState<SortState>({});
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -1572,6 +1573,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
                 onChange={(v) => {
                   setDepartmentFilter(v);
                   setQueryParams(prev => ({ ...prev, offset: 0 }));

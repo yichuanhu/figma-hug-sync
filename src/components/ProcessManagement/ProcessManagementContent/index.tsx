@@ -25,7 +25,7 @@ import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import { Ellipsis, ExternalLink, Link2, Pencil, PlayCircle, Plus, PowerOff, Trash2, UserPlus } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
@@ -329,6 +329,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   // 状态筛选 - 调度中心默认只显示已发布
   const [statusFilter, setStatusFilter] = useState<string[]>(isSchedulingContext ? ['PUBLISHED'] : []);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
   // 「关联需求」下拉多选筛选：值为需求 id 集合，包含特殊值 __UNLINKED__ 表示「未关联需求」
   const [requirementFilter, setRequirementFilter] = useState<string[]>([]);
   const [osFilter, setOsFilter] = useState<string[]>([]);
@@ -799,6 +800,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
               multiple
               useNameAsValue
               value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
               onChange={(val) => {
                 setDepartmentFilter(val);
                 setQueryParams((prev) => ({ ...prev, offset: 0 }));

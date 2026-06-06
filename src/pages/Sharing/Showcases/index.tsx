@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Input, Card, Tag, Space, Select } from '@douyinfe/semi-ui';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Eye, Star } from 'lucide-react';
 import ShowcaseDetailDrawer, { ShowcaseItem } from './components/ShowcaseDetailDrawer';
@@ -141,6 +141,7 @@ const Showcases = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ShowcaseItem | null>(null);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
 
   // departmentOptions removed - using DepartmentSearchSelect with tree data
@@ -186,6 +187,8 @@ const Showcases = () => {
         <DepartmentSearchSelect
           placeholder={t('common.filterDepartment')}
           value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
           onChange={(v) => setDepartmentFilter(v)}
           multiple
           showClear

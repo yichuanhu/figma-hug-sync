@@ -22,7 +22,7 @@ import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import { debounce } from 'lodash';
 import { Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import type {
@@ -204,6 +204,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   // 部门筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 列表数据
@@ -562,6 +563,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
               <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
                 onChange={(v) => {
                   setDepartmentFilter(v);
                   setQueryParams((prev) => ({ ...prev, page: 1 }));

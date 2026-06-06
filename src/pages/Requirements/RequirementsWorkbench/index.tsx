@@ -18,7 +18,7 @@ import {
   Tooltip,
   Checkbox,
 } from '@douyinfe/semi-ui';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import FilterPopover from '@/components/FilterPopover';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Pencil, Plus, Send, Trash2, Undo2, Columns3, GitBranchPlus, Ban, PowerOff, RotateCcw } from 'lucide-react';
@@ -72,6 +72,7 @@ const RequirementsWorkbench = () => {
 
   // 筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
   
   const [statusFilter, setStatusFilter] = useState<RequirementStatus[]>([]);
   const [statusFilterVisible, setStatusFilterVisible] = useState(false);
@@ -659,6 +660,8 @@ const RequirementsWorkbench = () => {
               <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
                 onChange={(v) => {
                   setDepartmentFilter(v);
                   setQueryParams((prev) => ({ ...prev, offset: 0 }));

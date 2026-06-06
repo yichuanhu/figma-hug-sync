@@ -21,7 +21,7 @@ import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import FilterPopover from '@/components/FilterPopover';
 import type { RequirementItem } from '../RequirementsWorkbench/types';
 import {
@@ -64,6 +64,7 @@ const RequirementsReview = () => {
   const [activeTab, setActiveTab] = useState<ReviewTab>('pending');
   const [searchValue, setSearchValue] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -437,6 +438,8 @@ const RequirementsReview = () => {
               <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
                 onChange={(v) => setDepartmentFilter(v as string[])}
                 multiple
                 showClear

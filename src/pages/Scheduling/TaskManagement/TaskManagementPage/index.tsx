@@ -23,7 +23,7 @@ import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
 import { Bot, ClipboardClock, Component, Ellipsis, History, MinusCircle, PlayCircle, Plus, RefreshCw, X, XCircle } from 'lucide-react';
@@ -381,6 +381,7 @@ const TaskManagementPage = () => {
   const [processFilter, setProcessFilter] = useState<string[]>([]);
   const [taskStatusFilter, setTaskStatusFilter] = useState<string[]>([]);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
   // 收纳面板
   const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
@@ -1014,6 +1015,8 @@ const TaskManagementPage = () => {
                 <DepartmentSearchSelect
                   placeholder={t('common.filterDepartment')}
                   value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
                   onChange={(v) => { setDepartmentFilter((v as string[]) || []); setQueryParams((p) => ({ ...p, offset: 0 })); }}
                   multiple
                   showClear
