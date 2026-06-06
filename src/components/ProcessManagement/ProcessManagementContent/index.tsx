@@ -784,54 +784,54 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         </div>
 
         {/* 操作栏 */}
-        <Row type="flex" justify="space-between" align="middle" className="process-management-header-toolbar">
-          <Col>
-            <Space>
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('development.processDevelopment.searchPlaceholder')}
-                className="process-management-search-input"
-                value={searchValue}
-                onChange={handleSearch}
-                showClear
-                maxLength={100}
-              />
-              <DepartmentSelect
+        <div className="process-management-header-toolbar">
+          <div className="process-management-header-toolbar-filters">
+            <Input
+              prefix={<IconSearchStroked />}
+              placeholder={t('development.processDevelopment.searchPlaceholder')}
+              className="process-management-search-input"
+              value={searchValue}
+              onChange={handleSearch}
+              showClear
+              maxLength={100}
+            />
+            <DepartmentSelect
+              multiple
+              useNameAsValue
+              value={departmentFilter}
+              onChange={(val) => {
+                setDepartmentFilter(val);
+                setQueryParams((prev) => ({ ...prev, offset: 0 }));
+              }}
+              placeholder={t('common.filterDepartment')}
+              style={{ width: 200 }}
+              maxTagCount={1}
+              showClear
+            />
+            {!isSchedulingContext && (
+              <Select
                 multiple
-                useNameAsValue
-                value={departmentFilter}
-                onChange={(val) => {
-                  setDepartmentFilter(val);
-                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
-                }}
-                placeholder={t('common.filterDepartment')}
-                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
-                maxTagCount={1}
+                filter
                 showClear
+                maxTagCount={1}
+                value={requirementFilter}
+                onChange={(v) => setRequirementFilter((v as string[]) || [])}
+                placeholder={t('development.processDevelopment.filter.requirementPlaceholder')}
+                style={{ width: 200 }}
+                optionList={[
+                  {
+                    value: '__UNLINKED__',
+                    label: t('development.processDevelopment.filter.unlinked'),
+                  },
+                  ...requirementBriefList.map((r) => ({
+                    value: r.id,
+                    label: r.req_no ? `[${r.req_no}] ${r.title}` : r.title,
+                  })),
+                ]}
               />
-              {!isSchedulingContext && (
-                <Select
-                  multiple
-                  filter
-                  showClear
-                  maxTagCount={1}
-                  value={requirementFilter}
-                  onChange={(v) => setRequirementFilter((v as string[]) || [])}
-                  placeholder={t('development.processDevelopment.filter.requirementPlaceholder')}
-                  style={{ width: 240 }}
-                  optionList={[
-                    {
-                      value: '__UNLINKED__',
-                      label: t('development.processDevelopment.filter.unlinked'),
-                    },
-                    ...requirementBriefList.map((r) => ({
-                      value: r.id,
-                      label: r.req_no ? `[${r.req_no}] ${r.title}` : r.title,
-                    })),
-                  ]}
-                />
-              )}
-              <FilterPopover
+            )}
+            <span className="process-management-header-toolbar-divider" />
+            <FilterPopover
                 visible={filterPopoverVisible}
                 onVisibleChange={setFilterPopoverVisible}
                 onConfirm={(values) => {
@@ -877,19 +877,16 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                     value: developerFilter,
                   },
                 ]}
-              />
+            />
+          </div>
+          {/* 调度中心不显示新建按钮 */}
+          {!isSchedulingContext && (
+            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+              {t('development.processDevelopment.createProcess')}
+            </Button>
+          )}
+        </div>
 
-            </Space>
-          </Col>
-          <Col>
-            {/* 调度中心不显示新建按钮 */}
-            {!isSchedulingContext && (
-              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
-                {t('development.processDevelopment.createProcess')}
-              </Button>
-            )}
-          </Col>
-        </Row>
       </div>
 
       {/* 表格区域 */}

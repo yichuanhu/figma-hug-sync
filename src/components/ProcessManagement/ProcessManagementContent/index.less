@@ -24,7 +24,27 @@
 
     &-toolbar {
       margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+
+      &-filters {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      &-divider {
+        width: 1px;
+        height: 16px;
+        background-color: var(--semi-color-border);
+        margin: 0 4px;
+      }
     }
+
   }
 
   // 表格区域
