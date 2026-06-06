@@ -205,6 +205,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   // 部门筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYCredentialListResultResponse | null>(null);
@@ -249,7 +250,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       });
       setListResponse(response);
       return response.data;
@@ -274,7 +275,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
         offset: (page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       });
       setListResponse(response);
       return response.data;
@@ -300,7 +301,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       offset: 0,
       size: queryParams.pageSize,
       typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
-      departmentFilter,
+      departmentFilter: effectiveDepartmentFilter,
     });
     const targetIndex = filteredData.findIndex((item) => item.credential_id === resourceId);
 
@@ -322,7 +323,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
     setSearchParams({}, { replace: true });
   }, [
     context,
-    departmentFilter,
+    departmentFilter: effectiveDepartmentFilter,
     isInitialLoad,
     queryParams.keyword,
     queryParams.page,

@@ -59,6 +59,7 @@ const RequirementsAssessment = () => {
   
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -130,7 +131,7 @@ const RequirementsAssessment = () => {
       );
     }
     if (departmentFilter.length > 0) {
-      data = data.filter((item) => departmentFilter.includes(item.owning_department_name));
+      data = data.filter((item) => effectiveDepartmentFilter.includes(item.owning_department_name));
     }
     if (activeTab !== 'pending' && conclusionFilter !== 'ALL') {
       data = data.filter((item) => item.detailedAssessment?.feasibility === conclusionFilter);

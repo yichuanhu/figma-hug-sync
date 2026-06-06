@@ -193,6 +193,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   // 部门筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYQueueListResultResponse | null>(null);
@@ -234,7 +235,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         publishedFilter: context === 'development' ? publishedFilter : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.data;
@@ -259,7 +260,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         offset: (page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         publishedFilter: context === 'development' ? publishedFilter : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.data;
@@ -285,7 +286,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       offset: 0,
       size: queryParams.pageSize,
       publishedFilter: context === 'development' ? publishedFilter : null,
-      departmentFilter,
+      departmentFilter: effectiveDepartmentFilter,
     } as any);
     const targetIndex = filteredData.findIndex((item) => item.queue_id === resourceId);
 
@@ -307,7 +308,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
     setSearchParams({}, { replace: true });
   }, [
     context,
-    departmentFilter,
+    departmentFilter: effectiveDepartmentFilter,
     isInitialLoad,
     publishedFilter,
     queryParams.keyword,

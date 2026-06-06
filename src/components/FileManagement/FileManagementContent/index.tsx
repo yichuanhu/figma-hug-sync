@@ -212,6 +212,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   // 部门筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYFileListResultResponse | null>(null);
@@ -252,7 +253,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         sourceFilter: sourceFilter.length > 0 ? sourceFilter[0] : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.data;
@@ -283,7 +284,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       offset: 0,
       size: queryParams.pageSize,
       sourceFilter: sourceFilter.length > 0 ? sourceFilter[0] : null,
-      departmentFilter,
+      departmentFilter: effectiveDepartmentFilter,
     } as any);
     const targetIndex = filteredData.findIndex((item) => item.id === resourceId);
 
@@ -305,7 +306,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
     setSearchParams({}, { replace: true });
   }, [
     context,
-    departmentFilter,
+    departmentFilter: effectiveDepartmentFilter,
     isInitialLoad,
     queryParams.keyword,
     queryParams.page,

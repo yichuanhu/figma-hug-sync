@@ -382,6 +382,7 @@ const TaskManagementPage = () => {
   const [taskStatusFilter, setTaskStatusFilter] = useState<string[]>([]);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
   // 收纳面板
   const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
@@ -482,7 +483,7 @@ const TaskManagementPage = () => {
         task_status: taskStatusFilter.length > 0 ? taskStatusFilter as TaskStatus[] : undefined,
         execution_status: executionStatusFilter.length > 0 ? executionStatusFilter as ExecutionStatus[] : undefined,
         trigger_source: triggerSourceFilter.length > 0 ? triggerSourceFilter as TriggerSource[] : undefined,
-        owning_department_name: departmentFilter,
+        owning_department_name: effectiveDepartmentFilter,
         process_ids: processFilter,
         priorities: priorityFilter,
         trigger_ids: triggerIdFilter,

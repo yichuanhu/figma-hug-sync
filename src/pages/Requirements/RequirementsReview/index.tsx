@@ -65,6 +65,7 @@ const RequirementsReview = () => {
   const [searchValue, setSearchValue] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -149,7 +150,7 @@ const RequirementsReview = () => {
       );
     }
     if (departmentFilter.length > 0) {
-      data = data.filter((item) => departmentFilter.includes(item.owning_department_name));
+      data = data.filter((item) => effectiveDepartmentFilter.includes(item.owning_department_name));
     }
     if (statusFilter.length > 0) {
       data = data.filter((item) => statusFilter.includes(item.status));

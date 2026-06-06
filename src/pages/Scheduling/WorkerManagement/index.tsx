@@ -779,6 +779,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   });
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   const [sortState, setSortState] = useState<SortState>({});
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -856,7 +857,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         ...queryParams,
         filters,
         sort: sortState,
-        owning_department_name: departmentFilter,
+        owning_department_name: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.list;
@@ -878,7 +879,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       offset: newOffset,
       filters,
       sort: sortState,
-      owning_department_name: departmentFilter,
+      owning_department_name: effectiveDepartmentFilter,
     } as any);
     setListResponse(response);
     return response.list;

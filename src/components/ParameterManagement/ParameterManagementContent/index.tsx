@@ -205,6 +205,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   // 部门筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 列表数据
@@ -247,7 +248,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
         publishedFilter: context === 'development' ? publishedFilter : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.data;
@@ -273,7 +274,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
         publishedFilter: context === 'development' ? publishedFilter : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.data;
@@ -300,7 +301,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       size: queryParams.pageSize,
       typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
       publishedFilter: context === 'development' ? publishedFilter : null,
-      departmentFilter,
+      departmentFilter: effectiveDepartmentFilter,
     });
     const targetIndex = filteredData.findIndex((item) => item.parameter_id === resourceId);
 
@@ -322,7 +323,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
     setSearchParams({}, { replace: true });
   }, [
     context,
-    departmentFilter,
+    departmentFilter: effectiveDepartmentFilter,
     isInitialLoad,
     publishedFilter,
     queryParams.keyword,

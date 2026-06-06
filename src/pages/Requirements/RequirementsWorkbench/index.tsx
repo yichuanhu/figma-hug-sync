@@ -73,6 +73,7 @@ const RequirementsWorkbench = () => {
   // 筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   
   const [statusFilter, setStatusFilter] = useState<RequirementStatus[]>([]);
   const [statusFilterVisible, setStatusFilterVisible] = useState(false);
@@ -119,7 +120,7 @@ const RequirementsWorkbench = () => {
     try {
       const response = await fetchRequirementList({
         ...queryParams,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
         statusFilter,
       });
       setListResponse(response);
@@ -816,13 +817,13 @@ const RequirementsWorkbench = () => {
           await updateRequirementStatus(id, newStatus, comment);
           loadData();
           // Refresh the selected record
-          const updated = (await fetchRequirementList({ ...queryParams, departmentFilter })).list.find(r => r.id === id);
+          const updated = (await fetchRequirementList({ ...queryParams, departmentFilter: effectiveDepartmentFilter })).list.find(r => r.id === id);
           if (updated) setSelectedRecord(updated);
         }}
         onRefresh={async () => {
           loadData();
           if (selectedRecord) {
-            const updated = (await fetchRequirementList({ ...queryParams, departmentFilter })).list.find(r => r.id === selectedRecord.id);
+            const updated = (await fetchRequirementList({ ...queryParams, departmentFilter: effectiveDepartmentFilter })).list.find(r => r.id === selectedRecord.id);
             if (updated) setSelectedRecord(updated);
           }
         }}

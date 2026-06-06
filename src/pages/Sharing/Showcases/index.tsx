@@ -142,6 +142,7 @@ const Showcases = () => {
   const [selectedItem, setSelectedItem] = useState<ShowcaseItem | null>(null);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
 
   // departmentOptions removed - using DepartmentSearchSelect with tree data
@@ -158,7 +159,7 @@ const Showcases = () => {
       !item.tags.some((tag) => tag.toLowerCase().includes(searchText.toLowerCase()))) {
       return false;
     }
-    if (departmentFilter.length > 0 && !departmentFilter.includes(item.department)) return false;
+    if (departmentFilter.length > 0 && !effectiveDepartmentFilter.includes(item.department)) return false;
     if (tagsFilter.length > 0 && !tagsFilter.some((tag) => item.tags.includes(tag))) return false;
     return true;
   });

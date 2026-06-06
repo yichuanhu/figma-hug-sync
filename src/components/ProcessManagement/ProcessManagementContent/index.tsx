@@ -330,6 +330,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const [statusFilter, setStatusFilter] = useState<string[]>(isSchedulingContext ? ['PUBLISHED'] : []);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   // 「关联需求」下拉多选筛选：值为需求 id 集合，包含特殊值 __UNLINKED__ 表示「未关联需求」
   const [requirementFilter, setRequirementFilter] = useState<string[]>([]);
   const [osFilter, setOsFilter] = useState<string[]>([]);
@@ -367,7 +368,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchProcessList({ ...queryParams, statusFilter, departmentFilter });
+      const response = await fetchProcessList({ ...queryParams, statusFilter, departmentFilter: effectiveDepartmentFilter });
       setListResponse(response);
       return response.list;
     } finally {
@@ -436,7 +437,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       ...queryParams,
       offset: newOffset,
       statusFilter,
-      departmentFilter,
+      departmentFilter: effectiveDepartmentFilter,
     });
     setListResponse(response);
     return response.list;
@@ -455,7 +456,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       return;
     }
 
-    const filteredData = getFilteredProcessList({ ...queryParams, statusFilter, departmentFilter });
+    const filteredData = getFilteredProcessList({ ...queryParams, statusFilter, departmentFilter: effectiveDepartmentFilter });
     const targetIndex = filteredData.findIndex((item) => item.id === processId);
 
     if (targetIndex === -1) {
