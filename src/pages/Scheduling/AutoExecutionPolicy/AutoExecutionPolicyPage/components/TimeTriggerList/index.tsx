@@ -18,7 +18,7 @@ import {
   Pagination,
   
 } from '@douyinfe/semi-ui';
-import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import { Clock, Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
