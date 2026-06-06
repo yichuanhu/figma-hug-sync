@@ -386,9 +386,9 @@ const TaskManagementPage = () => {
   const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
   const [triggerSourceFilter, setTriggerSourceFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
-  const [triggerIdFilter, setTriggerIdFilter] = useState<string | null>(null);
+  const [triggerIdFilter, setTriggerIdFilter] = useState<string[]>([]);
   const [executionTargetType, setExecutionTargetType] = useState<'WORKER' | 'WORKER_GROUP' | null>(null);
-  const [executionTargetId, setExecutionTargetId] = useState<string | null>(null);
+  const [executionTargetIds, setExecutionTargetIds] = useState<string[]>([]);
   const [enableRecordingFilter, setEnableRecordingFilter] = useState<boolean | null>(null);
   const [hasScreenshotFilter, setHasScreenshotFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
