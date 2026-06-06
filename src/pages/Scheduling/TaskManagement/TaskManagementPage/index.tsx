@@ -23,7 +23,7 @@ import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
 import { Bot, ClipboardClock, Component, Ellipsis, History, MinusCircle, PlayCircle, Plus, RefreshCw, X, XCircle } from 'lucide-react';
@@ -381,6 +381,8 @@ const TaskManagementPage = () => {
   const [processFilter, setProcessFilter] = useState<string[]>([]);
   const [taskStatusFilter, setTaskStatusFilter] = useState<string[]>([]);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
   // 收纳面板
   const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
@@ -481,7 +483,7 @@ const TaskManagementPage = () => {
         task_status: taskStatusFilter.length > 0 ? taskStatusFilter as TaskStatus[] : undefined,
         execution_status: executionStatusFilter.length > 0 ? executionStatusFilter as ExecutionStatus[] : undefined,
         trigger_source: triggerSourceFilter.length > 0 ? triggerSourceFilter as TriggerSource[] : undefined,
-        owning_department_name: departmentFilter,
+        owning_department_name: effectiveDepartmentFilter,
         process_ids: processFilter,
         priorities: priorityFilter,
         trigger_ids: triggerIdFilter,
@@ -497,7 +499,7 @@ const TaskManagementPage = () => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, departmentFilter, dateRange, processFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetIds, enableRecordingFilter, hasScreenshotFilter]);
+  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, departmentFilter, includeSubDepts, dateRange, processFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetIds, enableRecordingFilter, hasScreenshotFilter]);
 
 
   useEffect(() => {
@@ -507,7 +509,7 @@ const TaskManagementPage = () => {
   // 切换筛选条件或分页时清空选中
   useEffect(() => {
     setSelectedRowKeys([]);
-  }, [queryParams.offset, queryParams.size, queryParams.keyword, processFilter, taskStatusFilter, departmentFilter, dateRange, executionStatusFilter, triggerSourceFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetIds, enableRecordingFilter, hasScreenshotFilter]);
+  }, [queryParams.offset, queryParams.size, queryParams.keyword, processFilter, taskStatusFilter, departmentFilter, includeSubDepts, dateRange, executionStatusFilter, triggerSourceFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetIds, enableRecordingFilter, hasScreenshotFilter]);
 
   // from URL Parameter恢复DrawerStatus(usefor from录屏页面Back)或open新建taskModal(fromTemplate页面跳转)
   useEffect(() => {
@@ -1014,6 +1016,8 @@ const TaskManagementPage = () => {
                 <DepartmentSearchSelect
                   placeholder={t('common.filterDepartment')}
                   value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
                   onChange={(v) => { setDepartmentFilter((v as string[]) || []); setQueryParams((p) => ({ ...p, offset: 0 })); }}
                   multiple
                   showClear

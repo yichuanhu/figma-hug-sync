@@ -25,7 +25,7 @@ import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import { Ellipsis, ExternalLink, Link2, Pencil, PlayCircle, Plus, PowerOff, Trash2, UserPlus } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
@@ -329,6 +329,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   // 状态筛选 - 调度中心默认只显示已发布
   const [statusFilter, setStatusFilter] = useState<string[]>(isSchedulingContext ? ['PUBLISHED'] : []);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   // 「关联需求」下拉多选筛选：值为需求 id 集合，包含特殊值 __UNLINKED__ 表示「未关联需求」
   const [requirementFilter, setRequirementFilter] = useState<string[]>([]);
   const [osFilter, setOsFilter] = useState<string[]>([]);
@@ -366,14 +368,14 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchProcessList({ ...queryParams, statusFilter, departmentFilter });
+      const response = await fetchProcessList({ ...queryParams, statusFilter, departmentFilter: effectiveDepartmentFilter });
       setListResponse(response);
       return response.list;
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, statusFilter, departmentFilter]);
+  }, [queryParams, statusFilter, departmentFilter, includeSubDepts]);
 
   // 一次性加载所有「已被流程关联」的需求 brief，作为「关联需求」筛选下拉选项
   useEffect(() => {
@@ -435,11 +437,11 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       ...queryParams,
       offset: newOffset,
       statusFilter,
-      departmentFilter,
+      departmentFilter: effectiveDepartmentFilter,
     });
     setListResponse(response);
     return response.list;
-  }, [queryParams, statusFilter, departmentFilter, listResponse.range?.size]);
+  }, [queryParams, statusFilter, departmentFilter, includeSubDepts, listResponse.range?.size]);
 
   // 初始化加载
   useEffect(() => {
@@ -454,7 +456,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       return;
     }
 
-    const filteredData = getFilteredProcessList({ ...queryParams, statusFilter, departmentFilter });
+    const filteredData = getFilteredProcessList({ ...queryParams, statusFilter, departmentFilter: effectiveDepartmentFilter });
     const targetIndex = filteredData.findIndex((item) => item.id === processId);
 
     if (targetIndex === -1) {
@@ -474,7 +476,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
     setDetailInitialTab(tab || 'detail');
     setDetailDrawerVisible(true);
     setSearchParams({}, { replace: true });
-  }, [queryParams, statusFilter, departmentFilter, searchParams, isInitialLoad, setSearchParams]);
+  }, [queryParams, statusFilter, departmentFilter, includeSubDepts, searchParams, isInitialLoad, setSearchParams]);
 
   useEffect(() => {
     if (!detailDrawerVisible || !selectedProcess?.id) {
@@ -799,6 +801,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
               multiple
               useNameAsValue
               value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
               onChange={(val) => {
                 setDepartmentFilter(val);
                 setQueryParams((prev) => ({ ...prev, offset: 0 }));

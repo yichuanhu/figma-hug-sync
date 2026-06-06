@@ -19,7 +19,7 @@ import {
   Pagination,
   Popover,
 } from '@douyinfe/semi-ui';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -778,6 +778,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     group_id: [],
   });
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   const [sortState, setSortState] = useState<SortState>({});
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -855,7 +857,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         ...queryParams,
         filters,
         sort: sortState,
-        owning_department_name: departmentFilter,
+        owning_department_name: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.list;
@@ -863,7 +865,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, filters, sortState, departmentFilter]);
+  }, [queryParams, filters, sortState, departmentFilter, includeSubDepts]);
 
   // 翻页并Back新Data(usefor Drawer导航时auto-翻页)
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerResponse[]> => {
@@ -877,11 +879,11 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       offset: newOffset,
       filters,
       sort: sortState,
-      owning_department_name: departmentFilter,
+      owning_department_name: effectiveDepartmentFilter,
     } as any);
     setListResponse(response);
     return response.list;
-  }, [queryParams, filters, sortState, departmentFilter, listResponse.range?.size]);
+  }, [queryParams, filters, sortState, departmentFilter, includeSubDepts, listResponse.range?.size]);
 
   // 当Tab switchto非激活Status时, CloseDrawer
   useEffect(() => {
@@ -1572,6 +1574,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
                 onChange={(v) => {
                   setDepartmentFilter(v);
                   setQueryParams(prev => ({ ...prev, offset: 0 }));

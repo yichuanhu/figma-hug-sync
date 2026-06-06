@@ -22,7 +22,7 @@ import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import { debounce } from 'lodash';
 import { Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import type {
@@ -204,6 +204,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   // 部门筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 列表数据
@@ -246,7 +248,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
         publishedFilter: context === 'development' ? publishedFilter : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.data;
@@ -258,7 +260,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, typeFilter, publishedFilter, departmentFilter, context, t]);
+  }, [queryParams, typeFilter, publishedFilter, departmentFilter, includeSubDepts, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYParameterResponse[]> => {
@@ -272,14 +274,14 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
         publishedFilter: context === 'development' ? publishedFilter : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.data;
     } catch {
       return [];
     }
-  }, [queryParams, typeFilter, publishedFilter, departmentFilter, context]);
+  }, [queryParams, typeFilter, publishedFilter, departmentFilter, includeSubDepts, context]);
 
   useEffect(() => {
     loadData();
@@ -299,7 +301,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       size: queryParams.pageSize,
       typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
       publishedFilter: context === 'development' ? publishedFilter : null,
-      departmentFilter,
+      departmentFilter: effectiveDepartmentFilter,
     });
     const targetIndex = filteredData.findIndex((item) => item.parameter_id === resourceId);
 
@@ -321,7 +323,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
     setSearchParams({}, { replace: true });
   }, [
     context,
-    departmentFilter,
+    departmentFilter: effectiveDepartmentFilter,
     isInitialLoad,
     publishedFilter,
     queryParams.keyword,
@@ -562,6 +564,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
               <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
                 onChange={(v) => {
                   setDepartmentFilter(v);
                   setQueryParams((prev) => ({ ...prev, page: 1 }));

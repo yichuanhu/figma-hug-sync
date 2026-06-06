@@ -1,37 +1,76 @@
-## 目标
+## 问题
 
-在 `DepartmentSearchSelect` 公共组件中新增"包含子部门"复选框，让用户可主动将筛选范围从"当前部门"扩展为"当前部门 + 所有子部门"。默认不勾选，保持现有"只查当前部门"语义。
+当前实现把"包含子部门"在组件内部直接展开为完整数组，并通过 `onChange` 输出给页面。页面的"搜索条件" Chips 区域和数据过滤逻辑共用这一份 state，结果勾选一个父部门后，搜索条件区会爆出几十个 `部门: xxx` 的标签，非常难看。
 
-## 范围
+## 修复思路
 
-- 仅在 `multiple=true`（多选筛选场景）下渲染该 Checkbox，避免破坏单选场景（表单创建/编辑）的 `string` 类型契约。
-- 不修改 14 个调用方页面，它们继续以 `string[]` + `includes()` 方式过滤。
+让"用户选择"和"实际过滤范围"在数据上解耦：
+- 组件 `onChange` 只回传**用户原始选择**（raw），不再做子部门展开。
+- 组件新增 `onIncludeChildrenChange?: (checked: boolean) => void` 回调，告知页面"包含子部门"开关状态。
+- 提供独立的展开工具函数 `expandDepartmentValues(ids, includeChildren, useNameAsValue)`，供页面在数据过滤时调用。
+- 页面层：搜索条件 Chips 仍渲染 raw 数组（数量等于用户实际勾选数）；数据过滤行用 `expandDepartmentValues` 计算实际过滤集合。
+
+这样勾选一个父部门时 Chips 只显示一个 `部门: 父部门`，但表格数据按"父部门 + 所有子部门"过滤。
 
 ## 改动详情
 
 ### `src/components/DepartmentSearchSelect/index.tsx`
 
-1. 新增内部 state：`includeChildren: boolean`（默认 `false`）。
-2. 新增内部 state：`selectedRaw: string[]`，保存用户在下拉中的"原始选择"（用于 `Select` 的 `value` 受控绑定，使下拉里仍只显示用户勾选的部门，而非展开后的全集）。
-3. 工具函数 `expandWithChildren(ids: string[]): string[]`：基于 `departmentTree` 递归收集每个所选节点及其全部后代，去重。若 `useNameAsValue=true`，输出 `label`；否则输出 `value`（与现有 `onChange` 输出口径一致）。
-4. `onChange` 触发时机：
-   - 用户改变下拉选择 → 更新 `selectedRaw`，按当前 `includeChildren` 计算结果并 `onChange(result)`。
-   - 用户切换 Checkbox → 基于 `selectedRaw` 重新计算并 `onChange(result)`；若 `selectedRaw` 为空，则跳过（避免无意义触发）。
-5. UI：在 `Select` 的 `outerBottomSlot` 渲染一个带上分隔线的 `Checkbox`，文案"包含子部门"，仅 `multiple=true` 时渲染。
+- 移除 `expandWithChildren` 在 `onChange` 路径上的调用：`onChange(raw)` 直接回传 raw。
+- 新增 props（仅 `multiple=true` 生效）：
+  - `includeChildren?: boolean`（受控）
+  - `defaultIncludeChildren?: boolean`（非受控初始值，默认 `false`）
+  - `onIncludeChildrenChange?: (checked: boolean) => void`
+- 内部移除 `selectedRaw` 中间态：组件回到由外部 `value` 受控的常规模式。
+- Checkbox 切换时仅调用 `onIncludeChildrenChange`，不再触发 `onChange`。
+- 导出工具函数 `expandDepartmentValues(values: string[], includeChildren: boolean, useNameAsValue?: boolean): string[]`。
 
-### i18n
+### 页面改造（仅多选筛选场景，共 ~14 个文件）
 
-- `src/locales/zh-CN/common.json`：新增 `includeSubDepartments: "包含子部门"`
-- `src/locales/en/common.json`：新增 `includeSubDepartments: "Include sub-departments"`
+模式统一：
+```tsx
+const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+const [includeSubDepts, setIncludeSubDepts] = useState(false);
 
-## 不改动
+// Select 绑定
+<DepartmentSearchSelect
+  multiple
+  value={departmentFilter}
+  onChange={setDepartmentFilter}
+  includeChildren={includeSubDepts}
+  onIncludeChildrenChange={setIncludeSubDepts}
+  useNameAsValue
+/>
 
-- 14 个调用方页面的过滤逻辑（继续 `departmentFilter.includes(item.department)`）。
-- 单选场景（表单）的行为与类型。
-- `DepartmentSearchSelect` 现有的 props 签名（新增能力为内部行为，仅在 `multiple=true` 时显现）。
+// 数据过滤：用展开后的集合
+const effectiveDeptFilter = expandDepartmentValues(departmentFilter, includeSubDepts, true);
+// ...filter rows by effectiveDeptFilter
+
+// Chips：仍然遍历 departmentFilter（原始选择），保持显示一个标签
+```
+
+涉及文件（仅筛选用法的 14 个）：
+- `src/pages/Scheduling/TaskManagement/TaskManagementPage/index.tsx`
+- `src/components/CredentialManagement/CredentialManagementContent/index.tsx`
+- `src/components/FileManagement/FileManagementContent/index.tsx`
+- `src/components/ParameterManagement/ParameterManagementContent/index.tsx`
+- `src/components/ProcessManagement/ProcessManagementContent/index.tsx`
+- `src/components/QueueManagement/QueueManagementContent/index.tsx`
+- `src/pages/Requirements/RequirementsAssessment/index.tsx`
+- `src/pages/Requirements/RequirementsReview/index.tsx`
+- `src/pages/Requirements/RequirementsWorkbench/index.tsx`
+- `src/pages/Scheduling/AutoExecutionPolicy/AutoExecutionPolicyPage/components/QueueTriggerList/index.tsx`
+- `src/pages/Scheduling/AutoExecutionPolicy/AutoExecutionPolicyPage/components/TimeTriggerList/index.tsx`
+- `src/pages/Scheduling/TemplateManagement/TemplateManagementPage/index.tsx`
+- `src/pages/Scheduling/WorkerManagement/WorkerGroupManagement/index.tsx`
+- `src/pages/Scheduling/WorkerManagement/index.tsx`
+- `src/pages/Sharing/Showcases/index.tsx`
+
+（表单创建/编辑场景使用的是单选模式，无 Checkbox，不变。）
 
 ## 验证
 
-- 多选场景（如队列管理筛选）：勾选某父部门后，开启"包含子部门"，列表应显示该父部门 + 所有子部门下的数据；关闭后回到仅当前部门。
-- 下拉框中已选 Tag 数量不会因勾选 Checkbox 而膨胀。
-- 单选场景（任务表单的"归属部门"）：无 Checkbox，行为不变。
+- 任务列表勾选父部门 + "包含子部门"：搜索条件区只显示 1 个 `部门: 父部门` 标签；表格数据包含父部门及全部子部门记录。
+- 取消勾选 Checkbox：表格回到只显示该父部门记录，Chip 不变。
+- 关闭 Checkbox 再切换部门：行为退化为原有"只查当前部门"。
+- 单选场景（表单的"归属部门"）：无 Checkbox，行为与类型不变。

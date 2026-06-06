@@ -22,7 +22,7 @@ import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import { debounce } from 'lodash';
 import { Ellipsis, List, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import type {
@@ -192,6 +192,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   // 部门筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYQueueListResultResponse | null>(null);
@@ -233,7 +235,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         publishedFilter: context === 'development' ? publishedFilter : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.data;
@@ -245,7 +247,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, publishedFilter, departmentFilter, context, t]);
+  }, [queryParams, publishedFilter, departmentFilter, includeSubDepts, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYQueueResponse[]> => {
@@ -258,14 +260,14 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         offset: (page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         publishedFilter: context === 'development' ? publishedFilter : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.data;
     } catch {
       return [];
     }
-  }, [queryParams, publishedFilter, departmentFilter, context]);
+  }, [queryParams, publishedFilter, departmentFilter, includeSubDepts, context]);
 
   useEffect(() => {
     loadData();
@@ -284,7 +286,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       offset: 0,
       size: queryParams.pageSize,
       publishedFilter: context === 'development' ? publishedFilter : null,
-      departmentFilter,
+      departmentFilter: effectiveDepartmentFilter,
     } as any);
     const targetIndex = filteredData.findIndex((item) => item.queue_id === resourceId);
 
@@ -306,7 +308,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
     setSearchParams({}, { replace: true });
   }, [
     context,
-    departmentFilter,
+    departmentFilter: effectiveDepartmentFilter,
     isInitialLoad,
     publishedFilter,
     queryParams.keyword,
@@ -563,6 +565,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
               <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
                 onChange={(v) => {
                   setDepartmentFilter(v);
                   setQueryParams((prev) => ({ ...prev, page: 1 }));

@@ -18,7 +18,7 @@ import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import FilterPopover from '@/components/FilterPopover';
 import type { RequirementItem } from '../RequirementsWorkbench/types';
 import {
@@ -58,6 +58,8 @@ const RequirementsAssessment = () => {
   const [conclusionFilter, setConclusionFilter] = useState<string>('ALL');
   
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -129,13 +131,13 @@ const RequirementsAssessment = () => {
       );
     }
     if (departmentFilter.length > 0) {
-      data = data.filter((item) => departmentFilter.includes(item.owning_department_name));
+      data = data.filter((item) => effectiveDepartmentFilter.includes(item.owning_department_name));
     }
     if (activeTab !== 'pending' && conclusionFilter !== 'ALL') {
       data = data.filter((item) => item.detailedAssessment?.feasibility === conclusionFilter);
     }
     return data;
-  }, [activeTab, allRequirements, searchValue, departmentFilter, conclusionFilter]);
+  }, [activeTab, allRequirements, searchValue, departmentFilter, includeSubDepts, conclusionFilter]);
 
   const handleStatusChange = async (id: string, newStatus: string, comment?: string) => {
     await updateRequirementStatus(id, newStatus, comment);
@@ -394,6 +396,8 @@ const RequirementsAssessment = () => {
               <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
                 onChange={(v) => setDepartmentFilter(v as string[])}
                 multiple
                 showClear

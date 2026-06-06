@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Select, Typography, Avatar, Checkbox } from '@douyinfe/semi-ui';
 import { Network } from 'lucide-react';
@@ -15,17 +15,27 @@ interface DepartmentSearchSelectBaseProps {
   maxTagCount?: number;
 }
 
+interface MultiExtras {
+  /** Controlled include-children state (multi-select only). */
+  includeChildren?: boolean;
+  /** Initial value for include-children (uncontrolled). Defaults to false. */
+  defaultIncludeChildren?: boolean;
+  /** Fires when user toggles the "include sub-departments" checkbox. */
+  onIncludeChildrenChange?: (checked: boolean) => void;
+}
+
 type DepartmentSearchSelectProps =
   | (DepartmentSearchSelectBaseProps & {
       multiple?: false;
       value?: string;
       onChange?: (value: string) => void;
     })
-  | (DepartmentSearchSelectBaseProps & {
-      multiple: true;
-      value?: string[];
-      onChange?: (value: string[]) => void;
-    });
+  | (DepartmentSearchSelectBaseProps &
+      MultiExtras & {
+        multiple: true;
+        value?: string[];
+        onChange?: (value: string[]) => void;
+      });
 
 interface FlatDeptOption {
   value: string;
@@ -58,7 +68,7 @@ const flattenDepartments = (
   return result;
 };
 
-/** Build map: node value/name -> list of self + all descendant values/names */
+/** Build map: node value/name -> self + all descendant values/names */
 const buildDescendantMap = (
   nodes: DeptTreeNode[],
   useNameAsValue: boolean,
@@ -79,30 +89,66 @@ const buildDescendantMap = (
   return map;
 };
 
+const descendantMapByName = buildDescendantMap(departmentTree, true);
+const descendantMapById = buildDescendantMap(departmentTree, false);
+
+/**
+ * Expand a list of selected department values into self + all descendants.
+ * Used by list pages when "include sub-departments" is enabled, so that the
+ * actual filter set differs from the chip display (which still shows the
+ * user's raw selection).
+ */
+export const expandDepartmentValues = (
+  values: string[] | undefined,
+  includeChildren: boolean,
+  useNameAsValue = false,
+): string[] => {
+  if (!values || values.length === 0) return [];
+  if (!includeChildren) return [...values];
+  const map = useNameAsValue ? descendantMapByName : descendantMapById;
+  const set = new Set<string>();
+  values.forEach((v) => {
+    const list = map.get(v);
+    if (list) list.forEach((x) => set.add(x));
+    else set.add(v);
+  });
+  return Array.from(set);
+};
+
 const { Text } = Typography;
 
-const DepartmentSearchSelect = ({
-  value,
-  onChange,
-  placeholder,
-  disabled = false,
-  style,
-  className,
-  useNameAsValue = false,
-  showClear = true,
-  multiple = false,
-  maxTagCount,
-}: DepartmentSearchSelectProps) => {
+const DepartmentSearchSelect = (props: DepartmentSearchSelectProps) => {
+  const {
+    value,
+    onChange,
+    placeholder,
+    disabled = false,
+    style,
+    className,
+    useNameAsValue = false,
+    showClear = true,
+    multiple = false,
+    maxTagCount,
+  } = props;
   const onChangeAny = onChange as ((v: string | string[]) => void) | undefined;
   const { t } = useTranslation();
 
+  const multiExtras = multiple ? (props as DepartmentSearchSelectBaseProps & MultiExtras) : undefined;
+  const isIncludeControlled = multiExtras?.includeChildren !== undefined;
+  const [includeChildrenInner, setIncludeChildrenInner] = useState<boolean>(
+    multiExtras?.defaultIncludeChildren ?? false,
+  );
+  const includeChildren = isIncludeControlled
+    ? !!multiExtras?.includeChildren
+    : includeChildrenInner;
+
+  const handleIncludeChildrenChange = (checked: boolean) => {
+    if (!isIncludeControlled) setIncludeChildrenInner(checked);
+    multiExtras?.onIncludeChildrenChange?.(checked);
+  };
+
   const options = useMemo(
     () => flattenDepartments(departmentTree, useNameAsValue),
-    [useNameAsValue],
-  );
-
-  const descendantMap = useMemo(
-    () => buildDescendantMap(departmentTree, useNameAsValue),
     [useNameAsValue],
   );
 
@@ -118,61 +164,10 @@ const DepartmentSearchSelect = ({
     [options],
   );
 
-  // Multi-select internal state: raw user selection + includeChildren toggle.
-  const [selectedRaw, setSelectedRaw] = useState<string[]>(
-    multiple && Array.isArray(value) ? (value as string[]) : [],
-  );
-  const [includeChildren, setIncludeChildren] = useState(false);
-
-  // When parent clears externally (e.g., reset filters), sync raw selection.
-  useEffect(() => {
-    if (!multiple) return;
-    const ext = (Array.isArray(value) ? value : []) as string[];
-    if (ext.length === 0 && selectedRaw.length > 0) {
-      setSelectedRaw([]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [multiple, Array.isArray(value) ? (value as string[]).length : 0]);
-
-  const expandWithChildren = useCallback(
-    (ids: string[]): string[] => {
-      const set = new Set<string>();
-      ids.forEach((id) => {
-        const list = descendantMap.get(id);
-        if (list) {
-          list.forEach((v) => set.add(v));
-        } else {
-          set.add(id);
-        }
-      });
-      return Array.from(set);
-    },
-    [descendantMap],
-  );
-
-  const handleMultiChange = (raw: string[]) => {
-    setSelectedRaw(raw);
-    const result = includeChildren ? expandWithChildren(raw) : raw;
-    onChangeAny?.(result);
-  };
-
-  const handleIncludeChildrenChange = (checked: boolean) => {
-    setIncludeChildren(checked);
-    if (selectedRaw.length === 0) return;
-    const result = checked ? expandWithChildren(selectedRaw) : selectedRaw;
-    onChangeAny?.(result);
-  };
-
   return (
     <Select
-      value={multiple ? selectedRaw : (value as string | undefined)}
-      onChange={(val) => {
-        if (multiple) {
-          handleMultiChange((val as string[]) || []);
-        } else {
-          onChangeAny?.(val as string);
-        }
-      }}
+      value={value}
+      onChange={(val) => onChangeAny?.(multiple ? ((val as string[]) || []) : (val as string))}
       placeholder={placeholder || t('common.owningDepartmentPlaceholder')}
       disabled={disabled}
       showClear={showClear}
@@ -214,18 +209,17 @@ const DepartmentSearchSelect = ({
               return <span>{opt.label}</span>;
             }
       }
-      renderOptionItem={(props: Record<string, unknown>) => {
+      renderOptionItem={(rProps: Record<string, unknown>) => {
         const {
           disabled: optDisabled,
           selected,
           label,
-          fullPath,
           parentPath,
           onMouseEnter,
           onClick,
           style: optStyle,
           className: optClass,
-        } = props as {
+        } = rProps as {
           disabled?: boolean;
           selected?: boolean;
           label: string;

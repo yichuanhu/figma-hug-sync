@@ -22,7 +22,7 @@ import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import { Download, Ellipsis, Trash2, Upload, UserPlus } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
@@ -211,6 +211,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   // 部门筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [includeSubDepts, setIncludeSubDepts] = useState(false);
+  const effectiveDepartmentFilter = useMemo(() => expandDepartmentValues(departmentFilter, includeSubDepts, true), [departmentFilter, includeSubDepts]);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYFileListResultResponse | null>(null);
@@ -251,7 +253,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         sourceFilter: sourceFilter.length > 0 ? sourceFilter[0] : null,
-        departmentFilter,
+        departmentFilter: effectiveDepartmentFilter,
       } as any);
       setListResponse(response);
       return response.data;
@@ -263,7 +265,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, sourceFilter, departmentFilter, context, t]);
+  }, [queryParams, sourceFilter, departmentFilter, includeSubDepts, context, t]);
 
   useEffect(() => {
     loadData();
@@ -282,7 +284,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       offset: 0,
       size: queryParams.pageSize,
       sourceFilter: sourceFilter.length > 0 ? sourceFilter[0] : null,
-      departmentFilter,
+      departmentFilter: effectiveDepartmentFilter,
     } as any);
     const targetIndex = filteredData.findIndex((item) => item.id === resourceId);
 
@@ -304,7 +306,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
     setSearchParams({}, { replace: true });
   }, [
     context,
-    departmentFilter,
+    departmentFilter: effectiveDepartmentFilter,
     isInitialLoad,
     queryParams.keyword,
     queryParams.page,
@@ -600,6 +602,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
               <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
+                  includeChildren={includeSubDepts}
+                  onIncludeChildrenChange={setIncludeSubDepts}
                 onChange={(v) => {
                   setDepartmentFilter(v);
                   setQueryParams((prev) => ({ ...prev, page: 1 }));
