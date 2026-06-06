@@ -1038,33 +1038,35 @@ const TaskManagementPage = () => {
                       key: 'executionTarget',
                       label: '执行目标',
                       type: 'custom',
-                      value: { type: executionTargetType, id: executionTargetId },
+                      value: { type: executionTargetType, ids: executionTargetIds },
                       render: (val, onChange) => {
-                        const v = (val as { type: 'WORKER' | 'WORKER_GROUP' | null; id: string | null }) || { type: null, id: null };
+                        const v = (val as { type: 'WORKER' | 'WORKER_GROUP' | null; ids: string[] }) || { type: null, ids: [] };
                         const targetList = v.type === 'WORKER_GROUP' ? mockWorkerGroupList : mockWorkerList;
                         return (
-                          <Space>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                             <Select
                               placeholder="目标类型"
                               value={v.type ?? undefined}
-                              onChange={(t) => onChange({ type: (t as 'WORKER' | 'WORKER_GROUP') || null, id: null })}
+                              onChange={(tp) => onChange({ type: (tp as 'WORKER' | 'WORKER_GROUP') || null, ids: [] })}
                               optionList={[
                                 { value: 'WORKER', label: '机器人' },
                                 { value: 'WORKER_GROUP', label: '机器人组' },
                               ]}
                               showClear
-                              style={{ width: 120 }}
+                              style={{ width: '100%' }}
                             />
                             <Select
-                              placeholder="选择目标"
-                              value={v.id ?? undefined}
-                              onChange={(id) => onChange({ type: v.type, id: (id as string) || null })}
+                              placeholder="选择目标（可多选）"
+                              multiple
+                              maxTagCount={1}
+                              value={v.ids}
+                              onChange={(ids) => onChange({ type: v.type, ids: (ids as string[]) || [] })}
                               optionList={targetList.map((x) => ({ value: x.id, label: x.name }))}
                               disabled={!v.type}
                               showClear
-                              style={{ width: 180 }}
+                              style={{ width: '100%' }}
                             />
-                          </Space>
+                          </div>
                         );
                       },
                     },
@@ -1085,8 +1087,8 @@ const TaskManagementPage = () => {
                     {
                       key: 'triggerId',
                       label: '所属触发器',
-                      type: 'select',
-                      placeholder: '选择触发器',
+                      type: 'multiSelect',
+                      placeholder: '选择触发器（可多选）',
                       options: triggerOptions,
                       value: triggerIdFilter,
                     },
