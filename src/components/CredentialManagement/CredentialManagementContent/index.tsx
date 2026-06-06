@@ -323,7 +323,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
     setSearchParams({}, { replace: true });
   }, [
     context,
-    departmentFilter: effectiveDepartmentFilter,
+    departmentFilter,
+    includeSubDepts,
     isInitialLoad,
     queryParams.keyword,
     queryParams.page,

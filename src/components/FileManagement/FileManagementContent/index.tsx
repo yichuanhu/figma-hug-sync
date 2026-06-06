@@ -306,7 +306,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
     setSearchParams({}, { replace: true });
   }, [
     context,
-    departmentFilter: effectiveDepartmentFilter,
+    departmentFilter,
+    includeSubDepts,
     isInitialLoad,
     queryParams.keyword,
     queryParams.page,
