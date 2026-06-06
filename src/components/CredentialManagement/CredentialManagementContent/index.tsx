@@ -262,7 +262,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, typeFilter, departmentFilter, context, t]);
+  }, [queryParams, typeFilter, departmentFilter, includeSubDepts, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYCredentialResponse[]> => {
@@ -282,7 +282,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
     } catch {
       return [];
     }
-  }, [queryParams, typeFilter, departmentFilter, context]);
+  }, [queryParams, typeFilter, departmentFilter, includeSubDepts, context]);
 
   useEffect(() => {
     loadData();

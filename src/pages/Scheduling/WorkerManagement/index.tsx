@@ -865,7 +865,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, filters, sortState, departmentFilter]);
+  }, [queryParams, filters, sortState, departmentFilter, includeSubDepts]);
 
   // 翻页并Back新Data(usefor Drawer导航时auto-翻页)
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerResponse[]> => {
@@ -883,7 +883,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     } as any);
     setListResponse(response);
     return response.list;
-  }, [queryParams, filters, sortState, departmentFilter, listResponse.range?.size]);
+  }, [queryParams, filters, sortState, departmentFilter, includeSubDepts, listResponse.range?.size]);
 
   // 当Tab switchto非激活Status时, CloseDrawer
   useEffect(() => {

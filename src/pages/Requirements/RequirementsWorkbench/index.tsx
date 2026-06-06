@@ -128,7 +128,7 @@ const RequirementsWorkbench = () => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, departmentFilter, statusFilter]);
+  }, [queryParams, departmentFilter, includeSubDepts, statusFilter]);
 
   useEffect(() => {
     loadData();

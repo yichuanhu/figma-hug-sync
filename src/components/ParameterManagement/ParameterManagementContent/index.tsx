@@ -260,7 +260,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, typeFilter, publishedFilter, departmentFilter, context, t]);
+  }, [queryParams, typeFilter, publishedFilter, departmentFilter, includeSubDepts, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYParameterResponse[]> => {
@@ -281,7 +281,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
     } catch {
       return [];
     }
-  }, [queryParams, typeFilter, publishedFilter, departmentFilter, context]);
+  }, [queryParams, typeFilter, publishedFilter, departmentFilter, includeSubDepts, context]);
 
   useEffect(() => {
     loadData();

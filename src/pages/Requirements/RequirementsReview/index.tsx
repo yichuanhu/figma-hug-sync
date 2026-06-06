@@ -156,7 +156,7 @@ const RequirementsReview = () => {
       data = data.filter((item) => statusFilter.includes(item.status));
     }
     return data;
-  }, [activeTab, allRequirements, searchValue, departmentFilter, statusFilter]);
+  }, [activeTab, allRequirements, searchValue, departmentFilter, includeSubDepts, statusFilter]);
 
   // 审批操作（走多级审批引擎）
   const openApprovalModal = (record: RequirementItem, action: 'approve' | 'reject') => {

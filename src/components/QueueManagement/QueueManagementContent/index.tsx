@@ -247,7 +247,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, publishedFilter, departmentFilter, context, t]);
+  }, [queryParams, publishedFilter, departmentFilter, includeSubDepts, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYQueueResponse[]> => {
@@ -267,7 +267,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
     } catch {
       return [];
     }
-  }, [queryParams, publishedFilter, departmentFilter, context]);
+  }, [queryParams, publishedFilter, departmentFilter, includeSubDepts, context]);
 
   useEffect(() => {
     loadData();

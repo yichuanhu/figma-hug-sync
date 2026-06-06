@@ -137,7 +137,7 @@ const RequirementsAssessment = () => {
       data = data.filter((item) => item.detailedAssessment?.feasibility === conclusionFilter);
     }
     return data;
-  }, [activeTab, allRequirements, searchValue, departmentFilter, conclusionFilter]);
+  }, [activeTab, allRequirements, searchValue, departmentFilter, includeSubDepts, conclusionFilter]);
 
   const handleStatusChange = async (id: string, newStatus: string, comment?: string) => {
     await updateRequirementStatus(id, newStatus, comment);

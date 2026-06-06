@@ -265,7 +265,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, sourceFilter, departmentFilter, context, t]);
+  }, [queryParams, sourceFilter, departmentFilter, includeSubDepts, context, t]);
 
   useEffect(() => {
     loadData();

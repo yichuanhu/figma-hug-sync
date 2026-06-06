@@ -375,7 +375,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, statusFilter, departmentFilter]);
+  }, [queryParams, statusFilter, departmentFilter, includeSubDepts]);
 
   // 一次性加载所有「已被流程关联」的需求 brief，作为「关联需求」筛选下拉选项
   useEffect(() => {
@@ -441,7 +441,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
     });
     setListResponse(response);
     return response.list;
-  }, [queryParams, statusFilter, departmentFilter, listResponse.range?.size]);
+  }, [queryParams, statusFilter, departmentFilter, includeSubDepts, listResponse.range?.size]);
 
   // 初始化加载
   useEffect(() => {
@@ -476,7 +476,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
     setDetailInitialTab(tab || 'detail');
     setDetailDrawerVisible(true);
     setSearchParams({}, { replace: true });
-  }, [queryParams, statusFilter, departmentFilter, searchParams, isInitialLoad, setSearchParams]);
+  }, [queryParams, statusFilter, departmentFilter, includeSubDepts, searchParams, isInitialLoad, setSearchParams]);
 
   useEffect(() => {
     if (!detailDrawerVisible || !selectedProcess?.id) {
