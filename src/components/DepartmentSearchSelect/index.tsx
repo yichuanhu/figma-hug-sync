@@ -4,9 +4,7 @@ import { Select, Typography, Avatar } from '@douyinfe/semi-ui';
 import { Network } from 'lucide-react';
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 
-interface DepartmentSearchSelectProps {
-  value?: string | string[];
-  onChange?: (value: string | string[]) => void;
+interface DepartmentSearchSelectBaseProps {
   placeholder?: string;
   disabled?: boolean;
   style?: React.CSSProperties;
@@ -14,9 +12,20 @@ interface DepartmentSearchSelectProps {
   /** Use department name as value instead of ID */
   useNameAsValue?: boolean;
   showClear?: boolean;
-  multiple?: boolean;
   maxTagCount?: number;
 }
+
+type DepartmentSearchSelectProps =
+  | (DepartmentSearchSelectBaseProps & {
+      multiple?: false;
+      value?: string;
+      onChange?: (value: string) => void;
+    })
+  | (DepartmentSearchSelectBaseProps & {
+      multiple: true;
+      value?: string[];
+      onChange?: (value: string[]) => void;
+    });
 
 interface FlatDeptOption {
   value: string;
@@ -63,6 +72,7 @@ const DepartmentSearchSelect = ({
   multiple = false,
   maxTagCount,
 }: DepartmentSearchSelectProps) => {
+  const onChangeAny = onChange as ((v: string | string[]) => void) | undefined;
   const { t } = useTranslation();
 
   const options = useMemo(
