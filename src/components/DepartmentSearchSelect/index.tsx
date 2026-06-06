@@ -95,7 +95,7 @@ const DepartmentSearchSelect = ({
   return (
     <Select
       value={value}
-      onChange={(val) => onChange?.(multiple ? ((val as string[]) || []) : (val as string))}
+      onChange={(val) => onChangeAny?.(multiple ? ((val as string[]) || []) : (val as string))}
       placeholder={placeholder || t('common.owningDepartmentPlaceholder')}
       disabled={disabled}
       showClear={showClear}
