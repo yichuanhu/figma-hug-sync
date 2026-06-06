@@ -877,19 +877,16 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                     value: developerFilter,
                   },
                 ]}
-              />
+            />
+          </div>
+          {/* 调度中心不显示新建按钮 */}
+          {!isSchedulingContext && (
+            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+              {t('development.processDevelopment.createProcess')}
+            </Button>
+          )}
+        </div>
 
-            </Space>
-          </Col>
-          <Col>
-            {/* 调度中心不显示新建按钮 */}
-            {!isSchedulingContext && (
-              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
-                {t('development.processDevelopment.createProcess')}
-              </Button>
-            )}
-          </Col>
-        </Row>
       </div>
 
       {/* 表格区域 */}
