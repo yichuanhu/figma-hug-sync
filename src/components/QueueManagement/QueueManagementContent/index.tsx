@@ -308,7 +308,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
     setSearchParams({}, { replace: true });
   }, [
     context,
-    departmentFilter: effectiveDepartmentFilter,
+    departmentFilter,
+    includeSubDepts,
     isInitialLoad,
     publishedFilter,
     queryParams.keyword,

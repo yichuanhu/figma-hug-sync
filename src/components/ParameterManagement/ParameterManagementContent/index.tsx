@@ -323,7 +323,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
     setSearchParams({}, { replace: true });
   }, [
     context,
-    departmentFilter: effectiveDepartmentFilter,
+    departmentFilter,
+    includeSubDepts,
     isInitialLoad,
     publishedFilter,
     queryParams.keyword,
