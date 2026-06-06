@@ -70,6 +70,7 @@
     "owningProject": "Project",
     "owner": "Owner",
     "owningDepartmentPlaceholder": "Select owning department",
+    "includeSubDepartments": "Include sub-departments",
     "owningDepartmentRequired": "Please select owning department",
     "ownerRequired": "Please select owner",
     "ownerPlaceholder": "Select owner",
