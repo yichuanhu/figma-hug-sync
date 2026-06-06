@@ -26,7 +26,8 @@ import FilterPopover from '@/components/FilterPopover';
 import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
-import { Bot, ClipboardClock, Component, Ellipsis, History, MinusCircle, PlayCircle, Plus, RefreshCw, X, XCircle } from 'lucide-react';
+import { Bot, ClipboardClock, Component, Download, Ellipsis, History, MinusCircle, PlayCircle, Plus, RefreshCw, X, XCircle } from 'lucide-react';
+import * as XLSX from 'xlsx';
 
 import type { 
   LYTaskResponse, 
