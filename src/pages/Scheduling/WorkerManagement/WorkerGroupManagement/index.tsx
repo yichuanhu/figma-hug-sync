@@ -14,7 +14,7 @@ import {
   Pagination,
   
 } from '@douyinfe/semi-ui';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -412,7 +412,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     },
   ];
 
-  // departmentOptions removed - using DepartmentSelect with tree data
+  // departmentOptions removed - using DepartmentSearchSelect with tree data
 
   return (
     <div className="worker-group-management">
@@ -429,7 +429,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 onChange={handleSearch}
                 showClear
               />
-              <DepartmentSelect
+              <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={queryParams.owning_department_name}
                 onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}

@@ -1,28 +1,42 @@
 ## 目标
 
-把任务列表筛选栏中"归属部门"从 `DepartmentSelect`（树形）替换为类似截图的扁平搜索式下拉：每一项展示部门图标 + 部门名 + 完整路径（如 `laiye/西安中心/中心内部/总账报表部`），支持搜索匹配，并保留多选 + 取并集的筛选逻辑。
+将之前在「任务列表」上线的 `DepartmentSearchSelect`（扁平搜索 + 图标 + 完整路径下拉）作为公共筛选组件，应用到所有「列表页归属部门筛选」位置，统一筛选体验。
 
-## 改动
+## 范围（共 14 个列表页筛选位）
 
-### 1. `src/components/DepartmentSearchSelect/index.tsx`
-- 新增 `multiple?: boolean` 与 `maxTagCount?: number` 两个可选 props。
-- `value` / `onChange` 类型扩展为 `string | string[]`。
-- `Select` 透传 `multiple` 和 `maxTagCount`，`onChange` 根据 multiple 分发为 string 或 string[]。
-- `renderSelectedItem` 在多选时使用默认 Tag 行为（不自定义），单选时保持原来仅显示部门名。
-- `renderOptionItem` 保持现状（图标 + 名称 + 路径）。
-- 搜索逻辑（`searchText`）保持不变。
+仅替换"筛选 / Filter"用途的 `<DepartmentSelect>` 用法。新建/编辑表单内的 `DepartmentSelect` 不在本次范围。
 
-### 2. `src/pages/Scheduling/TaskManagement/TaskManagementPage/index.tsx`
-- 第 26 行 import 从 `DepartmentSelect` 改为 `DepartmentSearchSelect`。
-- 第 1014–1023 行的 `<DepartmentSelect>` 替换为 `<DepartmentSearchSelect>`，传入 `multiple`、`maxTagCount={1}`、`showClear`、`useNameAsValue`、`value={departmentFilter}`、`onChange` 与原逻辑一致、`style={{ width: 168, flexShrink: 0 }}`。
-- 不修改 `departmentFilter` 状态、筛选并集逻辑及 i18n。
+涉及文件：
+1. `src/components/FileManagement/FileManagementContent/index.tsx`
+2. `src/components/CredentialManagement/CredentialManagementContent/index.tsx`
+3. `src/components/ProcessManagement/ProcessManagementContent/index.tsx`
+4. `src/components/ParameterManagement/ParameterManagementContent/index.tsx`
+5. `src/components/QueueManagement/QueueManagementContent/index.tsx`
+6. `src/pages/Scheduling/WorkerManagement/WorkerGroupManagement/index.tsx`
+7. `src/pages/Scheduling/WorkerManagement/index.tsx`
+8. `src/pages/Scheduling/TemplateManagement/TemplateManagementPage/index.tsx`
+9. `src/pages/Scheduling/AutoExecutionPolicy/AutoExecutionPolicyPage/components/TimeTriggerList/index.tsx`
+10. `src/pages/Scheduling/AutoExecutionPolicy/AutoExecutionPolicyPage/components/QueueTriggerList/index.tsx`
+11. `src/pages/Sharing/Showcases/index.tsx`
+12. `src/pages/Requirements/RequirementsAssessment/index.tsx`
+13. `src/pages/Requirements/RequirementsReview/index.tsx`
+14. `src/pages/Requirements/RequirementsWorkbench/index.tsx`
 
-### 3. 不动的范围
-- 其它使用 `DepartmentSelect`（树形）的页面不变，仅本次筛选场景切换组件。
-- 不调整执行目标、触发器、搜索条件提示等之前已完成的内容。
+## 改动方式
+
+每个文件统一两处编辑：
+- `import DepartmentSelect from '@/components/DepartmentSelect'` → `import DepartmentSearchSelect from '@/components/DepartmentSearchSelect'`
+- `<DepartmentSelect ... />` → `<DepartmentSearchSelect ... />`
+
+其余 props（`multiple` / `value` / `onChange` / `showClear` / `maxTagCount` / `useNameAsValue` / `style`）保持原样。`DepartmentSearchSelect` 已经支持这些 props，逻辑零变更。
+
+## 不动的范围
+
+- `DepartmentSelect`（树形）组件本体保留，新建/编辑表单等单选树场景继续使用。
+- `WorkspaceFormModal` 使用的 `DepartmentSelectField` 与本次无关。
+- 筛选并集、查询参数、i18n 文案均保持不变。
 
 ## 验证
 
-- 任务列表筛选栏下拉视觉与截图一致：部门图标 + 名称 + 路径，多选 Tag 折叠为 `maxTagCount=1`。
-- 输入"中心"能匹配 `中心内部`、`成都中心` 等。
-- 选择多个部门时，列表按"部门 ∈ 已选集合"取并集过滤。
+- 上述 14 个列表筛选下拉视觉与任务列表一致：图标 + 部门名 + 完整路径，支持搜索 + 多选并集。
+- 选择/清空后列表正确过滤；TypeScript 编译通过。
