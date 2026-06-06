@@ -219,9 +219,9 @@ let mockTaskData = generateMockTaskList();
 type ExtTasksParams = GetTasksParams & {
   owning_department_name?: string[];
   process_ids?: string[];
-  trigger_id?: string | null;
+  trigger_ids?: string[];
   execution_target_type?: 'WORKER' | 'WORKER_GROUP' | null;
-  execution_target_id?: string | null;
+  execution_target_ids?: string[];
   priorities?: string[];
   enable_recording?: boolean | null;
   has_screenshot?: boolean | null;
@@ -265,18 +265,19 @@ const fetchTaskList = async (params: ExtTasksParams): Promise<LYListResponseLYTa
     filteredData = filteredData.filter((item) => params.trigger_source!.includes(item.trigger_source));
   }
 
-  // 所属触发器
-  if (params.trigger_id) {
-    filteredData = filteredData.filter((item) => item.trigger_id === params.trigger_id);
+  // 所属触发器（多选并集）
+  if (params.trigger_ids && params.trigger_ids.length > 0) {
+    filteredData = filteredData.filter((item) => item.trigger_id && params.trigger_ids!.includes(item.trigger_id));
   }
 
-  // 执行目标
-  if (params.execution_target_type && params.execution_target_id) {
+  // 执行目标（多选并集）
+  if (params.execution_target_type && params.execution_target_ids && params.execution_target_ids.length > 0) {
+    const ids = params.execution_target_ids;
     filteredData = filteredData.filter((item) => {
       if (params.execution_target_type === 'WORKER_GROUP') {
-        return item.worker_group_id === params.execution_target_id;
+        return item.worker_group_id ? ids.includes(item.worker_group_id) : false;
       }
-      return item.worker_id === params.execution_target_id;
+      return item.worker_id ? ids.includes(item.worker_id) : false;
     });
   }
 
@@ -385,9 +386,9 @@ const TaskManagementPage = () => {
   const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
   const [triggerSourceFilter, setTriggerSourceFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
-  const [triggerIdFilter, setTriggerIdFilter] = useState<string | null>(null);
+  const [triggerIdFilter, setTriggerIdFilter] = useState<string[]>([]);
   const [executionTargetType, setExecutionTargetType] = useState<'WORKER' | 'WORKER_GROUP' | null>(null);
-  const [executionTargetId, setExecutionTargetId] = useState<string | null>(null);
+  const [executionTargetIds, setExecutionTargetIds] = useState<string[]>([]);
   const [enableRecordingFilter, setEnableRecordingFilter] = useState<boolean | null>(null);
   const [hasScreenshotFilter, setHasScreenshotFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
@@ -483,9 +484,9 @@ const TaskManagementPage = () => {
         owning_department_name: departmentFilter,
         process_ids: processFilter,
         priorities: priorityFilter,
-        trigger_id: triggerIdFilter,
+        trigger_ids: triggerIdFilter,
         execution_target_type: executionTargetType,
-        execution_target_id: executionTargetId,
+        execution_target_ids: executionTargetIds,
         enable_recording: enableRecordingFilter,
         has_screenshot: hasScreenshotFilter,
         created_at_start: dateRange?.[0]?.toISOString(),
@@ -496,7 +497,7 @@ const TaskManagementPage = () => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, departmentFilter, dateRange, processFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetId, enableRecordingFilter, hasScreenshotFilter]);
+  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, departmentFilter, dateRange, processFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetIds, enableRecordingFilter, hasScreenshotFilter]);
 
 
   useEffect(() => {
@@ -506,7 +507,7 @@ const TaskManagementPage = () => {
   // 切换筛选条件或分页时清空选中
   useEffect(() => {
     setSelectedRowKeys([]);
-  }, [queryParams.offset, queryParams.size, queryParams.keyword, processFilter, taskStatusFilter, departmentFilter, dateRange, executionStatusFilter, triggerSourceFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetId, enableRecordingFilter, hasScreenshotFilter]);
+  }, [queryParams.offset, queryParams.size, queryParams.keyword, processFilter, taskStatusFilter, departmentFilter, dateRange, executionStatusFilter, triggerSourceFilter, priorityFilter, triggerIdFilter, executionTargetType, executionTargetIds, enableRecordingFilter, hasScreenshotFilter]);
 
   // from URL Parameter恢复DrawerStatus(usefor from录屏页面Back)或open新建taskModal(fromTemplate页面跳转)
   useEffect(() => {
@@ -687,12 +688,12 @@ const TaskManagementPage = () => {
     setExecutionStatusFilter((values.executionStatus as string[]) || []);
     setTriggerSourceFilter((values.triggerSource as string[]) || []);
     setPriorityFilter((values.priority as string[]) || []);
-    setTriggerIdFilter((values.triggerId as string | null) ?? null);
+    setTriggerIdFilter((values.triggerId as string[]) || []);
     setEnableRecordingFilter(values.enableRecording === true || values.enableRecording === false ? values.enableRecording as boolean : null);
     setHasScreenshotFilter((values.hasScreenshot as boolean[] | undefined)?.includes(true) ? true : null);
-    const target = values.executionTarget as { type: 'WORKER' | 'WORKER_GROUP' | null; id: string | null } | null;
+    const target = values.executionTarget as { type: 'WORKER' | 'WORKER_GROUP' | null; ids: string[] } | null;
     setExecutionTargetType(target?.type ?? null);
-    setExecutionTargetId(target?.id ?? null);
+    setExecutionTargetIds(target?.ids ?? []);
     setQueryParams((prev) => ({ ...prev, offset: 0 }));
   };
 
@@ -706,9 +707,9 @@ const TaskManagementPage = () => {
     setExecutionStatusFilter([]);
     setTriggerSourceFilter([]);
     setPriorityFilter([]);
-    setTriggerIdFilter(null);
+    setTriggerIdFilter([]);
     setExecutionTargetType(null);
-    setExecutionTargetId(null);
+    setExecutionTargetIds([]);
     setEnableRecordingFilter(null);
     setHasScreenshotFilter(null);
     setQueryParams((prev) => ({ ...prev, offset: 0, keyword: '' }));
@@ -1037,33 +1038,35 @@ const TaskManagementPage = () => {
                       key: 'executionTarget',
                       label: '执行目标',
                       type: 'custom',
-                      value: { type: executionTargetType, id: executionTargetId },
+                      value: { type: executionTargetType, ids: executionTargetIds },
                       render: (val, onChange) => {
-                        const v = (val as { type: 'WORKER' | 'WORKER_GROUP' | null; id: string | null }) || { type: null, id: null };
+                        const v = (val as { type: 'WORKER' | 'WORKER_GROUP' | null; ids: string[] }) || { type: null, ids: [] };
                         const targetList = v.type === 'WORKER_GROUP' ? mockWorkerGroupList : mockWorkerList;
                         return (
-                          <Space>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                             <Select
                               placeholder="目标类型"
                               value={v.type ?? undefined}
-                              onChange={(t) => onChange({ type: (t as 'WORKER' | 'WORKER_GROUP') || null, id: null })}
+                              onChange={(tp) => onChange({ type: (tp as 'WORKER' | 'WORKER_GROUP') || null, ids: [] })}
                               optionList={[
                                 { value: 'WORKER', label: '机器人' },
                                 { value: 'WORKER_GROUP', label: '机器人组' },
                               ]}
                               showClear
-                              style={{ width: 120 }}
+                              style={{ width: '100%' }}
                             />
                             <Select
-                              placeholder="选择目标"
-                              value={v.id ?? undefined}
-                              onChange={(id) => onChange({ type: v.type, id: (id as string) || null })}
+                              placeholder="选择目标（可多选）"
+                              multiple
+                              maxTagCount={1}
+                              value={v.ids}
+                              onChange={(ids) => onChange({ type: v.type, ids: (ids as string[]) || [] })}
                               optionList={targetList.map((x) => ({ value: x.id, label: x.name }))}
                               disabled={!v.type}
                               showClear
-                              style={{ width: 180 }}
+                              style={{ width: '100%' }}
                             />
-                          </Space>
+                          </div>
                         );
                       },
                     },
@@ -1084,8 +1087,8 @@ const TaskManagementPage = () => {
                     {
                       key: 'triggerId',
                       label: '所属触发器',
-                      type: 'select',
-                      placeholder: '选择触发器',
+                      type: 'multiSelect',
+                      placeholder: '选择触发器（可多选）',
                       options: triggerOptions,
                       value: triggerIdFilter,
                     },
@@ -1139,23 +1142,34 @@ const TaskManagementPage = () => {
             taskStatusFilter.forEach((s) => chips.push({ key: `ts-${s}`, label: `任务状态: ${t(taskStatusConfig[s as TaskStatus]?.i18nKey || s)}`, onClose: () => setTaskStatusFilter((arr) => arr.filter((x) => x !== s)) }));
             departmentFilter.forEach((d) => chips.push({ key: `dept-${d}`, label: `部门: ${d}`, onClose: () => setDepartmentFilter((arr) => arr.filter((x) => x !== d)) }));
             if (dateRange) chips.push({ key: 'date', label: `创建时间: ${dateRange[0].toLocaleDateString()} ~ ${dateRange[1].toLocaleDateString()}`, onClose: () => setDateRange(null) });
-            if (executionTargetType && executionTargetId) {
+            if (executionTargetType && executionTargetIds.length > 0) {
               const list = executionTargetType === 'WORKER_GROUP' ? mockWorkerGroupList : mockWorkerList;
-              const entity = list.find((x) => x.id === executionTargetId);
-              chips.push({ key: 'target', label: `执行目标: ${entity?.name || executionTargetId}`, onClose: () => { setExecutionTargetType(null); setExecutionTargetId(null); } });
+              executionTargetIds.forEach((tid) => {
+                const entity = list.find((x) => x.id === tid);
+                chips.push({
+                  key: `target-${tid}`,
+                  label: `执行目标: ${entity?.name || tid}`,
+                  onClose: () => setExecutionTargetIds((arr) => {
+                    const next = arr.filter((x) => x !== tid);
+                    if (next.length === 0) setExecutionTargetType(null);
+                    return next;
+                  }),
+                });
+              });
             }
             priorityFilter.forEach((p) => chips.push({ key: `pr-${p}`, label: `优先级: ${t(priorityConfig[p as TaskPriority]?.i18nKey || p)}`, onClose: () => setPriorityFilter((arr) => arr.filter((x) => x !== p)) }));
             triggerSourceFilter.forEach((s) => chips.push({ key: `tr-${s}`, label: `触发来源: ${t(`task.triggerSource.${s.toLowerCase()}`)}`, onClose: () => setTriggerSourceFilter((arr) => arr.filter((x) => x !== s)) }));
-            if (triggerIdFilter) {
-              const trg = mockTriggerList.find((x) => x.trigger_id === triggerIdFilter);
-              chips.push({ key: 'trg', label: `触发器: ${trg?.trigger_name || triggerIdFilter}`, onClose: () => setTriggerIdFilter(null) });
-            }
+            triggerIdFilter.forEach((tid) => {
+              const trg = mockTriggerList.find((x) => x.trigger_id === tid);
+              chips.push({ key: `trg-${tid}`, label: `触发器: ${trg?.trigger_name || tid}`, onClose: () => setTriggerIdFilter((arr) => arr.filter((x) => x !== tid)) });
+            });
             executionStatusFilter.forEach((s) => chips.push({ key: `es-${s}`, label: `执行状态: ${t(executionStatusConfig[s as ExecutionStatus]?.i18nKey || s)}`, onClose: () => setExecutionStatusFilter((arr) => arr.filter((x) => x !== s)) }));
             if (enableRecordingFilter !== null) chips.push({ key: 'rec', label: `录屏: ${enableRecordingFilter ? '启用' : '关闭'}`, onClose: () => setEnableRecordingFilter(null) });
             if (hasScreenshotFilter === true) chips.push({ key: 'shot', label: '仅包含截图', onClose: () => setHasScreenshotFilter(null) });
             if (chips.length === 0) return null;
             return (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12, alignItems: 'center' }}>
+                <Text type="tertiary" style={{ fontSize: 13 }}>搜索条件：</Text>
                 {chips.map((c) => (
                   <Tag key={c.key} closable onClose={c.onClose} color="blue" type="light">{c.label}</Tag>
                 ))}
@@ -1198,9 +1212,9 @@ const TaskManagementPage = () => {
               }}
               empty={
                 <EmptyState
-                  variant={searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter || executionTargetId || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange ? 'noResult' : 'noData'}
+                  variant={searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter.length > 0 || executionTargetIds.length > 0 || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange ? 'noResult' : 'noData'}
                   description={
-                    searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter || executionTargetId || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange
+                    searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter.length > 0 || executionTargetIds.length > 0 || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange
                       ? '未找到匹配任务'
                       : t('task.empty.defaultDescription')
                   }
