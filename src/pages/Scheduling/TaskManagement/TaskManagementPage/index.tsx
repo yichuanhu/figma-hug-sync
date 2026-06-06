@@ -219,9 +219,9 @@ let mockTaskData = generateMockTaskList();
 type ExtTasksParams = GetTasksParams & {
   owning_department_name?: string[];
   process_ids?: string[];
-  trigger_id?: string | null;
+  trigger_ids?: string[];
   execution_target_type?: 'WORKER' | 'WORKER_GROUP' | null;
-  execution_target_id?: string | null;
+  execution_target_ids?: string[];
   priorities?: string[];
   enable_recording?: boolean | null;
   has_screenshot?: boolean | null;
