@@ -688,12 +688,12 @@ const TaskManagementPage = () => {
     setExecutionStatusFilter((values.executionStatus as string[]) || []);
     setTriggerSourceFilter((values.triggerSource as string[]) || []);
     setPriorityFilter((values.priority as string[]) || []);
-    setTriggerIdFilter((values.triggerId as string | null) ?? null);
+    setTriggerIdFilter((values.triggerId as string[]) || []);
     setEnableRecordingFilter(values.enableRecording === true || values.enableRecording === false ? values.enableRecording as boolean : null);
     setHasScreenshotFilter((values.hasScreenshot as boolean[] | undefined)?.includes(true) ? true : null);
-    const target = values.executionTarget as { type: 'WORKER' | 'WORKER_GROUP' | null; id: string | null } | null;
+    const target = values.executionTarget as { type: 'WORKER' | 'WORKER_GROUP' | null; ids: string[] } | null;
     setExecutionTargetType(target?.type ?? null);
-    setExecutionTargetId(target?.id ?? null);
+    setExecutionTargetIds(target?.ids ?? []);
     setQueryParams((prev) => ({ ...prev, offset: 0 }));
   };
 
@@ -707,9 +707,9 @@ const TaskManagementPage = () => {
     setExecutionStatusFilter([]);
     setTriggerSourceFilter([]);
     setPriorityFilter([]);
-    setTriggerIdFilter(null);
+    setTriggerIdFilter([]);
     setExecutionTargetType(null);
-    setExecutionTargetId(null);
+    setExecutionTargetIds([]);
     setEnableRecordingFilter(null);
     setHasScreenshotFilter(null);
     setQueryParams((prev) => ({ ...prev, offset: 0, keyword: '' }));
