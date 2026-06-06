@@ -57,6 +57,7 @@
     "owningProject": "所属项目",
     "owner": "归属者",
     "owningDepartmentPlaceholder": "请选择归属部门",
+    "includeSubDepartments": "包含子部门",
     "owningDepartmentRequired": "请选择归属部门",
     "ownerRequired": "请选择归属者",
     "ownerPlaceholder": "请选择归属者",
