@@ -23,7 +23,7 @@ import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
 import { Bot, ClipboardClock, Component, Ellipsis, History, MinusCircle, PlayCircle, Plus, RefreshCw, X, XCircle } from 'lucide-react';
@@ -1011,10 +1011,10 @@ const TaskManagementPage = () => {
                   maxTagCount={1}
                   showClear
                 />
-                <DepartmentSelect
+                <DepartmentSearchSelect
                   placeholder={t('common.filterDepartment')}
                   value={departmentFilter}
-                  onChange={(v) => { setDepartmentFilter(v); setQueryParams((p) => ({ ...p, offset: 0 })); }}
+                  onChange={(v) => { setDepartmentFilter((v as string[]) || []); setQueryParams((p) => ({ ...p, offset: 0 })); }}
                   multiple
                   showClear
                   maxTagCount={1}

@@ -4,9 +4,7 @@ import { Select, Typography, Avatar } from '@douyinfe/semi-ui';
 import { Network } from 'lucide-react';
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 
-interface DepartmentSearchSelectProps {
-  value?: string;
-  onChange?: (value: string) => void;
+interface DepartmentSearchSelectBaseProps {
   placeholder?: string;
   disabled?: boolean;
   style?: React.CSSProperties;
@@ -14,7 +12,20 @@ interface DepartmentSearchSelectProps {
   /** Use department name as value instead of ID */
   useNameAsValue?: boolean;
   showClear?: boolean;
+  maxTagCount?: number;
 }
+
+type DepartmentSearchSelectProps =
+  | (DepartmentSearchSelectBaseProps & {
+      multiple?: false;
+      value?: string;
+      onChange?: (value: string) => void;
+    })
+  | (DepartmentSearchSelectBaseProps & {
+      multiple: true;
+      value?: string[];
+      onChange?: (value: string[]) => void;
+    });
 
 interface FlatDeptOption {
   value: string;
@@ -58,7 +69,10 @@ const DepartmentSearchSelect = ({
   className,
   useNameAsValue = false,
   showClear = true,
+  multiple = false,
+  maxTagCount,
 }: DepartmentSearchSelectProps) => {
+  const onChangeAny = onChange as ((v: string | string[]) => void) | undefined;
   const { t } = useTranslation();
 
   const options = useMemo(
@@ -81,10 +95,12 @@ const DepartmentSearchSelect = ({
   return (
     <Select
       value={value}
-      onChange={(val) => onChange?.(val as string)}
+      onChange={(val) => onChangeAny?.(multiple ? ((val as string[]) || []) : (val as string))}
       placeholder={placeholder || t('common.owningDepartmentPlaceholder')}
       disabled={disabled}
       showClear={showClear}
+      multiple={multiple}
+      maxTagCount={maxTagCount}
       filter={(input, option) => {
         const opt = option as unknown as FlatDeptOption;
         return (opt.searchText || '').includes((input || '').toLowerCase());
@@ -94,10 +110,14 @@ const DepartmentSearchSelect = ({
       dropdownMatchSelectWidth
       dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
       optionList={optionList}
-      renderSelectedItem={(option) => {
-        const opt = option as unknown as FlatDeptOption;
-        return <span>{opt.label}</span>;
-      }}
+      renderSelectedItem={
+        multiple
+          ? undefined
+          : (option) => {
+              const opt = option as unknown as FlatDeptOption;
+              return <span>{opt.label}</span>;
+            }
+      }
       renderOptionItem={(props: Record<string, unknown>) => {
         const {
           disabled: optDisabled,
