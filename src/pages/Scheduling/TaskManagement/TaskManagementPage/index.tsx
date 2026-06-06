@@ -26,7 +26,8 @@ import FilterPopover from '@/components/FilterPopover';
 import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
-import { Bot, ClipboardClock, Component, Ellipsis, History, MinusCircle, PlayCircle, Plus, RefreshCw, X, XCircle } from 'lucide-react';
+import { Bot, ClipboardClock, Component, Download, Ellipsis, History, MinusCircle, PlayCircle, Plus, RefreshCw, X, XCircle } from 'lucide-react';
+import * as XLSX from 'xlsx';
 
 import type { 
   LYTaskResponse, 
@@ -571,6 +572,149 @@ const TaskManagementPage = () => {
 
   const handleRefresh = () => {
     loadData();
+  };
+
+  // 导出任务清单（按当前筛选条件）
+  const [exporting, setExporting] = useState(false);
+  const EXPORT_LIMIT = 10000;
+
+  const buildCurrentFilterParams = (): ExtTasksParams => ({
+    ...queryParams,
+    offset: 0,
+    size: EXPORT_LIMIT + 1,
+    task_status: taskStatusFilter.length > 0 ? (taskStatusFilter as TaskStatus[]) : undefined,
+    execution_status: executionStatusFilter.length > 0 ? (executionStatusFilter as ExecutionStatus[]) : undefined,
+    trigger_source: triggerSourceFilter.length > 0 ? (triggerSourceFilter as TriggerSource[]) : undefined,
+    owning_department_name: effectiveDepartmentFilter,
+    process_ids: processFilter,
+    priorities: priorityFilter,
+    trigger_ids: triggerIdFilter,
+    execution_target_type: executionTargetType,
+    execution_target_ids: executionTargetIds,
+    enable_recording: enableRecordingFilter,
+    has_screenshot: hasScreenshotFilter,
+    created_at_start: dateRange?.[0]?.toISOString(),
+    created_at_end: dateRange?.[1]?.toISOString(),
+  });
+
+  const formatExportDateTime = (iso: string) => {
+    const d = new Date(iso);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  };
+
+  const buildExportRows = (rows: LYTaskResponseExt[]) => {
+    const headers = [
+      '任务编号', '流程名称', '任务状态', '执行目标', '所属触发器',
+      '任务创建时间', '优先级', '是否录屏', '是否包含任务截图', '创建人', '所属部门',
+    ];
+    const body = rows.map((r) => [
+      r.task_id,
+      r.process_name,
+      t(taskStatusConfig[r.task_status].i18nKey),
+      r.execution_target_name ?? '',
+      r.trigger_name ?? r.trigger_id ?? t(`task.triggerSource.${r.trigger_source.toLowerCase()}`),
+      formatExportDateTime(r.create_time),
+      t(priorityConfig[r.priority].i18nKey),
+      r.enable_recording ? '是' : '否',
+      r.has_screenshot ? '是' : '否',
+      r.creator_name ?? '',
+      (r as unknown as { owning_department_name?: string }).owning_department_name ?? '',
+    ]);
+    return [headers, ...body];
+  };
+
+  const writeExportFile = (rows: LYTaskResponseExt[]) => {
+    const aoa = buildExportRows(rows);
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols'] = [
+      { wch: 14 }, { wch: 28 }, { wch: 10 }, { wch: 22 }, { wch: 20 },
+      { wch: 20 }, { wch: 10 }, { wch: 10 }, { wch: 16 }, { wch: 14 }, { wch: 22 },
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '任务清单');
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const fileName = `任务清单_${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+  };
+
+  const collectActiveFilterSummary = (): string[] => {
+    const items: string[] = [];
+    if (queryParams.keyword?.trim()) items.push(`关键词：${queryParams.keyword.trim()}`);
+    if (processFilter.length) items.push(`流程：${processFilter.length} 项`);
+    if (taskStatusFilter.length) items.push(`任务状态：${taskStatusFilter.length} 项`);
+    if (departmentFilter.length) items.push(`所属部门：${departmentFilter.length} 项${includeSubDepts ? '（含子部门）' : ''}`);
+    if (dateRange) items.push('创建时间：已设置');
+    if (executionStatusFilter.length) items.push(`执行状态：${executionStatusFilter.length} 项`);
+    if (triggerSourceFilter.length) items.push(`触发来源：${triggerSourceFilter.length} 项`);
+    if (priorityFilter.length) items.push(`优先级：${priorityFilter.length} 项`);
+    if (triggerIdFilter.length) items.push(`所属触发器：${triggerIdFilter.length} 项`);
+    if (executionTargetType && executionTargetIds.length) items.push(`执行目标：${executionTargetIds.length} 项`);
+    if (enableRecordingFilter !== null) items.push(`是否录屏：${enableRecordingFilter ? '是' : '否'}`);
+    if (hasScreenshotFilter === true) items.push('仅包含截图：是');
+    return items;
+  };
+
+  const handleExport = async () => {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      const params = buildCurrentFilterParams();
+      const resp = await fetchTaskList(params);
+      const count = resp.range?.total ?? 0;
+      if (count === 0) {
+        Toast.info('当前筛选条件下没有可导出的任务');
+        return;
+      }
+      if (count > EXPORT_LIMIT) {
+        Toast.warning(`当前筛选结果共 ${count} 条，超过单次导出上限 ${EXPORT_LIMIT} 条，请缩小筛选范围后重新导出`);
+        return;
+      }
+      const summary = collectActiveFilterSummary();
+      const visibleSummary = summary.slice(0, 8);
+      const extra = summary.length - visibleSummary.length;
+      Modal.confirm({
+        title: '导出任务清单',
+        content: (
+          <div style={{ lineHeight: '22px' }}>
+            <div>导出范围：当前筛选条件下的全部任务</div>
+            <div style={{ marginTop: 4 }}>
+              预计导出数量：<strong>{count}</strong> 条
+            </div>
+            {summary.length > 0 && (
+              <div style={{ marginTop: 12, padding: '8px 12px', background: 'var(--semi-color-fill-0)', borderRadius: 6 }}>
+                <div style={{ color: 'var(--semi-color-text-2)', marginBottom: 4, fontSize: 12 }}>当前筛选条件</div>
+                {visibleSummary.map((s) => (
+                  <div key={s} style={{ fontSize: 13 }}>· {s}</div>
+                ))}
+                {extra > 0 && (
+                  <div style={{ fontSize: 13, color: 'var(--semi-color-text-2)' }}>等 {extra} 项筛选</div>
+                )}
+              </div>
+            )}
+          </div>
+        ),
+        okText: '确认导出',
+        cancelText: '取消',
+        onOk: async () => {
+          try {
+            const rows = (resp.list as LYTaskResponseExt[]).slice(0, count);
+            writeExportFile(rows);
+            console.info('[audit] export_task_list', { total: count, filters: summary });
+            Toast.success(`导出成功，共 ${count} 条`);
+          } catch (e) {
+            console.error('export failed', e);
+            Toast.error('导出失败，请稍后重试');
+          }
+        },
+      });
+    } catch (e) {
+      console.error('export prefetch failed', e);
+      Toast.error('导出失败，请稍后重试');
+    } finally {
+      setExporting(false);
+    }
   };
 
   // openDetails drawer
@@ -1122,6 +1266,14 @@ const TaskManagementPage = () => {
             <div className="toolbar-actions">
               <Button icon={<RefreshCw size={16} strokeWidth={2} />} onClick={handleRefresh}>
                 {t('task.refresh')}
+              </Button>
+              <Button
+                icon={<Download size={16} strokeWidth={2} />}
+                onClick={handleExport}
+                loading={exporting}
+                disabled={loading}
+              >
+                导出
               </Button>
               <Button
                 icon={<Plus size={16} strokeWidth={2} />}
