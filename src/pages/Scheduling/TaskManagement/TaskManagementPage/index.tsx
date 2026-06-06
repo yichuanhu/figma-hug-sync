@@ -1174,7 +1174,7 @@ const TaskManagementPage = () => {
                   density="compact"
                   value={dateRange ?? undefined}
                   onChange={(d) => { setDateRange(Array.isArray(d) && d.length === 2 && d[0] && d[1] ? (d as [Date, Date]) : null); setQueryParams((p) => ({ ...p, offset: 0 })); }}
-                  placeholder={['开始时间', '结束时间']}
+                  placeholder={['创建开始时间', '创建结束时间']}
                   style={{ width: 340, flexShrink: 0 }}
                 />
                 <FilterPopover
@@ -1365,6 +1365,9 @@ const TaskManagementPage = () => {
               rowSelection={{
                 selectedRowKeys,
                 onChange: (keys) => setSelectedRowKeys((keys as string[]) || []),
+                getCheckboxProps: (record) => ({
+                  disabled: (record as LYTaskResponse).task_status !== 'PENDING',
+                }),
               }}
               empty={
                 <EmptyState
