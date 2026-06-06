@@ -19,7 +19,7 @@ import {
   Pagination,
   Popover,
 } from '@douyinfe/semi-ui';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -845,7 +845,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     ],
   }), [t]);
 
-  // departmentOptions removed - using DepartmentSelect with tree data
+  // departmentOptions removed - using DepartmentSearchSelect with tree data
 
   // LoadingData
   const loadData = useCallback(async () => {
@@ -1569,7 +1569,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 value={searchValue}
                 onChange={handleSearch}
               />
-              <DepartmentSelect
+              <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
                 onChange={(v) => {

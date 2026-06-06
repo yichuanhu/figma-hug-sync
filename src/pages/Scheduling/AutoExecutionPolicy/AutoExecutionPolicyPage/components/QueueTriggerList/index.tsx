@@ -18,7 +18,7 @@ import {
   Pagination,
   
 } from '@douyinfe/semi-ui';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
@@ -507,7 +507,7 @@ const QueueTriggerList = ({ pendingTriggerId, onPendingHandled }: QueueTriggerLi
     },
   ];
 
-  // departmentOptions removed - using DepartmentSelect with tree data
+  // departmentOptions removed - using DepartmentSearchSelect with tree data
 
   const hasFilters = queryParams.keyword || (queryParams.process_id && queryParams.process_id.length > 0) || (queryParams.queue_id && queryParams.queue_id.length > 0) || (queryParams.status && queryParams.status.length > 0) || queryParams.owning_department_name;
 
@@ -564,7 +564,7 @@ const QueueTriggerList = ({ pendingTriggerId, onPendingHandled }: QueueTriggerLi
               showClear
               style={{ width: 'auto', minWidth: 120 }}
             />
-            <DepartmentSelect
+            <DepartmentSearchSelect
               placeholder={t('common.filterDepartment')}
               value={queryParams.owning_department_name}
               onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}

@@ -25,7 +25,7 @@ import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import { Ellipsis, ExternalLink, Link2, Pencil, PlayCircle, Plus, PowerOff, Trash2, UserPlus } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
@@ -795,7 +795,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
               showClear
               maxLength={100}
             />
-            <DepartmentSelect
+            <DepartmentSearchSelect
               multiple
               useNameAsValue
               value={departmentFilter}

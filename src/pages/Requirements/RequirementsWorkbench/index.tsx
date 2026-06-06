@@ -18,7 +18,7 @@ import {
   Tooltip,
   Checkbox,
 } from '@douyinfe/semi-ui';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import FilterPopover from '@/components/FilterPopover';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Pencil, Plus, Send, Trash2, Undo2, Columns3, GitBranchPlus, Ban, PowerOff, RotateCcw } from 'lucide-react';
@@ -656,7 +656,7 @@ const RequirementsWorkbench = () => {
                 showClear
                 maxLength={100}
               />
-              <DepartmentSelect
+              <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
                 onChange={(v) => {

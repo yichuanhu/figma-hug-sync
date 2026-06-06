@@ -22,7 +22,7 @@ import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import { Ellipsis, History, Link, Pencil, Plus, Trash2, Unlink, Upload, UserPlus } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
@@ -592,7 +592,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 showClear
                 maxLength={100}
               />
-              <DepartmentSelect
+              <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
                 onChange={(v) => {

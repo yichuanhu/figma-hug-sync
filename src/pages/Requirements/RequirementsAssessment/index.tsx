@@ -18,7 +18,7 @@ import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import FilterPopover from '@/components/FilterPopover';
 import type { RequirementItem } from '../RequirementsWorkbench/types';
 import {
@@ -391,7 +391,7 @@ const RequirementsAssessment = () => {
                 showClear
                 maxLength={100}
               />
-              <DepartmentSelect
+              <DepartmentSearchSelect
                 placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
                 onChange={(v) => setDepartmentFilter(v as string[])}
