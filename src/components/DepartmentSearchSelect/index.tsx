@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Select, Typography, Avatar } from '@douyinfe/semi-ui';
+import { Select, Typography, Avatar, Checkbox } from '@douyinfe/semi-ui';
 import { Network } from 'lucide-react';
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 
@@ -58,6 +58,27 @@ const flattenDepartments = (
   return result;
 };
 
+/** Build map: node value/name -> list of self + all descendant values/names */
+const buildDescendantMap = (
+  nodes: DeptTreeNode[],
+  useNameAsValue: boolean,
+  map: Map<string, string[]> = new Map(),
+): Map<string, string[]> => {
+  for (const node of nodes) {
+    const collect = (n: DeptTreeNode, acc: string[]) => {
+      acc.push(useNameAsValue ? n.label : n.value);
+      n.children?.forEach((c) => collect(c, acc));
+    };
+    const list: string[] = [];
+    collect(node, list);
+    map.set(useNameAsValue ? node.label : node.value, list);
+    if (node.children && node.children.length > 0) {
+      buildDescendantMap(node.children, useNameAsValue, map);
+    }
+  }
+  return map;
+};
+
 const { Text } = Typography;
 
 const DepartmentSearchSelect = ({
@@ -80,6 +101,11 @@ const DepartmentSearchSelect = ({
     [useNameAsValue],
   );
 
+  const descendantMap = useMemo(
+    () => buildDescendantMap(departmentTree, useNameAsValue),
+    [useNameAsValue],
+  );
+
   const optionList = useMemo(
     () =>
       options.map((opt) => ({
@@ -92,10 +118,61 @@ const DepartmentSearchSelect = ({
     [options],
   );
 
+  // Multi-select internal state: raw user selection + includeChildren toggle.
+  const [selectedRaw, setSelectedRaw] = useState<string[]>(
+    multiple && Array.isArray(value) ? (value as string[]) : [],
+  );
+  const [includeChildren, setIncludeChildren] = useState(false);
+
+  // When parent clears externally (e.g., reset filters), sync raw selection.
+  useEffect(() => {
+    if (!multiple) return;
+    const ext = (Array.isArray(value) ? value : []) as string[];
+    if (ext.length === 0 && selectedRaw.length > 0) {
+      setSelectedRaw([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [multiple, Array.isArray(value) ? (value as string[]).length : 0]);
+
+  const expandWithChildren = useCallback(
+    (ids: string[]): string[] => {
+      const set = new Set<string>();
+      ids.forEach((id) => {
+        const list = descendantMap.get(id);
+        if (list) {
+          list.forEach((v) => set.add(v));
+        } else {
+          set.add(id);
+        }
+      });
+      return Array.from(set);
+    },
+    [descendantMap],
+  );
+
+  const handleMultiChange = (raw: string[]) => {
+    setSelectedRaw(raw);
+    const result = includeChildren ? expandWithChildren(raw) : raw;
+    onChangeAny?.(result);
+  };
+
+  const handleIncludeChildrenChange = (checked: boolean) => {
+    setIncludeChildren(checked);
+    if (selectedRaw.length === 0) return;
+    const result = checked ? expandWithChildren(selectedRaw) : selectedRaw;
+    onChangeAny?.(result);
+  };
+
   return (
     <Select
-      value={value}
-      onChange={(val) => onChangeAny?.(multiple ? ((val as string[]) || []) : (val as string))}
+      value={multiple ? selectedRaw : (value as string | undefined)}
+      onChange={(val) => {
+        if (multiple) {
+          handleMultiChange((val as string[]) || []);
+        } else {
+          onChangeAny?.(val as string);
+        }
+      }}
       placeholder={placeholder || t('common.owningDepartmentPlaceholder')}
       disabled={disabled}
       showClear={showClear}
@@ -110,6 +187,25 @@ const DepartmentSearchSelect = ({
       dropdownMatchSelectWidth
       dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
       optionList={optionList}
+      outerBottomSlot={
+        multiple ? (
+          <div
+            style={{
+              padding: '8px 12px',
+              borderTop: '1px solid var(--semi-color-border)',
+              background: 'var(--semi-color-bg-0)',
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            <Checkbox
+              checked={includeChildren}
+              onChange={(e) => handleIncludeChildrenChange(!!e.target.checked)}
+            >
+              <Text style={{ fontSize: 13 }}>{t('common.includeSubDepartments')}</Text>
+            </Checkbox>
+          </div>
+        ) : null
+      }
       renderSelectedItem={
         multiple
           ? undefined
