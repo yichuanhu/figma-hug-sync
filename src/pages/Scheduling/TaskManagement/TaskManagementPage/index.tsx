@@ -1268,6 +1268,14 @@ const TaskManagementPage = () => {
                 {t('task.refresh')}
               </Button>
               <Button
+                icon={<Download size={16} strokeWidth={2} />}
+                onClick={handleExport}
+                loading={exporting}
+                disabled={loading}
+              >
+                导出
+              </Button>
+              <Button
                 icon={<Plus size={16} strokeWidth={2} />}
                 theme="solid"
                 type="primary"
