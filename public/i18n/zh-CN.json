@@ -1591,7 +1591,7 @@
           "requirementAutoFillHelp": "选择需求后，归属部门、所属工作空间、归属者将自动填写",
           "autoFillPlaceholder": "选择关联需求后自动填写",
           "developerLabel": "开发工程师",
-          "developerPlaceholder": "请选择开发工程师（可多选）",
+          "developerPlaceholder": "请选择开发工程师",
           "osLabel": "适用操作系统",
           "osPlaceholder": "请选择适用操作系统"
         },
