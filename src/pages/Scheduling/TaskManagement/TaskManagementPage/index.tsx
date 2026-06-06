@@ -1212,9 +1212,9 @@ const TaskManagementPage = () => {
               }}
               empty={
                 <EmptyState
-                  variant={searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter || executionTargetId || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange ? 'noResult' : 'noData'}
+                  variant={searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter.length > 0 || executionTargetIds.length > 0 || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange ? 'noResult' : 'noData'}
                   description={
-                    searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter || executionTargetId || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange
+                    searchValue || processFilter.length > 0 || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || priorityFilter.length > 0 || triggerIdFilter.length > 0 || executionTargetIds.length > 0 || enableRecordingFilter !== null || hasScreenshotFilter === true || dateRange
                       ? '未找到匹配任务'
                       : t('task.empty.defaultDescription')
                   }
