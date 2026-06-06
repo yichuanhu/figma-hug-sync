@@ -265,18 +265,19 @@ const fetchTaskList = async (params: ExtTasksParams): Promise<LYListResponseLYTa
     filteredData = filteredData.filter((item) => params.trigger_source!.includes(item.trigger_source));
   }
 
-  // 所属触发器
-  if (params.trigger_id) {
-    filteredData = filteredData.filter((item) => item.trigger_id === params.trigger_id);
+  // 所属触发器（多选并集）
+  if (params.trigger_ids && params.trigger_ids.length > 0) {
+    filteredData = filteredData.filter((item) => item.trigger_id && params.trigger_ids!.includes(item.trigger_id));
   }
 
-  // 执行目标
-  if (params.execution_target_type && params.execution_target_id) {
+  // 执行目标（多选并集）
+  if (params.execution_target_type && params.execution_target_ids && params.execution_target_ids.length > 0) {
+    const ids = params.execution_target_ids;
     filteredData = filteredData.filter((item) => {
       if (params.execution_target_type === 'WORKER_GROUP') {
-        return item.worker_group_id === params.execution_target_id;
+        return item.worker_group_id ? ids.includes(item.worker_group_id) : false;
       }
-      return item.worker_id === params.execution_target_id;
+      return item.worker_id ? ids.includes(item.worker_id) : false;
     });
   }
 
