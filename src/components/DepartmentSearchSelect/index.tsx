@@ -5,8 +5,8 @@ import { Network } from 'lucide-react';
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 
 interface DepartmentSearchSelectProps {
-  value?: string;
-  onChange?: (value: string) => void;
+  value?: string | string[];
+  onChange?: (value: string | string[]) => void;
   placeholder?: string;
   disabled?: boolean;
   style?: React.CSSProperties;
@@ -14,6 +14,8 @@ interface DepartmentSearchSelectProps {
   /** Use department name as value instead of ID */
   useNameAsValue?: boolean;
   showClear?: boolean;
+  multiple?: boolean;
+  maxTagCount?: number;
 }
 
 interface FlatDeptOption {
@@ -58,6 +60,8 @@ const DepartmentSearchSelect = ({
   className,
   useNameAsValue = false,
   showClear = true,
+  multiple = false,
+  maxTagCount,
 }: DepartmentSearchSelectProps) => {
   const { t } = useTranslation();
 
@@ -81,10 +85,12 @@ const DepartmentSearchSelect = ({
   return (
     <Select
       value={value}
-      onChange={(val) => onChange?.(val as string)}
+      onChange={(val) => onChange?.(multiple ? ((val as string[]) || []) : (val as string))}
       placeholder={placeholder || t('common.owningDepartmentPlaceholder')}
       disabled={disabled}
       showClear={showClear}
+      multiple={multiple}
+      maxTagCount={maxTagCount}
       filter={(input, option) => {
         const opt = option as unknown as FlatDeptOption;
         return (opt.searchText || '').includes((input || '').toLowerCase());
@@ -94,10 +100,14 @@ const DepartmentSearchSelect = ({
       dropdownMatchSelectWidth
       dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
       optionList={optionList}
-      renderSelectedItem={(option) => {
-        const opt = option as unknown as FlatDeptOption;
-        return <span>{opt.label}</span>;
-      }}
+      renderSelectedItem={
+        multiple
+          ? undefined
+          : (option) => {
+              const opt = option as unknown as FlatDeptOption;
+              return <span>{opt.label}</span>;
+            }
+      }
       renderOptionItem={(props: Record<string, unknown>) => {
         const {
           disabled: optDisabled,
