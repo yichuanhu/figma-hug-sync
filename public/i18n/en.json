@@ -1735,7 +1735,7 @@
           "requirementAutoFillHelp": "After selecting a requirement, owning department, workspace and owner will be auto-filled",
           "autoFillPlaceholder": "Auto-filled after selecting a linked requirement",
           "developerLabel": "Developers",
-          "developerPlaceholder": "Select developers (multiple)",
+          "developerPlaceholder": "Select a developer",
           "osLabel": "Applicable OS",
           "osPlaceholder": "Select applicable OS"
         },
