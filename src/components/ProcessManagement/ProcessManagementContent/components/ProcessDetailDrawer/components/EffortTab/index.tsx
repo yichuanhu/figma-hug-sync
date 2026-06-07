@@ -104,7 +104,7 @@ const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
         const colorVar = v < 0 ? 'var(--semi-color-warning)' : 'var(--semi-color-text-0)';
         return (
           <span style={{ color: colorVar, fontVariantNumeric: 'tabular-nums' }}>
-            {sign}{formatNumber(v)} {t('development.processDevelopment.detail.effort.unit')}
+            {sign}{formatNumber(v)}
           </span>
         );
       },
