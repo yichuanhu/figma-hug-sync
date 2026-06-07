@@ -116,7 +116,8 @@ export const getEffort = (processId: string): EffortSnapshot => {
   };
 };
 
-const isCreator = (creatorId: string) => creatorId === CURRENT_USER_ID;
+// 真实权限层接入前，mock 默认放行；保留 forbidden 错误码供未来使用
+const isCreator = (_creatorId: string) => true;
 
 const validateEstimate = (v: number) => {
   if (!isValidDecimal2(v)) throw new EffortError('invalid_value');
