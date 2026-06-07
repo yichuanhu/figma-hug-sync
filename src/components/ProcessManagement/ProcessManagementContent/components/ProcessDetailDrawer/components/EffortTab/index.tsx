@@ -5,7 +5,7 @@ import { Plus, AlertTriangle, Clock } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import EffortEntryModal from './EffortEntryModal';
-import { getEffort, putEffort, EffortError, type EffortSnapshot, CURRENT_USER_ID } from '../../../../mocks/effortStore';
+import { getEffort, putEffort, EffortError, type EffortSnapshot } from '../../../../mocks/effortStore';
 import type { LYProcessEffortEntry } from '@/api';
 import './index.less';
 
@@ -14,7 +14,9 @@ const { Text } = Typography;
 interface Props {
   processId: string;
   creatorId: string;
+  readOnly?: boolean;
 }
+
 
 const formatNumber = (n: number | null | undefined, decimals = 2): string => {
   if (n === null || n === undefined) return '--';
@@ -26,9 +28,10 @@ const formatDateTime = (s: string | null | undefined): string => {
   return s.replace('T', ' ').substring(0, 16);
 };
 
-const EffortTab = ({ processId, creatorId }: Props) => {
+const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
   const { t } = useTranslation();
-  const canEdit = creatorId === CURRENT_USER_ID;
+  const canEdit = !readOnly;
+
 
   const [snapshot, setSnapshot] = useState<EffortSnapshot>(() => getEffort(processId));
   const [estimateInput, setEstimateInput] = useState<number | null>(snapshot.estimate);
