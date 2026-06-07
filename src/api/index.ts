@@ -385,10 +385,18 @@ export interface LYProcessResponse {
   os?: string | null;
   /** 资源依赖列表（流程级别） */
   dependencies?: LYProcessDependency[];
-  /** 预估总工时（人天），允许小数1位 */
+  /** 预估总工时（人天），最多 2 位小数；范围 (0, 9999.99] */
   effort_estimate_days?: number | null;
-  /** 实际总工时（人天），由登记记录SUM得出 */
+  /** 实际已登记工时（人天），派生 = SUM(process_effort_log.delta_days)；只读 */
   effort_actual_days?: number | null;
+  /** 剩余工时（人天），可人工调整；范围 [0, 9999.99] */
+  effort_remaining_days?: number | null;
+  /** 工时进度 = actual / (actual + remaining)；分母为 0 时为 null */
+  effort_progress_rate?: number | null;
+  /** 预估偏差 = actual - estimate；estimate 为空时为 null */
+  effort_variance_days?: number | null;
+  /** 是否超预估 */
+  is_overrun?: boolean;
   /** 工时最近更新者ID */
   effort_updated_by?: string | null;
   /** 工时最近更新时间 */
@@ -397,18 +405,18 @@ export interface LYProcessResponse {
 
 /**
  * LYProcessEffortEntry
- * 流程工时登记记录
+ * 流程工时登记记录（append-only；纠错通过追加 delta < 0 的 entry）
  */
 export interface LYProcessEffortEntry {
   /** 记录ID */
   id: string;
   /** 流程ID */
   process_id: string;
-  /** 增量工时（人天），可正可负，1位小数 */
+  /** 增量工时（人天），可正可负，最多 2 位小数；范围 [-9999.99, 9999.99] \ {0} */
   delta_days: number;
-  /** 工作日期 YYYY-MM-DD */
+  /** 工作日期 YYYY-MM-DD；范围 [today-90d, today] */
   work_date: string;
-  /** 备注 */
+  /** 备注（≤200 字符） */
   note?: string | null;
   /** 登记人ID */
   created_by: string;
