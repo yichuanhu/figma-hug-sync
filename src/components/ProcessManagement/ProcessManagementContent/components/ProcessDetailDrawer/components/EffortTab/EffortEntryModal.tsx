@@ -2,40 +2,31 @@ import { useEffect, useRef } from 'react';
 import { Modal, Form, Toast } from '@douyinfe/semi-ui';
 import type { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import { useTranslation } from 'react-i18next';
-import { postEntry, putEntry, EffortError } from '../../../../mocks/effortStore';
-import type { LYProcessEffortEntry } from '@/api';
+import { postEntry, EffortError } from '../../../../mocks/effortStore';
 import dayjs from 'dayjs';
 
 interface Props {
   visible: boolean;
   processId: string;
   creatorId: string;
-  /** 传入则为编辑模式 */
-  editingEntry?: LYProcessEffortEntry | null;
   onCancel: () => void;
   onSuccess: () => void;
 }
 
-const EffortEntryModal = ({ visible, processId, creatorId, editingEntry, onCancel, onSuccess }: Props) => {
+const MAX_VALUE = 9999.99;
+
+const EffortEntryModal = ({ visible, processId, creatorId, onCancel, onSuccess }: Props) => {
   const { t } = useTranslation();
   const formApiRef = useRef<FormApi | null>(null);
-  const isEdit = !!editingEntry;
 
   useEffect(() => {
     if (!visible) return;
     setTimeout(() => {
       if (!formApiRef.current) return;
-      if (editingEntry) {
-        formApiRef.current.setValues({
-          delta_days: editingEntry.delta_days,
-          work_date: new Date(editingEntry.work_date + 'T00:00:00'),
-          note: editingEntry.note || '',
-        });
-      } else {
-        formApiRef.current.reset();
-      }
+      formApiRef.current.reset();
+      formApiRef.current.setValues({ work_date: new Date(), delta_days: undefined, note: '' });
     }, 0);
-  }, [visible, editingEntry]);
+  }, [visible]);
 
   const submit = async () => {
     if (!formApiRef.current) return;
@@ -47,13 +38,8 @@ const EffortEntryModal = ({ visible, processId, creatorId, editingEntry, onCance
         work_date: dayjs(work).format('YYYY-MM-DD'),
         note: (values.note as string) || undefined,
       };
-      if (isEdit && editingEntry) {
-        putEntry(processId, creatorId, editingEntry.id, payload);
-        Toast.success(t('development.processDevelopment.detail.effort.modal.updateSuccess'));
-      } else {
-        postEntry(processId, creatorId, payload);
-        Toast.success(t('development.processDevelopment.detail.effort.modal.successMessage'));
-      }
+      postEntry(processId, creatorId, payload);
+      Toast.success(t('development.processDevelopment.detail.effort.modal.successMessage'));
       onSuccess();
       onCancel();
     } catch (e) {
@@ -70,15 +56,20 @@ const EffortEntryModal = ({ visible, processId, creatorId, editingEntry, onCance
     }
   };
 
+  // work_date 限制：[today-90d, today]
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() - 90);
+  minDate.setHours(0, 0, 0, 0);
+
   return (
     <Modal
-      title={isEdit
-        ? t('development.processDevelopment.detail.effort.modal.editTitle')
-        : t('development.processDevelopment.detail.effort.modal.title')}
+      title={t('development.processDevelopment.detail.effort.modal.title')}
       visible={visible}
       onCancel={onCancel}
       onOk={submit}
-      okText={t('common.confirm')}
+      okText={t('development.processDevelopment.detail.effort.modal.confirm')}
       cancelText={t('common.cancel')}
       width={520}
       centered
@@ -94,19 +85,20 @@ const EffortEntryModal = ({ visible, processId, creatorId, editingEntry, onCance
             field="delta_days"
             label={t('development.processDevelopment.detail.effort.modal.deltaLabel')}
             placeholder={t('development.processDevelopment.detail.effort.modal.deltaPlaceholder')}
-            precision={1}
+            precision={2}
             step={0.5}
-            min={0.1}
-            max={999}
             style={{ width: '100%' }}
             suffix={t('development.processDevelopment.detail.effort.unit')}
+            extraText={t('development.processDevelopment.detail.effort.modal.deltaHint')}
             rules={[
               {
                 validator: (_r, value) => {
                   if (value === undefined || value === null || value === '') return false;
                   const n = Number(value);
-                  if (!Number.isFinite(n) || n <= 0 || n > 999) return false;
-                  return Math.round(n * 10) === n * 10;
+                  if (!Number.isFinite(n)) return false;
+                  if (n === 0) return false;
+                  if (Math.abs(n) > MAX_VALUE) return false;
+                  return Math.round(n * 100) === n * 100;
                 },
                 message: t('development.processDevelopment.detail.effort.errors.invalid_delta'),
               },
@@ -118,8 +110,9 @@ const EffortEntryModal = ({ visible, processId, creatorId, editingEntry, onCance
             label={t('development.processDevelopment.detail.effort.modal.dateLabel')}
             placeholder={t('development.processDevelopment.detail.effort.modal.datePlaceholder')}
             type="date"
-            disabledDate={(date) => !!date && date.getTime() > Date.now()}
+            disabledDate={(date) => !date || date.getTime() > today.getTime() || date.getTime() < minDate.getTime()}
             style={{ width: '100%' }}
+            extraText={t('development.processDevelopment.detail.effort.modal.dateHint')}
             rules={[
               { required: true, message: t('development.processDevelopment.detail.effort.errors.invalid_date') },
             ]}
