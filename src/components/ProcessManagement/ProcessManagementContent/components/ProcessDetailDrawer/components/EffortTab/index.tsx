@@ -186,26 +186,21 @@ const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
         {renderMetric(
           t('development.processDevelopment.detail.effort.remainingLabel'),
           canEdit ? (
-            <div className="effort-tab-input-wrap">
-              <InputNumber
-                value={remainingInput ?? undefined}
-                onChange={(v) => setRemainingInput(v === '' || v === undefined ? null : Number(v))}
-                onBlur={handleRemainingBlur}
-                onEnterPress={handleRemainingBlur}
-                precision={2}
-                step={0.5}
-                min={0}
-                max={9999.99}
-                style={{ width: 120 }}
-                placeholder={t('development.processDevelopment.detail.effort.remainingPlaceholder')}
-              />
-              <span className="effort-tab-unit">{t('development.processDevelopment.detail.effort.unit')}</span>
-            </div>
+            <InputNumber
+              value={remainingInput ?? undefined}
+              onChange={(v) => setRemainingInput(v === '' || v === undefined ? null : Number(v))}
+              onBlur={handleRemainingBlur}
+              onEnterPress={handleRemainingBlur}
+              precision={2}
+              step={0.5}
+              min={0}
+              max={9999.99}
+              style={{ width: 140 }}
+              placeholder={t('development.processDevelopment.detail.effort.remainingPlaceholder')}
+            />
           ) : (
             <span className="effort-tab-metric-text">
-              {snapshot.remaining !== null
-                ? `${formatNumber(snapshot.remaining)} ${t('development.processDevelopment.detail.effort.unit')}`
-                : '--'}
+              {snapshot.remaining !== null ? formatNumber(snapshot.remaining) : '--'}
             </span>
           ),
         )}
