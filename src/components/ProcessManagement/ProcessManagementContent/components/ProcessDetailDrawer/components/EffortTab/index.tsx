@@ -96,7 +96,7 @@ const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
       width: 120,
     },
     {
-      title: t('development.processDevelopment.detail.effort.table.delta'),
+      title: <span style={{ whiteSpace: 'nowrap' }}>{t('development.processDevelopment.detail.effort.table.delta')}</span>,
       dataIndex: 'delta_days',
       width: 170,
       render: (v: number) => {
