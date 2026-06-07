@@ -831,7 +831,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
         </TabPane>
 
         <TabPane tab={t('development.processDevelopment.detail.tabs.effort')} itemKey="effort">
-          <EffortTab processId={processData.id} creatorId={processData.creator_id} />
+          <EffortTab processId={processData.id} creatorId={processData.creator_id} readOnly={isSchedulingContext} />
         </TabPane>
 
         <TabPane tab="ROI 配置" itemKey="roi">
