@@ -5,7 +5,7 @@ import { Plus, AlertTriangle, Clock } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import EffortEntryModal from './EffortEntryModal';
-import { getEffort, putEffort, EffortError, type EffortSnapshot, CURRENT_USER_ID } from '../../../../mocks/effortStore';
+import { getEffort, putEffort, EffortError, type EffortSnapshot } from '../../../../mocks/effortStore';
 import type { LYProcessEffortEntry } from '@/api';
 import './index.less';
 
@@ -14,7 +14,9 @@ const { Text } = Typography;
 interface Props {
   processId: string;
   creatorId: string;
+  readOnly?: boolean;
 }
+
 
 const formatNumber = (n: number | null | undefined, decimals = 2): string => {
   if (n === null || n === undefined) return '--';
