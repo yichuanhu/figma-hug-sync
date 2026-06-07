@@ -171,9 +171,7 @@ const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
         {renderMetric(
           t('development.processDevelopment.detail.effort.actualLabel'),
           <span className={`effort-tab-metric-text ${isOver ? 'is-over' : ''}`}>
-            {snapshot.actual !== null
-              ? `${formatNumber(snapshot.actual)} ${t('development.processDevelopment.detail.effort.unit')}`
-              : '0'}
+            {snapshot.actual !== null ? formatNumber(snapshot.actual) : '0'}
             {isOver && (
               <Tooltip content={t('development.processDevelopment.detail.effort.overTimeTip', { delta: formatNumber(variance ?? 0) })}>
                 <Tag color="red" type="light" prefixIcon={<AlertTriangle size={12} strokeWidth={2} />} style={{ marginLeft: 8 }}>
