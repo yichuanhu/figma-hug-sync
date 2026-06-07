@@ -1489,14 +1489,14 @@
         },
         "effort": {
           "unit": "人天",
-          "estimateLabel": "预估工时",
+          "estimateLabel": "预估工时（人天）",
           "estimatePlaceholder": "请输入预估工时",
-          "actualLabel": "已登记工时",
-          "remainingLabel": "剩余工时",
+          "actualLabel": "已登记工时（人天）",
+          "remainingLabel": "剩余工时（人天）",
           "remainingPlaceholder": "请输入剩余工时",
           "remainingSaved": "剩余工时已保存",
           "progressLabel": "工时进度",
-          "varianceLabel": "预估偏差",
+          "varianceLabel": "预估偏差（人天）",
           "notSet": "未设置",
           "noEntries": "暂无登记记录",
           "estimateSaved": "预估工时已保存",
@@ -1507,7 +1507,7 @@
           "addEntry": "登记一笔",
           "table": {
             "workDate": "工作日期",
-            "delta": "增量",
+            "delta": "变更工时（人天）",
             "note": "备注",
             "creator": "登记人",
             "createdAt": "登记时间"
