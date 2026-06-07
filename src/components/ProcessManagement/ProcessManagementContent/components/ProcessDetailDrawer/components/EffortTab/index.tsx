@@ -28,9 +28,10 @@ const formatDateTime = (s: string | null | undefined): string => {
   return s.replace('T', ' ').substring(0, 16);
 };
 
-const EffortTab = ({ processId, creatorId }: Props) => {
+const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
   const { t } = useTranslation();
-  const canEdit = creatorId === CURRENT_USER_ID;
+  const canEdit = !readOnly;
+
 
   const [snapshot, setSnapshot] = useState<EffortSnapshot>(() => getEffort(processId));
   const [estimateInput, setEstimateInput] = useState<number | null>(snapshot.estimate);
