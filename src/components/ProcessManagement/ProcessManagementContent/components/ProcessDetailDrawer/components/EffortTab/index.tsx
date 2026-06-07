@@ -233,7 +233,7 @@ const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
           >
             {variance === null
               ? '--'
-              : `${variance > 0 ? '+' : ''}${formatNumber(variance)} ${t('development.processDevelopment.detail.effort.unit')}`}
+              : `${variance > 0 ? '+' : ''}${formatNumber(variance)}`}
           </span>,
         )}
       </div>
