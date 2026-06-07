@@ -104,7 +104,7 @@ const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
         const colorVar = v < 0 ? 'var(--semi-color-warning)' : 'var(--semi-color-text-0)';
         return (
           <span style={{ color: colorVar, fontVariantNumeric: 'tabular-nums' }}>
-            {sign}{formatNumber(v)} {t('development.processDevelopment.detail.effort.unit')}
+            {sign}{formatNumber(v)}
           </span>
         );
       },
@@ -148,26 +148,21 @@ const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
         {renderMetric(
           t('development.processDevelopment.detail.effort.estimateLabel'),
           canEdit ? (
-            <div className="effort-tab-input-wrap">
-              <InputNumber
-                value={estimateInput ?? undefined}
-                onChange={(v) => setEstimateInput(v === '' || v === undefined ? null : Number(v))}
-                onBlur={handleEstimateBlur}
-                onEnterPress={handleEstimateBlur}
-                precision={2}
-                step={0.5}
-                min={0}
-                max={9999.99}
-                style={{ width: 120 }}
-                placeholder={t('development.processDevelopment.detail.effort.estimatePlaceholder')}
-              />
-              <span className="effort-tab-unit">{t('development.processDevelopment.detail.effort.unit')}</span>
-            </div>
+            <InputNumber
+              value={estimateInput ?? undefined}
+              onChange={(v) => setEstimateInput(v === '' || v === undefined ? null : Number(v))}
+              onBlur={handleEstimateBlur}
+              onEnterPress={handleEstimateBlur}
+              precision={2}
+              step={0.5}
+              min={0}
+              max={9999.99}
+              style={{ width: 140 }}
+              placeholder={t('development.processDevelopment.detail.effort.estimatePlaceholder')}
+            />
           ) : (
             <span className="effort-tab-metric-text">
-              {snapshot.estimate !== null
-                ? `${formatNumber(snapshot.estimate)} ${t('development.processDevelopment.detail.effort.unit')}`
-                : '--'}
+              {snapshot.estimate !== null ? formatNumber(snapshot.estimate) : '--'}
             </span>
           ),
         )}
@@ -176,9 +171,7 @@ const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
         {renderMetric(
           t('development.processDevelopment.detail.effort.actualLabel'),
           <span className={`effort-tab-metric-text ${isOver ? 'is-over' : ''}`}>
-            {snapshot.actual !== null
-              ? `${formatNumber(snapshot.actual)} ${t('development.processDevelopment.detail.effort.unit')}`
-              : '0'}
+            {snapshot.actual !== null ? formatNumber(snapshot.actual) : '0'}
             {isOver && (
               <Tooltip content={t('development.processDevelopment.detail.effort.overTimeTip', { delta: formatNumber(variance ?? 0) })}>
                 <Tag color="red" type="light" prefixIcon={<AlertTriangle size={12} strokeWidth={2} />} style={{ marginLeft: 8 }}>
@@ -193,26 +186,21 @@ const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
         {renderMetric(
           t('development.processDevelopment.detail.effort.remainingLabel'),
           canEdit ? (
-            <div className="effort-tab-input-wrap">
-              <InputNumber
-                value={remainingInput ?? undefined}
-                onChange={(v) => setRemainingInput(v === '' || v === undefined ? null : Number(v))}
-                onBlur={handleRemainingBlur}
-                onEnterPress={handleRemainingBlur}
-                precision={2}
-                step={0.5}
-                min={0}
-                max={9999.99}
-                style={{ width: 120 }}
-                placeholder={t('development.processDevelopment.detail.effort.remainingPlaceholder')}
-              />
-              <span className="effort-tab-unit">{t('development.processDevelopment.detail.effort.unit')}</span>
-            </div>
+            <InputNumber
+              value={remainingInput ?? undefined}
+              onChange={(v) => setRemainingInput(v === '' || v === undefined ? null : Number(v))}
+              onBlur={handleRemainingBlur}
+              onEnterPress={handleRemainingBlur}
+              precision={2}
+              step={0.5}
+              min={0}
+              max={9999.99}
+              style={{ width: 140 }}
+              placeholder={t('development.processDevelopment.detail.effort.remainingPlaceholder')}
+            />
           ) : (
             <span className="effort-tab-metric-text">
-              {snapshot.remaining !== null
-                ? `${formatNumber(snapshot.remaining)} ${t('development.processDevelopment.detail.effort.unit')}`
-                : '--'}
+              {snapshot.remaining !== null ? formatNumber(snapshot.remaining) : '--'}
             </span>
           ),
         )}
@@ -245,7 +233,7 @@ const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
           >
             {variance === null
               ? '--'
-              : `${variance > 0 ? '+' : ''}${formatNumber(variance)} ${t('development.processDevelopment.detail.effort.unit')}`}
+              : `${variance > 0 ? '+' : ''}${formatNumber(variance)}`}
           </span>,
         )}
       </div>

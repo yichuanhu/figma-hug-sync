@@ -1588,14 +1588,14 @@
         },
         "effort": {
           "unit": "MD",
-          "estimateLabel": "Estimate",
+          "estimateLabel": "Estimate (MD)",
           "estimatePlaceholder": "Enter estimate",
-          "actualLabel": "Logged",
-          "remainingLabel": "Remaining",
+          "actualLabel": "Logged (MD)",
+          "remainingLabel": "Remaining (MD)",
           "remainingPlaceholder": "Enter remaining effort",
           "remainingSaved": "Remaining effort saved",
           "progressLabel": "Progress",
-          "varianceLabel": "Variance",
+          "varianceLabel": "Variance (MD)",
           "notSet": "Not set",
           "noEntries": "No entries yet",
           "estimateSaved": "Estimate saved",
@@ -1606,7 +1606,7 @@
           "addEntry": "Add Entry",
           "table": {
             "workDate": "Work Date",
-            "delta": "Delta",
+            "delta": "Delta (MD)",
             "note": "Note",
             "creator": "Logged By",
             "createdAt": "Logged At"
