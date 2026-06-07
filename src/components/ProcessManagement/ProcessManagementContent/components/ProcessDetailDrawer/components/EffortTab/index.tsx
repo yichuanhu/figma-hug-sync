@@ -98,7 +98,7 @@ const EffortTab = ({ processId, creatorId, readOnly = false }: Props) => {
     {
       title: t('development.processDevelopment.detail.effort.table.delta'),
       dataIndex: 'delta_days',
-      width: 130,
+      width: 170,
       render: (v: number) => {
         const sign = v > 0 ? '+' : '';
         const colorVar = v < 0 ? 'var(--semi-color-warning)' : 'var(--semi-color-text-0)';
