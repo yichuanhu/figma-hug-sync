@@ -42,10 +42,6 @@ const DevSchemeDocsTab = ({ requirement, onChange }: Props) => {
 
   useEffect(() => { reload(); }, [reload, refreshKey]);
 
-  const nextVersion = useMemo(
-    () => docs.reduce((m, d) => Math.max(m, d.version), 0) + 1,
-    [docs],
-  );
 
   const ownerName = requirement.owner_name;
   const creatorName = mockCreators[requirement.creatorId]?.name ?? requirement.creatorName;
