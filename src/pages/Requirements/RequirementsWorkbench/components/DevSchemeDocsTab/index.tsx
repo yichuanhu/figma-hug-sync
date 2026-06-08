@@ -72,12 +72,7 @@ const DevSchemeDocsTab = ({ requirement, onChange }: Props) => {
   };
 
   const columns = [
-    {
-      title: t('requirements.devScheme.col.version'),
-      dataIndex: 'version',
-      width: 80,
-      render: (v: number) => <Tag color="blue" className="version-tag">v{v}</Tag>,
-    },
+
     {
       title: t('requirements.devScheme.col.fileName'),
       dataIndex: 'fileName',
