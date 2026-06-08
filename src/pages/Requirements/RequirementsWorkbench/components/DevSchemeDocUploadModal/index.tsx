@@ -32,7 +32,6 @@ const DevSchemeDocUploadModal = ({
   requirementId,
   ownerName,
   creatorName,
-  nextVersion,
   onCancel,
   onSuccess,
 }: Props) => {
