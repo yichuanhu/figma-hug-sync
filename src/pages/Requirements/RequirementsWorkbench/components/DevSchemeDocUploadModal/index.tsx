@@ -16,7 +16,6 @@ interface Props {
   requirementId: string;
   ownerName?: string;
   creatorName?: string;
-  nextVersion: number;
   onCancel: () => void;
   onSuccess: () => void;
 }
