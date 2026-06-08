@@ -1185,11 +1185,10 @@
       }
     },
     "devScheme": {
-      "totalCount": "{{count}} version(s) in total",
-      "uploadButton": "Upload New Version",
+      "totalCount": "{{count}} document(s) in total",
+      "uploadButton": "Upload Development Scheme",
       "empty": "No development scheme documents yet",
       "col": {
-        "version": "Version",
         "fileName": "File",
         "size": "Size",
         "uploader": "Uploader",
@@ -1198,8 +1197,8 @@
         "actions": "Actions"
       },
       "delete": {
-        "title": "Delete version v{{version}}",
-        "content": "Are you sure to delete this version? It will be recorded in the change log and cannot be recovered.",
+        "title": "Delete development scheme",
+        "content": "Are you sure to delete this document? It will be recorded in the change log and cannot be recovered.",
         "success": "Deleted"
       },
       "download": {
@@ -1210,9 +1209,9 @@
         "confirm": "Upload",
         "dragHint": "Click or drag a file here to upload",
         "formatHint": "Supports PDF / DOCX / MD, up to 50MB per file",
+        "overwriteHint": "If a file with the same name exists, it will be overwritten automatically.",
         "noteLabel": "Update note (optional)",
         "notePlaceholder": "Briefly describe the changes so collaborators understand updates",
-        "nextVersion": "This upload will create v{{version}}",
         "notifyRecipients": "Recipients will be notified: {{names}}",
         "success": "Uploaded successfully"
       },
