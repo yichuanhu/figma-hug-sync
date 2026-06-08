@@ -181,7 +181,7 @@ const DevSchemeDocsTab = ({ requirement, onChange }: Props) => {
         requirementId={requirement.id}
         ownerName={ownerName}
         creatorName={creatorName}
-        nextVersion={nextVersion}
+        
         onCancel={() => setUploadOpen(false)}
         onSuccess={() => {
           setUploadOpen(false);
