@@ -167,8 +167,8 @@ const DevSchemeDocUploadModal = ({
           />
         </div>
 
-        <div className="next-version-hint">
-          {t('requirements.devScheme.upload.nextVersion', { version: nextVersion })}
+        <div className="overwrite-hint">
+          {t('requirements.devScheme.upload.overwriteHint')}
         </div>
 
         {recipients && (
