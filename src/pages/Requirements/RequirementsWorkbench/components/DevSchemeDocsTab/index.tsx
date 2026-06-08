@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { Button, Modal, Spin, Table, Tag, Toast, Tooltip, Typography } from '@douyinfe/semi-ui';
@@ -42,10 +42,6 @@ const DevSchemeDocsTab = ({ requirement, onChange }: Props) => {
 
   useEffect(() => { reload(); }, [reload, refreshKey]);
 
-  const nextVersion = useMemo(
-    () => docs.reduce((m, d) => Math.max(m, d.version), 0) + 1,
-    [docs],
-  );
 
   const ownerName = requirement.owner_name;
   const creatorName = mockCreators[requirement.creatorId]?.name ?? requirement.creatorName;
@@ -76,12 +72,7 @@ const DevSchemeDocsTab = ({ requirement, onChange }: Props) => {
   };
 
   const columns = [
-    {
-      title: t('requirements.devScheme.col.version'),
-      dataIndex: 'version',
-      width: 80,
-      render: (v: number) => <Tag color="blue" className="version-tag">v{v}</Tag>,
-    },
+
     {
       title: t('requirements.devScheme.col.fileName'),
       dataIndex: 'fileName',
@@ -190,7 +181,7 @@ const DevSchemeDocsTab = ({ requirement, onChange }: Props) => {
         requirementId={requirement.id}
         ownerName={ownerName}
         creatorName={creatorName}
-        nextVersion={nextVersion}
+        
         onCancel={() => setUploadOpen(false)}
         onSuccess={() => {
           setUploadOpen(false);

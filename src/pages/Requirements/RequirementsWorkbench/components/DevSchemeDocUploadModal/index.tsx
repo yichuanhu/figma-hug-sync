@@ -16,7 +16,6 @@ interface Props {
   requirementId: string;
   ownerName?: string;
   creatorName?: string;
-  nextVersion: number;
   onCancel: () => void;
   onSuccess: () => void;
 }
@@ -33,7 +32,6 @@ const DevSchemeDocUploadModal = ({
   requirementId,
   ownerName,
   creatorName,
-  nextVersion,
   onCancel,
   onSuccess,
 }: Props) => {
@@ -169,8 +167,8 @@ const DevSchemeDocUploadModal = ({
           />
         </div>
 
-        <div className="next-version-hint">
-          {t('requirements.devScheme.upload.nextVersion', { version: nextVersion })}
+        <div className="overwrite-hint">
+          {t('requirements.devScheme.upload.overwriteHint')}
         </div>
 
         {recipients && (

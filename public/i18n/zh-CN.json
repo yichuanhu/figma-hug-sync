@@ -1099,11 +1099,10 @@
       }
     },
     "devScheme": {
-      "totalCount": "共 {{count}} 个版本",
-      "uploadButton": "上传新版本",
+      "totalCount": "共 {{count}} 个文档",
+      "uploadButton": "上传开发方案",
       "empty": "暂无开发方案文档",
       "col": {
-        "version": "版本",
         "fileName": "文件",
         "size": "大小",
         "uploader": "上传人",
@@ -1112,8 +1111,8 @@
         "actions": "操作"
       },
       "delete": {
-        "title": "删除版本 v{{version}}",
-        "content": "确认删除该版本？将记录到变更日志，且无法恢复。",
+        "title": "删除开发方案",
+        "content": "确认删除该开发方案？将记录到变更日志，且无法恢复。",
         "success": "已删除"
       },
       "download": {
@@ -1124,9 +1123,9 @@
         "confirm": "上传",
         "dragHint": "点击或拖拽文件到此处上传",
         "formatHint": "支持 PDF / DOCX / MD，单文件不超过 50MB",
-        "noteLabel": "本次更新说明（可选）",
+        "overwriteHint": "若上传的文件与现有文档同名，将自动覆盖原有文档。",
+        "noteLabel": "更新说明（可选）",
         "notePlaceholder": "简要描述本次方案的更新点，便于协作者了解变化",
-        "nextVersion": "本次上传将生成 v{{version}}",
         "notifyRecipients": "上传成功后将通知：{{names}}",
         "success": "上传成功"
       },
