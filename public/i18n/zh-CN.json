@@ -3753,10 +3753,7 @@
       "col": {
         "name": "名称",
         "description": "描述",
-        "type": "类型",
-        "source": "来源",
         "status": "状态",
-        "tags": "标签",
         "reuseCount": "复用次数",
         "updatedAt": "更新时间",
         "action": "操作"
@@ -3841,6 +3838,16 @@
         "loadFailed": "加载失败，请重试",
         "retry": "重试",
         "createCta": "新建资产"
+      },
+      "col": {
+        "version": "版本",
+        "name": "名称",
+        "type": "类型",
+        "source": "来源",
+        "status": "状态",
+        "tags": "标签",
+        "updatedAt": "更新时间",
+        "action": "操作"
       },
       "create": {
         "knowledgeTitle": "新建知识",

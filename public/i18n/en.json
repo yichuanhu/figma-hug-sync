@@ -4361,12 +4361,9 @@
       "col": {
         "name": "Name",
         "description": "Description",
-        "type": "Type",
-        "source": "Source",
         "status": "Status",
-        "tags": "Tags",
         "reuseCount": "Reuse Count",
-        "updatedAt": "Updated At",
+        "updatedAt": "Updated",
         "action": "Action"
       },
       "newAsset": {
@@ -4449,6 +4446,16 @@
         "pending_publish": "暂无待PublishAsset",
         "loadFailed": "加载失败，请重试",
         "retry": "重试"
+      },
+      "col": {
+        "version": "Version",
+        "name": "Name",
+        "type": "Type",
+        "source": "Source",
+        "status": "Status",
+        "tags": "Tags",
+        "updatedAt": "Updated At",
+        "action": "Action"
       },
       "create": {
         "knowledgeTitle": "New Knowledge",
