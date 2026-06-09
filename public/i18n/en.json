@@ -221,9 +221,14 @@
       "about": "About"
     },
     "requirementsProjects": "Projects & Workspaces",
+    "sharingResources": "Sharing Resources",
     "sharingAdmin": "Sharing Center Config",
     "sharingApprovalLevels": "Approval Levels",
-    "sharingPermissions": "Permissions & Roles"
+    "sharingPermissions": "Permissions & Roles",
+    "tag": {
+      "previewOnly": "Preview",
+      "previewOnlyTip": "MVP prototype preview, not yet enabled"
+    }
   },
   "metricsConfig": {
     "title": "Business Metrics",

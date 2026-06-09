@@ -177,9 +177,14 @@
       "about": "关于"
     },
     "requirementsProjects": "项目与工作空间",
+    "sharingResources": "共享资源",
     "sharingAdmin": "共享中心配置",
     "sharingApprovalLevels": "审批层级配置",
-    "sharingPermissions": "权限点与角色"
+    "sharingPermissions": "权限点与角色",
+    "tag": {
+      "previewOnly": "原型",
+      "previewOnlyTip": "该功能为 MVP 阶段原型预览，暂未启用"
+    }
   },
   "metricsConfig": {
     "title": "业务指标配置",
