@@ -3736,20 +3736,38 @@
         "searchPlaceholder": "搜索资产名称/描述/标签…",
         "type": "类型",
         "source": "来源",
+        "status": "状态",
         "allType": "全部",
         "allSource": "全部",
+        "allStatus": "全部",
         "typeWorkflow": "智能自动化流程",
         "typeKnowledge": "知识",
         "clear": "清空筛选"
       },
+      "statusOptions": {
+        "draft": "草稿",
+        "published": "已上架",
+        "unlisted": "已下架"
+      },
+      "col": {
+        "name": "名称",
+        "status": "状态",
+        "reuseCount": "复用次数",
+        "updatedAt": "更新时间",
+        "action": "操作"
+      },
       "newAsset": {
         "label": "新建资产",
+        "entry": "新建资产",
+        "workflowShort": "流程",
+        "knowledgeShort": "知识",
         "knowledge": "新建知识",
         "skill": "新建技能",
         "snippet": "新建流程块",
         "workflow": "上架开发中心流程",
         "disabledHint": "请在开发中心创建"
       },
+
       "actions": {
         "view": "查看详情",
         "edit": "编辑",
