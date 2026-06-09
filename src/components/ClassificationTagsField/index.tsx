@@ -234,28 +234,27 @@ const ClassificationTagsField = ({
         {keys.map((key) => {
           const raw = value[key.id];
           const ids: string[] = Array.isArray(raw) ? raw : raw ? [String(raw)] : [];
-
-          // 单层维度（children 全为叶子，无 grandchildren）：Cascader 也能渲染
-          const cascaderValue: string[][] = ids
-            .map((id) => findItemPath(key.children, id).map((n) => n.id))
-            .filter((arr) => arr.length > 0);
           return (
             <div key={key.id} className="cls-key-block">
               <div className="cls-key-name">{key.name}</div>
-              <Cascader
+              <TreeSelect
                 multiple
-                treeData={toCascaderData(key.children)}
-                value={cascaderValue as unknown as any}
-                onChange={(v) => handleCascaderChange(key, v)}
-                changeOnSelect
-                showClear
+                treeData={toTreeData(key.children)}
+                value={ids}
+                onChange={(v) => handleTreeChange(key, v)}
                 leafOnly={false}
+                checkRelation="unRelated"
+                showClear
+                filterTreeNode
                 placeholder="请选择"
                 style={{ width: '100%' }}
                 maxTagCount={6}
+                expandAll
+                dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
               />
             </div>
           );
+
         })}
       </div>
     </div>
