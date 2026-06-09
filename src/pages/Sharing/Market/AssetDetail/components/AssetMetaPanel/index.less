@@ -1,0 +1,41 @@
+.asset-meta-panel {
+  background: var(--semi-color-bg-2);
+  border: 1px solid var(--semi-color-border);
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  .semi-collapse-header {
+    padding: 12px 20px;
+  }
+
+  .semi-collapse-content {
+    padding: 0 20px 16px;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 24px;
+    margin: 0;
+
+    .meta-row {
+      display: flex;
+      gap: 8px;
+      font-size: 13px;
+      line-height: 22px;
+
+      dt {
+        color: var(--semi-color-text-2);
+        flex-shrink: 0;
+        min-width: 76px;
+      }
+
+      dd {
+        margin: 0;
+        color: var(--semi-color-text-0);
+        word-break: break-word;
+      }
+    }
+  }
+}

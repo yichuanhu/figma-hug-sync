@@ -1,0 +1,60 @@
+.my-reused-drawer {
+  .semi-sidesheet-body {
+    padding: 16px 20px;
+  }
+
+  .my-reused-drawer-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .my-reused-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .my-reused-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    border: 1px solid transparent;
+
+    &:hover {
+      background-color: var(--semi-color-fill-0);
+      border-color: var(--semi-color-border);
+    }
+
+    .my-reused-item-icon {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      background-color: var(--semi-color-fill-0);
+    }
+
+    .my-reused-item-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      .my-reused-item-title,
+      .my-reused-item-desc {
+        display: block;
+      }
+    }
+  }
+}
