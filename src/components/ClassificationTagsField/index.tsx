@@ -125,25 +125,23 @@ const ClassificationTagsField = ({
   const selectedCount = useMemo(() => totalSelectedCount(value), [value]);
   const showRequiredError = required && forceShowError && status === 'ready' && selectedCount === 0;
 
-  /** Semi Cascader multiple 模式返回 string[][]（每条为路径数组） */
-  const handleCascaderChange = (key: ClassificationKey, raw: unknown) => {
+  /** Semi TreeSelect multiple+checkRelation=unRelated 返回 string[] */
+  const handleTreeChange = (key: ClassificationKey, raw: unknown) => {
     let ids: string[] = [];
     if (Array.isArray(raw)) {
       ids = (raw as Array<unknown>)
-        .map((entry) => {
-          if (Array.isArray(entry) && entry.length > 0) return String(entry[entry.length - 1]);
-          if (typeof entry === 'string' || typeof entry === 'number') return String(entry);
-          return '';
-        })
+        .map((entry) => (typeof entry === 'string' || typeof entry === 'number' ? String(entry) : ''))
         .filter((id) => !!id);
-      // 去重
       ids = Array.from(new Set(ids));
+    } else if (typeof raw === 'string' || typeof raw === 'number') {
+      ids = [String(raw)];
     }
     const next = { ...value };
     if (ids.length === 0) delete next[key.id];
     else next[key.id] = ids;
     onChange(next);
   };
+
 
   // ============== 只读模式 ==============
   if (readonly) {
