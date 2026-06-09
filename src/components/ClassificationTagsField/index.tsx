@@ -340,7 +340,9 @@ const ClassificationReadonlyView = ({
   const data = entityId ? resolved : value;
   const assignedRows = readonlyKeys
     .map((key) => {
-      const ids = data[key.id] ?? [];
+      const raw = data[key.id];
+      const ids: string[] = Array.isArray(raw) ? raw : raw ? [String(raw)] : [];
+
       const paths = ids
         .map((id) => findItemPath(key.children, id))
         .filter((p) => p.length > 0)
