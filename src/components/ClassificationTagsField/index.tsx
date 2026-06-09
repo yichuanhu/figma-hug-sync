@@ -15,25 +15,20 @@ import './index.less';
 
 const { Text } = Typography;
 
-/** 字段值：维度 ID -> 已选枚举值 ID（单选；未选为 null） */
-export type ClassificationValueMap = Record<string, string | null>;
+/** 字段值：维度 ID -> 已选枚举值 ID 列表（多选；可跨层级） */
+export type ClassificationValueMap = Record<string, string[]>;
 
 /** 加载状态 */
 export type ClassificationLoadStatus = 'loading' | 'ready' | 'empty' | 'error';
 
 interface Props {
   entityType: BusinessObjectType;
-  /** 编辑回填用：传入实体 ID 时会自动拉取已分配分类 */
   entityId?: string;
   value: ClassificationValueMap;
   onChange: (next: ClassificationValueMap) => void;
-  /** 仅用于通知父组件状态变化以决定提交按钮 disabled */
   onStatusChange?: (status: ClassificationLoadStatus) => void;
-  /** 是否在 ready 状态下要求至少 1 个维度（按 STORY-017 v9 默认 false） */
   required?: boolean;
-  /** 父组件触发提交校验后强制显示错误 */
   forceShowError?: boolean;
-  /** 只读模式：仅渲染已选标签 */
   readonly?: boolean;
   /** 在 empty 状态下完全隐藏整块（R-11） */
   hideWhenEmpty?: boolean;
@@ -42,7 +37,7 @@ interface Props {
 const PATH_SEP = ' / ';
 
 const totalSelectedCount = (value: ClassificationValueMap): number =>
-  Object.values(value).filter((id) => !!id).length;
+  Object.values(value).reduce((sum, ids) => sum + (ids?.length ?? 0), 0);
 
 /** ClassificationItem 树 → Semi Cascader treeData */
 const toCascaderData = (items: ClassificationItem[]): any[] =>
@@ -68,7 +63,6 @@ const ClassificationTagsField = ({
   const [status, setStatus] = useState<ClassificationLoadStatus>('loading');
   const [reloadTick, setReloadTick] = useState(0);
 
-  // 加载分类维度
   useEffect(() => {
     let cancelled = false;
     setStatus('loading');
@@ -109,8 +103,8 @@ const ClassificationTagsField = ({
         if (cancelled) return;
         const next: ClassificationValueMap = {};
         list.forEach((item) => {
-          if (item.selectedItem) {
-            next[item.classificationKeyId] = item.selectedItem.id;
+          if (item.selectedItems && item.selectedItems.length > 0) {
+            next[item.classificationKeyId] = item.selectedItems.map((s) => s.id);
           }
         });
         if (totalSelectedCount(value) === 0 && Object.keys(next).length > 0) {
@@ -129,17 +123,24 @@ const ClassificationTagsField = ({
   const selectedCount = useMemo(() => totalSelectedCount(value), [value]);
   const showRequiredError = required && forceShowError && status === 'ready' && selectedCount === 0;
 
-  const handleCascaderChange = (keyId: string, key: ClassificationKey, raw: unknown) => {
-    // Semi Cascader 单选返回 string[] 路径；clear 时返回 undefined / []
-    let nextId: string | null = null;
-    if (Array.isArray(raw) && raw.length > 0) {
-      nextId = String(raw[raw.length - 1]);
-    } else if (typeof raw === 'string' && raw) {
-      nextId = raw;
+  /** Semi Cascader multiple 模式返回 string[][]（每条为路径数组） */
+  const handleCascaderChange = (key: ClassificationKey, raw: unknown) => {
+    let ids: string[] = [];
+    if (Array.isArray(raw)) {
+      ids = (raw as Array<unknown>)
+        .map((entry) => {
+          if (Array.isArray(entry) && entry.length > 0) return String(entry[entry.length - 1]);
+          if (typeof entry === 'string' || typeof entry === 'number') return String(entry);
+          return '';
+        })
+        .filter((id) => !!id);
+      // 去重
+      ids = Array.from(new Set(ids));
     }
-    onChange({ ...value, [keyId]: nextId });
-    // 防止未使用警告
-    void key;
+    const next = { ...value };
+    if (ids.length === 0) delete next[key.id];
+    else next[key.id] = ids;
+    onChange(next);
   };
 
   // ============== 只读模式 ==============
@@ -218,7 +219,7 @@ const ClassificationTagsField = ({
           {required && <span className="cls-required-mark">*</span>}
         </span>
         <Text type="tertiary" size="small" className="cls-header-hint">
-          （可选，按业务维度打标，每维度最多选 1 项）
+          （可选，每个维度可多选；一级或二级枚举值均可选择）
         </Text>
       </div>
 
@@ -231,21 +232,25 @@ const ClassificationTagsField = ({
 
       <div className="cls-key-list">
         {keys.map((key) => {
-          const selectedId = value[key.id] ?? null;
-          const cascaderValue = selectedId
-            ? findItemPath(key.children, selectedId).map((n) => n.id)
-            : [];
+          const ids = value[key.id] ?? [];
+          // 单层维度（children 全为叶子，无 grandchildren）：Cascader 也能渲染
+          const cascaderValue: string[][] = ids
+            .map((id) => findItemPath(key.children, id).map((n) => n.id))
+            .filter((arr) => arr.length > 0);
           return (
             <div key={key.id} className="cls-key-block">
               <div className="cls-key-name">{key.name}</div>
               <Cascader
+                multiple
                 treeData={toCascaderData(key.children)}
-                value={cascaderValue}
-                onChange={(v) => handleCascaderChange(key.id, key, v)}
+                value={cascaderValue as unknown as any}
+                onChange={(v) => handleCascaderChange(key, v)}
                 changeOnSelect
                 showClear
+                leafOnly={false}
                 placeholder="请选择"
                 style={{ width: '100%' }}
+                maxTagCount={6}
               />
             </div>
           );
@@ -288,8 +293,8 @@ const ClassificationReadonlyView = ({
         if (cancelled) return;
         const next: ClassificationValueMap = {};
         list.forEach((item) => {
-          if (item.selectedItem) {
-            next[item.classificationKeyId] = item.selectedItem.id;
+          if (item.selectedItems && item.selectedItems.length > 0) {
+            next[item.classificationKeyId] = item.selectedItems.map((s) => s.id);
           }
         });
         setResolved(next);
@@ -333,13 +338,15 @@ const ClassificationReadonlyView = ({
   const data = entityId ? resolved : value;
   const assignedRows = readonlyKeys
     .map((key) => {
-      const id = data[key.id];
-      if (!id) return null;
-      const path = findItemPath(key.children, id);
-      if (path.length === 0) return null;
-      return { keyId: key.id, keyName: key.name, pathText: path.map((p) => p.name).join(PATH_SEP) };
+      const ids = data[key.id] ?? [];
+      const paths = ids
+        .map((id) => findItemPath(key.children, id))
+        .filter((p) => p.length > 0)
+        .map((p) => p.map((n) => n.name).join(PATH_SEP));
+      if (paths.length === 0) return null;
+      return { keyId: key.id, keyName: key.name, paths };
     })
-    .filter((x): x is { keyId: string; keyName: string; pathText: string } => !!x);
+    .filter((x): x is { keyId: string; keyName: string; paths: string[] } => !!x);
 
   if (assignedRows.length === 0) {
     return (
@@ -358,7 +365,13 @@ const ClassificationReadonlyView = ({
           <Text type="tertiary" size="small" className="cls-readonly-label">
             {row.keyName}
           </Text>
-          <Text className="cls-readonly-value">{row.pathText}</Text>
+          <div className="cls-readonly-value">
+            {row.paths.map((p, i) => (
+              <span key={i} className="cls-readonly-tag">
+                {p}
+              </span>
+            ))}
+          </div>
         </div>
       ))}
     </div>
