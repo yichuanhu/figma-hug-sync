@@ -4361,9 +4361,12 @@
       "col": {
         "name": "Name",
         "description": "Description",
+        "type": "Type",
+        "source": "Source",
         "status": "Status",
+        "tags": "Tags",
         "reuseCount": "Reuse Count",
-        "updatedAt": "Updated",
+        "updatedAt": "Updated At",
         "action": "Action"
       },
       "newAsset": {
