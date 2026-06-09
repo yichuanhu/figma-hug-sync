@@ -9,10 +9,11 @@
  * 通过 setClassificationMockMode 可在控制台切换 ready / empty / error，便于演示
  * AC-ERR-01（FEAT-003 不可用）与 AC-ERR-02（无适用分类键）。
  */
-import { MOCK_CLASSIFICATION_KEYS } from './mockData';
+import { MOCK_CLASSIFICATION_KEYS, findItemPath } from './mockData';
 import type {
   BusinessObjectType,
   ClassificationAssignmentItem,
+  ClassificationItem,
   ClassificationKey,
   ClassificationMockMode,
   EntityClassification,
@@ -42,8 +43,12 @@ if (typeof window !== 'undefined') {
     setClassificationMockMode;
 }
 
+/** 递归过滤 INACTIVE / 不可见节点（mock 中目前全部 selectable=true） */
+const sanitizeItems = (items: ClassificationItem[]): ClassificationItem[] =>
+  items.map((n) => ({ ...n, children: sanitizeItems(n.children ?? []) }));
+
 /**
- * 获取适用于某实体类型的所有 ACTIVE 分类键
+ * 获取适用于某实体类型的所有 ACTIVE 分类维度
  * 对应 GET /api/classifications/for-entity/{entityType}
  */
 export const fetchClassificationsForEntity = async (
@@ -56,14 +61,9 @@ export const fetchClassificationsForEntity = async (
   if (MOCK_MODE === 'empty') {
     return [];
   }
-  return MOCK_CLASSIFICATION_KEYS
-    .filter(
-      (k) => k.status === 'ACTIVE' && k.applicableBusinessObjectTypes.includes(entityType),
-    )
-    .map((k) => ({
-      ...k,
-      values: k.values.filter((v) => v.status === 'ACTIVE'),
-    }));
+  return MOCK_CLASSIFICATION_KEYS.filter(
+    (k) => k.status === 'ACTIVE' && k.applicableBusinessObjectTypes.includes(entityType),
+  ).map((k) => ({ ...k, children: sanitizeItems(k.children ?? []) }));
 };
 
 /**
@@ -84,14 +84,18 @@ export const fetchEntityClassifications = async (
     .map((item) => {
       const key = keys.find((k) => k.id === item.classificationKeyId);
       if (!key) return null;
-      const values = item.valueIds
-        .map((vid) => key.values.find((v) => v.id === vid))
-        .filter((v): v is NonNullable<typeof v> => !!v)
-        .map((v) => ({ id: v.id, name: v.name }));
+      let selectedItem: EntityClassification['selectedItem'] = null;
+      if (item.itemId) {
+        const path = findItemPath(key.children, item.itemId);
+        if (path.length > 0) {
+          const last = path[path.length - 1];
+          selectedItem = { id: last.id, name: last.name, path };
+        }
+      }
       return {
         classificationKeyId: key.id,
         keyName: key.name,
-        values,
+        selectedItem,
       } as EntityClassification;
     })
     .filter((x): x is EntityClassification => !!x);
@@ -111,8 +115,8 @@ export const assignEntityClassifications = async (
   if (MOCK_MODE === 'error') {
     throw new Error('FEAT-003 assign API failed');
   }
-  // 过滤掉空的 valueIds
-  const cleaned = classifications.filter((c) => c.valueIds && c.valueIds.length > 0);
+  // 仅保留实际有选择的项
+  const cleaned = classifications.filter((c) => !!c.itemId);
   ENTITY_ASSIGNMENTS.set(buildKey(entityType, entityId), cleaned);
   return { success: true };
 };
