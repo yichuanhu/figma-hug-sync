@@ -19,7 +19,7 @@ import type {
   TaskPriority,
 } from '@/api';
 import ExecutionHistoryTab from './ExecutionHistoryTab';
-import { getDepartmentName } from '@/mocks/departmentData';
+import DepartmentPath from '@/components/DepartmentPath';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import './index.less';
@@ -110,7 +110,7 @@ const TaskDetailDrawer = ({
     { key: t('task.detail.processVersion'), value: task.process_version },
     { key: t('task.detail.executionTarget'), value: task.execution_target_name },
     { key: t('task.detail.triggerSource'), value: t(`task.triggerSource.${task.trigger_source.toLowerCase()}`) },
-    { key: t('common.owningDepartment'), value: getDepartmentName(task.owning_department_id) },
+    { key: t('common.owningDepartment'), value: <DepartmentPath departmentId={task.owning_department_id} /> },
     { key: t('common.owner'), value: task.owner_name ? <UserNameWithCard name={task.owner_name} userId={task.owner_id || ''} /> : '-' },
     { key: t('task.detail.creator'), value: task.creator_name ? <UserNameWithCard name={task.creator_name} userId={task.creator_id} /> : '-' },
   ];

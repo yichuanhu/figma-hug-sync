@@ -19,7 +19,7 @@ import { Collapsible } from '@douyinfe/semi-ui';
 import type { LYTimeTriggerResponse, LYTriggerExecutionLogResponse } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
-import { getDepartmentName } from '@/mocks/departmentData';
+import DepartmentPath from '@/components/DepartmentPath';
 import './index.less';
 import { ChevronDown, ChevronUp, Inbox, Pencil, Trash2 } from 'lucide-react';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
@@ -251,7 +251,7 @@ const TimeTriggerDetailDrawer = ({
                   <ExpandableText text={trigger.description} maxLines={3} />
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('common.owningDepartment')}>
-                  {getDepartmentName(trigger.owning_department_id)}
+                  <DepartmentPath departmentId={trigger.owning_department_id} />
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('common.owner')}>
                   {trigger.owner_name ? <UserNameWithCard name={trigger.owner_name} userId={trigger.owner_id || ''} /> : '-'}
