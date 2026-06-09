@@ -3749,8 +3749,10 @@
         "published": "已上架",
         "unlisted": "已下架"
       },
+      "pageSubtitle": "上架、维护与下架可被他人复用的资产",
       "col": {
         "name": "名称",
+        "description": "描述",
         "status": "状态",
         "reuseCount": "复用次数",
         "updatedAt": "更新时间",
