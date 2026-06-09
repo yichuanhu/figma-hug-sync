@@ -232,7 +232,9 @@ const ClassificationTagsField = ({
 
       <div className="cls-key-list">
         {keys.map((key) => {
-          const ids = value[key.id] ?? [];
+          const raw = value[key.id];
+          const ids: string[] = Array.isArray(raw) ? raw : raw ? [String(raw)] : [];
+
           // 单层维度（children 全为叶子，无 grandchildren）：Cascader 也能渲染
           const cascaderValue: string[][] = ids
             .map((id) => findItemPath(key.children, id).map((n) => n.id))
