@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Cascader, Button, Spin, Typography, Empty } from '@douyinfe/semi-ui';
+import { TreeSelect, Button, Spin, Typography, Empty } from '@douyinfe/semi-ui';
 import { AlertTriangle, Inbox, RefreshCw } from 'lucide-react';
 import {
   fetchClassificationsForEntity,
@@ -39,14 +39,16 @@ const PATH_SEP = ' / ';
 const totalSelectedCount = (value: ClassificationValueMap): number =>
   Object.values(value).reduce((sum, ids) => sum + (ids?.length ?? 0), 0);
 
-/** ClassificationItem 树 → Semi Cascader treeData */
-const toCascaderData = (items: ClassificationItem[]): any[] =>
+/** ClassificationItem 树 → Semi TreeSelect treeData */
+const toTreeData = (items: ClassificationItem[]): any[] =>
   items.map((n) => ({
+    key: n.id,
     value: n.id,
     label: n.name,
     disabled: n.selectable === false,
-    children: n.children && n.children.length > 0 ? toCascaderData(n.children) : undefined,
+    children: n.children && n.children.length > 0 ? toTreeData(n.children) : undefined,
   }));
+
 
 const ClassificationTagsField = ({
   entityType,
@@ -123,25 +125,23 @@ const ClassificationTagsField = ({
   const selectedCount = useMemo(() => totalSelectedCount(value), [value]);
   const showRequiredError = required && forceShowError && status === 'ready' && selectedCount === 0;
 
-  /** Semi Cascader multiple 模式返回 string[][]（每条为路径数组） */
-  const handleCascaderChange = (key: ClassificationKey, raw: unknown) => {
+  /** Semi TreeSelect multiple+checkRelation=unRelated 返回 string[] */
+  const handleTreeChange = (key: ClassificationKey, raw: unknown) => {
     let ids: string[] = [];
     if (Array.isArray(raw)) {
       ids = (raw as Array<unknown>)
-        .map((entry) => {
-          if (Array.isArray(entry) && entry.length > 0) return String(entry[entry.length - 1]);
-          if (typeof entry === 'string' || typeof entry === 'number') return String(entry);
-          return '';
-        })
+        .map((entry) => (typeof entry === 'string' || typeof entry === 'number' ? String(entry) : ''))
         .filter((id) => !!id);
-      // 去重
       ids = Array.from(new Set(ids));
+    } else if (typeof raw === 'string' || typeof raw === 'number') {
+      ids = [String(raw)];
     }
     const next = { ...value };
     if (ids.length === 0) delete next[key.id];
     else next[key.id] = ids;
     onChange(next);
   };
+
 
   // ============== 只读模式 ==============
   if (readonly) {
@@ -234,28 +234,27 @@ const ClassificationTagsField = ({
         {keys.map((key) => {
           const raw = value[key.id];
           const ids: string[] = Array.isArray(raw) ? raw : raw ? [String(raw)] : [];
-
-          // 单层维度（children 全为叶子，无 grandchildren）：Cascader 也能渲染
-          const cascaderValue: string[][] = ids
-            .map((id) => findItemPath(key.children, id).map((n) => n.id))
-            .filter((arr) => arr.length > 0);
           return (
             <div key={key.id} className="cls-key-block">
               <div className="cls-key-name">{key.name}</div>
-              <Cascader
+              <TreeSelect
                 multiple
-                treeData={toCascaderData(key.children)}
-                value={cascaderValue as unknown as any}
-                onChange={(v) => handleCascaderChange(key, v)}
-                changeOnSelect
-                showClear
+                treeData={toTreeData(key.children)}
+                value={ids}
+                onChange={(v) => handleTreeChange(key, v)}
                 leafOnly={false}
+                checkRelation="unRelated"
+                showClear
+                filterTreeNode
                 placeholder="请选择"
                 style={{ width: '100%' }}
                 maxTagCount={6}
+                expandAll
+                dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
               />
             </div>
           );
+
         })}
       </div>
     </div>
