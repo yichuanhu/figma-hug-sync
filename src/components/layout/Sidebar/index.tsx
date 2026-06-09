@@ -27,6 +27,7 @@ interface MenuItem {
   badge?: number;
   path?: string;
   isGroupLabel?: boolean; // 是否为分组标题
+  previewOnly?: boolean; // MVP 未启用，仅作为原型预览
 }
 
 interface SidebarProps {
