@@ -494,8 +494,12 @@ const RequirementCreatePage = () => {
 
     const buildAssignmentPayload = () =>
       Object.entries(classificationValue)
-        .filter(([, ids]) => ids && ids.length > 0)
-        .map(([classificationKeyId, valueIds]) => ({ classificationKeyId, valueIds }));
+        .filter(([, itemId]) => !!itemId)
+        .map(([classificationKeyId, itemId]) => ({
+          classificationKeyId,
+          itemId: itemId as string,
+        }));
+
 
     const { submitValues } = buildSubmitValues();
     setSubmitting(true);
@@ -710,7 +714,9 @@ const RequirementCreatePage = () => {
                   required={false}
                   forceShowError={forceClsError}
                   readonly={!classificationEditable}
+                  hideWhenEmpty
                 />
+
               </div>
             </div>
 
