@@ -653,6 +653,13 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
               {label}
             </span>
 
+            {/* MVP 未启用标记 */}
+            {item.previewOnly && (
+              <Tooltip content={t('sidebar.tag.previewOnlyTip')}>
+                <span className="sidebar-menu-preview-tag">{t('sidebar.tag.previewOnly')}</span>
+              </Tooltip>
+            )}
+
             {/* 数字徽标 */}
             {!hasChildren && typeof item.badge === 'number' && item.badge > 0 && (
               <span className="sidebar-menu-badge">{item.badge > 99 ? '99+' : item.badge}</span>
