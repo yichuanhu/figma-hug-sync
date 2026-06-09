@@ -23,7 +23,7 @@ import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
-import { getDepartmentName } from '@/mocks/departmentData';
+import DepartmentPath from '@/components/DepartmentPath';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
@@ -488,7 +488,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     { key: t('common.owner'), value: processData.owner_name ? <UserNameWithCard name={processData.owner_name} userId={processData.owner_id || ''} /> : '-' },
     {
       key: t('common.owningDepartment'),
-      value: getDepartmentName(processData.owning_department_id),
+      value: <DepartmentPath departmentId={processData.owning_department_id} />,
     },
     {
       key: t('development.processDevelopment.createModal.fields.osLabel'),
