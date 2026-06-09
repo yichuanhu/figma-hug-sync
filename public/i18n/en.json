@@ -4450,16 +4450,6 @@
         "loadFailed": "加载失败，请重试",
         "retry": "重试"
       },
-      "col": {
-        "version": "Version",
-        "name": "Name",
-        "type": "Type",
-        "source": "Source",
-        "status": "Status",
-        "tags": "Tags",
-        "updatedAt": "Updated At",
-        "action": "Action"
-      },
       "create": {
         "knowledgeTitle": "New Knowledge",
         "skillTitle": "New Skill",
