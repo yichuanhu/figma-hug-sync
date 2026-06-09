@@ -88,11 +88,11 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
   const processTypes = ['RPA', 'AI', 'Hybrid'];
 
   const departments = [
-    { id: 'dept-001', name: 'Finance Department' },
-    { id: 'dept-002', name: 'Enterprise Business Center' },
-    { id: 'dept-003', name: 'Human Resources Department' },
-    { id: 'dept-004', name: 'R&D Center' },
-    { id: 'dept-005', name: 'Operations Department' },
+    { id: 'dept-finance', name: 'Finance Department' },
+    { id: 'dept-enterprise', name: 'Enterprise Business Center' },
+    { id: 'dept-hr', name: 'Human Resources Department' },
+    { id: 'dept-rd', name: 'R&D Center' },
+    { id: 'dept-apa-product', name: 'APA Product Division' },
   ];
 
   let dept = departments[index % departments.length];
