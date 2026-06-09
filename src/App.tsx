@@ -86,14 +86,13 @@ import MiddlewareStatusPage from "@/pages/Maintenance/Dashboard/MiddlewareStatus
 // Sharing Center - Asset Market
 import MarketHome from "@/pages/Sharing/Market/MarketHome";
 import WorkflowMarket from "@/pages/Sharing/Market/WorkflowMarket";
-import SnippetMarket from "@/pages/Sharing/Market/SnippetMarket";
 import KnowledgeMarket from "@/pages/Sharing/Market/KnowledgeMarket";
-import SkillMarket from "@/pages/Sharing/Market/SkillMarket";
 import AssetDetail from "@/pages/Sharing/Market/AssetDetail";
 import EditDisplay from "@/pages/Sharing/Market/EditDisplay";
 // Sharing Center - 我的共享 / 审批 / 配置
 import MySharedPage from "@/pages/SharingCenter/MyShared";
 import KnowledgeCreatePage from "@/pages/SharingCenter/MyShared/Create/Knowledge";
+import WorkflowCreatePage from "@/pages/SharingCenter/MyShared/Create/Workflow";
 
 import MySharedEditPage from "@/pages/SharingCenter/MyShared/Edit";
 import MySharedVersionsPage from "@/pages/SharingCenter/MyShared/Versions";
@@ -240,22 +239,24 @@ const App = () => {
           <Route path="/sharing-center" element={<Navigate to="/sharing-center/market" replace />} />
           <Route path="/sharing-center/market" element={<MarketHome />} />
           <Route path="/sharing-center/market/workflow" element={<WorkflowMarket />} />
-          <Route path="/sharing-center/market/snippet" element={<SnippetMarket />} />
           <Route path="/sharing-center/market/knowledge" element={<KnowledgeMarket />} />
-          <Route path="/sharing-center/market/skill" element={<SkillMarket />} />
           <Route path="/sharing-center/market/:type/:id/edit-display" element={<EditDisplay />} />
           <Route path="/sharing-center/market/:type/:id" element={<AssetDetail />} />
           {/* 资产上架（FEAT-107）— R-05：仅供应商可访问 */}
           <Route path="/sharing-center/my-published" element={<SupplierGuard><MySharedPage /></SupplierGuard>} />
           <Route path="/sharing-center/my-published/:type/:id" element={<SupplierGuard><SupplyAssetDetail /></SupplierGuard>} />
           <Route path="/sharing-center/my-published/:type/:id/publish" element={<SupplierGuard><DevCenterPublishPage /></SupplierGuard>} />
-          <Route path="/sharing-center/market/knowledge/create" element={<SupplierGuard><KnowledgeCreatePage /></SupplierGuard>} />
+          <Route path="/sharing-center/my-published/knowledge/create" element={<SupplierGuard><KnowledgeCreatePage /></SupplierGuard>} />
+          <Route path="/sharing-center/my-published/workflow/create" element={<SupplierGuard><WorkflowCreatePage /></SupplierGuard>} />
+          {/* 旧路径兼容：原 market 下的 create 路径重定向到 my-published */}
+          <Route path="/sharing-center/market/knowledge/create" element={<Navigate to="/sharing-center/my-published/knowledge/create" replace />} />
+          <Route path="/sharing-center/market/workflow/create" element={<Navigate to="/sharing-center/my-published/workflow/create" replace />} />
 
           <Route path="/sharing-center/market/:type/:id/edit" element={<SupplierGuard><MySharedEditPage /></SupplierGuard>} />
           <Route path="/sharing-center/my-published/:id/versions" element={<SupplierGuard><MySharedVersionsPage /></SupplierGuard>} />
           {/* 旧路径兼容 */}
           <Route path="/sharing-center/my-shared" element={<Navigate to="/sharing-center/my-published" replace />} />
-          <Route path="/sharing-center/my-shared/create/knowledge" element={<Navigate to="/sharing-center/market/knowledge/create" replace />} />
+          <Route path="/sharing-center/my-shared/create/knowledge" element={<Navigate to="/sharing-center/my-published/knowledge/create" replace />} />
           
           <Route path="/sharing-center/my-shared/edit/:id" element={<MySharedEditPage />} />
           <Route path="/sharing-center/my-shared/:id/versions" element={<MySharedVersionsPage />} />
@@ -264,17 +265,17 @@ const App = () => {
           <Route path="/sharing-center/admin/approval-levels" element={<ApprovalLevelsPage />} />
           <Route path="/sharing-center/admin/permissions" element={<PermissionsPage />} />
 
-          {/* 旧 /sharing 路径 → 新 /sharing-center 兜底 */}
+          {/* 旧 /sharing 路径 → 新 /sharing-center 兜底（Skill / Snippet 已下线，统一跳转到市场首页） */}
           <Route path="/sharing" element={<Navigate to="/sharing-center/market" replace />} />
           <Route path="/sharing/market" element={<Navigate to="/sharing-center/market" replace />} />
           <Route path="/sharing/market/workflow" element={<Navigate to="/sharing-center/market/workflow" replace />} />
-          <Route path="/sharing/market/snippet" element={<Navigate to="/sharing-center/market/snippet" replace />} />
+          <Route path="/sharing/market/snippet" element={<Navigate to="/sharing-center/market" replace />} />
           <Route path="/sharing/market/knowledge" element={<Navigate to="/sharing-center/market/knowledge" replace />} />
-          <Route path="/sharing/market/skill" element={<Navigate to="/sharing-center/market/skill" replace />} />
+          <Route path="/sharing/market/skill" element={<Navigate to="/sharing-center/market" replace />} />
           <Route path="/sharing/market/:type/:id" element={<LegacyAssetDetailRedirect />} />
-          <Route path="/sharing/components/creator" element={<Navigate to="/sharing-center/market/snippet" replace />} />
-          <Route path="/sharing/skills/apa" element={<Navigate to="/sharing-center/market/skill" replace />} />
-          <Route path="/sharing/skills/acp" element={<Navigate to="/sharing-center/market/skill" replace />} />
+          <Route path="/sharing/components/creator" element={<Navigate to="/sharing-center/market" replace />} />
+          <Route path="/sharing/skills/apa" element={<Navigate to="/sharing-center/market" replace />} />
+          <Route path="/sharing/skills/acp" element={<Navigate to="/sharing-center/market" replace />} />
           <Route path="/sharing/showcases" element={<Navigate to="/sharing-center/market" replace />} />
           {/* 通知中心 */}
           <Route path="/notification-center" element={<NotificationCenter />} />
