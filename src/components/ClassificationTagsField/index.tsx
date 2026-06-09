@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Cascader, Button, Spin, Typography, Empty } from '@douyinfe/semi-ui';
+import { TreeSelect, Button, Spin, Typography, Empty } from '@douyinfe/semi-ui';
 import { AlertTriangle, Inbox, RefreshCw } from 'lucide-react';
 import {
   fetchClassificationsForEntity,
@@ -39,14 +39,16 @@ const PATH_SEP = ' / ';
 const totalSelectedCount = (value: ClassificationValueMap): number =>
   Object.values(value).reduce((sum, ids) => sum + (ids?.length ?? 0), 0);
 
-/** ClassificationItem 树 → Semi Cascader treeData */
-const toCascaderData = (items: ClassificationItem[]): any[] =>
+/** ClassificationItem 树 → Semi TreeSelect treeData */
+const toTreeData = (items: ClassificationItem[]): any[] =>
   items.map((n) => ({
+    key: n.id,
     value: n.id,
     label: n.name,
     disabled: n.selectable === false,
-    children: n.children && n.children.length > 0 ? toCascaderData(n.children) : undefined,
+    children: n.children && n.children.length > 0 ? toTreeData(n.children) : undefined,
   }));
+
 
 const ClassificationTagsField = ({
   entityType,
