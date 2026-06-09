@@ -3753,7 +3753,10 @@
       "col": {
         "name": "名称",
         "description": "描述",
+        "type": "类型",
+        "source": "来源",
         "status": "状态",
+        "tags": "标签",
         "reuseCount": "复用次数",
         "updatedAt": "更新时间",
         "action": "操作"
