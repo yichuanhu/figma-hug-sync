@@ -104,6 +104,40 @@ export const getDepartmentName = (id: string | null | undefined): string => {
   return departmentNameMap[id] || id;
 };
 
+/** id -> [root, ..., self] 名称链路缓存 */
+const departmentPathCache = new Map<string, string[]>();
+(function buildDepartmentPathCache() {
+  const walk = (nodes: DeptTreeNode[], trail: string[]) => {
+    for (const n of nodes) {
+      const next = [...trail, n.label];
+      departmentPathCache.set(n.value, next);
+      if (n.children) walk(n.children, next);
+    }
+  };
+  walk(departmentTree, []);
+})();
+
+/** 取部门从根到自身的名称链路（含自身）。 */
+export const getDepartmentPath = (id: string | null | undefined): string[] => {
+  if (!id) return [];
+  const cached = departmentPathCache.get(id);
+  if (cached) return cached;
+  const fallback = departmentNameMap[id];
+  return fallback ? [fallback] : [id];
+};
+
+/** 将部门链路拼接为字符串，找不到时回退到叶子名。 */
+export const formatDepartmentPath = (
+  id: string | null | undefined,
+  opts: { separator?: string; includeRoot?: boolean } = {},
+): string => {
+  if (!id) return '-';
+  const { separator = ' / ', includeRoot = true } = opts;
+  const path = getDepartmentPath(id);
+  const arr = includeRoot ? path : path.slice(1);
+  return arr.length ? arr.join(separator) : getDepartmentName(id);
+};
+
 /** 取某节点 + 所有子孙节点的 id 列表（含自身）。 */
 export const getDepartmentSubtreeIds = (deptId: string): string[] => {
   const result: string[] = [];
