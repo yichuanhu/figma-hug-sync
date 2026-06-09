@@ -494,11 +494,12 @@ const RequirementCreatePage = () => {
 
     const buildAssignmentPayload = () =>
       Object.entries(classificationValue)
-        .filter(([, itemId]) => !!itemId)
-        .map(([classificationKeyId, itemId]) => ({
+        .filter(([, ids]) => Array.isArray(ids) && ids.length > 0)
+        .map(([classificationKeyId, ids]) => ({
           classificationKeyId,
-          itemId: itemId as string,
+          itemIds: ids as string[],
         }));
+
 
 
     const { submitValues } = buildSubmitValues();

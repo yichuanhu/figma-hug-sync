@@ -84,18 +84,18 @@ export const fetchEntityClassifications = async (
     .map((item) => {
       const key = keys.find((k) => k.id === item.classificationKeyId);
       if (!key) return null;
-      let selectedItem: EntityClassification['selectedItem'] = null;
-      if (item.itemId) {
-        const path = findItemPath(key.children, item.itemId);
-        if (path.length > 0) {
+      const selectedItems = (item.itemIds ?? [])
+        .map((id) => {
+          const path = findItemPath(key.children, id);
+          if (path.length === 0) return null;
           const last = path[path.length - 1];
-          selectedItem = { id: last.id, name: last.name, path };
-        }
-      }
+          return { id: last.id, name: last.name, path };
+        })
+        .filter((x): x is { id: string; name: string; path: Array<{ id: string; name: string }> } => !!x);
       return {
         classificationKeyId: key.id,
         keyName: key.name,
-        selectedItem,
+        selectedItems,
       } as EntityClassification;
     })
     .filter((x): x is EntityClassification => !!x);
@@ -116,10 +116,11 @@ export const assignEntityClassifications = async (
     throw new Error('FEAT-003 assign API failed');
   }
   // 仅保留实际有选择的项
-  const cleaned = classifications.filter((c) => !!c.itemId);
+  const cleaned = classifications.filter((c) => Array.isArray(c.itemIds) && c.itemIds.length > 0);
   ENTITY_ASSIGNMENTS.set(buildKey(entityType, entityId), cleaned);
   return { success: true };
 };
+
 
 /** 删除实体分类（用于创建失败回滚） */
 export const removeEntityClassifications = (
