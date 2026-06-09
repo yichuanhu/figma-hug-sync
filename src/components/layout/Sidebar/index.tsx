@@ -330,13 +330,15 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   // 共享中心 - 资产市场 / 我的共享 / 审批管理
   const sharingPendingCount = useApprovalPendingCount();
   const sharingCenterMenu: MenuItem[] = [
+    { key: 'sharingResources', labelKey: 'sidebar.sharingResources', isGroupLabel: true },
     { key: 'assetMarket', labelKey: 'sidebar.assetMarket', icon: <Boxes size={18} strokeWidth={2} />, path: '/sharing-center/market' },
     { key: 'assetSupply', labelKey: 'sidebar.assetSupply', icon: <Forward size={18} strokeWidth={2} />, path: '/sharing-center/my-published' },
-    { key: 'sharingApprovals', labelKey: 'sidebar.sharingApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/sharing-center/approvals', badge: sharingPendingCount },
+    { key: 'sharingApprovals', labelKey: 'sidebar.sharingApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/sharing-center/approvals', previewOnly: true },
     { key: 'sharingAdmin', labelKey: 'sidebar.sharingAdmin', isGroupLabel: true },
-    { key: 'sharingApprovalLevels', labelKey: 'sidebar.sharingApprovalLevels', icon: <Settings size={18} strokeWidth={2} />, path: '/sharing-center/admin/approval-levels' },
-    { key: 'sharingPermissions', labelKey: 'sidebar.sharingPermissions', icon: <Shield size={18} strokeWidth={2} />, path: '/sharing-center/admin/permissions' },
+    { key: 'sharingApprovalLevels', labelKey: 'sidebar.sharingApprovalLevels', icon: <Settings size={18} strokeWidth={2} />, path: '/sharing-center/admin/approval-levels', previewOnly: true },
   ];
+  // 保留待审批数量订阅以避免未来恢复时漏改（当前 MVP 未在侧边栏展示）
+  void sharingPendingCount;
 
   // 根据当前路由获取选中的菜单key
   const getSelectedKeyByPath = (pathname: string): string => {
