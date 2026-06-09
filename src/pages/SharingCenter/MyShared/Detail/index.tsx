@@ -14,7 +14,7 @@ import {
 import LifecycleConfirmDialog, { type LifecycleAction } from '../components/LifecycleConfirmDialog';
 import PushNotificationDialog from '../components/PushNotificationDialog';
 
-const typeRoute: Record<string, string> = { SNIPPET: 'snippet', WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge', SKILL: 'skill' };
+const typeRoute: Record<string, string> = { WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge' };
 
 const SupplyAssetDetail = () => {
   const { t } = useTranslation();
@@ -93,11 +93,7 @@ const SupplyAssetDetail = () => {
             {t('sharing.assetSupply.actions.pushNotification')}
           </Button>
         </Tooltip>,
-        asset.originUrl && (
-          <Button key="openDev" theme="borderless" type="primary" icon={<ExternalLink size={14} strokeWidth={2} />} onClick={openDevCenter}>
-            {t('sharing.assetSupply.actions.openInDevCenter')}
-          </Button>
-        ),
+        asset.originUrl && false,
         <Button key="unlist" theme="borderless" type="warning" icon={<EyeOff size={14} strokeWidth={2} />} onClick={() => setPending('unlist')}>
           {t('sharing.assetSupply.actions.unlist')}
         </Button>,

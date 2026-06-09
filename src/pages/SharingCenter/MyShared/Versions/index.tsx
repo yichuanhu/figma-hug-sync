@@ -1,8 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Button, Tag, Empty, Avatar } from '@douyinfe/semi-ui';
-import { IconChevronLeft, IconExternalOpen } from '@douyinfe/semi-icons';
+import { IconChevronLeft } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { findAsset, getVersions } from '@/pages/SharingCenter/MyShared/store';
+import { resolveHistoryKind } from '@/pages/Sharing/Market/utils';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -17,20 +18,18 @@ const VersionsPage = () => {
   if (!asset) return <Empty title="资产不存在" style={{ padding: 64 }} />;
 
   const isDev = asset.source === 'DEV_CENTER';
+  const historyKind = resolveHistoryKind(asset.type, versions[0]);
+  const pageTitle = historyKind === 'RELEASE'
+    ? t('sharing.market.detail.history.releaseTitle')
+    : t('sharing.market.detail.history.changeTitle');
 
   return (
     <div className="versions-page">
       <div className="versions-header">
         <Button icon={<IconChevronLeft />} theme="borderless" onClick={() => navigate(-1)} />
         <Title heading={3} style={{ margin: 0, flex: 1 }}>
-          {asset.name} · {t('sharing.assetSupply.version.title')}
+          {asset.name} · {pageTitle}
         </Title>
-        {isDev && asset.originUrl && (
-          <Button icon={<IconExternalOpen />} theme="light" type="primary"
-            onClick={() => window.open(asset.originUrl, '_blank')}>
-            {t('sharing.assetSupply.version.openInDevCenter')}
-          </Button>
-        )}
       </div>
       <div className="versions-body">
         {versions.map((v) => (

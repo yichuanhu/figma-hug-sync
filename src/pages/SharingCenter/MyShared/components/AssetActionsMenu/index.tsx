@@ -7,7 +7,7 @@ import {
   archiveAsset, recoverAsset, unlistAsset, deleteAsset, withdrawAsset,
 } from '@/pages/SharingCenter/MyShared/store';
 import {
-  Eye, Pencil, Archive, RotateCcw, Trash2, EyeOff, ExternalLink, History, Send, Undo2, AlertCircle,
+  Pencil, Archive, RotateCcw, Trash2, EyeOff, Send, Undo2, AlertCircle,
 } from 'lucide-react';
 import LifecycleConfirmDialog, { type LifecycleAction } from '../LifecycleConfirmDialog';
 
@@ -15,20 +15,18 @@ interface Props {
   asset: ShareAsset;
   onClose?: () => void;
   trigger: React.ReactElement;
-  /** 触发推送通知（来自父组件） */
-  onPush?: (asset: ShareAsset) => void;
 }
 
-const typeRoute: Record<string, string> = { SNIPPET: 'snippet', WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge', SKILL: 'skill' };
+const typeRoute: Record<string, string> = { WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge' };
 
-const AssetActionsMenu = ({ asset, trigger, onPush }: Props) => {
+const AssetActionsMenu = ({ asset, trigger }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [pending, setPending] = useState<LifecycleAction | null>(null);
 
-  const goView = () => navigate(`/sharing-center/my-published/${typeRoute[asset.type]}/${asset.id}`);
+  // goView 已废弃：详情通过右侧抽屉打开
   const goEdit = () => navigate(`/sharing-center/my-shared/edit/${asset.id}`);
-  const goVersions = () => navigate(`/sharing-center/my-shared/${asset.id}/versions`);
+  // 版本历史菜单已移除
   const goPublish = () => navigate(`/sharing-center/my-published/${typeRoute[asset.type]}/${asset.id}/publish`);
   const openDevCenter = () => window.open(asset.originUrl, '_blank');
 
@@ -54,14 +52,16 @@ const AssetActionsMenu = ({ asset, trigger, onPush }: Props) => {
       );
     };
 
-    Push('view', <Eye size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.view'), goView);
+    // 查看详情已由列表行点击 → 右侧抽屉承担，菜单不再重复展示
 
     if (isNative) {
       if (s === 'PUBLISHED') {
         Push('edit', <Pencil size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.edit'), goEdit);
-        Push('versions', <History size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.versions'), goVersions);
-        if (onPush) Push('push', <Send size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.pushNotification'), () => onPush(asset));
-        Push('archive', <Archive size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.archive'), () => setPending('archive'));
+        if (asset.type === 'KNOWLEDGE') {
+          Push('unlist', <EyeOff size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.unlist'), () => setPending('unlist'));
+        } else {
+          Push('archive', <Archive size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.archive'), () => setPending('archive'));
+        }
       } else if (s === 'DRAFT') {
         Push('edit', <Pencil size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.edit'), goEdit);
         Push('publish', <Send size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.publish'), goEdit);
@@ -79,17 +79,9 @@ const AssetActionsMenu = ({ asset, trigger, onPush }: Props) => {
       // DEV_CENTER
       if (s === 'PUBLISHED') {
         Push('editMeta', <Pencil size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.editMeta'), goEdit);
-        Push('versions', <History size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.versions'), goVersions);
-        if (onPush) Push('push', <Send size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.pushNotification'), () => onPush(asset));
-        if (asset.originUrl) {
-          Push('open', <ExternalLink size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.openInDevCenter'), openDevCenter);
-        }
         Push('unlist', <EyeOff size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.unlist'), () => setPending('unlist'));
       } else if (s === 'PENDING_PUBLISH') {
         Push('publish', <Send size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.publishNow'), goPublish);
-        if (asset.originUrl) {
-          Push('open', <ExternalLink size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.openInDevCenter'), openDevCenter);
-        }
       } else if (s === 'PENDING_APPROVAL') {
         Push('withdraw', <Undo2 size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.withdraw'), () => setPending('withdraw'));
       } else if (s === 'REJECTED') {

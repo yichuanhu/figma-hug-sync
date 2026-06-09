@@ -10,6 +10,7 @@ import { filterAndSort, paginate, PAGE_SIZE } from '../utils';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import MarketToolbar from '../components/MarketToolbar';
 import AssetListGrid from '../components/AssetListGrid';
+import AssetDetailDrawer from '../components/AssetDetailDrawer';
 import '../index.less';
 
 const { Title } = Typography;
@@ -28,21 +29,37 @@ const SubMarketPage = ({ type, titleKey, toolbarExtra, extraFilter, emptyKey }: 
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<SortKey>('reuseCount');
   const [page, setPage] = useState(1);
+  const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
+  const [detailAsset, setDetailAsset] = useState<Asset | null>(null);
 
   const debouncedSearch = useDebouncedValue(search, 300);
 
   const allAssets = useSyncExternalStore(subscribe, getMarketAssets, getMarketAssets);
 
-  const list = useMemo(() => {
+  const typeBaseList = useMemo(() => {
     let base = allAssets.filter((a) => a.type === type);
     if (extraFilter) base = extraFilter(base);
-    return filterAndSort(base, {
+    return base;
+  }, [allAssets, type, extraFilter]);
+
+  const list = useMemo(() => {
+    return filterAndSort(typeBaseList, {
       type: 'ALL',
       keyword: debouncedSearch,
       source: 'ALL',
       sortBy,
+      categories: categoryFilter,
     });
-  }, [allAssets, type, debouncedSearch, sortBy, extraFilter]);
+  }, [typeBaseList, debouncedSearch, sortBy, categoryFilter]);
+
+  const categoryOptions = useMemo(() => {
+    const set = new Set<string>();
+    typeBaseList.forEach((a) => {
+      const cats = (a.categoryTags && a.categoryTags.length > 0) ? a.categoryTags : a.tags;
+      cats.forEach((c) => { if (c) set.add(c); });
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b)).map((v) => ({ value: v, label: v }));
+  }, [typeBaseList]);
 
   const paged = paginate(list, page, PAGE_SIZE);
 
@@ -69,6 +86,9 @@ const SubMarketPage = ({ type, titleKey, toolbarExtra, extraFilter, emptyKey }: 
         onSearchChange={(v) => { setSearch(v); setPage(1); }}
         sortBy={sortBy}
         onSortChange={(v) => { setSortBy(v); setPage(1); }}
+        categoryFilter={categoryFilter}
+        onCategoryChange={(v) => { setCategoryFilter(v); setPage(1); }}
+        categoryOptions={categoryOptions}
       />
 
       <div className="market-page-body">
@@ -79,8 +99,17 @@ const SubMarketPage = ({ type, titleKey, toolbarExtra, extraFilter, emptyKey }: 
           pageSize={PAGE_SIZE}
           onPageChange={setPage}
           emptyDescription={emptyKey ? t(emptyKey) : t('sharing.market.empty.default')}
+          onAssetSelect={(a) => setDetailAsset(a)}
         />
       </div>
+
+      <AssetDetailDrawer
+        visible={!!detailAsset}
+        onClose={() => setDetailAsset(null)}
+        asset={detailAsset}
+        dataList={list}
+        onNavigate={(a) => setDetailAsset(a)}
+      />
     </div>
   );
 };

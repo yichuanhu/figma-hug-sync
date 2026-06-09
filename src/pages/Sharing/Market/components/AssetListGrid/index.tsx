@@ -17,26 +17,24 @@ interface Props {
   emptyExtra?: React.ReactNode;
 
   loading?: boolean;
-  /** 强制卡片显示为已复用（"我已复用"Tab 用） */
-  forceReused?: boolean;
-  /** 已复用时间映射（assetId -> reusedAt），用于 forceReused 模式 */
-  reusedAtMap?: Record<string, string>;
+  /** 点击卡片时的回调（提供则覆盖默认路由跳转，例如以抽屉打开详情） */
+  onAssetSelect?: (asset: Asset) => void;
+  /** 供给视角下的「编辑展示信息」回调；不传则不渲染该操作 */
+  onEditDisplay?: (assetId: string, asset: Asset) => void;
 }
 
 const typeRoute: Record<string, string> = {
-  SNIPPET: 'snippet',
   WORKFLOW: 'workflow',
   KNOWLEDGE: 'knowledge',
-  SKILL: 'skill',
 };
 
 const AssetListGrid = ({
   assets, total, page, pageSize, onPageChange, emptyDescription, emptyExtra,
-  loading, forceReused, reusedAtMap,
+  loading, onAssetSelect, onEditDisplay,
 }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { getReuseState, getReusedAt, isPublishedBy, triggerReuse } = useReuseAction();
+  const { isPublishedBy } = useReuseAction();
 
   if (loading) return <AssetCardSkeleton count={6} />;
 
@@ -57,18 +55,16 @@ const AssetListGrid = ({
       <div className="asset-list-grid">
         {assets.map((a) => {
           const owner = isPublishedBy(a.id);
-          const state = forceReused ? 'reused' : getReuseState(a);
-          const reusedAt = forceReused ? reusedAtMap?.[a.id] : getReusedAt(a.id);
           return (
             <AssetCard
               key={a.id}
               asset={a}
-              reuseState={state}
-              reusedAt={reusedAt}
               isPublishedBy={owner}
-              onView={(id) => navigate(`/sharing-center/market/${typeRoute[a.type]}/${id}`)}
-              onReuse={() => triggerReuse(a)}
-              onEditDisplay={(id) => navigate(`/sharing-center/market/${typeRoute[a.type]}/${id}/edit-display`)}
+              onView={(id) => {
+                if (onAssetSelect) onAssetSelect(a);
+                else navigate(`/sharing-center/market/${typeRoute[a.type]}/${id}`);
+              }}
+              onEditDisplay={onEditDisplay ? (id) => onEditDisplay(id, a) : undefined}
             />
           );
         })}
@@ -81,7 +77,7 @@ const AssetListGrid = ({
             pageSize={pageSize}
             total={total}
             onPageChange={onPageChange}
-            showTotal
+            style={{ marginLeft: 'auto' }}
           />
         </div>
       )}

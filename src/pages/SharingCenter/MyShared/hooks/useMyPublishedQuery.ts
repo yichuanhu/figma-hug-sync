@@ -1,37 +1,42 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import type { ShareStatus } from '@/components/sharing/StatusTag';
 
 // MVP 范围：仅支持「自动化流程」与「知识」上架
 export type TypeFilter = 'ALL' | 'WORKFLOW' | 'KNOWLEDGE';
-export type SourceFilter = 'ALL' | 'NATIVE' | 'DEV_CENTER';
+
+// 列表 UI 维度的状态（MVP：去除 待审批 / 已拒绝）
+export type DisplayStatus = 'DRAFT' | 'PUBLISHED' | 'UNLISTED';
 
 export interface MyPublishedQueryState {
-  tab: ShareStatus;
+  statuses: DisplayStatus[];
   type: TypeFilter;
-  source: SourceFilter;
   keyword: string;
   page: number;
 }
 
-const VALID_TABS: ShareStatus[] = ['PUBLISHED', 'PENDING_PUBLISH', 'DRAFT', 'PENDING_APPROVAL', 'REJECTED'];
+const VALID_STATUSES: DisplayStatus[] = ['DRAFT', 'PUBLISHED', 'UNLISTED'];
 const VALID_TYPES: TypeFilter[] = ['ALL', 'WORKFLOW', 'KNOWLEDGE'];
-const VALID_SOURCES: SourceFilter[] = ['ALL', 'NATIVE', 'DEV_CENTER'];
 
 const pick = <T extends string>(value: string | null, valid: T[], fallback: T): T =>
   valid.includes(value as T) ? (value as T) : fallback;
 
+const parseStatuses = (raw: string | null): DisplayStatus[] => {
+  if (!raw) return [];
+  return raw.split(',')
+    .map((s) => s.trim().toUpperCase())
+    .filter((s): s is DisplayStatus => VALID_STATUSES.includes(s as DisplayStatus));
+};
+
 /**
- * URL ↔ State 双向同步：?tab=&type=&source=&search=&page=
+ * URL ↔ State 双向同步：?status=&type=&search=&page=
  * 默认值不写入 URL，保持地址简洁。
  */
 export function useMyPublishedQuery() {
   const [params, setParams] = useSearchParams();
 
   const initial = useMemo<MyPublishedQueryState>(() => ({
-    tab: pick(params.get('tab'), VALID_TABS, 'PUBLISHED'),
+    statuses: parseStatuses(params.get('status')),
     type: pick(params.get('type'), VALID_TYPES, 'ALL'),
-    source: pick(params.get('source'), VALID_SOURCES, 'ALL'),
     keyword: params.get('search') ?? '',
     page: Math.max(1, parseInt(params.get('page') ?? '1', 10) || 1),
   }), []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -49,31 +54,28 @@ export function useMyPublishedQuery() {
   // state -> URL
   useEffect(() => {
     const next = new URLSearchParams();
-    if (state.tab !== 'PUBLISHED') next.set('tab', state.tab);
+    if (state.statuses.length > 0) next.set('status', state.statuses.join(','));
     if (state.type !== 'ALL') next.set('type', state.type);
-    if (state.source !== 'ALL') next.set('source', state.source);
     const k = state.keyword.trim();
     if (k) next.set('search', k);
     if (state.page > 1) next.set('page', String(state.page));
     setParams(next, { replace: true });
   }, [state, setParams]);
 
-  const setTab = useCallback((tab: ShareStatus) =>
-    setState((s) => ({ ...s, tab, page: 1 })), []);
+  const setStatuses = useCallback((statuses: DisplayStatus[]) =>
+    setState((s) => ({ ...s, statuses, page: 1 })), []);
   const setType = useCallback((type: TypeFilter) =>
     setState((s) => ({ ...s, type, page: 1 })), []);
-  const setSource = useCallback((source: SourceFilter) =>
-    setState((s) => ({ ...s, source, page: 1 })), []);
   const setKeyword = useCallback((keyword: string) =>
     setState((s) => ({ ...s, keyword, page: 1 })), []);
   const setPage = useCallback((page: number) =>
     setState((s) => ({ ...s, page })), []);
   const reset = useCallback(() =>
-    setState((s) => ({ ...s, type: 'ALL', source: 'ALL', keyword: '', page: 1 })), []);
+    setState((s) => ({ ...s, statuses: [], type: 'ALL', keyword: '', page: 1 })), []);
 
   return {
     ...state,
     debouncedKeyword: debounced,
-    setTab, setType, setSource, setKeyword, setPage, reset,
+    setStatuses, setType, setKeyword, setPage, reset,
   };
 }

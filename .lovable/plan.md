@@ -1,113 +1,54 @@
-## 目标
+## 背景
 
-根据 STORY-017 v9（2026-06-09）与 demo.json 数据结构升级需求分类：
-- 分类结构由「键 + 平铺枚举值」改为「分类维度 → 一级枚举值 → 二级枚举值」的层级树。
-- 分类维度不可选，仅枚举值可选；一级、二级枚举值均可选择（不要求叶子）。
-- 每个维度作为独立的「级联选择器」，最多选 1 个值；可选 0–3 个维度。
-- 涉及页面：新建/编辑需求页（`RequirementCreatePage`）、需求详情抽屉（`RequirementDetailDrawer`）。
+以 Remix 工程 **"Remix of APA Commander-share cent"** 的共享中心代码为准，整体替换当前实现。SkillMarket / SnippetMarket 一并删除。
 
-## 改动点
+## 影响面
 
-### 1. Mock 类型与数据（`src/mocks/classification/`）
+外部仅 2 个文件引用共享中心：`src/App.tsx`、`src/components/layout/Sidebar/index.tsx`。其它业务模块（需求、开发、调度、运营、运维、个人中心、首页、任务、流程）**不受影响**。
 
-`types.ts`
-- 新增 `ClassificationItem`（即 demo.json 中 `node_type=item` 的节点）：`id / category_id / parent_id / name / description? / index? / path / selectable / children: ClassificationItem[]`。
-- 重构 `ClassificationKey`（维度节点）：`id / name / description? / status / node_type:'category' / selectable:false / field / persist_field / applicableBusinessObjectTypes / children: ClassificationItem[]`，移除原 `values`。
-- `ClassificationAssignmentItem` 改为单值：`{ classificationKeyId: string; itemId: string | null; path?: string[] }`；同步更新 `EntityClassification.values` 为单值结构 `selectedItem: { id; name; path: Array<{id;name}> } | null`。
+## 执行步骤
 
-`mockData.ts`
-- 用 demo.json 的三套维度（场景/重复性/操作类型）重写，包含层级 `children`；保留各 `field`、`persist_field`，便于详情快照展示。
+### 1. 删除现有共享中心
+- `rm -rf src/pages/Sharing`
+- `rm -rf src/pages/SharingCenter`
 
-`service.ts`
-- `fetchClassificationsForEntity` 返回新结构（过滤 INACTIVE 节点，递归过滤 children）。
-- `assignEntityClassifications` 接收单值列表；空 `itemId` 视为清除该维度。
-- `fetchEntityClassifications` 返回带路径快照的结构。
+### 2. 从 Remix 工程整目录复制
+通过 `cross_project--read_project_file` 逐文件读取并 `code--write` 写入：
+- `src/pages/Sharing/Market/**`（AssetDetail / EditDisplay / KnowledgeMarket / MarketHome / SubMarketPage / WorkflowMarket / components / hooks / index.less / mockData.ts / types.ts / utils.ts）
+- `src/pages/SharingCenter/**`（MyShared 含 Create/Knowledge + Create/Workflow + Detail/Edit/Publish/Versions/components/hooks，Approvals/List + Detail，Admin/ApprovalLevels + Permissions，shared/）
 
-### 2. 字段组件 `ClassificationTagsField`
+并按需补齐 Remix 中共享中心专用的新增资源：
+- `src/assets/` 下新增的 sharing 相关图片（如有）
+- `src/i18n/` 下 sharing namespace（如有）
+- 共享 hooks/utils/mocks（如 import 路径解析失败再补）
 
-- `ClassificationValueMap` 变为 `Record<string /*keyId*/, string | null /*itemId*/>`（单选）。
-- 每个维度用 Semi `Cascader`：
-  - `treeData` = 维度的 `children`（递归映射 `value/label/children`）。
-  - `changeOnSelect` = true（允许一级或二级被选中）。
-  - `displayProp="label"`，单选；`showClear`；`placeholder="请选择"`。
-- 维度数量上限提示：「已选择 N/3 个维度」（仅提示，不强校验，因为本身最多有 N 个维度，仍非必选）。
-- `required` 默认 `false`，移除"至少选 1 个"强制错误（按文档分类标签为可选字段）。
-- 编辑回填：把 `EntityClassification` 的单值与 `path` 还原为 Cascader 的 `value: string[]`（完整路径数组）。
-- 只读视图：按维度逐行显示「维度名：一级 / 二级」（用 ` / ` 链路展示，与 `DepartmentPath` 风格一致），空时显示「—」。
-- loading/error/empty 状态文案与样式保留。
+### 3. 更新 `src/App.tsx`
+- 删除 `SnippetMarket`、`SkillMarket` import 与对应 4 条路由（`/sharing-center/market/snippet`、`/sharing-center/market/skill` 及 `/sharing/market/snippet`、`/sharing/skills/*` 重定向）
+- 新增 `import WorkflowCreatePage from "@/pages/SharingCenter/MyShared/Create/Workflow"`
+- 新增路由 `/sharing-center/my-published/workflow/create` 与旧路径重定向 `/sharing-center/market/workflow/create`
+- 保留 `/sharing/...` -> `/sharing-center/market` 的兜底重定向
+- 其它非共享中心路由（审批模板、PublishApprovals、OfflineApprovals 等）一律不动
 
-### 3. 新建/编辑页 `RequirementCreatePage`
+### 4. 更新 `src/components/layout/Sidebar/index.tsx`
+- 移除"代码片段市场"、"技能市场"两个子菜单项
+- 对齐"我的共享"下"流程创建"入口路径到 `/sharing-center/my-published/workflow/create`
+- 其它中心导航不动
 
-- 状态类型从 `Record<string,string[]>` 改为 `Record<string,string|null>`。
-- 提交 payload：`classifications` 数组改为 `{ classificationKeyId, itemId, path }`；保留对应 `persist_field` 写入需求 mock 中（用于详情回显）。
-- 不再依赖必选错误（`forceClsError` 仍保留，但 required 默认 false）。
+### 5. 依赖校验
+- 在新代码中 grep `from "@/`，确认每条 import 都能解析；缺什么就从 Remix 同路径补什么
+- 跑构建，按 TS 报错逐条修复
 
-### 4. 需求详情抽屉 `RequirementDetailDrawer`
+### 6. 巡检
+- 浏览器逐一访问 `/sharing-center` 下全部子路由确认无白屏
 
-- 用 `ClassificationTagsField readonly` 渲染分类区域，显示链路式标签：
-  - 行格式：`场景： 财务流程 / 报销处理`
-  - 多维度纵向排列；空维度跳过；全部为空显示「暂无分类标签」。
-- 区域标题保持「分类标签」。
+## 风险与处理
 
-### 5. 不改动
+| 风险 | 处理 |
+|---|---|
+| Remix 内联了与当前不同的颜色/字体 | 按当前工程 token（Semi 主题 + Source Han Sans）就地调整 |
+| Remix 用到的 `@/components/...` `@/contexts/...` `@/utils/...` 当前工程不存在 | 单独从 Remix 工程复制；只复制共享中心实际依赖到的文件，不动公共组件 |
+| 旧书签 URL `/sharing/market/snippet` `/sharing/skills/*` | 改为重定向到 `/sharing-center/market` 兜底，不报 404 |
 
-- 列表表格、筛选、其他模块（流程/任务）暂不改动。
-- 后端 schema 与接口由后端配套实现，本次只调整前端 mock。
+## 备注
 
-## 技术细节
-
-```ts
-// types.ts 关键结构
-export interface ClassificationItem {
-  id: string;
-  category_id: string;
-  parent_id: string;
-  name: string;
-  description?: string;
-  index?: number;
-  path: string;
-  node_type: 'item';
-  selectable: boolean;
-  children: ClassificationItem[];
-}
-
-export interface ClassificationKey {
-  id: string;
-  name: string;
-  description?: string;
-  status: ClassificationStatus;
-  node_type: 'category';
-  selectable: false;
-  field: string;            // e.g. 'scene_item_id'
-  persist_field: string;    // e.g. 'classification_scene_item_id'
-  applicableBusinessObjectTypes: BusinessObjectType[];
-  children: ClassificationItem[];
-  order?: number;
-}
-
-export type ClassificationValueMap = Record<string, string | null>;
-
-export interface ClassificationAssignmentItem {
-  classificationKeyId: string;
-  itemId: string | null;
-  path?: string[]; // 名称路径快照
-}
-```
-
-```tsx
-// Cascader 用法
-<Cascader
-  treeData={toCascaderData(key.children)}
-  value={value[key.id] ? findPath(key.children, value[key.id]) : []}
-  onChange={(v) => onChange({ ...value, [key.id]: (v as string[])?.at(-1) ?? null })}
-  changeOnSelect
-  showClear
-  placeholder="请选择"
-  style={{ width: '100%' }}
-/>
-```
-
-## 待确认
-
-1. 详情页只读链路展示是否使用 ` / ` 分隔（与部门链路风格统一）？默认使用。
-2. 当 FEAT-003 返回空时，新建页是否完全隐藏「分类标签」标题（文档 R-11 是隐藏整个区域）？默认隐藏。
+记忆 `mem://features/sharing-center/unified-specification-v7`（Grid start align、56px coverColor headers）在新版可能已不适用。替换完成后我会按新版实际表现更新该记忆。

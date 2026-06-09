@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { Form, Modal, Radio, RadioGroup, TextArea } from '@douyinfe/semi-ui';
 import { useEffect, useState } from 'react';
 import { bumpVersion, type BumpType } from '@/pages/SharingCenter/MyShared/store';
+import type { AssetType } from '@/pages/Sharing/Market/types';
+import { getHistoryKindByAssetType } from '@/pages/Sharing/Market/utils';
 
 interface Props {
   visible: boolean;
@@ -9,9 +11,11 @@ interface Props {
   onOk: (params: { bump?: BumpType; changeLog: string }) => void;
   currentVersion: string;
   isFirstRelease: boolean;
+  /** 资产类型，用于判定本次发布是"上架"还是"变更"语义 */
+  assetType?: AssetType;
 }
 
-const SemverDialog = ({ visible, onCancel, onOk, currentVersion, isFirstRelease }: Props) => {
+const SemverDialog = ({ visible, onCancel, onOk, currentVersion, isFirstRelease, assetType }: Props) => {
   const { t } = useTranslation();
   const [bump, setBump] = useState<BumpType>('patch');
   const [changeLog, setChangeLog] = useState('');
@@ -61,7 +65,9 @@ const SemverDialog = ({ visible, onCancel, onOk, currentVersion, isFirstRelease 
             {t('sharing.assetSupply.semver.firstVersionHint')}
           </div>
         )}
-        <Form.Slot label={t('sharing.assetSupply.semver.changeLog')}>
+        <Form.Slot label={assetType && getHistoryKindByAssetType(assetType) === 'CHANGE'
+          ? t('sharing.market.detail.history.changeNote')
+          : t('sharing.market.detail.history.releaseNote')}>
           <TextArea
             value={changeLog}
             onChange={(v) => { setChangeLog(v); setErr(''); }}

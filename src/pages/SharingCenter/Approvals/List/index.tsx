@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   Typography, Tabs, Table, Button, Modal, Toast,
-  Input, Select, DatePicker, Pagination, Empty,
+  Input, Select, DatePicker, Pagination, Empty, Banner,
 } from '@douyinfe/semi-ui';
 import { Search, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -239,6 +239,13 @@ const ApprovalsListPage = () => {
       <div className="approvals-header">
         <Title heading={3} className="title">{t('sharing.approvals.pageTitle')}</Title>
       </div>
+
+      <Banner
+        type="info"
+        closeIcon={null}
+        description={t('sharing.mvpDisabledBanner.approvals')}
+        style={{ marginBottom: 12 }}
+      />
 
       <Tabs activeKey={tab} onChange={handleTabChange} className="approvals-tabs" keepDOM={false}>
         <TabPane itemKey="pending" tab={tabLabel('pending', pendingTotal)} />

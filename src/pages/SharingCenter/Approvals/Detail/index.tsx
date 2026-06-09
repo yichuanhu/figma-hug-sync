@@ -71,6 +71,13 @@ const ApprovalDetailPage = () => {
       </div>
 
       <div className="approval-detail-body">
+        <Banner
+          type="info"
+          closeIcon={null}
+          description={t('sharing.mvpDisabledBanner.approvals')}
+          style={{ marginBottom: 12 }}
+        />
+
         <Card className="detail-section" title={t('sharing.approvals.detail.basicInfo')}>
           <div className="info-row">
             <Text type="tertiary">{t('sharing.approvals.col.assetType')}：</Text>

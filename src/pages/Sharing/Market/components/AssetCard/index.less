@@ -53,10 +53,6 @@
     }
   }
 
-  .asset-card-reused-badge {
-    flex-shrink: 0;
-  }
-
   .asset-card-desc {
     margin-bottom: 10px;
     min-height: 36px;
@@ -66,53 +62,29 @@
     display: flex;
     gap: 4px;
     flex-wrap: wrap;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     min-height: 22px;
   }
 
-  .asset-card-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--semi-color-border);
-
-    span {
-      display: inline-flex;
-      gap: 4px;
-      align-items: center;
-    }
-  }
-
-  .asset-card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+  .asset-card-stat {
     margin-top: auto;
+    align-self: flex-end;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    margin-right: -4px;
+    margin-bottom: -2px;
+    border-radius: 6px;
+    color: var(--semi-color-text-2);
+    font-size: 12px;
+    line-height: 1;
+    cursor: help;
+    transition: background-color 0.15s ease, color 0.15s ease;
 
-    .asset-card-creator {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .asset-card-actions {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-shrink: 0;
-    }
-  }
-
-  .asset-card-reused {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
-
-    .asset-card-reused-at {
-      font-size: 11px;
+    &:hover {
+      background-color: var(--semi-color-fill-0);
+      color: var(--semi-color-text-1);
     }
   }
 }

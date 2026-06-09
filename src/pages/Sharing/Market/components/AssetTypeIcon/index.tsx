@@ -1,12 +1,10 @@
-import { FileBox, Workflow as WorkflowIcon, BookOpen, Sparkles } from 'lucide-react';
+import { Workflow as WorkflowIcon, BookOpen } from 'lucide-react';
 import { AssetType } from '../../types';
 import './index.less';
 
-const config: Record<AssetType, { Icon: typeof FileBox; cls: string }> = {
-  SNIPPET: { Icon: FileBox, cls: 'snippet' },
+const config: Record<AssetType, { Icon: typeof WorkflowIcon; cls: string }> = {
   WORKFLOW: { Icon: WorkflowIcon, cls: 'workflow' },
   KNOWLEDGE: { Icon: BookOpen, cls: 'knowledge' },
-  SKILL: { Icon: Sparkles, cls: 'skill' },
 };
 
 interface Props {

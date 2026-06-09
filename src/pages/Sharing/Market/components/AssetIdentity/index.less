@@ -1,0 +1,24 @@
+.asset-identity {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+
+  .ai-name {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .ai-version {
+    flex: 0 0 auto;
+  }
+
+  &.ai-lg {
+    gap: 8px;
+
+    .ai-version {
+      transform: translateY(1px);
+    }
+  }
+}

@@ -1,95 +1,167 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import {
-  Typography, Tabs, Button, Input, Select, Pagination,
+  Typography, Button, Input, Select, Pagination, Table, Dropdown, Space, Tooltip,
 } from '@douyinfe/semi-ui';
+import AssetIdentity from '@/pages/Sharing/Market/components/AssetIdentity';
 import { IconSearch } from '@douyinfe/semi-icons';
-import { Plus } from 'lucide-react';
+import { ChevronDown, Plus, Workflow as WorkflowIcon, BookOpen, MoreHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import emptyImg from '@/assets/empty-state/no-data.png';
-import type { ShareStatus } from '@/components/sharing/StatusTag';
 
-import { type ShareAsset, queryMyPublished, getAll, getMine, subscribe } from './store';
-import { useMyPublishedQuery, type TypeFilter } from './hooks/useMyPublishedQuery';
-import SupplyAssetCard from './components/SupplyAssetCard';
-import ReuseStatsPanel from './components/ReuseStatsPanel';
-import PushNotificationDialog from './components/PushNotificationDialog';
+import { type ShareAsset, type DisplayStatus as StoreDisplayStatus, queryMyPublished, toDisplayStatus, getAll, subscribe } from './store';
+import { useMyPublishedQuery, type TypeFilter, type DisplayStatus } from './hooks/useMyPublishedQuery';
+import StatusTag, { type ShareStatus } from '@/components/sharing/StatusTag';
+import AssetActionsMenu from './components/AssetActionsMenu';
+import MySharedDetailDrawer from './components/MySharedDetailDrawer';
 import './index.less';
 
-const { Title } = Typography;
-const TabPane = Tabs.TabPane;
+const { Title, Text } = Typography;
 
-const TABS: ShareStatus[] = ['PUBLISHED', 'PENDING_PUBLISH', 'DRAFT', 'PENDING_APPROVAL', 'REJECTED'];
 const PAGE_SIZE = 12;
 
-const typeRoute: Record<string, string> = { SNIPPET: 'snippet', WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge', SKILL: 'skill' };
-
 const useStoreVersion = () => useSyncExternalStore(subscribe, () => getAll().length);
+
+// 将 DisplayStatus 映射为底层 ShareStatus，便于 StatusTag 复用现有图标/颜色
+const displayToShareStatus: Record<StoreDisplayStatus, ShareStatus> = {
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  PUBLISHED: 'PUBLISHED',
+  REJECTED: 'REJECTED',
+  UNLISTED: 'UNLISTED',
+};
 
 const MySharedPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   useStoreVersion();
-  // 通过 store.queryMyPublished 统一查询（Story 011）
 
   const {
-    tab, type: typeF, source: sourceF, keyword, page, debouncedKeyword: debounced,
-    setTab, setType, setKeyword, setPage, reset,
+    statuses, type: typeF, keyword, page, debouncedKeyword: debounced,
+    setStatuses, setType, setKeyword, setPage, reset,
   } = useMyPublishedQuery();
 
-  const [highlightId, setHighlightId] = useState<string | null>(null);
-  const [pushAsset, setPushAsset] = useState<ShareAsset | null>(null);
-  const [aggregatedStatsVisible, setAggregatedStatsVisible] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!highlightId) return;
-    const timer = window.setTimeout(() => setHighlightId(null), 2500);
-    return () => window.clearTimeout(timer);
-  }, [highlightId]);
-
-  const { list: paged, total, tabCounts: counts } = useMemo(
-    () => queryMyPublished({ tab, type: typeF, source: sourceF, search: debounced, page, pageSize: PAGE_SIZE }),
-    [tab, typeF, sourceF, debounced, page],
+  const { list, total } = useMemo(
+    () => queryMyPublished({ statuses, type: typeF, search: debounced, page, pageSize: PAGE_SIZE }),
+    [statuses, typeF, debounced, page],
   );
 
-  const filtered = typeF !== 'ALL' || sourceF !== 'ALL' || !!debounced;
-  const clearFilters = () => reset();
+  const filtered = typeF !== 'ALL' || !!debounced || statuses.length > 0;
+  const activeAsset = useMemo(() => (activeId ? list.find((a) => a.id === activeId) ?? null : null), [activeId, list]);
 
-  const goDetail = (a: ShareAsset) => navigate(`/sharing-center/my-published/${typeRoute[a.type]}/${a.id}`);
+  // 当列表更新且当前选中项已不在视图中时关闭抽屉
+  useEffect(() => {
+    if (activeId && !list.some((a) => a.id === activeId)) setActiveId(null);
+  }, [list, activeId]);
 
-  // 「已上架」Tab 顶部聚合复用记录
-  const aggregatedReuse = useMemo(() => {
-    if (tab !== 'PUBLISHED') return [];
-    return getMine()
-      .filter((a) => (a.type === 'WORKFLOW' || a.type === 'KNOWLEDGE')
-        && (a.shareStatus === 'PUBLISHED' || a.shareStatus === 'ARCHIVED'))
-      .flatMap((a) => a.reuseRecords ?? []);
-  }, [tab]);
+  const handleCreate = (kind: 'workflow' | 'knowledge') => {
+    if (kind === 'workflow') navigate('/sharing-center/my-published/workflow/create');
+    else navigate('/sharing-center/my-published/knowledge/create');
+  };
+
+  const columns = [
+    {
+      title: t('sharing.assetSupply.col.name'),
+      dataIndex: 'name',
+      render: (_: unknown, a: ShareAsset) => {
+        const isWorkflow = a.type === 'WORKFLOW';
+        const typeLabel = t(isWorkflow
+          ? 'sharing.assetSupply.filters.typeWorkflow'
+          : 'sharing.assetSupply.filters.typeKnowledge');
+        const Icon = isWorkflow ? WorkflowIcon : BookOpen;
+        const color = isWorkflow ? 'rgba(var(--semi-blue-6), 1)' : 'rgba(var(--semi-green-6), 1)';
+        return (
+          <div className="cell-name">
+            <Tooltip content={typeLabel}>
+              <span className="cell-name-icon">
+                <Icon size={16} strokeWidth={2} color={color} />
+              </span>
+            </Tooltip>
+            <div className="cell-name-text">
+              <AssetIdentity asset={a} size="sm" ellipsis />
+              {a.description && (
+                <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }} className="cell-name-desc">
+                  {a.description}
+                </Text>
+              )}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      title: t('sharing.assetSupply.col.status'),
+      dataIndex: 'shareStatus',
+      width: 110,
+      render: (_: unknown, a: ShareAsset) => {
+        const ds = toDisplayStatus(a.shareStatus);
+        return <StatusTag status={displayToShareStatus[ds]} />;
+      },
+    },
+    {
+      title: t('sharing.assetSupply.col.reuseCount'),
+      dataIndex: 'reuseRecords',
+      width: 100,
+      render: (_: unknown, a: ShareAsset) => {
+        const n = a.reuseRecords?.length ?? 0;
+        return <Text size="small">{n > 0 ? n : '-'}</Text>;
+      },
+    },
+    {
+      title: t('sharing.assetSupply.col.updatedAt'),
+      dataIndex: 'updatedAt',
+      width: 130,
+      render: (v: string) => <Text type="tertiary" size="small">{v}</Text>,
+    },
+    {
+      title: t('sharing.assetSupply.col.action'),
+      width: 80,
+      fixed: 'right' as const,
+      render: (_: unknown, a: ShareAsset) => (
+        a.shareStatus === 'UNLISTED' ? null : (
+          <span onClick={(e) => e.stopPropagation()}>
+            <AssetActionsMenu
+              asset={a}
+              trigger={<Button theme="borderless" type="tertiary" size="small" icon={<MoreHorizontal size={16} strokeWidth={2} />} />}
+            />
+          </span>
+        )
+      ),
+    },
+  ];
 
   return (
     <div className="my-shared-page">
       <div className="my-shared-header">
         <Title heading={3} className="title">{t('sharing.assetSupply.pageTitle')}</Title>
-        <Button
-          theme="solid"
-          type="primary"
-          icon={<Plus size={14} strokeWidth={2.5} />}
-          onClick={() => navigate('/sharing-center/my-shared/create/knowledge')}
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          render={(
+            <Dropdown.Menu>
+              <Dropdown.Item icon={<WorkflowIcon size={14} strokeWidth={2} />} onClick={() => handleCreate('workflow')}>
+                {t('sharing.assetSupply.newAsset.workflowShort')}
+              </Dropdown.Item>
+              <Dropdown.Item icon={<BookOpen size={14} strokeWidth={2} />} onClick={() => handleCreate('knowledge')}>
+                {t('sharing.assetSupply.newAsset.knowledgeShort')}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          )}
         >
-          {t('sharing.assetSupply.newAsset.knowledge')}
-        </Button>
+          <Button
+            theme="solid"
+            type="primary"
+            icon={<Plus size={14} strokeWidth={2.5} />}
+          >
+            <Space spacing={2}>
+              {t('sharing.assetSupply.newAsset.entry')}
+              <ChevronDown size={14} strokeWidth={2} />
+            </Space>
+          </Button>
+        </Dropdown>
       </div>
-
-      <Tabs
-        activeKey={tab}
-        onChange={(k) => setTab(k as ShareStatus)}
-        className="my-shared-tabs"
-        keepDOM={false}
-      >
-        {TABS.map((k) => (
-          <TabPane key={k} itemKey={k} tab={`${t(`sharing.assetSupply.tabs.${k.toLowerCase()}`)} (${counts[k]})`} />
-        ))}
-      </Tabs>
 
       <div className="my-shared-toolbar">
         <Input
@@ -103,7 +175,7 @@ const MySharedPage = () => {
         <Select
           value={typeF}
           onChange={(v) => setType(v as TypeFilter)}
-          style={{ width: 140 }}
+          style={{ minWidth: 140 }}
           insetLabel={t('sharing.assetSupply.filters.type')}
           optionList={[
             { value: 'ALL', label: t('sharing.assetSupply.filters.allType') },
@@ -111,39 +183,41 @@ const MySharedPage = () => {
             { value: 'KNOWLEDGE', label: t('sharing.assetSupply.filters.typeKnowledge') },
           ]}
         />
+        <Select
+          value={statuses}
+          onChange={(v) => setStatuses((v as DisplayStatus[]) ?? [])}
+          style={{ minWidth: 180 }}
+          insetLabel={t('sharing.assetSupply.filters.status')}
+          multiple
+          maxTagCount={1}
+          placeholder={t('sharing.assetSupply.filters.allStatus')}
+          optionList={[
+            { value: 'DRAFT', label: t('sharing.assetSupply.statusOptions.draft') },
+            { value: 'PUBLISHED', label: t('sharing.assetSupply.statusOptions.published') },
+            { value: 'UNLISTED', label: t('sharing.assetSupply.statusOptions.unlisted') },
+          ]}
+        />
         {filtered && (
-          <Button theme="borderless" type="tertiary" onClick={clearFilters}>
+          <Button theme="borderless" type="tertiary" onClick={reset}>
             {t('sharing.assetSupply.filters.clear')}
           </Button>
         )}
       </div>
 
       <div className="my-shared-body">
-        {tab === 'PUBLISHED' && aggregatedReuse.length > 0 && (
-          <div className="my-shared-reuse-summary">
-            <Button
-              theme="borderless"
-              type="primary"
-              onClick={() => setAggregatedStatsVisible(true)}
-            >
-              {t('sharing.assetSupply.card.viewAggregatedReuse', { count: aggregatedReuse.length })}
-            </Button>
-          </div>
-        )}
-
-        {paged.length === 0 ? (
+        {list.length === 0 ? (
           <div className="my-shared-empty">
             <img src={emptyImg} alt="empty" />
             <div className="empty-title">
               {filtered
                 ? t('sharing.assetSupply.empty.noResult')
-                : t(`sharing.assetSupply.empty.${tab.toLowerCase()}`)}
+                : t('sharing.assetSupply.empty.title')}
             </div>
-            {!filtered && (tab === 'PUBLISHED' || tab === 'DRAFT') && (
+            {!filtered && (
               <Button
                 theme="solid"
                 type="primary"
-                onClick={() => navigate('/sharing-center/my-shared/create/knowledge')}
+                onClick={() => handleCreate('knowledge')}
                 style={{ marginTop: 12 }}
               >
                 {t('sharing.assetSupply.empty.createCta')}
@@ -151,23 +225,25 @@ const MySharedPage = () => {
             )}
           </div>
         ) : (
-          <div className="my-shared-grid">
-            {paged.map((a) => (
-              <SupplyAssetCard
-                key={a.id}
-                asset={a}
-                highlighted={a.id === highlightId}
-                onView={() => goDetail(a)}
-                onPush={(asset) => setPushAsset(asset)}
-              />
-            ))}
-          </div>
+          <Table
+            size="small"
+            columns={columns}
+            dataSource={list}
+            rowKey="id"
+            pagination={false}
+            onRow={(record) => ({
+              onClick: () => setActiveId(record!.id),
+              className: record!.id === activeId ? 'selected' : '',
+              style: { cursor: 'pointer' },
+            })}
+          />
         )}
       </div>
 
-      {total > PAGE_SIZE && (
+      {list.length > 0 && (
         <div className="list-pagination">
           <Pagination
+            size="small"
             total={total}
             pageSize={PAGE_SIZE}
             currentPage={page}
@@ -177,16 +253,12 @@ const MySharedPage = () => {
         </div>
       )}
 
-      <PushNotificationDialog
-        visible={!!pushAsset}
-        asset={pushAsset}
-        onCancel={() => setPushAsset(null)}
-      />
-
-      <ReuseStatsPanel
-        visible={aggregatedStatsVisible}
-        onCancel={() => setAggregatedStatsVisible(false)}
-        records={aggregatedReuse}
+      <MySharedDetailDrawer
+        visible={!!activeAsset}
+        onClose={() => setActiveId(null)}
+        asset={activeAsset}
+        dataList={list}
+        onNavigate={(a) => setActiveId(a.id)}
       />
     </div>
   );

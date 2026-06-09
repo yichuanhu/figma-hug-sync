@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { SideSheet, Typography, Select, Table, Empty, Tag } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import type { ReuseRecord } from '@/pages/Sharing/Market/types';
+import type { ReuseRecord, AssetType } from '@/pages/Sharing/Market/types';
+import { resolveUsageKind } from '@/pages/Sharing/Market/types';
 import emptyImg from '@/assets/empty-state/no-data.png';
 import './index.less';
 
@@ -12,10 +13,12 @@ type Range = 'all' | 'month' | 'week';
 interface Props {
   visible: boolean;
   onCancel: () => void;
-  /** 复用记录（可来自单一资产或聚合） */
+  /** 使用记录（流程=复用 / 知识=下载） */
   records: ReuseRecord[];
   /** 标题前缀，例如资产名称 */
   assetName?: string;
+  /** 资产类型；用于在「复用 / 下载」语义间切换 */
+  assetType?: AssetType;
 }
 
 const inRange = (iso: string, range: Range) => {
@@ -27,10 +30,11 @@ const inRange = (iso: string, range: Range) => {
 
 const PAGE_SIZE = 10;
 
-const ReuseStatsPanel = ({ visible, onCancel, records, assetName }: Props) => {
+const ReuseStatsPanel = ({ visible, onCancel, records, assetName, assetType }: Props) => {
   const { t } = useTranslation();
   const [range, setRange] = useState<Range>('all');
   const [page, setPage] = useState(1);
+  const isDownload = assetType ? resolveUsageKind(assetType) === 'DOWNLOAD' : false;
 
   const filtered = useMemo(
     () => records
@@ -44,15 +48,19 @@ const ReuseStatsPanel = ({ visible, onCancel, records, assetName }: Props) => {
   const weekCount = useMemo(() => records.filter((r) => inRange(r.reusedAt, 'week')).length, [records]);
 
   const columns = [
-    { title: t('sharing.assetSupply.reuseStats.colReuser'), dataIndex: 'reuserName', width: 120 },
+    {
+      title: t(isDownload ? 'sharing.assetSupply.reuseStats.colDownloader' : 'sharing.assetSupply.reuseStats.colReuser'),
+      dataIndex: 'reuserName',
+      width: 120,
+    },
     { title: t('sharing.assetSupply.reuseStats.colDept'), dataIndex: 'reuserDept', width: 140, render: (v: string) => v || '—' },
     {
-      title: t('sharing.assetSupply.reuseStats.colTime'),
+      title: t(isDownload ? 'sharing.assetSupply.reuseStats.colDownloadTime' : 'sharing.assetSupply.reuseStats.colTime'),
       dataIndex: 'reusedAt',
       width: 120,
     },
-    { title: t('sharing.assetSupply.reuseStats.colVersion'), dataIndex: 'versionNumber', width: 100 },
-    {
+    ...(isDownload ? [] : [{ title: t('sharing.assetSupply.reuseStats.colVersion'), dataIndex: 'versionNumber', width: 100 }]),
+    ...(isDownload ? [] : [{
       title: t('sharing.assetSupply.reuseStats.colType'),
       dataIndex: 'reuseType',
       width: 100,
@@ -63,13 +71,7 @@ const ReuseStatsPanel = ({ visible, onCancel, records, assetName }: Props) => {
             : t('sharing.assetSupply.reuseStats.typeDirect')}
         </Tag>
       ),
-    },
-    {
-      title: t('sharing.assetSupply.reuseStats.colNote'),
-      dataIndex: 'adaptationNote',
-      ellipsis: { showTitle: false },
-      render: (v?: string) => v || '—',
-    },
+    }]),
   ];
 
   return (
@@ -79,8 +81,8 @@ const ReuseStatsPanel = ({ visible, onCancel, records, assetName }: Props) => {
       visible={visible}
       onCancel={onCancel}
       title={assetName
-        ? t('sharing.assetSupply.reuseStats.titleWithName', { name: assetName })
-        : t('sharing.assetSupply.reuseStats.title')}
+        ? t(isDownload ? 'sharing.assetSupply.reuseStats.downloadTitleWithName' : 'sharing.assetSupply.reuseStats.titleWithName', { name: assetName })
+        : t(isDownload ? 'sharing.assetSupply.reuseStats.downloadTitle' : 'sharing.assetSupply.reuseStats.title')}
       bodyStyle={{ padding: 24 }}
       className="reuse-stats-panel"
     >
@@ -100,7 +102,7 @@ const ReuseStatsPanel = ({ visible, onCancel, records, assetName }: Props) => {
 
       <div className="reuse-stats-cards">
         <div className="stat-cell">
-          <Text size="small" type="tertiary">{t('sharing.assetSupply.reuseStats.total')}</Text>
+          <Text size="small" type="tertiary">{t(isDownload ? 'sharing.assetSupply.reuseStats.downloadTotal' : 'sharing.assetSupply.reuseStats.total')}</Text>
           <Title heading={3} style={{ margin: 0 }}>{total}</Title>
         </div>
         <div className="stat-cell">
@@ -116,7 +118,7 @@ const ReuseStatsPanel = ({ visible, onCancel, records, assetName }: Props) => {
       {filtered.length === 0 ? (
         <Empty
           image={<img src={emptyImg} alt="empty" style={{ width: 120, height: 120 }} />}
-          description={t('sharing.assetSupply.reuseStats.empty')}
+          description={t(isDownload ? 'sharing.assetSupply.reuseStats.emptyDownload' : 'sharing.assetSupply.reuseStats.empty')}
           style={{ padding: '48px 0' }}
         />
       ) : (

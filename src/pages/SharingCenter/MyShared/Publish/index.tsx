@@ -34,7 +34,8 @@ const DevCenterPublishPage = () => {
 
   const submit = async (values: any) => {
     // 必填校验：封面、展示描述、概览
-    if (!coverFile) {
+    // 知识资产封面非必填，缺省时详情页使用默认占位
+    if (asset.type !== 'KNOWLEDGE' && !coverFile) {
       Toast.warning(t('sharing.assetSupply.publish.coverRequired'));
       return;
     }
@@ -59,7 +60,7 @@ const DevCenterPublishPage = () => {
     });
     Toast.success(t('sharing.assetSupply.toast.published'));
     setSubmitting(false);
-    navigate('/sharing-center/my-published?tab=PENDING_APPROVAL');
+    navigate('/sharing-center/my-published');
   };
 
   const beforeCover = (file: File) => {
@@ -121,7 +122,7 @@ const DevCenterPublishPage = () => {
         <div>
           <Title heading={6} style={{ marginBottom: 12 }}>{t('sharing.assetSupply.publish.displayTitle')}</Title>
           <Form labelPosition="top" onSubmit={submit} getFormApi={(api) => ((window as any).__pubForm = api)}>
-            <Form.Slot label={{ text: t('sharing.assetSupply.publish.coverImage'), required: true } as any}>
+            <Form.Slot label={{ text: t('sharing.assetSupply.publish.coverImage'), required: asset.type !== 'KNOWLEDGE' } as any}>
               <Upload
                 action="" accept=".jpg,.jpeg,.png" maxSize={COVER_MAX_KB} showUploadList={false}
                 beforeUpload={({ file }: any) => beforeCover(file.fileInstance as File)}

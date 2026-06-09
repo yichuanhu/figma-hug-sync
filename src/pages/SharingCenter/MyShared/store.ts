@@ -6,7 +6,8 @@
  * - 通过 subscribe 通知订阅者刷新
  */
 import { allAssets } from '@/pages/Sharing/Market/mockData';
-import type { Asset, AssetVersion, AssetSource, AssetType, KnowledgeExtension, SkillExtension } from '@/pages/Sharing/Market/types';
+import type { Asset, AssetVersion, AssetSource, AssetType, KnowledgeExtension } from '@/pages/Sharing/Market/types';
+import { getHistoryKindByAssetType } from '@/pages/Sharing/Market/utils';
 import type { ShareStatus } from '@/components/sharing/StatusTag';
 import type { ApprovalEvent } from '@/components/sharing/ApprovalTimeline';
 import { getApprovalLevel, type AssetTypeKey } from '@/pages/SharingCenter/shared/approvalConfig';
@@ -30,7 +31,8 @@ export type ShareAsset = Asset & {
 const ME = CURRENT_USER_NAME;
 const DEV_CENTER_BASE = 'https://dev-center.example.com/processes';
 
-const statusByIndex: ShareStatus[] = ['PUBLISHED', 'DRAFT', 'PENDING_APPROVAL', 'PUBLISHED', 'REJECTED', 'PUBLISHED'];
+// MVP：「我的共享」不再展示 待审批 / 已拒绝 状态，相应位置改为 PUBLISHED / DRAFT
+const statusByIndex: ShareStatus[] = ['PUBLISHED', 'DRAFT', 'PUBLISHED', 'PUBLISHED', 'DRAFT', 'PUBLISHED'];
 
 // 推送通知 24h 去重记录： key = `${assetId}@${versionId}`
 const pushHistory = new Map<string, number>();
@@ -49,14 +51,29 @@ const buildEvents = (status: ShareStatus, actorName: string, at: string): Approv
   return events;
 };
 
+// 指定 lineage 的全部版本归属当前用户，用于演示「同一流程多版本」
+const MINE_LINEAGES = new Set(['wf-001', 'wf-007']);
+// 同 lineage 不同版本的演示状态映射（按下标循环）
+const LINEAGE_VERSION_STATUSES: ShareStatus[] = ['PUBLISHED', 'PUBLISHED', 'UNLISTED'];
+const lineageVerCounter = new Map<string, number>();
+
 const init = () => {
   if (initialized) return;
   initialized = true;
   // 1) 基于 Market 数据派生
   const derived: ShareAsset[] = allAssets.map((a, idx): ShareAsset => {
-    const isMine = idx % 3 === 0;
+    const lineageId = (a as Asset).lineageId;
+    const inMineLineage = !!lineageId && MINE_LINEAGES.has(lineageId);
+    const isMine = inMineLineage || idx % 3 === 0;
     const isDevCenter = a.source === 'DEV_CENTER';
-    let shareStatus: ShareStatus = isMine ? statusByIndex[idx % statusByIndex.length] : 'PUBLISHED';
+    let shareStatus: ShareStatus;
+    if (inMineLineage) {
+      const c = lineageVerCounter.get(lineageId!) ?? 0;
+      shareStatus = LINEAGE_VERSION_STATUSES[c % LINEAGE_VERSION_STATUSES.length];
+      lineageVerCounter.set(lineageId!, c + 1);
+    } else {
+      shareStatus = isMine ? statusByIndex[idx % statusByIndex.length] : 'PUBLISHED';
+    }
     const submittedAt = a.updatedAt;
     const ownerId = isMine ? CURRENT_USER_ID : `user-${idx}`;
     return {
@@ -78,8 +95,6 @@ const init = () => {
   const today = '2026-05-08';
   const devBase = derived.find((a) => a.source === 'DEV_CENTER') ?? derived[0];
   const extras: ShareAsset[] = [
-    makeNativeKnowledge('kn-arch-001', 'SAP 操作手册（旧版）', '2025 年版本的 SAP 操作手册，已归档保留参考', 'ARCHIVED', today),
-    makeNativeSkill('sk-arch-001', 'PDF 转 Word 技能（旧）', '基于旧引擎的 PDF 转 Word，已被新版替代', 'ARCHIVED', today),
     makeNativeKnowledge('kn-draft-001', '错误码速查（草稿）', '正在整理的错误码速查表草稿', 'DRAFT', today),
     {
       ...derived[0],
@@ -196,12 +211,21 @@ const init = () => {
       ownerId: CURRENT_USER_ID,
       creatorId: CURRENT_USER_ID,
       publishedBy: CURRENT_USER_ID,
-      currentVersion: 'v1.0.0',
-      currentVersionId: 'kn-pa-001-v1.0.0',
+      // 知识无版本
+      currentVersion: '',
+      currentVersionId: '',
       createdAt: today,
       updatedAt: today,
       reuseCount: 0,
-      tags: ['最佳实践', 'RPA'],
+      tags: ['NATIVE'],
+      categoryTags: ['最佳实践', 'RPA'],
+      displayName: 'RPA 最佳实践手册（审批中）',
+      displayDesc: '汇总团队 RPA 项目沉淀的最佳实践，供新团队参考',
+      knowledge: {
+        contentHtml: '<h3>最佳实践</h3><p>命名、错误处理、性能优化…</p>',
+        attachments: [{ name: 'RPA-best-practice.pdf', size: '2.4 MB', url: '#' }],
+        knowledgeType: 'bestPractice',
+      },
       versions: [],
       reuseRecords: [],
       submittedAt: today,
@@ -280,12 +304,20 @@ const init = () => {
       creatorName: '陈客服',
       departmentName: '客户服务中心',
       publishedBy: 'user-103',
-      currentVersion: 'v1.1.0',
-      currentVersionId: 'kn-apr-pa-001-v1.1.0',
+      currentVersion: '',
+      currentVersionId: '',
       createdAt: '2026-05-08',
       updatedAt: '2026-05-08',
       reuseCount: 0,
-      tags: ['SOP', '客服'],
+      tags: ['NATIVE'],
+      categoryTags: ['SOP', '客服'],
+      displayName: '客户工单处理 SOP',
+      displayDesc: '客服中心处理客户工单的标准操作流程，含退款场景章节',
+      knowledge: {
+        contentHtml: '<h3>客户工单处理 SOP</h3><ol><li>接单</li><li>分类</li><li>处置</li><li>回访</li></ol>',
+        attachments: [{ name: '客户工单 SOP.pdf', size: '980 KB', url: '#' }],
+        knowledgeType: 'manual',
+      },
       versions: [],
       reuseRecords: [],
       submittedAt: '2026-05-08 08:00',
@@ -336,12 +368,20 @@ const init = () => {
       creatorName: '周安全',
       departmentName: 'IT 中心',
       publishedBy: 'user-202',
-      currentVersion: 'v3.0.0',
-      currentVersionId: 'kn-apr-hist-001-v3.0.0',
+      currentVersion: '',
+      currentVersionId: '',
       createdAt: '2026-05-03',
       updatedAt: '2026-05-03',
       reuseCount: 0,
-      tags: ['安全', 'IT'],
+      tags: ['NATIVE'],
+      categoryTags: ['安全', 'IT'],
+      displayName: 'IT 安全基线手册',
+      displayDesc: 'IT 部门发布的内部信息安全操作基线，覆盖账号、终端、网络、数据四大领域',
+      knowledge: {
+        contentHtml: '<h3>安全基线</h3><p>账号、终端、网络、数据四大领域操作要求…</p>',
+        attachments: [{ name: 'IT 安全基线手册.pdf', size: '3.1 MB', url: '#' }],
+        knowledgeType: 'manual',
+      },
       versions: [],
       reuseRecords: [],
       submittedAt: '2026-05-03 09:00',
@@ -395,12 +435,20 @@ const init = () => {
       creatorName: '吴 HR',
       departmentName: '人力资源中心',
       publishedBy: 'user-204',
-      currentVersion: 'v1.0.0',
-      currentVersionId: 'kn-apr-hist-002-v1.0.0',
+      currentVersion: '',
+      currentVersionId: '',
       createdAt: '2026-04-28',
       updatedAt: '2026-04-28',
       reuseCount: 0,
-      tags: ['HR', 'FAQ'],
+      tags: ['NATIVE'],
+      categoryTags: ['HR', 'FAQ'],
+      displayName: '新员工入职 FAQ',
+      displayDesc: '新员工入职常见问题汇总，覆盖账号、设备、培训、福利等高频问题',
+      knowledge: {
+        contentHtml: '<h3>FAQ</h3><p>账号开通、设备申领、入职培训…</p>',
+        attachments: [{ name: '入职 FAQ.pdf', size: '720 KB', url: '#' }],
+        knowledgeType: 'faq',
+      },
       versions: [],
       reuseRecords: [],
       submittedAt: '2026-04-28 10:00',
@@ -409,13 +457,64 @@ const init = () => {
         { type: 'APPROVED', actorName: ME, at: '2026-05-01 10:00', comment: '通过，可发布到共享市场' },
       ],
     },
+    // ============ 补充演示数据：我的共享（分页演示，覆盖各状态）============
+    // -- DRAFT 草稿 --
+    makeNativeWorkflow('wf-mine-d01', '财务对账自动化（草稿）', '银企对账单抓取与差异比对，正在补充异常处理分支', 'DRAFT', '2026-04-20'),
+    makeNativeKnowledge('kn-mine-d01', '客户工单 SOP（草稿）', '客户服务工单升级与转派 SOP，待补充示例截图', 'DRAFT', '2026-04-22'),
+    makeNativeKnowledge('kn-mine-d02', '数据合规审计要点（草稿）', '内部合规审计常见检查项与证据要求', 'DRAFT', '2026-04-25'),
+    // -- PENDING_APPROVAL 审核中 --
+    makeNativeWorkflow('wf-mine-pa01', '采购单同步至 ERP 流程', '将 OA 审批通过的采购单同步至 ERP，含异常重试', 'PENDING_APPROVAL', '2026-04-26'),
+    makeNativeKnowledge('kn-mine-pa01', 'HR 入职清单手册', '新员工入职准备物料、账号开通流程汇总', 'PENDING_APPROVAL', '2026-04-27'),
+    makeNativeWorkflow('wf-mine-pa02', '月度结账自动化', '财务月结脚本：科目余额校验、汇率折算、报表导出', 'PENDING_APPROVAL', '2026-04-28'),
+    // -- PUBLISHED 已发布（部分含复用记录）--
+    {
+      ...makeNativeWorkflow('wf-mine-p01', '发票 OCR 识别录入', '扫描发票 OCR 后写入财务系统并自动认证', 'PUBLISHED', '2026-04-10'),
+      reuseCount: 12,
+      reuseRecords: [
+        { id: 'wf-mine-p01-r1', assetId: 'wf-mine-p01', versionId: 'wf-mine-p01-v1.0.0', versionNumber: 'v1.0.0', reuserName: '李采购', reuseType: 'DIRECT' as const, reusedAt: '2026-04-15 10:20' },
+        { id: 'wf-mine-p01-r2', assetId: 'wf-mine-p01', versionId: 'wf-mine-p01-v1.0.0', versionNumber: 'v1.0.0', reuserName: '王财务', reuseType: 'DIRECT' as const, reusedAt: '2026-04-18 14:05' },
+        { id: 'wf-mine-p01-r3', assetId: 'wf-mine-p01', versionId: 'wf-mine-p01-v1.0.0', versionNumber: 'v1.0.0', reuserName: '赵运营', reuseType: 'DIRECT' as const, reusedAt: '2026-04-22 09:30' },
+      ],
+    },
+    {
+      ...makeNativeKnowledge('kn-mine-p01', 'RPA 项目交付规范', '项目交付各阶段产出物模板与验收标准', 'PUBLISHED', '2026-04-08'),
+      reuseCount: 8,
+      reuseRecords: [
+        { id: 'kn-mine-p01-r1', assetId: 'kn-mine-p01', versionId: 'kn-mine-p01-v1.0.0', versionNumber: 'v1.0.0', reuserName: '陈项目', reuseType: 'DIRECT' as const, reusedAt: '2026-04-12 11:00' },
+        { id: 'kn-mine-p01-r2', assetId: 'kn-mine-p01', versionId: 'kn-mine-p01-v1.0.0', versionNumber: 'v1.0.0', reuserName: '孙开发', reuseType: 'DIRECT' as const, reusedAt: '2026-04-20 16:40' },
+      ],
+    },
+    {
+      ...makeNativeWorkflow('wf-mine-p02', '电商订单分仓发货', '根据收货地与库存自动匹配最近仓发货', 'PUBLISHED', '2026-04-05'),
+      reuseCount: 5,
+      reuseRecords: [
+        { id: 'wf-mine-p02-r1', assetId: 'wf-mine-p02', versionId: 'wf-mine-p02-v1.0.0', versionNumber: 'v1.0.0', reuserName: '周仓储', reuseType: 'DIRECT' as const, reusedAt: '2026-04-11 08:10' },
+      ],
+    },
+    makeNativeKnowledge('kn-mine-p02', 'SAP 常见操作手册', 'SAP 财务模块常用事务码与操作要点速查', 'PUBLISHED', '2026-04-02'),
+    makeNativeWorkflow('wf-mine-p03', '社保公积金申报', '每月社保公积金基数计算与申报数据生成', 'PUBLISHED', '2026-03-30'),
+    makeNativeKnowledge('kn-mine-p03', '智能客服话术库', '常见客户咨询场景标准话术与异常处理建议', 'PUBLISHED', '2026-03-28'),
+    // -- REJECTED 已驳回 --
+    {
+      ...makeNativeWorkflow('wf-mine-rj01', '邮件批量分类归档', '邮箱邮件按规则自动分类至文件夹', 'REJECTED', '2026-04-18'),
+      rejectedReason: '资源依赖未声明，请补充【凭据: mail-imap】后重新提交',
+    },
+    {
+      ...makeNativeKnowledge('kn-mine-rj01', '内控审计指引（旧稿）', '审计指引文档示例，描述信息不充分', 'REJECTED', '2026-04-16'),
+      rejectedReason: '描述信息过于简略，请补充适用范围与示例后重新提交',
+    },
+    // -- UNLISTED 已下架 --
+    makeNativeWorkflow('wf-mine-ul01', '旧版考勤汇总流程（已下架）', '已被新版打卡考勤替代，临时下架', 'UNLISTED', '2026-03-20'),
+    makeNativeKnowledge('kn-mine-ul01', '老版用户手册（已下架）', '产品旧版本操作手册，新版本已发布', 'UNLISTED', '2026-03-15'),
+    // -- ARCHIVED 已归档（仅流程支持归档；知识资产无归档状态） --
+    makeNativeWorkflow('wf-mine-ar01', '2024 年报表汇总流程', '历史归档，仅供回溯使用', 'ARCHIVED', '2026-02-28'),
   ];
 
   assets = [...derived, ...extras];
 };
 
 // ============ 工厂方法 ============
-function blankVersion(assetId: string, version: string, changeLog: string, content: string, when: string): AssetVersion {
+function blankVersion(assetId: string, version: string, changeLog: string, content: string, when: string, assetType?: AssetType): AssetVersion {
   return {
     id: `${assetId}-${version}`,
     assetId,
@@ -425,6 +524,7 @@ function blankVersion(assetId: string, version: string, changeLog: string, conte
     isLatest: true,
     createdBy: CURRENT_USER_NAME,
     createdAt: when,
+    historyKind: assetType ? getHistoryKindByAssetType(assetType) : undefined,
   };
 }
 
@@ -436,9 +536,13 @@ export function makeNativeKnowledge(
   when: string,
   ext?: Partial<KnowledgeExtension>,
 ): ShareAsset {
+  // 知识附件必填且单文件：未传时给一个 mock 附件占位
+  const attachments = ext?.attachments && ext.attachments.length > 0
+    ? ext.attachments.slice(0, 1)
+    : [{ name: `${name}.pdf`, size: '1.2 MB', url: '#' }];
   const knowledge: KnowledgeExtension = {
     contentHtml: ext?.contentHtml ?? `<h2>${name}</h2><p>${description}</p>`,
-    attachments: ext?.attachments ?? [],
+    attachments,
     knowledgeType: ext?.knowledgeType ?? 'manual',
   };
   return {
@@ -452,12 +556,17 @@ export function makeNativeKnowledge(
     departmentName: CURRENT_USER_DEPT,
     reuseCount: 0,
     tags: ['NATIVE'],
-    currentVersion: 'v1.0.0',
-    currentVersionId: `${id}-v1.0.0`,
+    // 展示信息（PUBLISHED 资产必填）：DRAFT/REJECTED 也带，无害
+    displayName: name,
+    displayDesc: description,
+    categoryTags: ['知识沉淀'],
+    // 知识资产无版本概念
+    currentVersion: '',
+    currentVersionId: '',
     createdAt: when,
     updatedAt: when,
     knowledge,
-    versions: [blankVersion(id, 'v1.0.0', '首发版本', knowledge.contentHtml, when)],
+    versions: [],
     reuseRecords: [],
     isMine: true,
     shareStatus: status,
@@ -469,53 +578,49 @@ export function makeNativeKnowledge(
   };
 }
 
-export function makeNativeSkill(
+export function makeNativeWorkflow(
   id: string,
   name: string,
   description: string,
   status: ShareStatus,
   when: string,
-  ext?: Partial<SkillExtension>,
+  ext?: { processId?: string; processVersion?: string; resourceDeps?: string[]; departmentName?: string },
 ): ShareAsset {
-  const skill: SkillExtension = {
-    category: ext?.category ?? 'tool',
-    inputParams: ext?.inputParams ?? [{ name: 'input', type: 'string', required: true, description: '输入参数' }],
-    outputParams: ext?.outputParams ?? [{ name: 'output', type: 'string', required: true, description: '输出参数' }],
-    timeoutSec: ext?.timeoutSec ?? 30,
-    retryPolicy: ext?.retryPolicy ?? 'none',
-    callExample: ext?.callExample ?? '{\n  "input": "demo"\n}',
-    callCount: 0,
-    successRate: 0,
-    rating: 0,
-    skillStatus: 'PUBLISHED',
-  };
+  const version = ext?.processVersion ?? 'v1.0.0';
   return {
     id,
     name,
-    type: 'SKILL',
+    type: 'WORKFLOW',
     source: 'NATIVE',
     status: 'PUBLISHED',
     description,
     creatorName: CURRENT_USER_NAME,
-    departmentName: CURRENT_USER_DEPT,
+    departmentName: ext?.departmentName ?? CURRENT_USER_DEPT,
     reuseCount: 0,
     tags: ['NATIVE'],
-    currentVersion: 'v1.0.0',
-    currentVersionId: `${id}-v1.0.0`,
+    // 展示信息（PUBLISHED 资产必填）：DRAFT/REJECTED 也带，无害
+    displayName: name,
+    displayDesc: description,
+    categoryTags: ['流程自动化'],
+    currentVersion: version,
+    currentVersionId: `${id}-${version}`,
     createdAt: when,
     updatedAt: when,
-    skill,
-    versions: [blankVersion(id, 'v1.0.0', '首发版本', JSON.stringify(skill, null, 2), when)],
+    resourceDeps: ext?.resourceDeps,
+    originUrl: ext?.processId ? `${DEV_CENTER_BASE}/${ext.processId}` : undefined,
+    versions: [blankVersion(id, version, '首发版本', description, when, 'WORKFLOW')],
     reuseRecords: [],
     isMine: true,
     shareStatus: status,
     ownerId: CURRENT_USER_ID,
     creatorId: CURRENT_USER_ID,
+    publishedBy: CURRENT_USER_ID,
     submittedAt: when,
     archivedAt: status === 'ARCHIVED' ? when : undefined,
     approvalEvents: buildEvents(status === 'ARCHIVED' ? 'PUBLISHED' : status, ME, when),
   };
 }
+
 
 // ============ 查询 ============
 export function getAll(): ShareAsset[] {
@@ -527,15 +632,21 @@ export function getMine(): ShareAsset[] {
   return getAll().filter((a) => a.isMine && a.shareStatus !== 'UNLISTED');
 }
 
-// ============ 列表查询封装（Story 011） ============
-export type MyPublishedTab = ShareStatus;
+// ============ 列表查询封装 ============
 export type MyPublishedTypeFilter = 'ALL' | 'WORKFLOW' | 'KNOWLEDGE';
 export type MyPublishedSourceFilter = 'ALL' | 'NATIVE' | 'DEV_CENTER';
+export type DisplayStatus = 'DRAFT' | 'PENDING_APPROVAL' | 'PUBLISHED' | 'REJECTED' | 'UNLISTED';
+
+/** 将底层 ShareStatus 归一化为列表 UI 维度的 5 个状态 */
+export function toDisplayStatus(s: ShareStatus): DisplayStatus {
+  if (s === 'PENDING_PUBLISH') return 'DRAFT';
+  if (s === 'ARCHIVED') return 'UNLISTED';
+  return s;
+}
 
 export interface MyPublishedQueryParams {
-  tab: MyPublishedTab;
+  statuses?: DisplayStatus[];
   type?: MyPublishedTypeFilter;
-  source?: MyPublishedSourceFilter;
   search?: string;
   page?: number;
   pageSize?: number;
@@ -544,26 +655,32 @@ export interface MyPublishedQueryParams {
 export interface MyPublishedQueryResult {
   list: ShareAsset[];
   total: number;
-  tabCounts: Record<ShareStatus, number>;
 }
 
 /**
- * 资产上架列表统一查询入口（Story 011）
+ * 资产上架列表统一查询入口
  * - MVP 范围：仅返回 WORKFLOW / KNOWLEDGE
- * - PUBLISHED tab 含 ARCHIVED
+ * - statuses 为空表示全部
  * - 关键词命中：name / description / tags
- * - 返回 list（已分页）+ total（筛选后）+ tabCounts（按 type/source/search 后的全量统计）
  */
 export function queryMyPublished(params: MyPublishedQueryParams): MyPublishedQueryResult {
-  const { tab, type = 'ALL', source = 'ALL', search = '', page = 1, pageSize = 12 } = params;
-  // MVP：仅 WORKFLOW + KNOWLEDGE
-  const mine = getMine().filter((a) => a.type === 'WORKFLOW' || a.type === 'KNOWLEDGE');
+  const { statuses = [], type = 'ALL', search = '', page = 1, pageSize = 12 } = params;
+  // MVP：仅 WORKFLOW + KNOWLEDGE；包含 UNLISTED / ARCHIVED 以便在「已下架」筛选下可见
+  // MVP：仅 WORKFLOW + KNOWLEDGE；并且不展示 待审批 / 已拒绝
+  const mine = getAll().filter((a) =>
+    a.isMine
+    && (a.type === 'WORKFLOW' || a.type === 'KNOWLEDGE')
+    && a.shareStatus !== 'PENDING_APPROVAL'
+    && a.shareStatus !== 'REJECTED'
+    // 知识资产无 ARCHIVED 状态
+    && !(a.type === 'KNOWLEDGE' && a.shareStatus === 'ARCHIVED')
+  );
 
-  // 通用筛选（用于 tabCounts 与 list 共享）
   const k = search.trim().toLowerCase();
   const matchesFilters = (a: ShareAsset): boolean => {
     if (type !== 'ALL' && a.type !== type) return false;
-    if (source !== 'ALL' && a.source !== source) return false;
+    
+    if (statuses.length > 0 && !statuses.includes(toDisplayStatus(a.shareStatus))) return false;
     if (k) {
       const hit = a.name.toLowerCase().includes(k)
         || a.description.toLowerCase().includes(k)
@@ -572,28 +689,13 @@ export function queryMyPublished(params: MyPublishedQueryParams): MyPublishedQue
     }
     return true;
   };
-  const filteredAll = mine.filter(matchesFilters);
-
-  // tabCounts：在当前 type/source/search 上下文下，按状态聚合
-  const tabCounts: Record<ShareStatus, number> = {
-    PUBLISHED: 0, PENDING_PUBLISH: 0, DRAFT: 0, PENDING_APPROVAL: 0, REJECTED: 0, ARCHIVED: 0, UNLISTED: 0,
-  };
-  filteredAll.forEach((a) => {
-    if (a.shareStatus === 'ARCHIVED') tabCounts.PUBLISHED += 1;
-    else if (tabCounts[a.shareStatus] !== undefined) tabCounts[a.shareStatus] += 1;
-  });
-
-  // 按 tab 过滤
-  const listAll = filteredAll.filter((a) => {
-    if (tab === 'PUBLISHED') return a.shareStatus === 'PUBLISHED' || a.shareStatus === 'ARCHIVED';
-    return a.shareStatus === tab;
-  });
+  const listAll = mine.filter(matchesFilters);
 
   const total = listAll.length;
   const start = (page - 1) * pageSize;
   const list = listAll.slice(start, start + pageSize);
 
-  return { list, total, tabCounts };
+  return { list, total };
 }
 
 export function findAsset(id: string): ShareAsset | undefined {
@@ -666,12 +768,11 @@ export function updateMeta(id: string, meta: { name?: string; description?: stri
   patchAsset(id, meta);
 }
 
-export function updateNativeContent(id: string, payload: { knowledge?: Partial<KnowledgeExtension>; skill?: Partial<SkillExtension> }) {
+export function updateNativeContent(id: string, payload: { knowledge?: Partial<KnowledgeExtension> }) {
   const a = findAsset(id);
   if (!a) return;
   patchAsset(id, {
     knowledge: payload.knowledge ? { ...(a.knowledge as KnowledgeExtension), ...payload.knowledge } : a.knowledge,
-    skill: payload.skill ? { ...(a.skill as SkillExtension), ...payload.skill } : a.skill,
   });
 }
 
@@ -703,10 +804,11 @@ export function publishNewVersion(id: string, params: { bump?: BumpType; changeL
     assetId: id,
     version: newVersion,
     changeLog: params.changeLog,
-    content: a.knowledge?.contentHtml ?? (a.skill ? JSON.stringify(a.skill, null, 2) : ''),
+    content: a.knowledge?.contentHtml ?? '',
     isLatest: true,
     createdBy: CURRENT_USER_NAME,
     createdAt: when,
+    historyKind: getHistoryKindByAssetType(a.type),
   };
   const versions = a.versions.map((v) => ({ ...v, isLatest: false }));
   versions.unshift(newVer);
@@ -802,6 +904,8 @@ export function publishWorkflowToShare(sourceAsset: Asset, note: string): string
     isLatest: true,
     createdBy: CURRENT_USER_NAME,
     createdAt: when,
+    isSnapshot: true,
+    historyKind: 'RELEASE',
   };
   const asset: ShareAsset = {
     ...sourceAsset,
@@ -883,13 +987,40 @@ export function getReusedAt(assetId: string): string | undefined {
   return a?.reuseRecords.find((r) => r.reuserName === currentUser.name)?.reusedAt;
 }
 
-/** 创建复用记录（幂等：已复用则原样返回） */
-export function addReuseRecord(assetId: string): { ok: true; reusedAt: string } | { ok: false; reason: 'NOT_FOUND' | 'OWNER' } {
+/**
+ * 全局唯一性校验：流程名称是否已被占用
+ * 范围：所有资产 name/displayName + 所有 WORKFLOW 复用记录 workflowName
+ */
+export function isWorkflowNameTaken(name: string, excludeAssetId?: string): boolean {
+  const trimmed = name.trim();
+  if (!trimmed) return false;
+  const all = getAll();
+  for (const a of all) {
+    if (a.id !== excludeAssetId) {
+      if ((a.name ?? '').trim() === trimmed) return true;
+      if ((a.displayName ?? '').trim() === trimmed) return true;
+    }
+    for (const r of a.reuseRecords) {
+      if ((r.workflowName ?? '').trim() === trimmed) return true;
+    }
+  }
+  return false;
+}
+
+/** 创建复用记录（支持多次复用；WORKFLOW 必须传入唯一 workflowName） */
+export function addReuseRecord(
+  assetId: string,
+  opts?: { workflowName?: string },
+): { ok: true; reusedAt: string } | { ok: false; reason: 'NOT_FOUND' | 'OWNER' | 'NAME_TAKEN' | 'NAME_REQUIRED' } {
   const a = findAsset(assetId);
   if (!a) return { ok: false, reason: 'NOT_FOUND' };
   if (isOwner(assetId)) return { ok: false, reason: 'OWNER' };
-  const existing = a.reuseRecords.find((r) => r.reuserName === currentUser.name);
-  if (existing) return { ok: true, reusedAt: existing.reusedAt };
+  const isWorkflow = a.type === 'WORKFLOW';
+  const workflowName = opts?.workflowName?.trim();
+  if (isWorkflow) {
+    if (!workflowName) return { ok: false, reason: 'NAME_REQUIRED' };
+    if (isWorkflowNameTaken(workflowName)) return { ok: false, reason: 'NAME_TAKEN' };
+  }
   const when = new Date().toISOString().slice(0, 16).replace('T', ' ');
   const record = {
     id: `${assetId}-r-${Date.now().toString(36)}`,
@@ -899,6 +1030,7 @@ export function addReuseRecord(assetId: string): { ok: true; reusedAt: string } 
     reuserName: currentUser.name,
     reuseType: 'DIRECT' as const,
     reusedAt: when,
+    ...(workflowName ? { workflowName } : {}),
   };
   patchAsset(assetId, {
     reuseRecords: [record, ...a.reuseRecords],
@@ -907,15 +1039,30 @@ export function addReuseRecord(assetId: string): { ok: true; reusedAt: string } 
   return { ok: true, reusedAt: when };
 }
 
-/** 获取当前用户已复用的资产（按复用时间倒序） */
-export function getMyReusedAssets(): Array<Asset & { myReusedAt: string }> {
-  return getMarketAssets()
-    .filter((a) => a.status === 'PUBLISHED' && a.reuseRecords.some((r) => r.reuserName === currentUser.name))
-    .map((a) => ({
-      ...a,
-      myReusedAt: a.reuseRecords.find((r) => r.reuserName === currentUser.name)!.reusedAt,
-    }))
-    .sort((x, y) => y.myReusedAt.localeCompare(x.myReusedAt));
+/**
+ * 获取当前用户的复用记录（按时间倒序，每条复用记录一项）。
+ * 同一资产/同一版本被多次复用时，会展开为多条；点击任意一条联动到对应资产详情卡片。
+ */
+export function getMyReusedAssets(): Array<Asset & {
+  myReusedAt: string;
+  myReuseRecordId: string;
+  myReusedVersion: string;
+}> {
+  const out: Array<Asset & { myReusedAt: string; myReuseRecordId: string; myReusedVersion: string }> = [];
+  for (const a of getMarketAssets()) {
+    if (a.status !== 'PUBLISHED') continue;
+    if (a.type !== 'WORKFLOW' && a.type !== 'KNOWLEDGE') continue;
+    for (const r of a.reuseRecords) {
+      if (r.reuserName !== currentUser.name) continue;
+      out.push({
+        ...a,
+        myReusedAt: r.reusedAt,
+        myReuseRecordId: r.id,
+        myReusedVersion: r.versionNumber || a.currentVersion,
+      });
+    }
+  }
+  return out.sort((x, y) => y.myReusedAt.localeCompare(x.myReusedAt));
 }
 
 export interface DisplayInfoPatch {

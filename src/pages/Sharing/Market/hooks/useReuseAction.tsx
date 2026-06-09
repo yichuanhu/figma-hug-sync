@@ -11,7 +11,8 @@ export interface UseReuseActionReturn {
   getReuseState: (asset: Asset) => ReuseState;
   getReusedAt: (assetId: string) => string | undefined;
   isPublishedBy: (assetId: string) => boolean;
-  triggerReuse: (asset: Asset) => void;
+  /** WORKFLOW 资产必须传入 workflowName（全局唯一） */
+  triggerReuse: (asset: Asset, opts?: { workflowName?: string }) => Promise<{ ok: boolean; reason?: string }>;
 }
 
 export const useReuseAction = (): UseReuseActionReturn => {
@@ -23,72 +24,61 @@ export const useReuseAction = (): UseReuseActionReturn => {
 
   const isPub = useCallback((assetId: string) => isOwner(assetId), []);
 
+  // WORKFLOW 支持多次复用（按钮始终可点击）；KNOWLEDGE 不再展示复用按钮
   const getReuseState = useCallback((asset: Asset): ReuseState => {
     if (isOwner(asset.id)) return 'hidden';
     if (loadingMap[asset.id]) return 'loading';
-    if (hasReused(asset.id)) return 'reused';
+    if (asset.type !== 'WORKFLOW' && hasReused(asset.id)) return 'reused';
     return 'default';
   }, [loadingMap]);
 
-  const triggerReuse = useCallback((asset: Asset) => {
-    if (loadingMap[asset.id] || hasReused(asset.id) || isOwner(asset.id)) return;
-    setLoadingMap((m) => ({ ...m, [asset.id]: true }));
-    // 模拟 API 延时
-    setTimeout(() => {
-      const result = addReuseRecord(asset.id);
-      setLoadingMap((m) => {
-        const next = { ...m };
-        delete next[asset.id];
-        return next;
-      });
-      if (!result.ok) {
-        Toast.error(t('sharing.market.toast.reuseFailed'));
+  const triggerReuse = useCallback((asset: Asset, opts?: { workflowName?: string }) =>
+    new Promise<{ ok: boolean; reason?: string }>((resolve) => {
+      if (loadingMap[asset.id] || isOwner(asset.id)) {
+        resolve({ ok: false, reason: 'BUSY' });
         return;
       }
-      // 按资产类型分叉
-      if (asset.type === 'WORKFLOW') {
-        Toast.success({
-          content: (
-            <span>
-              {t('sharing.market.toast.workflowReused')}
-              <a
-                style={{ marginLeft: 8 }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.open('/dev-center/process-development', '_blank');
-                }}
-                href="/dev-center/process-development"
-              >
-                {t('sharing.market.toast.workflowReusedLink')} →
-              </a>
-            </span>
-          ),
-          duration: 6,
+      setLoadingMap((m) => ({ ...m, [asset.id]: true }));
+      setTimeout(() => {
+        const result = addReuseRecord(asset.id, opts);
+        setLoadingMap((m) => {
+          const next = { ...m };
+          delete next[asset.id];
+          return next;
         });
-      } else if (asset.type === 'KNOWLEDGE') {
-        Toast.success({
-          content: (
-            <span>
-              {t('sharing.market.toast.knowledgeReused')}
-              <a
-                style={{ marginLeft: 8 }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate('/sharing-center/market', { state: { tab: 'MY_REUSED' } });
-                }}
-                href="#"
-              >
-                {t('sharing.market.toast.knowledgeReusedLink')} →
-              </a>
-            </span>
-          ),
-          duration: 6,
-        });
-      } else {
-        Toast.success(t('sharing.market.toast.reuseSuccess'));
-      }
-    }, 600);
-  }, [loadingMap, navigate, t]);
+        if (result.ok === false) {
+          const reason = result.reason;
+          if (reason === 'NAME_TAKEN') Toast.error(t('sharing.market.toast.workflowNameTaken'));
+          else if (reason === 'NAME_REQUIRED') Toast.error(t('sharing.market.toast.workflowNameRequired'));
+          else Toast.error(t('sharing.market.toast.reuseFailed'));
+          resolve({ ok: false, reason });
+          return;
+        }
+        if (asset.type === 'WORKFLOW') {
+          Toast.success({
+            content: (
+              <span>
+                {t('sharing.market.toast.workflowReused')}
+                <a
+                  style={{ marginLeft: 8 }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open('/dev-center/process-development', '_blank');
+                  }}
+                  href="/dev-center/process-development"
+                >
+                  {t('sharing.market.toast.workflowReusedLink')} →
+                </a>
+              </span>
+            ),
+            duration: 6,
+          });
+        } else {
+          Toast.success(t('sharing.market.toast.reuseSuccess'));
+        }
+        resolve({ ok: true });
+      }, 600);
+    }), [loadingMap, navigate, t]);
 
   return {
     getReuseState,
