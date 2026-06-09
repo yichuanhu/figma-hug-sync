@@ -25,7 +25,7 @@ import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
 import ExpandableText from '@/components/ExpandableText';
-import { getDepartmentName } from '@/mocks/departmentData';
+import DepartmentPath from '@/components/DepartmentPath';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import AddMembersModal from '../AddMembersModal';
@@ -201,7 +201,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   const basicInfoData = [
     { key: t('workerGroup.detail.fields.groupName'), value: groupData.name },
     { key: t('common.description'), value: <ExpandableText text={groupData.description} maxLines={3} /> },
-    { key: t('common.owningDepartment'), value: getDepartmentName(groupData.owning_department_id) },
+    { key: t('common.owningDepartment'), value: <DepartmentPath departmentId={groupData.owning_department_id} /> },
     { key: t('common.owner'), value: groupData.owner_name ? <UserNameWithCard name={groupData.owner_name} userId={groupData.owner_id || ''} /> : '-' },
     { key: t('workerGroup.table.memberCount'), value: `${groupData.member_count} ${t('workerGroup.table.memberUnit')}` },
     { key: t('common.creator'), value: groupData.creator_name ? <UserNameWithCard name={groupData.creator_name} userId={groupData.creator_id} /> : '-' },
