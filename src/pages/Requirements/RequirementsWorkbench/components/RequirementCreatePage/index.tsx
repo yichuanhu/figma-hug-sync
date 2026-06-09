@@ -714,7 +714,9 @@ const RequirementCreatePage = () => {
                   required={false}
                   forceShowError={forceClsError}
                   readonly={!classificationEditable}
+                  hideWhenEmpty
                 />
+
               </div>
             </div>
 
