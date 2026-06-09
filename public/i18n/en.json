@@ -4357,8 +4357,10 @@
         "published": "Published",
         "unlisted": "Unlisted"
       },
+      "pageSubtitle": "Manage assets you've shared for reuse",
       "col": {
         "name": "Name",
+        "description": "Description",
         "status": "Status",
         "reuseCount": "Reuse Count",
         "updatedAt": "Updated",
