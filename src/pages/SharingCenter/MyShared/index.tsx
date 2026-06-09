@@ -133,7 +133,7 @@ const MySharedPage = () => {
   ];
 
   return (
-    <div className="my-shared-page">
+    <div className="my-shared-page app-layout-content-card">
       <div className="my-shared-header">
         <Title heading={3} className="title">{t('sharing.assetSupply.pageTitle')}</Title>
         <Dropdown

@@ -4344,20 +4344,38 @@
         "searchPlaceholder": "Search name / description / tags",
         "type": "Type",
         "source": "Source",
+        "status": "Status",
         "allType": "All Types",
         "allSource": "All Sources",
+        "allStatus": "All",
         "typeWorkflow": "Intelligent Automation",
         "typeKnowledge": "Knowledge",
         "clear": "Clear filters"
       },
+      "statusOptions": {
+        "draft": "Draft",
+        "published": "Published",
+        "unlisted": "Unlisted"
+      },
+      "col": {
+        "name": "Name",
+        "status": "Status",
+        "reuseCount": "Reuse Count",
+        "updatedAt": "Updated",
+        "action": "Action"
+      },
       "newAsset": {
-        "label": "New Share",
+        "label": "New Asset",
+        "entry": "New Asset",
+        "workflowShort": "Workflow",
+        "knowledgeShort": "Knowledge",
         "knowledge": "Knowledge",
         "skill": "Skill",
         "snippet": "Snippet",
         "workflow": "Workflow",
         "disabledHint": "Please create in Dev Center"
       },
+
       "actions": {
         "view": "View",
         "edit": "Edit",
