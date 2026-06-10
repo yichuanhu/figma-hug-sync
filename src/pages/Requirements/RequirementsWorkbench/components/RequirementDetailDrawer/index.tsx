@@ -124,7 +124,7 @@ const PropertyPanel = ({
         <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('common.status')}</Text>
           <div>
-            <Tag color={sCfg?.color as TagColor} type="light">{t(sCfg?.i18nKey || '')}</Tag>
+            <StatusDot color={(sCfg?.color as StatusDotColor) || 'grey'} label={t(sCfg?.i18nKey || '')} />
           </div>
         </div>
         <div className="requirement-detail-property-item">
