@@ -1365,7 +1365,7 @@ const TaskManagementPage = () => {
               loading={loading && !isInitialLoad}
               rowSelection={{
                 selectedRowKeys,
-                onChange: (keys) = scroll={{ x: 1500 }}> setSelectedRowKeys((keys as string[]) || []),
+                onChange: (keys) => setSelectedRowKeys((keys as string[]) || []),
                 getCheckboxProps: (record) => ({
                   disabled: (record as LYTaskResponse).task_status !== 'PENDING',
                 }),

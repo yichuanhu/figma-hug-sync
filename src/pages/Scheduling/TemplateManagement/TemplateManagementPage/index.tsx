@@ -519,7 +519,7 @@ const TemplateManagementPage = () => {
               rowKey="template_id"
               loading={loading && !isInitialLoad}
               columns={columns}
-              onRow={(record) = scroll={{ x: 1300 }}> ({
+              onRow={(record) => ({
                 onClick: () => handleOpenDrawer(record as LYExecutionTemplateResponse),
                 style: { cursor: 'pointer' },
                 className: selectedTemplate?.template_id === (record as LYExecutionTemplateResponse).template_id && drawerVisible ? 'template-row-selected' : '',
