@@ -45,6 +45,7 @@ import type {
 } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 import { Ellipsis, Eye, MinusCircle, Pencil, Plus, Trash2, ArrowUpCircle, AlertCircle, Loader2 } from 'lucide-react';
 
