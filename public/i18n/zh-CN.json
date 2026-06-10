@@ -3752,12 +3752,15 @@
       "pageSubtitle": "上架、维护与下架可被他人复用的资产",
       "col": {
         "name": "名称",
+        "type": "类型",
+        "version": "版本",
         "description": "描述",
         "status": "状态",
         "reuseCount": "复用次数",
         "updatedAt": "更新时间",
         "action": "操作"
       },
+
       "newAsset": {
         "label": "新建资产",
         "entry": "新建资产",
