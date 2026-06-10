@@ -319,10 +319,10 @@ const RequirementsReview = () => {
     if (showActions) {
       cols.push({
         title: t('common.actions'),
-          fixed: 'right' as const,
         dataIndex: 'action' as string,
         key: 'action',
         width: 60,
+        fixed: 'right',
         ellipsis: false,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render: ((_: any, record: any) => {
