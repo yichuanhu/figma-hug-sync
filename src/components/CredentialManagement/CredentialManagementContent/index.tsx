@@ -38,6 +38,7 @@ import LinkPersonalCredentialModal from './components/LinkPersonalCredentialModa
 import ImportAssignedValueModal from './components/ImportAssignedValueModal';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
+import StatusDot from '@/components/StatusDot';
 import './index.less';
 
 // Mock数据生成
