@@ -10,6 +10,7 @@ import EmptyState from '@/components/EmptyState';
 import { statusConfigV2 } from '../../statusConfig';
 import type { RequirementChangeLog, RequirementChangeType, RequirementStatus, RequirementChangeFieldDiff } from '../../types';
 import { listChangeLogs } from '../../mockData';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 
 const { Text } = Typography;
