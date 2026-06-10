@@ -152,7 +152,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   const detailInfoData = [
     { key: t('worker.detail.fields.desktopType'), value: workerData.desktop_type === 'Console' ? t('worker.detail.desktopTypes.console') : t('worker.detail.desktopTypes.notConsole') },
     { key: t('worker.detail.fields.account'), value: workerData.username },
-    { key: t('worker.detail.fields.passwordSyncStatus'), value: <Tag color={workerData.sync_status === 'SYNCED' ? 'green' : 'orange'} type="light">{workerData.sync_status === 'SYNCED' ? t('worker.syncStatus.synced') : t('worker.syncStatus.pending')}</Tag> },
+    { key: t('worker.detail.fields.passwordSyncStatus'), value: <StatusDot color={workerData.sync_status === 'SYNCED' ? 'green' : 'orange'} label={workerData.sync_status === 'SYNCED' ? t('worker.syncStatus.synced') : t('worker.syncStatus.pending')} /> },
     ...(isRemoteDesktop ? [{ key: t('worker.detail.fields.forceLogin'), value: <Tag color={workerData.force_login ? 'green' : 'grey'} type="light">{workerData.force_login ? t('common.yes') : t('common.no')}</Tag> }] : []),
     ...(isRemoteDesktop ? [{ key: t('worker.detail.fields.resolution'), value: workerData.display_size || '-' }] : []),
     { key: t('worker.detail.fields.clientVersion'), value: renderClientVersion() },
