@@ -134,7 +134,7 @@ const FileDetailDrawer = ({
             </Descriptions.Item>
             {context === 'development' && (
               <Descriptions.Item itemKey={t('file.detail.publishStatus')}>
-                <Tag color={file.is_published ? 'green' : 'grey'}>{file.is_published ? t('file.detail.published') : t('file.detail.unpublished')}</Tag>
+                <StatusDot color={file.is_published ? 'green' : 'grey'} label={file.is_published ? t('file.detail.published') : t('file.detail.unpublished')} />
               </Descriptions.Item>
             )}
             <Descriptions.Item itemKey={t('common.owningDepartment')}><DepartmentPath departmentId={file.owning_department_id} /></Descriptions.Item>
