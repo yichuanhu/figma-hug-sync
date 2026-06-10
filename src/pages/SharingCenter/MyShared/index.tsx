@@ -150,7 +150,6 @@ const MySharedPage = () => {
       title: t('sharing.assetSupply.col.action'),
       width: 72,
       fixed: 'right' as const,
-      align: 'center' as const,
       render: (_: unknown, a: ShareAsset) => (
         a.shareStatus === 'UNLISTED' ? null : (
           <span onClick={(e) => e.stopPropagation()}>
@@ -276,7 +275,6 @@ const MySharedPage = () => {
             dataSource={list}
             rowKey="id"
             pagination={false}
-            scroll={{ x: 'max-content', y: '100%' }}
             onRow={(record) => ({
               onClick: () => setActiveId(record!.id),
               className: record!.id === activeId ? 'my-shared-row-selected' : '',

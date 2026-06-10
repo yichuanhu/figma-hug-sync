@@ -296,8 +296,6 @@ const PersonalCredentialManagement = () => {
     },
     {
       title: t('common.actions'),
-      fixed: 'right' as const,
-      align: 'center' as const,
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYPersonalCredentialResponse) => (
@@ -397,7 +395,7 @@ const PersonalCredentialManagement = () => {
               showSizeChanger: true,
               showTotal: true,
             }}
-            scroll={{ y: 'calc(100vh - 380px)', x: 1100 }}
+            scroll={{ y: 'calc(100vh - 380px)' }}
           />
         )}
       </div>

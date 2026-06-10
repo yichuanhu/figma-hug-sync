@@ -725,8 +725,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       title: t('common.actions'),
       dataIndex: 'action',
       key: 'action',
-      fixed: 'right' as const, width: 60,
-      align: 'center' as const,
+      width: 60,
       render: (_: unknown, record: LYProcessResponse) => (
         <Dropdown
           trigger="click"
@@ -954,7 +953,6 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
               };
             }}
             pagination={false}
-            scroll={{ x: 'max-content', y: '100%' }}
           />
         )}
         {total > 0 && (

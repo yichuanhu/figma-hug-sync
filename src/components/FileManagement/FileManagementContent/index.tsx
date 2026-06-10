@@ -511,8 +511,6 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
     },
     {
       title: t('common.actions'),
-      fixed: 'right' as const,
-      align: 'center' as const,
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYFileResponse) => (
@@ -665,7 +663,6 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             rowKey="id"
             loading={loading && !isInitialLoad}
             pagination={false}
-            scroll={{ x: 'max-content', y: '100%' }}
             empty={
               <EmptyState
                 variant={queryParams.keyword || departmentFilter.length > 0 || sourceFilter.length > 0 ? 'noResult' : 'noData'}

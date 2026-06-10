@@ -134,8 +134,6 @@ const ProjectDetailDrawer = ({
     },
     {
       title: t('common.actions'),
-      fixed: 'right' as const,
-      align: 'center' as const,
       key: 'actions',
       width: 60,
       render: (_: unknown, record: Workspace) => (

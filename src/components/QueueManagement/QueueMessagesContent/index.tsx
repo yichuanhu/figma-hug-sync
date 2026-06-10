@@ -515,8 +515,6 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
     },
     {
       title: t('common.actions'),
-      fixed: 'right' as const,
-      align: 'center' as const,
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYQueueMessageResponse) => (
@@ -647,7 +645,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
               loading={loading}
               rowSelection={rowSelection}
               pagination={false}
-              scroll={{ y: 'calc(100vh - 380px)', x: 1500 }}
+              scroll={{ y: 'calc(100vh - 380px)' }}
               empty={
                 <EmptyState
                   variant={queryParams.keyword || filterCount > 0 ? 'noResult' : 'noData'}

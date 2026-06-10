@@ -512,8 +512,6 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
     },
     {
       title: t('common.actions'),
-        fixed: 'right' as const,
-        align: 'center' as const,
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYCredentialResponse) => {
@@ -668,7 +666,6 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
               />
             }
             pagination={false}
-            scroll={{ x: 'max-content', y: '100%' }}
             onRow={(record) => ({
               id: `credential-row-${(record as LYCredentialResponse).credential_id}`,
               onClick: () => handleRowClick(record as LYCredentialResponse),

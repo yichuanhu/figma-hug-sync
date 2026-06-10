@@ -162,7 +162,6 @@ const ApprovalsListPage = () => {
       title: t('sharing.approvals.col.action'),
       width: 200,
       fixed: 'right' as const,
-      align: 'center' as const,
       render: (_: unknown, row: ShareAsset) => (
         <div onClick={(e) => e.stopPropagation()} style={{ display: 'inline-flex', gap: 4 }}>
           <Button size="small" theme="borderless" type="primary" onClick={() => goDetail(row)}>
@@ -213,7 +212,6 @@ const ApprovalsListPage = () => {
       title: t('sharing.approvals.col.action'),
       width: 80,
       fixed: 'right' as const,
-      align: 'center' as const,
       render: (_: unknown, row: ShareAsset) => (
         <Button size="small" theme="borderless" type="primary" onClick={(e) => { e.stopPropagation(); goDetail(row); }}>
           {t('sharing.approvals.actions.view')}
@@ -281,7 +279,7 @@ const ApprovalsListPage = () => {
               dataSource={pendingPage}
               rowKey="id"
               pagination={false}
-              scroll={{ x: 'max-content', y: '100%' }}
+              scroll={{ x: 1000 }}
               empty={
                 <Empty
                   image={<img src={noDataImg} alt="" style={{ width: 96 }} />}
@@ -344,7 +342,7 @@ const ApprovalsListPage = () => {
               dataSource={historyPage}
               rowKey="id"
               pagination={false}
-              scroll={{ x: 'max-content', y: '100%' }}
+              scroll={{ x: 1140 }}
               empty={
                 <Empty
                   image={<img src={hasHistoryFilter ? noResultImg : noDataImg} alt="" style={{ width: 96 }} />}

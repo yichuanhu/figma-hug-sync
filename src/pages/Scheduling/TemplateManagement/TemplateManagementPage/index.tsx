@@ -368,8 +368,6 @@ const TemplateManagementPage = () => {
     },
     {
       title: t('common.actions'),
-      fixed: 'right' as const,
-      align: 'center' as const,
       dataIndex: 'actions',
       width: 120,
       render: (_: unknown, record: LYExecutionTemplateResponse) => (
@@ -540,7 +538,6 @@ const TemplateManagementPage = () => {
                   setQueryParams((prev) => ({ ...prev, offset: 0, size }));
                 },
               }}
-              scroll={{ x: 'max-content', y: '100%' }}
             />
           )}
         </div>

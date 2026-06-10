@@ -210,8 +210,6 @@ const DocumentsTab = ({
       },
       {
         title: '操作',
-        fixed: 'right' as const,
-        align: 'center' as const,
         key: 'actions',
         width: 90,
         render: (_: unknown, record: ProcessDocument) => (

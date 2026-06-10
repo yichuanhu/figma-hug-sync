@@ -1,24 +1,39 @@
-## 目标
-把这次表格样式改动收敛回来：保留固定列能力，但不要让固定列分割线变成粗线/阴影，也不要用全局结构样式影响所有 Semi Table。
+## 改动范围
 
-## 修改范围
-1. **恢复表格整体样式**
-   - 移除或收敛 `src/styles/semi-overrides.css` 中对 `.semi-table-wrapper`、`.semi-table`、`.semi-table-container`、`.semi-table-body` 的全局 flex/height 覆盖。
-   - 避免这些全局规则把表格高度、滚动区域、行分割线表现改坏。
+仅修改 `src/pages/SharingCenter/MyShared/index.tsx`，并补充 i18n 词条。
 
-2. **固定列分割线改为极细线**
-   - 不再给所有固定列单元格加 `box-shadow`，避免每一格叠加成粗竖线。
-   - 只在固定列边界位置加一条浅色 hairline 分割线：
-     - 左固定列右侧边界
-     - 右固定列左侧边界
-   - 颜色使用更浅的 `var(--semi-color-border)` 透明度或 `var(--semi-color-fill-2)`，视觉上比当前截图里的竖线更细、更弱。
+## 1. 名称列拆成 3 列（名称 / 类型 / 版本）
 
-3. **需求中心列表页同步检查**
-   - 检查 `/requirements/list` 当前表格配置，确保操作列仍居中。
-   - 如果横向滚动条需求和当前样式冲突，优先恢复表格视觉稳定，不再用会破坏 Semi Table 默认布局的全局 hack。
+将现在合并的「名称」列拆成 3 个独立列：
 
-## 验证标准
-- 需求列表中固定列分割线不再像截图中那样明显/粗重。
-- 操作列内容保持居中。
-- 表格行高、表头、横纵滚动区域恢复自然，不出现被撑坏、截断或异常空白。
-- 修改只影响 Semi Table 固定列分割线和必要滚动样式，不扩大到业务逻辑。
+- **名称**：只显示名称文本（不再带资产图标，不再带版本 Tag）。使用 `Text` + ellipsis showTooltip。
+- **类型**：新增独立列，宽度 ~120px。显示资产类型标签：
+  - 流程：`智能自动化流程` / `Workflow`，蓝色 light Tag（small）。
+  - 知识：`知识` / `Knowledge`，绿色 light Tag（small）。
+- **版本**：新增独立列，宽度 ~90px。
+  - 流程类资产：显示 `currentVersion`（如 `v2.3.1`），蓝色 light Tag（small）。
+  - 知识类资产：显示 `-`。
+
+实现方式：直接在 `columns` 内联渲染，不再调用 `AssetIdentity`（其它使用方不动）。
+
+i18n 新增：
+- `sharing.assetSupply.col.type` = `类型` / `Type`
+- `sharing.assetSupply.col.version` = `版本` / `Version`
+
+## 2. 类型筛选样式对齐
+
+把现在的 `Dropdown + Button` 改为 Semi UI `Select`，与其他模块的下拉筛选一致：
+
+- 使用 `Select`，宽度约 200px。
+- 选项：全部 / 智能自动化流程 / 知识。
+- 字体使用 Semi 默认（不加粗）。
+- 保留前缀 `类型：`（通过 `prefix` 或 placeholder 复用现有 i18n key）。
+
+不改动其它筛选行（搜索、状态 FilterPopover、清空按钮）。
+
+## 验证
+
+- 表头：`名称 | 类型 | 版本 | 描述 | 状态 | 复用次数 | 更新时间 | 操作`。
+- 流程行：类型列显示「智能自动化流程」Tag，版本列显示版本 Tag。
+- 知识行：类型列显示「知识」Tag，版本列显示 `-`。
+- 类型筛选下拉外观与需求/流程模块的 Select 一致，字体不加粗。

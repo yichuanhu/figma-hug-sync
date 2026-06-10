@@ -356,8 +356,6 @@ const ReleaseListPage: React.FC = () => {
     },
     {
       title: t('common.actions'),
-      fixed: 'right' as const,
-      align: 'center' as const,
       dataIndex: 'actions',
       width: 60,
       render: (_: unknown, record: LYReleaseResponse) => (
@@ -508,7 +506,7 @@ const ReleaseListPage: React.FC = () => {
             columns={columns}
             rowKey="release_id"
             loading={loading}
-            scroll={{ y: 'calc(100vh - 320px)', x: 1300 }}
+            scroll={{ y: 'calc(100vh - 320px)' }}
             empty={
               <EmptyState
                 variant={queryParams.keyword || filterCount > 0 ? 'noResult' : 'noData'}
