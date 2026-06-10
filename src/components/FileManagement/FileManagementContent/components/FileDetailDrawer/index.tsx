@@ -17,6 +17,7 @@ import DepartmentPath from '@/components/DepartmentPath';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
+import StatusDot from '@/components/StatusDot';
 import './index.less';
 
 const { Text } = Typography;
