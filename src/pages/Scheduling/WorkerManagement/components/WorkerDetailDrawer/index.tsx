@@ -9,6 +9,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { isUpgradeAvailable, type WorkerWithUpgrade } from '../../utils/upgrade';
 import { getEnabledVersion } from '@/mocks/clientVersionData';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 import { ArrowUpCircle, Key, MinusCircle, Pencil, Trash2, Users } from 'lucide-react';
 
