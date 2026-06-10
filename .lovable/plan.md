@@ -1,103 +1,39 @@
-## 目标
+我看到的问题是：你那边编辑器预览一直显示 `Preview has not been built yet`，但我这边用独立预览会正常渲染首页，所以这更像是预览 iframe / dev server / HMR 状态卡住，或者某次全局状态样式改动触发了构建链路不稳定，而不是某个页面本身白屏。
 
-把项目里所有「状态」列/字段的视觉，从当前的 Semi `Tag`（带底色色块）统一改为需求中心使用的「彩色小圆点 + 纯文字」样式（参考第二张截图）。第一张截图「已上架/已下架」绿色 Tag 是要被替换掉的旧样式。
+Do I know what the issue is? 目前可以确认：不是首页运行时崩溃；还不能确认是否存在隐藏的构建错误，需要进一步用构建日志和预览服务状态验证。
 
-不在范围内：类型、级别、优先级、角色、标签等非「状态」字段保持原样（仍用 Tag），避免破坏现有视觉层次。
+## 处理计划
 
-## 一、抽取通用组件
+1. **先恢复预览服务状态**
+   - 重启 Vite 预览服务，排除编辑器 iframe 缓存或 HMR 卡死。
+   - 重新打开首页和你之前所在页面，确认是否还出现 `Preview has not been built yet`。
 
-把 `src/pages/Requirements/RequirementsWorkbench/components/StatusDot` 提升为全局共享组件：
+2. **检查最近改动的高风险点**
+   - 重点检查全局状态字段改造涉及的文件：
+     - `src/components/StatusDot/index.tsx`
+     - `src/components/StatusDot/index.less`
+     - `src/components/sharing/StatusTag/index.tsx`
+     - 需求中心、调度中心、开发中心、运营中心里被替换 `<Tag>` 的页面
+   - 排查是否存在导入路径、类型、Less 编译、Semi Tag color 类型不兼容等问题。
 
-新建 `src/components/StatusDot/`（`index.tsx` + `index.less`），暴露最通用的接口：
+3. **如果有构建错误，直接修复根因**
+   - 若是某些状态颜色值不兼容，统一在共享 `StatusDot` 内做兜底映射。
+   - 若是某些文件缺少导入或仍引用已移除的 `Tag`，补齐或清理。
+   - 若是 HMR 组件导出不稳定，只处理相关导出结构，不扩大范围。
 
-```tsx
-type SemiTagColor = 'grey' | 'blue' | 'green' | 'orange' | 'red' | 'purple' | 'cyan' | 'amber' | 'pink' | 'teal' | 'violet' | 'light-blue' | 'lime' | 'yellow' | 'white';
+4. **验证**
+   - 确认构建/类型检查通过。
+   - 用浏览器预览验证首页和一个状态字段页面都能正常打开。
+   - 如果我的预览正常但你那边编辑器仍是黑屏，我会明确告诉你这是编辑器预览缓存/平台侧占位，需要刷新或从历史恢复对比。
 
-interface StatusDotProps {
-  color: SemiTagColor;  // 复用现状里 Tag 已用的语义色
-  label: React.ReactNode;
-  className?: string;
-}
-```
+## 兜底方案
 
-样式沿用现有 `.req-status-dot`：8px 圆点 + 6px gap + `text-0` 文字。颜色映射表与现有 `StatusDot` 保持一致并补全（grey/blue/green/orange/red/purple/cyan/amber/pink/teal/violet/light-blue/lime/yellow → 对应 `--semi-color-*` 或 Tailwind 同色 hex）。
+如果修复后仍频繁出现同样问题，我会建议先回退到全局状态样式改造前的稳定版本，再分模块小步改造，避免一次性改动太多页面导致预览链路反复不稳定。
 
-需求中心内部原 `StatusDot` 改为对新共享组件的薄包装（保留它从 `statusConfigV2` 解析的逻辑），避免改动需求中心调用方。
+<presentation-actions>
+  <presentation-open-history>View History</presentation-open-history>
+</presentation-actions>
 
-`src/components/sharing/StatusTag` 内部也改为渲染共享 `StatusDot`（保留它的对外 API，避免在「资产上架/共享市场/审批」里逐处替换）。这样共享中心、市场、审批三块自动跟着切换样式。
-
-## 二、需要替换的「状态」字段清单
-
-按模块逐一替换。每处保留原有 `STATUS_TAG_COLOR`/类似映射表中的 color 值，只把外层 `<Tag color={...}>{label}</Tag>` 换成 `<StatusDot color={...} label={label} />`。
-
-### 1. 调度中心
-- `src/pages/Scheduling/WorkerManagement/index.tsx` — Worker 列「状态」
-- `src/pages/Scheduling/WorkerManagement/components/WorkerDetailDrawer/index.tsx` — 详情「状态」
-- `src/pages/Scheduling/WorkerManagement/components/UpgradeDeviceModal/index.tsx` — 升级状态
-- `src/pages/Scheduling/WorkerManagement/WorkerGroupManagement/components/WorkerGroupDetailDrawer/index.tsx` — 分组状态
-
-### 2. 开发中心
-- `src/components/ProcessManagement/ProcessManagementContent/index.tsx` — 自动化流程「状态」
-- `src/components/ProcessManagement/ProcessManagementContent/components/ProcessDetailDrawer/index.tsx`
-- `src/components/CredentialManagement/CredentialManagementContent/index.tsx` — 凭据「状态」
-- `src/components/FileManagement/FileManagementContent/index.tsx` + `components/FileDetailDrawer/index.tsx`
-- `src/components/QueueManagement/QueueManagementContent/index.tsx` + `QueueDetailDrawer`
-- `src/components/QueueManagement/QueueMessagesContent/index.tsx` + `MessageDetailDrawer`
-
-### 3. 发布/审批（开发中心子模块）
-- `src/pages/Development/PublishApprovals/...`、`OfflineApprovals/...` 内部状态字段（如已使用 `StatusTag` 则随共享中心一并切换；否则替换为 `StatusDot`）
-
-### 4. 需求中心
-- `src/pages/Requirements/RequirementsWorkbench/components/ChangeLogTab/index.tsx`
-- `RequirementDetailDrawer` 下的 `VersionHistoryTab` / `TechnicalAssessmentSection` / `EffortTab` / `CostEstimateTab` / `AssessmentTab` / `ArtifactSection` / `ApprovalSection` 中的「状态」字段
-- `src/pages/Requirements/RequirementsScheme/index.tsx` + `SchemeDetailDrawer` + `SchemeBuilder`（含 `WorkflowBuilder`）的状态列
-- `src/pages/Requirements/_shared/BindingConflictContent.tsx`
-
-### 5. 运营中心
-- `src/pages/Operations/PlatformOperations/components/ResourcesTab/index.tsx`
-- `src/pages/Operations/PlatformOperations/components/AnnouncementsTab/index.tsx`
-- `src/pages/Operations/MetricsConfig/index.tsx` + `components/MetricRecordsDrawer/index.tsx`
-- `src/pages/Operations/BusinessOutcomes/components/CustomMetricsSection/index.tsx`
-
-### 6. 共享中心 / 市场（通过 `StatusTag` 一次性切换）
-- `src/pages/SharingCenter/MyShared/...`
-- `src/pages/SharingCenter/Approvals/List` & `Detail`
-- `src/pages/Sharing/Market/...`
-
-### 7. 个人中心 & 运维中心
-- `src/pages/PersonalCenter/PersonalCredentialManagement/index.tsx` + `PersonalCredentialDetailDrawer`
-- `src/pages/Maintenance/ConfigManagement/index.tsx`
-
-### 8. 首页
-- `src/pages/Home/components/AnnouncementSection/index.tsx` 若 Tag 是「状态」语义则替换；若只是分类标签则保留
-
-### 9. 共享中心管理
-- `src/pages/SharingCenter/Admin/Permissions/index.tsx`、`Admin/ApprovalLevels/index.tsx` 中的「状态」字段
-
-## 三、保留不动（非「状态」语义）
-
-以下 `Tag` 用法明显不是状态，不在替换范围内：
-- 参数类型（text/bool/number）— `ParameterManagement`、`ParameterDetailDrawer`
-- 凭据类型、文件类型、队列协议、Worker 标签、部门标签、分类 Tag
-- 审批层级数、版本号、级别等数值型徽标
-- 已上线/已撤回的「发布状态」如果属于资产状态语义，则按本次范围切换
-
-实施时按文件逐个判断：列名为「状态」或字段语义为生命周期状态的，统一切到 `StatusDot`；其余保留。
-
-## 四、记忆更新
-
-完成后追加一条 Core 规则到 `mem://index.md`：
-> 状态字段统一使用 `@/components/StatusDot`（圆点 + 文字），不再用 Semi `Tag` 色块。
-
-并新建 `mem://style/status-dot-standard` 详细说明组件 API、颜色映射与适用场景。
-
-## 五、验收
-
-- 上述清单中所有「状态」列在列表/详情/抽屉里都呈现「彩色圆点 + 文字」，无底色色块
-- 与第二张截图（需求中心）视觉一致
-- 类型、级别等非状态 Tag 保持原样
-- TypeScript 与 vite build 通过
-
-## 备注
-
-工作量较大（涉及约 30 个文件）。如果你希望先做某个子集（例如先做「调度中心 + 开发中心」验证效果，再推广其它模块），告诉我我会按子集执行；默认按上述全量计划一次性完成。
+<presentation-actions>
+<presentation-link url="https://docs.lovable.dev/tips-tricks/troubleshooting">Troubleshooting docs</presentation-link>
+</presentation-actions>
