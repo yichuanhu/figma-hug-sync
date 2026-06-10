@@ -83,6 +83,7 @@ const AssignedValuesTab = ({ credentialId }: AssignedValuesTabProps) => {
     },
     {
       title: t('common.actions'),
+      fixed: 'right' as const,
       key: 'actions',
       width: 80,
       render: (_: unknown, record: AssignedValue) => (

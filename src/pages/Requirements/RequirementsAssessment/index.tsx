@@ -271,6 +271,7 @@ const RequirementsAssessment = () => {
     },
     {
       title: t('common.actions'),
+      fixed: 'right' as const,
       dataIndex: 'action' as string,
       key: 'action',
       width: 60,

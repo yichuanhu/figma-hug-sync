@@ -466,6 +466,7 @@ const TimeTriggerList = ({ pendingTriggerId, onPendingHandled }: TimeTriggerList
     },
     {
       title: t('common.actions'),
+      fixed: 'right' as const,
       dataIndex: 'actions',
       width: 80,
       render: (_: unknown, record: LYTimeTriggerResponse) => (

@@ -515,6 +515,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
     },
     {
       title: t('common.actions'),
+      fixed: 'right' as const,
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYQueueMessageResponse) => (

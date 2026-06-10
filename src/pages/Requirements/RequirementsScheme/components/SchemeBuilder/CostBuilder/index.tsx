@@ -78,6 +78,7 @@ const CostBuilder = ({ cost, onChange }: Props) => {
             },
             {
               title: '操作',
+              fixed: 'right' as const,
               width: 80,
               render: (_v, _r, i: number) => (
                 <Button icon={<Trash2 size={14} strokeWidth={2} />} theme="borderless" type="danger" size="small" onClick={() => removeRow(i)} />
