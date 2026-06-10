@@ -34,6 +34,7 @@ import EditWorkerModal from './components/EditWorkerModal';
 import AddToGroupModal from './components/AddToGroupModal';
 import UpgradeDeviceModal from './components/UpgradeDeviceModal';
 import type { LYWorkerResponse, LYListResponseLYWorkerResponse, GetWorkersParams } from '@/api';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import {
   WorkerWithUpgrade,
