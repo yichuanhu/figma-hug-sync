@@ -953,6 +953,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
               };
             }}
             pagination={false}
+            scroll={{ x: 1500 }}
           />
         )}
         {total > 0 && (
