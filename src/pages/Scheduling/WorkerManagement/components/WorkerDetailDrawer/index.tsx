@@ -80,7 +80,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
     { key: t('worker.detail.fields.description'), value: <ExpandableText text={workerData.description} maxLines={3} /> },
     { key: t('common.owningDepartment'), value: <DepartmentPath departmentId={workerData.owning_department_id} /> },
     { key: t('common.owner'), value: workerData.owner_name ? <UserNameWithCard name={workerData.owner_name} userId={workerData.owner_id || ''} /> : '-' },
-    { key: t('worker.detail.fields.status'), value: <Tag color={statusCfg.color as any} type="light">{statusCfg.text}</Tag> },
+    { key: t('worker.detail.fields.status'), value: <StatusDot color={statusCfg.color as StatusDotColor} label={statusCfg.text} /> },
     { key: t('worker.detail.fields.receiveTasks'), value: <Switch checked={workerData.receive_tasks} size="small" disabled={!canOperateReceiveTasks} onChange={(checked) => onToggleReceiveTasks?.(workerData, checked)} /> },
   ];
 
