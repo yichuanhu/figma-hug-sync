@@ -3756,7 +3756,9 @@
         "status": "状态",
         "reuseCount": "复用次数",
         "updatedAt": "更新时间",
-        "action": "操作"
+        "action": "操作",
+        "description": "描述",
+        "reuseCount": "复用次数",
       },
       "newAsset": {
         "label": "新建资产",
@@ -3838,16 +3840,6 @@
         "loadFailed": "加载失败，请重试",
         "retry": "重试",
         "createCta": "新建资产"
-      },
-      "col": {
-        "version": "版本",
-        "name": "名称",
-        "type": "类型",
-        "source": "来源",
-        "status": "状态",
-        "tags": "标签",
-        "updatedAt": "更新时间",
-        "action": "操作"
       },
       "create": {
         "knowledgeTitle": "新建知识",
@@ -4241,6 +4233,7 @@
       },
       "filter": {
         "sort": "排序",
+        "type": "类型",
         "source": "来源"
       },
       "sort": {
@@ -4294,6 +4287,18 @@
       },
       "detail": {
         "back": "返回",
+        "hero": {
+          "publishedAt": "发布于 {{date}}",
+          "reuseCount": "{{count}} 次复用",
+          "downloadCount": "{{count}} 次下载",
+          "defaultCover": {
+            "fallback": "资产",
+            "workflow": "自动化流程",
+            "knowledge": "知识",
+            "skill": "技能",
+            "snippet": "流程块"
+          }
+        },
         "backWorkflow": "返回流程库",
         "notFound": "资产不存在",
         "noContent": "暂无内容",
@@ -4337,6 +4342,7 @@
         "snapshot": "快照",
         "snapshotTip": "该版本为发布时刻的快照，与开发中心当前版本可能不一致",
         "demoVideo": "演示视频",
+        "videoSectionTitle": "演示视频",
         "meta": {
           "title": "资产元信息",
           "name": "名称",
