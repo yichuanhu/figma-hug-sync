@@ -183,35 +183,18 @@ const MySharedPage = () => {
               showClear
               className="my-shared-search-input"
             />
-            <Dropdown
-              trigger="click"
-              position="bottomLeft"
-              render={(
-                <Dropdown.Menu>
-                  {(['ALL', 'WORKFLOW', 'KNOWLEDGE'] as TypeFilter[]).map((v) => (
-                    <Dropdown.Item key={v} active={typeF === v} onClick={() => setType(v)}>
-                      {v === 'ALL'
-                        ? t('sharing.assetSupply.filters.allType')
-                        : v === 'WORKFLOW'
-                          ? t('sharing.assetSupply.filters.typeWorkflow')
-                          : t('sharing.assetSupply.filters.typeKnowledge')}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              )}
-            >
-              <Button theme="light" type="tertiary">
-                <Space spacing={4}>
-                  {t('sharing.assetSupply.filters.type')}：
-                  {typeF === 'ALL'
-                    ? t('sharing.assetSupply.filters.allType')
-                    : typeF === 'WORKFLOW'
-                      ? t('sharing.assetSupply.filters.typeWorkflow')
-                      : t('sharing.assetSupply.filters.typeKnowledge')}
-                  <ChevronDown size={14} strokeWidth={2} />
-                </Space>
-              </Button>
-            </Dropdown>
+            <Select
+              value={typeF}
+              onChange={(v) => setType(v as TypeFilter)}
+              style={{ width: 200 }}
+              prefix={<span style={{ color: 'var(--semi-color-text-2)', paddingLeft: 8 }}>{t('sharing.assetSupply.filters.type')}：</span>}
+              optionList={[
+                { value: 'ALL', label: t('sharing.assetSupply.filters.allType') },
+                { value: 'WORKFLOW', label: t('sharing.assetSupply.filters.typeWorkflow') },
+                { value: 'KNOWLEDGE', label: t('sharing.assetSupply.filters.typeKnowledge') },
+              ]}
+            />
+
             <span className="my-shared-header-toolbar-divider" />
             <FilterPopover
               visible={filterVisible}
