@@ -209,7 +209,7 @@ const AssetDetail = ({ mode = 'consumer', extraActions, embedded, idOverride, ty
       const ext = (knowledgeAttachment.name.split('.').pop() || '').toUpperCase();
       blocks.push({
         key: 'attachment',
-        title: t('sharing.market.detail.attachment.title'),
+        title: t('sharing.market.detail.attachments'),
         node: (
           <div className="attachment-card">
             <div className="attachment-icon">
@@ -221,7 +221,7 @@ const AssetDetail = ({ mode = 'consumer', extraActions, embedded, idOverride, ty
               <Text type="tertiary" size="small">{knowledgeAttachment.size}</Text>
             </div>
             <Button theme="solid" type="primary" icon={<Download size={14} strokeWidth={2} />} onClick={handleDownloadKnowledge}>
-              {t('sharing.market.detail.attachment.download')}
+              {t('sharing.market.detail.downloadAttachment')}
             </Button>
           </div>
         ),

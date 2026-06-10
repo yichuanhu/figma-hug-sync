@@ -4371,10 +4371,6 @@
         "editKnowledgeTip": "跳转到知识编辑页（Story 005 范围）",
         "overview": "资产概览",
         "noOverview": "暂无概览，请上架者补充",
-        "attachment": {
-          "download": "下载",
-          "title": "附件"
-        },
         "attachmentDownloadStarted": "附件下载已开始",
         "history": {
           "changeNote": "变更说明",
@@ -4392,7 +4388,8 @@
           "nameTaken": "该名称已被占用",
           "nameTooLong": "名称不能超过 100 个字符",
           "title": "复用为新流程"
-        }
+        },
+        "downloadAttachment": "下载附件"
       },
       "skill": {
         "category": "分类",

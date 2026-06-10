@@ -4987,10 +4987,6 @@
         "editKnowledgeTip": "Redirect to knowledge edit page (Story 005)",
         "overview": "Asset Overview",
         "noOverview": "No overview yet",
-        "attachment": {
-          "download": "Download",
-          "title": "Attachments"
-        },
         "attachmentDownloadStarted": "Attachment download started",
         "history": {
           "changeNote": "Change Note",
@@ -5008,7 +5004,8 @@
           "nameTaken": "This name is already taken",
           "nameTooLong": "Name cannot exceed 100 characters",
           "title": "Reuse as New Process"
-        }
+        },
+        "downloadAttachment": "Download Attachment"
       },
       "skill": {
         "category": "Category",
