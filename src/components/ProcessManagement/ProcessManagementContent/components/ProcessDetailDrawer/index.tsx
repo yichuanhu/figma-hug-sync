@@ -480,9 +480,10 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     {
       key: t('common.status'),
       value: (
-        <Tag color={statusConfig[processData.status]?.color || 'grey'} type="light">
-          {t(statusConfig[processData.status]?.i18nKey || 'development.processDevelopment.status.developing')}
-        </Tag>
+        <StatusDot
+          color={(statusConfig[processData.status]?.color as StatusDotColor) || 'grey'}
+          label={t(statusConfig[processData.status]?.i18nKey || 'development.processDevelopment.status.developing')}
+        />
       ),
     },
     { key: t('common.creator'), value: creatorInfo ? <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> : '-' },
