@@ -1,27 +1,39 @@
-## 问题原因
+## 改动范围
 
-流程列表的「关联需求」列现在使用的是 `requirement_id`。
+仅修改 `src/pages/SharingCenter/MyShared/index.tsx`，并补充 i18n 词条。
 
-当前 mock 流程数据里，部分流程的 `requirement_id` 被随机生成成 `req-xxxxxxxx`，这些 ID 并不对应需求列表里的真实需求数据，所以无法通过 `fetchRequirementBriefByIds` 查到 `req_no`，最终只能回退显示原始 `req-短ID`。
+## 1. 名称列拆成 3 列（名称 / 类型 / 版本）
 
-需求列表的「编号」列显示的是需求对象里的 `req_no`，格式为 `REQ-2026-xxxx`，因此两边不一致。
+将现在合并的「名称」列拆成 3 个独立列：
 
-## 修复计划
+- **名称**：只显示名称文本（不再带资产图标，不再带版本 Tag）。使用 `Text` + ellipsis showTooltip。
+- **类型**：新增独立列，宽度 ~120px。显示资产类型标签：
+  - 流程：`智能自动化流程` / `Workflow`，蓝色 light Tag（small）。
+  - 知识：`知识` / `Knowledge`，绿色 light Tag（small）。
+- **版本**：新增独立列，宽度 ~90px。
+  - 流程类资产：显示 `currentVersion`（如 `v2.3.1`），蓝色 light Tag（small）。
+  - 知识类资产：显示 `-`。
 
-1. **统一流程关联需求的数据来源**
-   - 不再让流程 mock 数据随机生成 `req-xxxxxxxx`。
-   - 将流程的 `requirement_id` 指向需求中心真实存在的需求 `id`。
+实现方式：直接在 `columns` 内联渲染，不再调用 `AssetIdentity`（其它使用方不动）。
 
-2. **保留现有显示逻辑**
-   - 流程列表仍通过 `requirement_id` 查询需求 brief。
-   - 查询成功后继续显示需求编号 `REQ-2026-xxxx`，必要时带标题。
-   - 无关联需求仍显示 `-`。
+i18n 新增：
+- `sharing.assetSupply.col.type` = `类型` / `Type`
+- `sharing.assetSupply.col.version` = `版本` / `Version`
 
-3. **同步详情页与筛选项**
-   - 流程详情抽屉里的关联需求也会使用同一套 brief 查询结果。
-   - 「关联需求」筛选下拉会显示真实需求编号，不再出现 `req-短ID`。
+## 2. 类型筛选样式对齐
 
-4. **验证**
-   - 检查流程列表关联需求列不再出现随机 `req-xxxxxxxx`。
-   - 确认点击关联需求仍能跳转/打开对应需求。
-   - 确认需求列表编号与流程关联需求显示一致。
+把现在的 `Dropdown + Button` 改为 Semi UI `Select`，与其他模块的下拉筛选一致：
+
+- 使用 `Select`，宽度约 200px。
+- 选项：全部 / 智能自动化流程 / 知识。
+- 字体使用 Semi 默认（不加粗）。
+- 保留前缀 `类型：`（通过 `prefix` 或 placeholder 复用现有 i18n key）。
+
+不改动其它筛选行（搜索、状态 FilterPopover、清空按钮）。
+
+## 验证
+
+- 表头：`名称 | 类型 | 版本 | 描述 | 状态 | 复用次数 | 更新时间 | 操作`。
+- 流程行：类型列显示「智能自动化流程」Tag，版本列显示版本 Tag。
+- 知识行：类型列显示「知识」Tag，版本列显示 `-`。
+- 类型筛选下拉外观与需求/流程模块的 Select 一致，字体不加粗。

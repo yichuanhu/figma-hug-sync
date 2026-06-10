@@ -4360,12 +4360,15 @@
       "pageSubtitle": "Manage assets you've shared for reuse",
       "col": {
         "name": "Name",
+        "type": "Type",
+        "version": "Version",
         "description": "Description",
         "status": "Status",
         "reuseCount": "Reuse Count",
         "updatedAt": "Updated",
         "action": "Action"
       },
+
       "newAsset": {
         "label": "New Asset",
         "entry": "New Asset",

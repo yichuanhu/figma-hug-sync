@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import {
-  Typography, Button, Input, Pagination, Table, Dropdown, Space, Tag,
+  Typography, Button, Input, Pagination, Table, Dropdown, Space, Tag, Select,
 } from '@douyinfe/semi-ui';
-import AssetIdentity from '@/pages/Sharing/Market/components/AssetIdentity';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { ChevronDown, Plus, Workflow as WorkflowIcon, BookOpen, MoreHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+
 import emptyImg from '@/assets/empty-state/no-data.png';
 import FilterPopover from '@/components/FilterPopover';
 
@@ -76,21 +76,40 @@ const MySharedPage = () => {
     {
       title: t('sharing.assetSupply.col.name'),
       dataIndex: 'name',
-      width: 280,
+      width: 240,
+      render: (_: unknown, a: ShareAsset) => {
+        const name = a.displayName || a.name;
+        return (
+          <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: '100%' }}>
+            {name}
+          </Text>
+        );
+      },
+    },
+    {
+      title: t('sharing.assetSupply.col.type'),
+      dataIndex: 'type',
+      width: 140,
       render: (_: unknown, a: ShareAsset) => {
         const isWorkflow = a.type === 'WORKFLOW';
-        const Icon = isWorkflow ? WorkflowIcon : BookOpen;
-        const color = isWorkflow ? 'rgba(var(--semi-blue-6), 1)' : 'rgba(var(--semi-green-6), 1)';
         return (
-          <div className="cell-name">
-            <span className="cell-name-icon">
-              <Icon size={16} strokeWidth={2} color={color} />
-            </span>
-            <div className="cell-name-text">
-              <AssetIdentity asset={a} size="sm" ellipsis />
-            </div>
-          </div>
+          <Tag size="small" type="light" color={isWorkflow ? 'blue' : 'green'}>
+            {isWorkflow
+              ? t('sharing.assetSupply.filters.typeWorkflow')
+              : t('sharing.assetSupply.filters.typeKnowledge')}
+          </Tag>
         );
+      },
+    },
+    {
+      title: t('sharing.assetSupply.col.version'),
+      dataIndex: 'currentVersion',
+      width: 100,
+      render: (_: unknown, a: ShareAsset) => {
+        if (a.type !== 'WORKFLOW' || !a.currentVersion) {
+          return <Text type="tertiary" size="small">-</Text>;
+        }
+        return <Tag size="small" type="light" color="blue">{a.currentVersion}</Tag>;
       },
     },
     {
@@ -126,6 +145,7 @@ const MySharedPage = () => {
       width: 140,
       render: (v: string) => <Text type="tertiary" size="small">{v}</Text>,
     },
+
     {
       title: t('sharing.assetSupply.col.action'),
       width: 72,
@@ -163,35 +183,18 @@ const MySharedPage = () => {
               showClear
               className="my-shared-search-input"
             />
-            <Dropdown
-              trigger="click"
-              position="bottomLeft"
-              render={(
-                <Dropdown.Menu>
-                  {(['ALL', 'WORKFLOW', 'KNOWLEDGE'] as TypeFilter[]).map((v) => (
-                    <Dropdown.Item key={v} active={typeF === v} onClick={() => setType(v)}>
-                      {v === 'ALL'
-                        ? t('sharing.assetSupply.filters.allType')
-                        : v === 'WORKFLOW'
-                          ? t('sharing.assetSupply.filters.typeWorkflow')
-                          : t('sharing.assetSupply.filters.typeKnowledge')}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              )}
-            >
-              <Button theme="light" type="tertiary">
-                <Space spacing={4}>
-                  {t('sharing.assetSupply.filters.type')}：
-                  {typeF === 'ALL'
-                    ? t('sharing.assetSupply.filters.allType')
-                    : typeF === 'WORKFLOW'
-                      ? t('sharing.assetSupply.filters.typeWorkflow')
-                      : t('sharing.assetSupply.filters.typeKnowledge')}
-                  <ChevronDown size={14} strokeWidth={2} />
-                </Space>
-              </Button>
-            </Dropdown>
+            <Select
+              value={typeF}
+              onChange={(v) => setType(v as TypeFilter)}
+              style={{ width: 200 }}
+              prefix={<span style={{ color: 'var(--semi-color-text-2)', paddingLeft: 8 }}>{t('sharing.assetSupply.filters.type')}：</span>}
+              optionList={[
+                { value: 'ALL', label: t('sharing.assetSupply.filters.allType') },
+                { value: 'WORKFLOW', label: t('sharing.assetSupply.filters.typeWorkflow') },
+                { value: 'KNOWLEDGE', label: t('sharing.assetSupply.filters.typeKnowledge') },
+              ]}
+            />
+
             <span className="my-shared-header-toolbar-divider" />
             <FilterPopover
               visible={filterVisible}
