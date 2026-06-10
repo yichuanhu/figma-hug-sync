@@ -3756,9 +3756,7 @@
         "status": "状态",
         "reuseCount": "复用次数",
         "updatedAt": "更新时间",
-        "action": "操作",
-        "description": "描述",
-        "reuseCount": "复用次数",
+        "action": "操作"
       },
       "newAsset": {
         "label": "新建资产",

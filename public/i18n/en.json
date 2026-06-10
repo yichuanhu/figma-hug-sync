@@ -4364,9 +4364,7 @@
         "status": "Status",
         "reuseCount": "Reuse Count",
         "updatedAt": "Updated",
-        "action": "Action",
-        "description": "Description",
-        "reuseCount": "Reuse Count",
+        "action": "Action"
       },
       "newAsset": {
         "label": "New Asset",
