@@ -1,39 +1,69 @@
-## 改动范围
+## 目标
 
-仅修改 `src/pages/SharingCenter/MyShared/index.tsx`，并补充 i18n 词条。
+参考需求工作台（`RequirementsWorkbench`）做法，把所有列表页的「操作」列固定到右侧：
+- 操作列配置加 `fixed: 'right' as const`
+- `<Table>` 加 `scroll={{ x: <总宽度> }}`，已有 `y` 的保留
 
-## 1. 名称列拆成 3 列（名称 / 类型 / 版本）
+## 改造范围（主列表页，不含 Drawer 内嵌子表）
 
-将现在合并的「名称」列拆成 3 个独立列：
+需求中心（全部子列表页统一固定）
+- `src/pages/Requirements/RequirementsProjects/index.tsx`
+- `src/pages/Requirements/RequirementsAssessment/index.tsx`
+- `src/pages/Requirements/RequirementsScheme/index.tsx`
+- `src/pages/Requirements/RequirementsReview/index.tsx`
+- `src/pages/Requirements/CostBaselineConfig/index.tsx`
+- `src/pages/Requirements/RequirementsScheme/components/SchemeBuilder/index.tsx`
+- `src/pages/Requirements/RequirementsScheme/components/SchemeBuilder/CostBuilder/index.tsx`
+- 注：`RequirementsWorkbench` 已固定，无需重复
 
-- **名称**：只显示名称文本（不再带资产图标，不再带版本 Tag）。使用 `Text` + ellipsis showTooltip。
-- **类型**：新增独立列，宽度 ~120px。显示资产类型标签：
-  - 流程：`智能自动化流程` / `Workflow`，蓝色 light Tag（small）。
-  - 知识：`知识` / `Knowledge`，绿色 light Tag（small）。
-- **版本**：新增独立列，宽度 ~90px。
-  - 流程类资产：显示 `currentVersion`（如 `v2.3.1`），蓝色 light Tag（small）。
-  - 知识类资产：显示 `-`。
+调度中心
+- `src/pages/Scheduling/TaskManagement/TaskManagementPage/index.tsx`
+- `src/pages/Scheduling/TemplateManagement/TemplateManagementPage/index.tsx`
+- `src/pages/Scheduling/WorkerManagement/index.tsx`
+- `src/pages/Scheduling/WorkerManagement/WorkerGroupManagement/index.tsx`
+- `src/pages/Scheduling/AutoExecutionPolicy/AutoExecutionPolicyPage/components/TimeTriggerList/index.tsx`
+- `src/pages/Scheduling/AutoExecutionPolicy/AutoExecutionPolicyPage/components/QueueTriggerList/index.tsx`
 
-实现方式：直接在 `columns` 内联渲染，不再调用 `AssetIdentity`（其它使用方不动）。
+开发中心
+- `src/pages/Development/ReleaseManagement/ReleaseListPage/index.tsx`
+- `src/pages/Development/OfflineApprovals/index.tsx`
+- `src/pages/Development/PublishApprovals/index.tsx`
 
-i18n 新增：
-- `sharing.assetSupply.col.type` = `类型` / `Type`
-- `sharing.assetSupply.col.version` = `版本` / `Version`
+业务资产复用组件
+- `src/components/ProcessManagement/ProcessManagementContent/index.tsx`
+- `src/components/FileManagement/FileManagementContent/index.tsx`
+- `src/components/CredentialManagement/CredentialManagementContent/index.tsx`
+- `src/components/ParameterManagement/ParameterManagementContent/index.tsx`
+- `src/components/QueueManagement/QueueManagementContent/index.tsx`
+- `src/components/QueueManagement/QueueMessagesContent/index.tsx`
 
-## 2. 类型筛选样式对齐
+个人中心
+- `src/pages/PersonalCenter/PersonalCredentialManagement/index.tsx`
 
-把现在的 `Dropdown + Button` 改为 Semi UI `Select`，与其他模块的下拉筛选一致：
+运营中心
+- `src/pages/Operations/MetricsConfig/index.tsx`
 
-- 使用 `Select`，宽度约 200px。
-- 选项：全部 / 智能自动化流程 / 知识。
-- 字体使用 Semi 默认（不加粗）。
-- 保留前缀 `类型：`（通过 `prefix` 或 placeholder 复用现有 i18n key）。
+分享中心
+- `src/pages/SharingCenter/MyShared/index.tsx`
+- `src/pages/SharingCenter/Approvals/List/index.tsx`
 
-不改动其它筛选行（搜索、状态 FilterPopover、清空按钮）。
+**不改**：Drawer 内嵌子表（`DocumentsTab`、`AssignedValuesTab`、`LinkedCredentialsDrawer`、`PersonalCredentialDetailDrawer`、`WorkerGroupDetailDrawer`、`ProjectDetailDrawer` 等），它们在 900px Drawer 内不需要横向滚动。
+
+## 技术要点
+
+每个文件统一处理：
+1. 操作列对象加 `fixed: 'right' as const`。
+2. `<Table>` 的 `scroll` 配置：
+   - 已有 `scroll={{ y: ... }}`：补 `x: <累加列宽>`。
+   - 没有 `scroll`：新增 `scroll={{ x: <累加列宽> }}`。
+3. `x` 取已声明列宽之和；未声明的按 160 估算，结果略大于容器宽度才能触发固定。
+
+## 关于"build 失败黑屏"
+
+Vite dev server 日志无错误，浏览器控制台无报错，预览正常。判定之前的黑屏是 HMR 瞬时不一致已自动恢复，本次不回滚，只做"操作列固定"。
 
 ## 验证
 
-- 表头：`名称 | 类型 | 版本 | 描述 | 状态 | 复用次数 | 更新时间 | 操作`。
-- 流程行：类型列显示「智能自动化流程」Tag，版本列显示版本 Tag。
-- 知识行：类型列显示「知识」Tag，版本列显示 `-`。
-- 类型筛选下拉外观与需求/流程模块的 Select 一致，字体不加粗。
+- 进入上述列表页，缩窄窗口出现横向滚动条时，操作列贴右侧并显示左侧分隔阴影。
+- 行点击、行内 Dropdown 操作菜单不被遮挡。
+- 表头与数据行操作列对齐。
