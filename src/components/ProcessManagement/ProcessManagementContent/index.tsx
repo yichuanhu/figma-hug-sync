@@ -176,13 +176,42 @@ const mockCreatorInfoMap: Record<string, { name: string; department?: string; ro
 
 // ============= 数据获取 - 返回LYListResponseLYProcessResponse =============
 
+// 一次性将 mock 流程的 requirement_id 替换为需求中心真实存在的需求 id，
+// 避免列表「关联需求」列出现随机的 req-xxxxxxxx，与需求列表编号 REQ-2026-xxxx 不一致。
+let requirementIdsResolved = false;
+const resolveRealRequirementIds = async () => {
+  if (requirementIdsResolved) return;
+  requirementIdsResolved = true;
+  try {
+    const { fetchRequirementList } = await import('@/pages/Requirements/RequirementsWorkbench/mockData');
+    const res = await fetchRequirementList({
+      offset: 0,
+      size: 1000,
+      keyword: '',
+      sort_by: 'created_at',
+      sort_order: 'desc',
+    });
+    const realIds = res.list.map((r) => r.id);
+    if (realIds.length === 0) return;
+    mockProcessData.forEach((p, idx) => {
+      if (p.requirement_id) {
+        p.requirement_id = realIds[idx % realIds.length];
+      }
+    });
+  } catch {
+    // 忽略：解析失败不阻塞列表
+  }
+};
+
 const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: string[]; departmentFilter?: string[] }): Promise<LYListResponseLYProcessResponse> => {
+  await resolveRealRequirementIds();
   // 模拟网络延迟
   await new Promise((resolve) => setTimeout(resolve, 300));
 
   console.log('API参数:', params);
 
   let filteredData = [...mockProcessData];
+
 
   // 搜索过滤
   if (params.keyword?.trim()) {
@@ -379,7 +408,9 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   }, [queryParams, statusFilter, departmentFilter, includeSubDepts]);
 
   // 一次性加载所有「已被流程关联」的需求 brief，作为「关联需求」筛选下拉选项
+  // 注意：要在 fetchProcessList 解析过真实 requirement_id 之后再收集，避免拿到随机的 req-xxx
   useEffect(() => {
+    if (isInitialLoad) return;
     const allIds = Array.from(
       new Set(mockProcessData.map((p) => p.requirement_id).filter((x): x is string => !!x)),
     );
@@ -388,7 +419,6 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       return;
     }
     let cancelled = false;
-    // 动态 import，避免在模块解析阶段拉起 RequirementsWorkbench/mockData 的顶层副作用导致循环初始化错误
     import('@/pages/Requirements/RequirementsProjects/mockData').then(({ fetchRequirementBriefByIds }) =>
       fetchRequirementBriefByIds(allIds).then((list) => {
         if (cancelled) return;
@@ -399,7 +429,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isInitialLoad]);
+
 
   // 客户端再过滤：「关联需求」「适用操作系统」「开发工程师」
   const displayList = useMemo(() => {
