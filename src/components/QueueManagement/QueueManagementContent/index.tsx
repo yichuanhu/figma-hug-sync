@@ -633,7 +633,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
             pagination={false}
             empty={
               <EmptyState
-                variant={queryParams.keyword || departmentFilter.length  scroll={{ x: 1300 }}> 0 || filterCount > 0 ? 'noResult' : 'noData'}
+                variant={queryParams.keyword || departmentFilter.length > 0 || filterCount > 0 ? 'noResult' : 'noData'}
                 description={queryParams.keyword || departmentFilter.length > 0 || filterCount > 0 
                   ? t('queue.empty.filterDescription') 
                   : t('queue.empty.defaultDescription')}

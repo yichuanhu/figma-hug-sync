@@ -662,7 +662,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
             loading={loading}
             empty={
               <EmptyState 
-                variant={(queryParams.keyword || departmentFilter.length  scroll={{ x: 1300 }}> 0 || typeFilter.length > 0) ? 'noResult' : 'noData'}
+                variant={(queryParams.keyword || departmentFilter.length > 0 || typeFilter.length > 0) ? 'noResult' : 'noData'}
                 description={(queryParams.keyword || departmentFilter.length > 0 || typeFilter.length > 0) ? t('common.noResult') : t('credential.noData')} 
               />
             }
