@@ -395,7 +395,7 @@ const PersonalCredentialManagement = () => {
               showSizeChanger: true,
               showTotal: true,
             }}
-            scroll={{ y: 'calc(100vh - 380px)' }}
+            scroll={{ y: 'calc(100vh - 380px)', x: 1100 }}
           />
         )}
       </div>

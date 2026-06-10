@@ -1044,6 +1044,7 @@ const TaskManagementPage = () => {
     },
     {
       title: t('common.actions'),
+        fixed: 'right' as const,
       dataIndex: 'action',
       key: 'action',
       width: 60,
@@ -1364,7 +1365,7 @@ const TaskManagementPage = () => {
               loading={loading && !isInitialLoad}
               rowSelection={{
                 selectedRowKeys,
-                onChange: (keys) => setSelectedRowKeys((keys as string[]) || []),
+                onChange: (keys) = scroll={{ x: 1500 }}> setSelectedRowKeys((keys as string[]) || []),
                 getCheckboxProps: (record) => ({
                   disabled: (record as LYTaskResponse).task_status !== 'PENDING',
                 }),

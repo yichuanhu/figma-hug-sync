@@ -289,7 +289,7 @@ const RequirementsProjects = () => {
               },
             })}
             pagination={false}
-            scroll={{ y: 'calc(100vh - 320px)' }}
+            scroll={{ y: 'calc(100vh - 320px)', x: 1100 }}
           />
         )}
       </div>

@@ -645,7 +645,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
               loading={loading}
               rowSelection={rowSelection}
               pagination={false}
-              scroll={{ y: 'calc(100vh - 380px)' }}
+              scroll={{ y: 'calc(100vh - 380px)', x: 1500 }}
               empty={
                 <EmptyState
                   variant={queryParams.keyword || filterCount > 0 ? 'noResult' : 'noData'}

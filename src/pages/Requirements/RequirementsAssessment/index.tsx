@@ -460,7 +460,7 @@ const RequirementsAssessment = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>
@@ -486,7 +486,7 @@ const RequirementsAssessment = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>
@@ -512,7 +512,7 @@ const RequirementsAssessment = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>

@@ -665,7 +665,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             pagination={false}
             empty={
               <EmptyState
-                variant={queryParams.keyword || departmentFilter.length > 0 || sourceFilter.length > 0 ? 'noResult' : 'noData'}
+                variant={queryParams.keyword || departmentFilter.length  scroll={{ x: 1300 }}> 0 || sourceFilter.length > 0 ? 'noResult' : 'noData'}
                 description={
                   queryParams.keyword || departmentFilter.length > 0 || sourceFilter.length > 0
                     ? t('file.empty.filterDescription')

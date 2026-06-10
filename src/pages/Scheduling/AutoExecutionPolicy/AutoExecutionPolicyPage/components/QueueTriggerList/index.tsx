@@ -604,7 +604,7 @@ const QueueTriggerList = ({ pendingTriggerId, onPendingHandled }: QueueTriggerLi
                     ? t('queueTrigger.empty.filterDescription')
                     : t('queueTrigger.empty.defaultDescription')
                 }
-              />
+               scroll={{ x: 1300 }}/>
             }
             pagination={false}
             onRow={(record) => ({

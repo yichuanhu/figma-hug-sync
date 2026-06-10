@@ -319,6 +319,7 @@ const RequirementsReview = () => {
     if (showActions) {
       cols.push({
         title: t('common.actions'),
+          fixed: 'right' as const,
         dataIndex: 'action' as string,
         key: 'action',
         width: 60,
@@ -503,7 +504,7 @@ const RequirementsReview = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>
@@ -530,7 +531,7 @@ const RequirementsReview = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>
@@ -558,7 +559,7 @@ const RequirementsReview = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>
