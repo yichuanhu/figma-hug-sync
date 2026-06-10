@@ -54,7 +54,7 @@ const MessageDetailDrawer = ({
       EXPIRED: { color: 'grey', text: t('queueMessage.status.expired') },
     };
     const config = statusConfig[status];
-    return <Tag color={config.color}>{config.text}</Tag>;
+    return <StatusDot color={config.color as StatusDotColor} label={config.text} />;
   };
 
   const getPriorityTag = (priority: QueueMessagePriority) => {
