@@ -36,6 +36,7 @@ import UploadFileModal from './components/UploadFileModal';
 import FileDetailDrawer from './components/FileDetailDrawer';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
+import StatusDot from '@/components/StatusDot';
 import './index.less';
 
 // Mock数据生成
