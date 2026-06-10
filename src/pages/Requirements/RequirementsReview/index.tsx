@@ -226,7 +226,7 @@ const RequirementsReview = () => {
 
   // 通用列定义
   const getColumns = (showActions: boolean) => {
-    const cols = [
+    const cols: Array<Record<string, unknown>> = [
       {
         title: t('requirements.fields.title'),
         dataIndex: 'title',
