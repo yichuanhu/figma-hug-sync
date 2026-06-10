@@ -34,6 +34,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 
 import AssignedValuesTab from './AssignedValuesTab';
+import StatusDot from '@/components/StatusDot';
 import './index.less';
 
 const { Title, Text } = Typography;
