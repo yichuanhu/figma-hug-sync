@@ -176,13 +176,42 @@ const mockCreatorInfoMap: Record<string, { name: string; department?: string; ro
 
 // ============= 数据获取 - 返回LYListResponseLYProcessResponse =============
 
+// 一次性将 mock 流程的 requirement_id 替换为需求中心真实存在的需求 id，
+// 避免列表「关联需求」列出现随机的 req-xxxxxxxx，与需求列表编号 REQ-2026-xxxx 不一致。
+let requirementIdsResolved = false;
+const resolveRealRequirementIds = async () => {
+  if (requirementIdsResolved) return;
+  requirementIdsResolved = true;
+  try {
+    const { fetchRequirementList } = await import('@/pages/Requirements/RequirementsWorkbench/mockData');
+    const res = await fetchRequirementList({
+      offset: 0,
+      size: 1000,
+      keyword: '',
+      sort_by: 'created_at',
+      sort_order: 'desc',
+    });
+    const realIds = res.list.map((r) => r.id);
+    if (realIds.length === 0) return;
+    mockProcessData.forEach((p, idx) => {
+      if (p.requirement_id) {
+        p.requirement_id = realIds[idx % realIds.length];
+      }
+    });
+  } catch {
+    // 忽略：解析失败不阻塞列表
+  }
+};
+
 const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: string[]; departmentFilter?: string[] }): Promise<LYListResponseLYProcessResponse> => {
+  await resolveRealRequirementIds();
   // 模拟网络延迟
   await new Promise((resolve) => setTimeout(resolve, 300));
 
   console.log('API参数:', params);
 
   let filteredData = [...mockProcessData];
+
 
   // 搜索过滤
   if (params.keyword?.trim()) {
