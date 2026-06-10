@@ -460,7 +460,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           <Table 
             size="small"
             columns={columns}
-            scroll={{ x: 1300 }} 
+            scroll={{ x: 'max-content', y: '100%' }} 
             dataSource={list}
             loading={loading}
             rowKey="id"

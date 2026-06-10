@@ -382,7 +382,7 @@ const MetricsConfig = () => {
           columns={columns}
           size="small"
           pagination={false}
-         scroll={{ x: 1100 }}/>
+         scroll={{ x: 'max-content', y: '100%' }}/>
       )}
 
       {data.length > 0 && (

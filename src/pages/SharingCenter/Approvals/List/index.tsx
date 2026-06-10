@@ -279,7 +279,7 @@ const ApprovalsListPage = () => {
               dataSource={pendingPage}
               rowKey="id"
               pagination={false}
-              scroll={{ x: 1000 }}
+              scroll={{ x: 'max-content', y: '100%' }}
               empty={
                 <Empty
                   image={<img src={noDataImg} alt="" style={{ width: 96 }} />}
@@ -342,7 +342,7 @@ const ApprovalsListPage = () => {
               dataSource={historyPage}
               rowKey="id"
               pagination={false}
-              scroll={{ x: 1140 }}
+              scroll={{ x: 'max-content', y: '100%' }}
               empty={
                 <Empty
                   image={<img src={hasHistoryFilter ? noResultImg : noDataImg} alt="" style={{ width: 96 }} />}

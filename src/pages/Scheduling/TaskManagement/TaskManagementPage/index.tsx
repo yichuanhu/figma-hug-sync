@@ -1381,7 +1381,7 @@ const TaskManagementPage = () => {
                 />
               }
               pagination={false}
-              scroll={{ x: 1500 }}
+              scroll={{ x: 'max-content', y: '100%' }}
               onRow={(record) => ({
                 onClick: () => openTaskDetail(record as LYTaskResponse),
                 style: { cursor: 'pointer' },

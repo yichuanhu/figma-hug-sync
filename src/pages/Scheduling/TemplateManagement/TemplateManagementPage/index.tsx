@@ -539,7 +539,7 @@ const TemplateManagementPage = () => {
                   setQueryParams((prev) => ({ ...prev, offset: 0, size }));
                 },
               }}
-              scroll={{ x: 1300 }}
+              scroll={{ x: 'max-content', y: '100%' }}
             />
           )}
         </div>

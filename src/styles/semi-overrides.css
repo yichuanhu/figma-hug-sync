@@ -3,3 +3,42 @@
 .semi-popover-wrapper {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
 }
+
+/* ===== Semi Table 通用列表优化 ===== */
+
+/* 让设置了 scroll.y 的表格 body 始终撑满可用高度，
+   这样横向滚动条总是出现在可视区底部（吸底效果），而不必滚动到表尾才看见。 */
+.semi-table-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.semi-table-wrapper > .semi-table {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.semi-table-wrapper > .semi-table > .semi-table-container {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.semi-table-wrapper .semi-table-body {
+  flex: 1;
+  max-height: none !important;
+  min-height: 0;
+}
+
+/* 固定列分割线 —— 替换默认的厚阴影为 1px 细线，更清爽 */
+.semi-table-fixed-right,
+td.semi-table-cell-fixed-right,
+th.semi-table-cell-fixed-right {
+  box-shadow: -1px 0 0 0 var(--semi-color-border) !important;
+}
+.semi-table-fixed-left,
+td.semi-table-cell-fixed-left,
+th.semi-table-cell-fixed-left {
+  box-shadow: 1px 0 0 0 var(--semi-color-border) !important;
+}

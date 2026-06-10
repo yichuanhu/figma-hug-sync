@@ -601,7 +601,7 @@ const TimeTriggerList = ({ pendingTriggerId, onPendingHandled }: TimeTriggerList
             rowKey="trigger_id"
             loading={loading && !isInitialLoad}
             columns={columns}
-            scroll={{ x: 1300 }}
+            scroll={{ x: 'max-content', y: '100%' }}
             empty={
               <EmptyState
                 variant={hasFilters ? 'noResult' : 'noData'}

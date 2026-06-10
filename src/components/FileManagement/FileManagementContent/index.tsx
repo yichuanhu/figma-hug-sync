@@ -664,7 +664,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             rowKey="id"
             loading={loading && !isInitialLoad}
             pagination={false}
-            scroll={{ x: 1300 }}
+            scroll={{ x: 'max-content', y: '100%' }}
             empty={
               <EmptyState
                 variant={queryParams.keyword || departmentFilter.length > 0 || sourceFilter.length > 0 ? 'noResult' : 'noData'}
