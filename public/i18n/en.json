@@ -4447,16 +4447,6 @@
         "loadFailed": "加载失败，请重试",
         "retry": "重试"
       },
-      "col": {
-        "version": "Version",
-        "name": "Name",
-        "type": "Type",
-        "source": "Source",
-        "status": "Status",
-        "tags": "Tags",
-        "updatedAt": "Updated At",
-        "action": "Action"
-      },
       "create": {
         "knowledgeTitle": "New Knowledge",
         "skillTitle": "New Skill",
@@ -4861,6 +4851,7 @@
       },
       "filter": {
         "sort": "Sort",
+        "type": "Type",
         "source": "Source"
       },
       "sort": {
@@ -4910,6 +4901,18 @@
       },
       "detail": {
         "back": "Back",
+        "hero": {
+          "publishedAt": "Published {{date}}",
+          "reuseCount": "{{count}} reuses",
+          "downloadCount": "{{count}} downloads",
+          "defaultCover": {
+            "fallback": "Asset",
+            "workflow": "Workflow",
+            "knowledge": "Knowledge",
+            "skill": "Skill",
+            "snippet": "Snippet"
+          }
+        },
         "backWorkflow": "Back to Workflow Library",
         "notFound": "Asset not found",
         "noContent": "No content",
@@ -4953,6 +4956,7 @@
         "snapshot": "Snapshot",
         "snapshotTip": "Snapshot at publish time; may differ from the current version in Dev Center",
         "demoVideo": "Demo Video",
+        "videoSectionTitle": "Demo video",
         "meta": {
           "title": "Asset Meta Information",
           "name": "Name",
