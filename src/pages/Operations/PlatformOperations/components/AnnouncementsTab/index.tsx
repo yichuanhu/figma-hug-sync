@@ -16,6 +16,7 @@ import {
   type PlatformAnnouncement,
 } from '../../mockData';
 import AnnouncementFormModal from '../AnnouncementFormModal';
+import StatusDot from '@/components/StatusDot';
 import './index.less';
 
 const { Text } = Typography;
