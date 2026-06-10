@@ -275,6 +275,7 @@ const MySharedPage = () => {
             dataSource={list}
             rowKey="id"
             pagination={false}
+            scroll={{ x: 1200 }}
             onRow={(record) => ({
               onClick: () => setActiveId(record!.id),
               className: record!.id === activeId ? 'my-shared-row-selected' : '',

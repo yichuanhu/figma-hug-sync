@@ -151,7 +151,7 @@ const PublishApprovalsPage = () => {
     },
     { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v?: string) => fmtTime(v) },
     {
-      title: '操作', dataIndex: 'action', key: 'action', width: 60,
+      title: '操作', dataIndex: 'action', key: 'action', fixed: 'right' as const, width: 60,
       render: (_: unknown, r: ProcessVersion) => (
         <Dropdown
           trigger="click"
@@ -202,7 +202,7 @@ const PublishApprovalsPage = () => {
           onClick: () => record && openDetail(record as ProcessVersion),
         })}
         pagination={false}
-        scroll={{ y: 'calc(100vh - 440px)' }}
+        scroll={{ y: 'calc(100vh - 440px)', x: 1100 }}
       />
     )
   );

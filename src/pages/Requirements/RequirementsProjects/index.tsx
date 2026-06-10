@@ -160,6 +160,7 @@ const RequirementsProjects = () => {
     },
     {
       title: t('common.actions'),
+      fixed: 'right' as const,
       key: 'actions',
       width: 60,
       render: (_: unknown, r: Project) => (
@@ -289,7 +290,7 @@ const RequirementsProjects = () => {
               },
             })}
             pagination={false}
-            scroll={{ y: 'calc(100vh - 320px)' }}
+            scroll={{ y: 'calc(100vh - 320px)', x: 1100 }}
           />
         )}
       </div>

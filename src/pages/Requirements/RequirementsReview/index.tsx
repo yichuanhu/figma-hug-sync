@@ -226,7 +226,7 @@ const RequirementsReview = () => {
 
   // 通用列定义
   const getColumns = (showActions: boolean) => {
-    const cols = [
+    const cols: Array<Record<string, unknown>> = [
       {
         title: t('requirements.fields.title'),
         dataIndex: 'title',
@@ -322,6 +322,7 @@ const RequirementsReview = () => {
         dataIndex: 'action' as string,
         key: 'action',
         width: 60,
+        fixed: 'right',
         ellipsis: false,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render: ((_: any, record: any) => {
@@ -503,7 +504,7 @@ const RequirementsReview = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>
@@ -530,7 +531,7 @@ const RequirementsReview = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>
@@ -558,7 +559,7 @@ const RequirementsReview = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>

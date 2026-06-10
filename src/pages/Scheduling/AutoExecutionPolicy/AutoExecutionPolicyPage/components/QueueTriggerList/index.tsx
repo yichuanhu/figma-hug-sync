@@ -456,6 +456,7 @@ const QueueTriggerList = ({ pendingTriggerId, onPendingHandled }: QueueTriggerLi
     },
     {
       title: t('common.actions'),
+      fixed: 'right' as const,
       dataIndex: 'actions',
       width: 80,
       render: (_: unknown, record: LYQueueTriggerResponse) => (
@@ -594,6 +595,7 @@ const QueueTriggerList = ({ pendingTriggerId, onPendingHandled }: QueueTriggerLi
             size="small"
             dataSource={list}
             columns={columns}
+            scroll={{ x: 1300 }}
             rowKey="trigger_id"
             loading={loading && !isInitialLoad}
             empty={
@@ -603,8 +605,7 @@ const QueueTriggerList = ({ pendingTriggerId, onPendingHandled }: QueueTriggerLi
                   hasFilters
                     ? t('queueTrigger.empty.filterDescription')
                     : t('queueTrigger.empty.defaultDescription')
-                }
-              />
+                }/>
             }
             pagination={false}
             onRow={(record) => ({

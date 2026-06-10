@@ -490,6 +490,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
     },
     {
       title: t('common.actions'),
+        fixed: 'right' as const,
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYQueueResponse) => {
@@ -630,6 +631,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
             rowKey="queue_id"
             loading={loading}
             pagination={false}
+            scroll={{ x: 1300 }}
             empty={
               <EmptyState
                 variant={queryParams.keyword || departmentFilter.length > 0 || filterCount > 0 ? 'noResult' : 'noData'}

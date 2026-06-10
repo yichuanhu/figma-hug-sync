@@ -492,6 +492,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
     },
     {
       title: t('common.actions'),
+        fixed: 'right' as const,
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYParameterResponse) => {
@@ -637,6 +638,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
             rowKey="parameter_id"
             loading={loading}
             pagination={false}
+            scroll={{ x: 1300 }}
             empty={
               <EmptyState
                 variant={queryParams.keyword || departmentFilter.length > 0 || filterCount > 0 ? 'noResult' : 'noData'}

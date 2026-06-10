@@ -1044,6 +1044,7 @@ const TaskManagementPage = () => {
     },
     {
       title: t('common.actions'),
+        fixed: 'right' as const,
       dataIndex: 'action',
       key: 'action',
       width: 60,
@@ -1380,6 +1381,7 @@ const TaskManagementPage = () => {
                 />
               }
               pagination={false}
+              scroll={{ x: 1500 }}
               onRow={(record) => ({
                 onClick: () => openTaskDetail(record as LYTaskResponse),
                 style: { cursor: 'pointer' },

@@ -1469,6 +1469,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       dataIndex: 'action',
       key: 'action',
       width: 60,
+      fixed: 'right' as const,
       render: (_: unknown, record: LYWorkerResponse) => (
         <Dropdown
           trigger="click"
@@ -1692,6 +1693,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 }
               }}
               pagination={false}
+              scroll={{ x: 1300 }}
               rowSelection={{
                 selectedRowKeys,
                 onChange: (keys) => setSelectedRowKeys((keys || []) as string[]),

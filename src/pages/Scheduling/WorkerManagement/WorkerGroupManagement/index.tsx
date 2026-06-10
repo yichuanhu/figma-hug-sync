@@ -349,7 +349,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       title: t('common.actions'),
       dataIndex: 'action',
       key: 'action',
-      width: 80,
+      fixed: 'right' as const, width: 80,
       render: (_: unknown, record: LYWorkerGroupResponse) => (
         <Dropdown
           trigger="click"
@@ -459,15 +459,15 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         ) : (
           <Table 
             size="small"
-            columns={columns} 
+            columns={columns}
+            scroll={{ x: 1300 }} 
             dataSource={list}
             loading={loading}
             rowKey="id"
             empty={
               <EmptyState 
                 variant={queryParams.keyword || queryParams.owning_department_name ? 'noResult' : 'noData'}
-                description={queryParams.keyword || queryParams.owning_department_name ? t('common.noResult') : t('workerGroup.noData')} 
-              />
+                description={queryParams.keyword || queryParams.owning_department_name ? t('common.noResult') : t('workerGroup.noData')}/>
             }
             onRow={(record) => {
               const isSelected = selectedGroup?.id === record?.id && detailDrawerVisible;

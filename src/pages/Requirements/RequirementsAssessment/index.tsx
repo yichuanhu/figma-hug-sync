@@ -271,6 +271,7 @@ const RequirementsAssessment = () => {
     },
     {
       title: t('common.actions'),
+      fixed: 'right' as const,
       dataIndex: 'action' as string,
       key: 'action',
       width: 60,
@@ -460,7 +461,7 @@ const RequirementsAssessment = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>
@@ -486,7 +487,7 @@ const RequirementsAssessment = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>
@@ -512,7 +513,7 @@ const RequirementsAssessment = () => {
                   },
                 })}
                 pagination={false}
-                scroll={{ y: 'calc(100vh - 440px)' }}
+                scroll={{ y: 'calc(100vh - 440px)', x: 1500 }}
               />
             )}
           </TabPane>
