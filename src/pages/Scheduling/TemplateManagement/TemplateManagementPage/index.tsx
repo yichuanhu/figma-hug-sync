@@ -538,6 +538,7 @@ const TemplateManagementPage = () => {
                   setQueryParams((prev) => ({ ...prev, offset: 0, size }));
                 },
               }}
+              scroll={{ x: 1300 }}
             />
           )}
         </div>
