@@ -1,12 +1,16 @@
 .my-shared-page {
-  // 布局壳由 .app-layout-content-card 提供（白色卡片 + 顶部蓝色晕影 + 24px padding + flex column + height 100%）
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
 
   .my-shared-header {
     flex-shrink: 0;
 
     &-title {
-      margin-bottom: 20px;
-      .title { margin-bottom: 8px; }
+      margin-bottom: 16px;
+      .title { margin: 0 0 4px 0; }
     }
 
     &-toolbar {

@@ -1,13 +1,13 @@
-## 问题
-资产上架页标题区域顶部留白过多，与其他列表页（如需求项目列表）不一致。
+## 计划
 
-## 改动
-仅修改 `src/pages/SharingCenter/MyShared/index.less`：
+1. 对齐页面容器结构
+   - 移除资产上架页面自身重复使用的 `app-layout-content-card` 类，避免与外层布局卡片叠加导致顶部间距异常。
+   - 保留页面自身类名 `my-shared-page`，让它像资产市场页面一样只作为内容容器存在。
 
-- `.my-shared-header-title` 的 `margin-bottom`: `24px` → `20px`（对齐 `RequirementsProjects`）
-- `.my-shared-header-toolbar` 的 `margin-bottom`: `16px` → `12px`（对齐 `RequirementsProjects`）
+2. 对齐页面头部样式
+   - 将资产上架页面标题区域改为和资产市场一致的顶部对齐方式。
+   - 标题本身使用 `margin: 0`，避免 Semi UI 标题默认 margin 造成下移。
+   - 标题区与工具栏间距保持列表页规范。
 
-不动 tsx 结构与其他模块。
-
-## 验证
-对照需求项目列表页，标题/副标题/工具栏垂直间距一致。
+3. 验证效果
+   - 对比 `/sharing-center/my-published` 与 `/sharing-center/market` 的标题顶部位置，确认两者与页面顶部距离一致。

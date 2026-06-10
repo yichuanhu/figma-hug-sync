@@ -164,7 +164,7 @@ const MySharedPage = () => {
   ];
 
   return (
-    <div className="my-shared-page app-layout-content-card">
+    <div className="my-shared-page">
       {/* 标题区域 */}
       <div className="my-shared-header">
         <div className="my-shared-header-title">
