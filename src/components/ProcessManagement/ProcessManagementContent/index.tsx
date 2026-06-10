@@ -408,7 +408,9 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   }, [queryParams, statusFilter, departmentFilter, includeSubDepts]);
 
   // 一次性加载所有「已被流程关联」的需求 brief，作为「关联需求」筛选下拉选项
+  // 注意：要在 fetchProcessList 解析过真实 requirement_id 之后再收集，避免拿到随机的 req-xxx
   useEffect(() => {
+    if (isInitialLoad) return;
     const allIds = Array.from(
       new Set(mockProcessData.map((p) => p.requirement_id).filter((x): x is string => !!x)),
     );
@@ -417,7 +419,6 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       return;
     }
     let cancelled = false;
-    // 动态 import，避免在模块解析阶段拉起 RequirementsWorkbench/mockData 的顶层副作用导致循环初始化错误
     import('@/pages/Requirements/RequirementsProjects/mockData').then(({ fetchRequirementBriefByIds }) =>
       fetchRequirementBriefByIds(allIds).then((list) => {
         if (cancelled) return;
@@ -428,7 +429,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isInitialLoad]);
+
 
   // 客户端再过滤：「关联需求」「适用操作系统」「开发工程师」
   const displayList = useMemo(() => {
