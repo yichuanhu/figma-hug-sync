@@ -9,6 +9,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { isUpgradeAvailable, type WorkerWithUpgrade } from '../../utils/upgrade';
 import { getEnabledVersion } from '@/mocks/clientVersionData';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 import { ArrowUpCircle, Key, MinusCircle, Pencil, Trash2, Users } from 'lucide-react';
 
@@ -79,7 +80,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
     { key: t('worker.detail.fields.description'), value: <ExpandableText text={workerData.description} maxLines={3} /> },
     { key: t('common.owningDepartment'), value: <DepartmentPath departmentId={workerData.owning_department_id} /> },
     { key: t('common.owner'), value: workerData.owner_name ? <UserNameWithCard name={workerData.owner_name} userId={workerData.owner_id || ''} /> : '-' },
-    { key: t('worker.detail.fields.status'), value: <Tag color={statusCfg.color as any} type="light">{statusCfg.text}</Tag> },
+    { key: t('worker.detail.fields.status'), value: <StatusDot color={statusCfg.color as StatusDotColor} label={statusCfg.text} /> },
     { key: t('worker.detail.fields.receiveTasks'), value: <Switch checked={workerData.receive_tasks} size="small" disabled={!canOperateReceiveTasks} onChange={(checked) => onToggleReceiveTasks?.(workerData, checked)} /> },
   ];
 
@@ -151,7 +152,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   const detailInfoData = [
     { key: t('worker.detail.fields.desktopType'), value: workerData.desktop_type === 'Console' ? t('worker.detail.desktopTypes.console') : t('worker.detail.desktopTypes.notConsole') },
     { key: t('worker.detail.fields.account'), value: workerData.username },
-    { key: t('worker.detail.fields.passwordSyncStatus'), value: <Tag color={workerData.sync_status === 'SYNCED' ? 'green' : 'orange'} type="light">{workerData.sync_status === 'SYNCED' ? t('worker.syncStatus.synced') : t('worker.syncStatus.pending')}</Tag> },
+    { key: t('worker.detail.fields.passwordSyncStatus'), value: <StatusDot color={workerData.sync_status === 'SYNCED' ? 'green' : 'orange'} label={workerData.sync_status === 'SYNCED' ? t('worker.syncStatus.synced') : t('worker.syncStatus.pending')} /> },
     ...(isRemoteDesktop ? [{ key: t('worker.detail.fields.forceLogin'), value: <Tag color={workerData.force_login ? 'green' : 'grey'} type="light">{workerData.force_login ? t('common.yes') : t('common.no')}</Tag> }] : []),
     ...(isRemoteDesktop ? [{ key: t('worker.detail.fields.resolution'), value: workerData.display_size || '-' }] : []),
     { key: t('worker.detail.fields.clientVersion'), value: renderClientVersion() },

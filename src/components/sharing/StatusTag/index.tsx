@@ -1,7 +1,5 @@
-import { Tag } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import { Clock, CheckCircle2, FileEdit, XCircle, Archive, EyeOff, Upload } from 'lucide-react';
-import './index.less';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 
 export type ShareStatus = 'DRAFT' | 'PENDING_PUBLISH' | 'PENDING_APPROVAL' | 'PUBLISHED' | 'REJECTED' | 'ARCHIVED' | 'UNLISTED';
 
@@ -10,7 +8,7 @@ interface Props {
   size?: 'small' | 'default';
 }
 
-const colorMap: Record<ShareStatus, 'grey' | 'orange' | 'green' | 'red' | 'amber' | 'light-blue' | 'blue'> = {
+const colorMap: Record<ShareStatus, StatusDotColor> = {
   DRAFT: 'grey',
   PENDING_PUBLISH: 'blue',
   PENDING_APPROVAL: 'orange',
@@ -20,19 +18,8 @@ const colorMap: Record<ShareStatus, 'grey' | 'orange' | 'green' | 'red' | 'amber
   UNLISTED: 'light-blue',
 };
 
-const StatusTag = ({ status, size = 'small' }: Props) => {
+const StatusTag = ({ status }: Props) => {
   const { t } = useTranslation();
-  const icon = (() => {
-    switch (status) {
-      case 'DRAFT': return <FileEdit size={12} strokeWidth={2} />;
-      case 'PENDING_PUBLISH': return <Upload size={12} strokeWidth={2} />;
-      case 'PENDING_APPROVAL': return <Clock size={12} strokeWidth={2} />;
-      case 'PUBLISHED': return <CheckCircle2 size={12} strokeWidth={2} />;
-      case 'REJECTED': return <XCircle size={12} strokeWidth={2} />;
-      case 'ARCHIVED': return <Archive size={12} strokeWidth={2} />;
-      case 'UNLISTED': return <EyeOff size={12} strokeWidth={2} />;
-    }
-  })();
   const labelKey = `sharing.common.status.${
     status === 'DRAFT' ? 'draft'
     : status === 'PENDING_PUBLISH' ? 'pendingPublish'
@@ -42,11 +29,7 @@ const StatusTag = ({ status, size = 'small' }: Props) => {
     : status === 'ARCHIVED' ? 'archived'
     : 'unlisted'
   }`;
-  return (
-    <Tag size={size} type="light" color={colorMap[status]} className="sharing-status-tag" prefixIcon={icon}>
-      {t(labelKey)}
-    </Tag>
-  );
+  return <StatusDot color={colorMap[status]} label={t(labelKey)} />;
 };
 
 export default StatusTag;

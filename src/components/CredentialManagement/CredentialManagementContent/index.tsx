@@ -38,6 +38,7 @@ import LinkPersonalCredentialModal from './components/LinkPersonalCredentialModa
 import ImportAssignedValueModal from './components/ImportAssignedValueModal';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
+import StatusDot from '@/components/StatusDot';
 import './index.less';
 
 // Mock数据生成
@@ -487,9 +488,10 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       key: 'is_published',
       width: 100,
       render: (isPublished: boolean) => (
-        <Tag color={isPublished ? 'green' : 'grey'}>
-          {isPublished ? t('credential.detail.published') : t('credential.detail.unpublished')}
-        </Tag>
+        <StatusDot
+          color={isPublished ? 'green' : 'grey'}
+          label={isPublished ? t('credential.detail.published') : t('credential.detail.unpublished')}
+        />
       ),
     }] : []),
     {

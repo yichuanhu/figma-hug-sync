@@ -26,6 +26,7 @@ import ExpandableText from '@/components/ExpandableText';
 import DepartmentPath from '@/components/DepartmentPath';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 import { ExternalLink, HelpCircle, Link, Link2, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 import DependencyTab from './components/DependencyTab';
@@ -479,9 +480,10 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     {
       key: t('common.status'),
       value: (
-        <Tag color={statusConfig[processData.status]?.color || 'grey'} type="light">
-          {t(statusConfig[processData.status]?.i18nKey || 'development.processDevelopment.status.developing')}
-        </Tag>
+        <StatusDot
+          color={(statusConfig[processData.status]?.color as StatusDotColor) || 'grey'}
+          label={t(statusConfig[processData.status]?.i18nKey || 'development.processDevelopment.status.developing')}
+        />
       ),
     },
     { key: t('common.creator'), value: creatorInfo ? <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> : '-' },

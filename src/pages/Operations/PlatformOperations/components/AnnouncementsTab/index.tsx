@@ -16,6 +16,7 @@ import {
   type PlatformAnnouncement,
 } from '../../mockData';
 import AnnouncementFormModal from '../AnnouncementFormModal';
+import StatusDot from '@/components/StatusDot';
 import './index.less';
 
 const { Text } = Typography;
@@ -103,11 +104,12 @@ const AnnouncementsTab = () => {
       dataIndex: 'isPublished',
       width: 100,
       render: (v: boolean) => (
-        <Tag color={v ? 'green' : 'grey'} size="small">
-          {v
+        <StatusDot
+          color={v ? 'green' : 'grey'}
+          label={v
             ? t('operations.platformOperations.announcements.status.published')
             : t('operations.platformOperations.announcements.status.draft')}
-        </Tag>
+        />
       ),
     },
     {

@@ -21,6 +21,7 @@ import ClassificationTagsField from '@/components/ClassificationTagsField';
 
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 import { Lightbulb, Pencil, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X, Ban, PowerOff, GitBranchPlus } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -123,7 +124,7 @@ const PropertyPanel = ({
         <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('common.status')}</Text>
           <div>
-            <Tag color={sCfg?.color as TagColor} type="light">{t(sCfg?.i18nKey || '')}</Tag>
+            <StatusDot color={(sCfg?.color as StatusDotColor) || 'grey'} label={t(sCfg?.i18nKey || '')} />
           </div>
         </div>
         <div className="requirement-detail-property-item">

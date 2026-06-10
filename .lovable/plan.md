@@ -1,54 +1,103 @@
 ## 目标
 
-让 `/sharing-center/my-published`（资产上架）的页面骨架完全沿用站内「自动化流程」页（`src/components/ProcessManagement/ProcessManagementContent`）的标准布局，做到视觉一致。只动表现层与列结构，不改 store / hooks / 抽屉等业务逻辑。
+把项目里所有「状态」列/字段的视觉，从当前的 Semi `Tag`（带底色色块）统一改为需求中心使用的「彩色小圆点 + 纯文字」样式（参考第二张截图）。第一张截图「已上架/已下架」绿色 Tag 是要被替换掉的旧样式。
 
-## 当前差异（对照站内 ProcessManagement）
+不在范围内：类型、级别、优先级、角色、标签等非「状态」字段保持原样（仍用 Tag），避免破坏现有视觉层次。
 
-1. **页头结构**：站内是「标题 + 副标题」一组，新建按钮在第二行 toolbar 右侧；当前页是「标题 + 新建按钮」同行，缺副标题。
-2. **Toolbar 形态**：站内是 `header-toolbar`（filters 区 + 右侧主按钮 + divider 分组）；当前页是独立一行 `my-shared-toolbar`，新建按钮还在顶部。
-3. **筛选器**：站内用 `FilterPopover` 收纳"状态/系统/开发者"等次要筛选；当前页把"状态"做成了 insetLabel 多选。
-4. **表格列**：站内有独立「描述」列；当前页把描述塞在名称下方，且"复用次数"列过窄导致表头表面看像 raw i18n key（实际上是窄列换行）。
-5. **分页**：站内 `.list-pagination` 是「左侧 显示第 X-Y 条，共 N」+「右侧 总页数 + Pagination(showSizeChanger)」；当前页是右对齐居中 Pagination。
-6. **状态标签**：站内是简单 `Tag`（色块 + 文案，无图标）；当前页是带图标的 `StatusTag`。
+## 一、抽取通用组件
 
-## 改动范围
+把 `src/pages/Requirements/RequirementsWorkbench/components/StatusDot` 提升为全局共享组件：
 
-仅前端表现层。store、hooks、抽屉、操作菜单、i18n 业务 key 不动。
+新建 `src/components/StatusDot/`（`index.tsx` + `index.less`），暴露最通用的接口：
 
-### 1. `src/pages/SharingCenter/MyShared/index.tsx`
+```tsx
+type SemiTagColor = 'grey' | 'blue' | 'green' | 'orange' | 'red' | 'purple' | 'cyan' | 'amber' | 'pink' | 'teal' | 'violet' | 'light-blue' | 'lime' | 'yellow' | 'white';
 
-- 根容器 className 改为 `my-shared-page app-layout-content-card`（已是）。
-- 新增页头两层结构：
-  - `my-shared-header > my-shared-header-title`：`Title heading={3}` + `Text type="tertiary"` 副标题（新 i18n key `sharing.assetSupply.pageSubtitle`）。
-  - `my-shared-header > my-shared-header-toolbar`：左侧 filters 区（搜索 320px + 类型 Select 200px + `FilterPopover` 收纳状态），右侧「新建资产」Dropdown 按钮。
-- 移除现有独立的 `my-shared-toolbar` 行。
-- 表格列重排为：**名称（不含描述）/ 描述 / 状态 / 复用次数 / 更新时间 / 操作**；列宽参考站内 ProcessManagement（描述列 ellipsis showTooltip）。
-- 状态列改用原生 `Tag`（颜色映射：DRAFT 灰、PUBLISHED 绿、UNLISTED 默认），不再用 `StatusTag` 图标版（保留组件本身，仅本页改）。
-- 分页区按站内 `.list-pagination` 双段式结构改写：左 `common.showingRecords` + 右 `common.totalPages` & `Pagination showSizeChanger`，复用 i18n 公共 key。
+interface StatusDotProps {
+  color: SemiTagColor;  // 复用现状里 Tag 已用的语义色
+  label: React.ReactNode;
+  className?: string;
+}
+```
 
-### 2. `src/pages/SharingCenter/MyShared/index.less`
+样式沿用现有 `.req-status-dot`：8px 圆点 + 6px gap + `text-0` 文字。颜色映射表与现有 `StatusDot` 保持一致并补全（grey/blue/green/orange/red/purple/cyan/amber/pink/teal/violet/light-blue/lime/yellow → 对应 `--semi-color-*` 或 Tailwind 同色 hex）。
 
-- 删除 `.my-shared-toolbar` 单独行样式，新增 `.my-shared-header-title` / `.my-shared-header-toolbar` / `.my-shared-header-toolbar-filters` / `.my-shared-header-toolbar-divider`，规则照搬 `process-management-header` 系列（保持视觉一致）。
-- 表格 hover/selected 行样式与站内对齐（`.my-shared-row-selected`）。
+需求中心内部原 `StatusDot` 改为对新共享组件的薄包装（保留它从 `statusConfigV2` 解析的逻辑），避免改动需求中心调用方。
 
-### 3. `public/i18n/zh-CN.json` & `public/i18n/en.json`
+`src/components/sharing/StatusTag` 内部也改为渲染共享 `StatusDot`（保留它的对外 API，避免在「资产上架/共享市场/审批」里逐处替换）。这样共享中心、市场、审批三块自动跟着切换样式。
 
-在 `sharing.assetSupply` 节点下补：
+## 二、需要替换的「状态」字段清单
 
-- `pageSubtitle`：「上架、维护与下架可被他人复用的资产」/ "Manage assets you've shared for reuse"
-- `col.description`：「描述」/ "Description"
-- `filters.moreFilter`：（如需独立标签）
+按模块逐一替换。每处保留原有 `STATUS_TAG_COLOR`/类似映射表中的 color 值，只把外层 `<Tag color={...}>{label}</Tag>` 换成 `<StatusDot color={...} label={label} />`。
 
-公共 `common.showingRecords` / `common.totalPages` 已存在，直接复用。
+### 1. 调度中心
+- `src/pages/Scheduling/WorkerManagement/index.tsx` — Worker 列「状态」
+- `src/pages/Scheduling/WorkerManagement/components/WorkerDetailDrawer/index.tsx` — 详情「状态」
+- `src/pages/Scheduling/WorkerManagement/components/UpgradeDeviceModal/index.tsx` — 升级状态
+- `src/pages/Scheduling/WorkerManagement/WorkerGroupManagement/components/WorkerGroupDetailDrawer/index.tsx` — 分组状态
 
-## 不在范围内
+### 2. 开发中心
+- `src/components/ProcessManagement/ProcessManagementContent/index.tsx` — 自动化流程「状态」
+- `src/components/ProcessManagement/ProcessManagementContent/components/ProcessDetailDrawer/index.tsx`
+- `src/components/CredentialManagement/CredentialManagementContent/index.tsx` — 凭据「状态」
+- `src/components/FileManagement/FileManagementContent/index.tsx` + `components/FileDetailDrawer/index.tsx`
+- `src/components/QueueManagement/QueueManagementContent/index.tsx` + `QueueDetailDrawer`
+- `src/components/QueueManagement/QueueMessagesContent/index.tsx` + `MessageDetailDrawer`
 
-- 业务字段、store、hooks、抽屉、操作菜单逻辑。
-- 「审批管理」「审批层级配置」两页（之前已确认维持现状）。
-- 站内 `ProcessManagementContent` 本身不动。
+### 3. 发布/审批（开发中心子模块）
+- `src/pages/Development/PublishApprovals/...`、`OfflineApprovals/...` 内部状态字段（如已使用 `StatusTag` 则随共享中心一并切换；否则替换为 `StatusDot`）
 
-## 验收
+### 4. 需求中心
+- `src/pages/Requirements/RequirementsWorkbench/components/ChangeLogTab/index.tsx`
+- `RequirementDetailDrawer` 下的 `VersionHistoryTab` / `TechnicalAssessmentSection` / `EffortTab` / `CostEstimateTab` / `AssessmentTab` / `ArtifactSection` / `ApprovalSection` 中的「状态」字段
+- `src/pages/Requirements/RequirementsScheme/index.tsx` + `SchemeDetailDrawer` + `SchemeBuilder`（含 `WorkflowBuilder`）的状态列
+- `src/pages/Requirements/_shared/BindingConflictContent.tsx`
 
-- 页头视觉与 `/development/process` 一致（标题 + 副标题 + 第二行 toolbar）。
-- Toolbar 右侧「新建资产」按钮在 filters 同一行。
-- 表格出现独立「描述」列；状态为简洁色块；底部分页为站内双段式。
+### 5. 运营中心
+- `src/pages/Operations/PlatformOperations/components/ResourcesTab/index.tsx`
+- `src/pages/Operations/PlatformOperations/components/AnnouncementsTab/index.tsx`
+- `src/pages/Operations/MetricsConfig/index.tsx` + `components/MetricRecordsDrawer/index.tsx`
+- `src/pages/Operations/BusinessOutcomes/components/CustomMetricsSection/index.tsx`
+
+### 6. 共享中心 / 市场（通过 `StatusTag` 一次性切换）
+- `src/pages/SharingCenter/MyShared/...`
+- `src/pages/SharingCenter/Approvals/List` & `Detail`
+- `src/pages/Sharing/Market/...`
+
+### 7. 个人中心 & 运维中心
+- `src/pages/PersonalCenter/PersonalCredentialManagement/index.tsx` + `PersonalCredentialDetailDrawer`
+- `src/pages/Maintenance/ConfigManagement/index.tsx`
+
+### 8. 首页
+- `src/pages/Home/components/AnnouncementSection/index.tsx` 若 Tag 是「状态」语义则替换；若只是分类标签则保留
+
+### 9. 共享中心管理
+- `src/pages/SharingCenter/Admin/Permissions/index.tsx`、`Admin/ApprovalLevels/index.tsx` 中的「状态」字段
+
+## 三、保留不动（非「状态」语义）
+
+以下 `Tag` 用法明显不是状态，不在替换范围内：
+- 参数类型（text/bool/number）— `ParameterManagement`、`ParameterDetailDrawer`
+- 凭据类型、文件类型、队列协议、Worker 标签、部门标签、分类 Tag
+- 审批层级数、版本号、级别等数值型徽标
+- 已上线/已撤回的「发布状态」如果属于资产状态语义，则按本次范围切换
+
+实施时按文件逐个判断：列名为「状态」或字段语义为生命周期状态的，统一切到 `StatusDot`；其余保留。
+
+## 四、记忆更新
+
+完成后追加一条 Core 规则到 `mem://index.md`：
+> 状态字段统一使用 `@/components/StatusDot`（圆点 + 文字），不再用 Semi `Tag` 色块。
+
+并新建 `mem://style/status-dot-standard` 详细说明组件 API、颜色映射与适用场景。
+
+## 五、验收
+
+- 上述清单中所有「状态」列在列表/详情/抽屉里都呈现「彩色圆点 + 文字」，无底色色块
+- 与第二张截图（需求中心）视觉一致
+- 类型、级别等非状态 Tag 保持原样
+- TypeScript 与 vite build 通过
+
+## 备注
+
+工作量较大（涉及约 30 个文件）。如果你希望先做某个子集（例如先做「调度中心 + 开发中心」验证效果，再推广其它模块），告诉我我会按子集执行；默认按上述全量计划一次性完成。

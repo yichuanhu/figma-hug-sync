@@ -10,6 +10,7 @@ import EmptyState from '@/components/EmptyState';
 import { statusConfigV2 } from '../../statusConfig';
 import type { RequirementChangeLog, RequirementChangeType, RequirementStatus, RequirementChangeFieldDiff } from '../../types';
 import { listChangeLogs } from '../../mockData';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 
 const { Text } = Typography;
@@ -93,7 +94,7 @@ const ChangeLogTab = ({ requirementId, refreshKey, highlightLogId }: Props) => {
   const renderStatusTag = (s?: RequirementStatus) => {
     if (!s) return null;
     const cfg = statusConfigV2[s];
-    return <Tag size="small" color={cfg?.color ?? 'grey'} type="light">{t(cfg?.i18nKey ?? '')}</Tag>;
+    return <StatusDot color={(cfg?.color as StatusDotColor) ?? 'grey'} label={t(cfg?.i18nKey ?? '')} />;
   };
 
   const renderDiffs = (logId: string, diffs?: RequirementChangeFieldDiff[]) => {

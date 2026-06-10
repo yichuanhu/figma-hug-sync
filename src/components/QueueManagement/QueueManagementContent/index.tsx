@@ -35,6 +35,7 @@ import EditQueueModal from './components/EditQueueModal';
 import QueueDetailDrawer from './components/QueueDetailDrawer';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
+import StatusDot from '@/components/StatusDot';
 import './index.less';
 
 // Mock数据生成
@@ -465,11 +466,10 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         return a.is_published ? -1 : 1;
       },
       render: (isPublished: boolean) => (
-        isPublished ? (
-          <Tag color="green">{t('queue.detail.published')}</Tag>
-        ) : (
-          <Tag color="grey">{t('queue.detail.unpublished')}</Tag>
-        )
+        <StatusDot
+          color={isPublished ? 'green' : 'grey'}
+          label={isPublished ? t('queue.detail.published') : t('queue.detail.unpublished')}
+        />
       ),
     }] : []),
     {

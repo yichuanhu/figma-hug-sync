@@ -34,6 +34,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 
 import AssignedValuesTab from './AssignedValuesTab';
+import StatusDot from '@/components/StatusDot';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -232,7 +233,7 @@ const CredentialDetailDrawer = ({
       { key: t('credential.detail.name'), value: credential.credential_name },
       { key: t('credential.detail.type'), value: <Tag color={typeConfig[credential.credential_type].color} type="light">{t(typeConfig[credential.credential_type].i18nKey)}</Tag> },
       { key: context === 'development' ? t('credential.detail.testValue') : t('credential.detail.productionValue'), value: <Text>{getCredentialValueDisplay}</Text> },
-      ...(context === 'development' ? [{ key: t('credential.detail.publishStatus'), value: <Tag color={credential.is_published ? 'green' : 'grey'}>{credential.is_published ? t('credential.detail.published') : t('credential.detail.unpublished')}</Tag> }] : []),
+      ...(context === 'development' ? [{ key: t('credential.detail.publishStatus'), value: <StatusDot color={credential.is_published ? 'green' : 'grey'} label={credential.is_published ? t('credential.detail.published') : t('credential.detail.unpublished')} /> }] : []),
       { key: t('common.owningDepartment'), value: <DepartmentPath departmentId={credential.owning_department_id} /> },
       { key: t('common.owner'), value: credential.owner_name ? <UserNameWithCard name={credential.owner_name} userId={credential.owner_id || ''} /> : '-' },
       { key: t('common.description'), value: <ExpandableText text={credential.description} maxLines={3} /> },

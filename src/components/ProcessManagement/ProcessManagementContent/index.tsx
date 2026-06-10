@@ -35,6 +35,7 @@ import { useOpenProcess } from './hooks/useOpenProcess';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import type { LYProcessResponse, LYProcessDependency, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
 import { BASIC_INFO_USER_POOL } from '@/mocks/processBasicInfo';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -612,9 +613,10 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       key: 'status',
       width: 100,
       render: (status: string) => (
-        <Tag color={statusConfig[status]?.color || 'grey'} type="light">
-          {t(statusConfig[status]?.i18nKey || 'development.processDevelopment.status.developing')}
-        </Tag>
+        <StatusDot
+          color={(statusConfig[status]?.color as StatusDotColor) || 'grey'}
+          label={t(statusConfig[status]?.i18nKey || 'development.processDevelopment.status.developing')}
+        />
       ),
     }]),
     {

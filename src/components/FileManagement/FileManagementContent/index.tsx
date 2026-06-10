@@ -36,6 +36,7 @@ import UploadFileModal from './components/UploadFileModal';
 import FileDetailDrawer from './components/FileDetailDrawer';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
+import StatusDot from '@/components/StatusDot';
 import './index.less';
 
 // Mock数据生成
@@ -477,9 +478,10 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       key: 'is_published',
       width: 100,
       render: (isPublished: boolean) => (
-        <Tag color={isPublished ? 'green' : 'grey'}>
-          {isPublished ? t('file.detail.published') : t('file.detail.unpublished')}
-        </Tag>
+        <StatusDot
+          color={isPublished ? 'green' : 'grey'}
+          label={isPublished ? t('file.detail.published') : t('file.detail.unpublished')}
+        />
       ),
     }] : []),
     {

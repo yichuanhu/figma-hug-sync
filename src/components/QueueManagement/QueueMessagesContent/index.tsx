@@ -37,6 +37,7 @@ import RequeueMessageModal from './components/RequeueMessageModal';
 import MessageDetailDrawer from './components/MessageDetailDrawer';
 import BatchOperationBar from './components/BatchOperationBar';
 
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 
 // Mock数据生成
@@ -414,7 +415,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       EXPIRED: { color: 'grey', text: t('queueMessage.status.expired') },
     };
     const config = statusConfig[status];
-    return <Tag color={config.color}>{config.text}</Tag>;
+    return <StatusDot color={config.color as StatusDotColor} label={config.text} />;
   };
 
   // 获取优先级标签
