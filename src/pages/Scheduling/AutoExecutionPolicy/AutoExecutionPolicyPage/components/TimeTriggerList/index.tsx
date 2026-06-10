@@ -600,11 +600,11 @@ const TimeTriggerList = ({ pendingTriggerId, onPendingHandled }: TimeTriggerList
             rowKey="trigger_id"
             loading={loading && !isInitialLoad}
             columns={columns}
+            scroll={{ x: 1300 }}
             empty={
               <EmptyState
                 variant={hasFilters ? 'noResult' : 'noData'}
-                description={hasFilters ? t('common.noResult') : t('timeTrigger.noData')}
-               scroll={{ x: 1300 }}/>
+                description={hasFilters ? t('common.noResult') : t('timeTrigger.noData')}/>
             }
             onRow={(record) => ({
               onClick: () => handleOpenDrawer(record as LYTimeTriggerResponse),

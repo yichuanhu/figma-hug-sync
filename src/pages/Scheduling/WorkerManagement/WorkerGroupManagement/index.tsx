@@ -459,15 +459,15 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         ) : (
           <Table 
             size="small"
-            columns={columns} 
+            columns={columns}
+            scroll={{ x: 1300 }} 
             dataSource={list}
             loading={loading}
             rowKey="id"
             empty={
               <EmptyState 
                 variant={queryParams.keyword || queryParams.owning_department_name ? 'noResult' : 'noData'}
-                description={queryParams.keyword || queryParams.owning_department_name ? t('common.noResult') : t('workerGroup.noData')} 
-               scroll={{ x: 1300 }}/>
+                description={queryParams.keyword || queryParams.owning_department_name ? t('common.noResult') : t('workerGroup.noData')}/>
             }
             onRow={(record) => {
               const isSelected = selectedGroup?.id === record?.id && detailDrawerVisible;
