@@ -16,6 +16,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
+import StatusDot from '@/components/StatusDot';
 import './index.less';
 import { List, Pencil, Trash2 } from 'lucide-react';
 
