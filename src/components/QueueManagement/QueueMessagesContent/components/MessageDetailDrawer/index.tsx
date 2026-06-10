@@ -12,6 +12,7 @@ import { PlayCircle, RefreshCw, Trash2 } from 'lucide-react';
 import type { LYQueueMessageResponse, QueueMessageStatus, QueueMessagePriority } from '@/api/index';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 
 interface MessageDetailDrawerProps {
