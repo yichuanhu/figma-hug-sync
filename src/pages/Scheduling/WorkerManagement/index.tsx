@@ -1222,11 +1222,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       render: (status: WorkerStatus | undefined) => {
         if (!status) return null;
         const config = statusConfig[status];
-        return (
-          <Tag color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'} type="light">
-            {config.text}
-          </Tag>
-        );
+        return <StatusDot color={config.color as StatusDotColor} label={config.text} />;
       },
     },
     {
