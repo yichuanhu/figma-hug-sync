@@ -176,7 +176,6 @@
     "requirementsApprovalConfig": "Approval Flow Config",
     "requirementsAssessmentConfig": "Assessment Flow Config",
     "requirementsCostBaseline": "Cost Baseline Config",
-
     "requirementsDeptApprovalBinding": "Dept Approval Binding",
     "collaborationManagement": "Collaboration Management",
     "teamMembers": "Team Members",
@@ -4368,7 +4367,6 @@
         "updatedAt": "Updated",
         "action": "Action"
       },
-
       "newAsset": {
         "label": "New Asset",
         "entry": "New Asset",
@@ -4380,7 +4378,6 @@
         "workflow": "Workflow",
         "disabledHint": "Please create in Dev Center"
       },
-
       "actions": {
         "view": "View",
         "edit": "Edit",
@@ -4846,7 +4843,8 @@
         "skill": "No skills",
         "snippet": "No snippets",
         "myReused": "You haven't reused any assets yet",
-        "myReusedAction": "Browse all assets"
+        "myReusedAction": "Browse all assets",
+        "myReusedSearch": "No matching reused assets found"
       },
       "mvpUnavailable": "This module is not available in the MVP",
       "badge": {
@@ -4855,7 +4853,9 @@
       "filter": {
         "sort": "Sort",
         "type": "Type",
-        "source": "Source"
+        "source": "Source",
+        "category": "Category",
+        "categoryPlaceholder": "All Categories"
       },
       "sort": {
         "createdAt": "Latest",
@@ -4871,7 +4871,8 @@
         "rating": "Rating",
         "reuseCount": "Reuses",
         "successRate": "Success rate",
-        "version": "Version"
+        "version": "Version",
+        "usageCountTooltip": "Number of times this asset has been reused"
       },
       "action": {
         "reuse": "Reuse",
@@ -4891,7 +4892,9 @@
         "workflowReused": "Workflow reused. ",
         "workflowReusedLink": "Go to Dev Center",
         "knowledgeReused": "Knowledge reused. ",
-        "knowledgeReusedLink": "View in My Reused"
+        "knowledgeReusedLink": "View in My Reused",
+        "workflowNameRequired": "Process name is required",
+        "workflowNameTaken": "This process name is already taken"
       },
       "create": {
         "button": "Create",
@@ -4940,7 +4943,8 @@
           "exec": "Execution",
           "params": "Parameters",
           "reuses": "Reuses",
-          "versions": "Versions"
+          "versions": "Versions",
+          "downloads": "Downloads"
         },
         "col": {
           "version": "Version",
@@ -4950,7 +4954,8 @@
           "action": "Actions",
           "reuser": "Reuser",
           "reuseType": "Reuse type",
-          "note": "Note"
+          "note": "Note",
+          "downloader": "Downloader"
         },
         "editInDevCenter": "Edit in Dev Center",
         "downloadZip": "Download ZIP",
@@ -4971,12 +4976,39 @@
           "publishedBy": "Publisher",
           "publishedAt": "Published At",
           "workflowReadOnly": "⚠️ Read-only (sourced from Dev Center, cannot be edited in Sharing Center)",
-          "knowledgeEditable": "✅ Publisher can click \"Edit display info\" in the top right to modify"
+          "knowledgeEditable": "✅ Publisher can click \"Edit display info\" in the top right to modify",
+          "attachments": "Attachments",
+          "content": "Content",
+          "contentEmpty": "No content",
+          "contentFilled": "Filled",
+          "processVersion": "Process Version"
         },
         "editKnowledge": "Edit",
         "editKnowledgeTip": "Redirect to knowledge edit page (Story 005)",
         "overview": "Asset Overview",
-        "noOverview": "No overview yet"
+        "noOverview": "No overview yet",
+        "attachment": {
+          "download": "Download",
+          "title": "Attachments"
+        },
+        "attachmentDownloadStarted": "Attachment download started",
+        "history": {
+          "changeNote": "Change Note",
+          "changeTitle": "Change History",
+          "releaseNote": "Release Note",
+          "releaseTitle": "Release History"
+        },
+        "noDownload": "No download records",
+        "reuseDialog": {
+          "confirm": "Confirm Reuse",
+          "nameHelp": "Enter a name for the new process",
+          "nameLabel": "Process Name",
+          "namePlaceholder": "Enter process name",
+          "nameRequired": "Process name is required",
+          "nameTaken": "This name is already taken",
+          "nameTooLong": "Name cannot exceed 100 characters",
+          "title": "Reuse as New Process"
+        }
       },
       "skill": {
         "category": "Category",
@@ -5018,7 +5050,11 @@
         "saveSuccess": "Display info saved",
         "saveFailed": "Save failed, please retry",
         "noPermission": "You don't have permission to edit this asset's display info",
-        "noVersionTip": "Saving does not create a new version"
+        "noVersionTip": "Saving does not create a new version",
+        "existingCover": "Current Cover"
+      },
+      "myReused": {
+        "drawerTitle": "My Reused Assets"
       }
     },
     "status": {

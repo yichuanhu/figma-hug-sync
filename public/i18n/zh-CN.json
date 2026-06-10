@@ -136,7 +136,6 @@
     "requirementsApprovalConfig": "审批流配置",
     "requirementsAssessmentConfig": "评估流配置",
     "requirementsCostBaseline": "成本基线配置",
-
     "requirementsDeptApprovalBinding": "部门审批流绑定",
     "collaborationManagement": "协作管理",
     "teamMembers": "团队成员",
@@ -3760,7 +3759,6 @@
         "updatedAt": "更新时间",
         "action": "操作"
       },
-
       "newAsset": {
         "label": "新建资产",
         "entry": "新建资产",
@@ -3772,7 +3770,6 @@
         "workflow": "上架开发中心流程",
         "disabledHint": "请在开发中心创建"
       },
-
       "actions": {
         "view": "查看详情",
         "edit": "编辑",
@@ -4230,12 +4227,15 @@
         "skill": "暂无技能",
         "snippet": "暂无流程块",
         "myReused": "你尚未复用任何资产",
-        "myReusedAction": "浏览全部资产"
+        "myReusedAction": "浏览全部资产",
+        "myReusedSearch": "未找到匹配的复用资产"
       },
       "filter": {
         "sort": "排序",
         "type": "类型",
-        "source": "来源"
+        "source": "来源",
+        "category": "分类",
+        "categoryPlaceholder": "全部分类"
       },
       "sort": {
         "createdAt": "最新发布",
@@ -4251,7 +4251,8 @@
         "rating": "评分",
         "reuseCount": "复用次数",
         "successRate": "成功率",
-        "version": "版本"
+        "version": "版本",
+        "usageCountTooltip": "该资产被复用的次数"
       },
       "action": {
         "reuse": "复用",
@@ -4275,7 +4276,9 @@
         "workflowReused": "复用成功，可在开发中心查看",
         "workflowReusedLink": "前往开发中心",
         "knowledgeReused": "复用成功",
-        "knowledgeReusedLink": "查看我的复用"
+        "knowledgeReusedLink": "查看我的复用",
+        "workflowNameRequired": "请输入流程名称",
+        "workflowNameTaken": "该流程名称已被占用"
       },
       "create": {
         "button": "新建",
@@ -4324,7 +4327,8 @@
           "exec": "执行",
           "params": "参数",
           "reuses": "复用记录",
-          "versions": "版本历史"
+          "versions": "版本历史",
+          "downloads": "下载记录"
         },
         "col": {
           "version": "版本",
@@ -4334,7 +4338,8 @@
           "action": "操作",
           "reuser": "复用者",
           "reuseType": "复用方式",
-          "note": "备注"
+          "note": "备注",
+          "downloader": "下载者"
         },
         "editInDevCenter": "在开发中心编辑",
         "downloadZip": "打包下载",
@@ -4355,12 +4360,39 @@
           "publishedBy": "上架者",
           "publishedAt": "发布时间",
           "workflowReadOnly": "⚠️ 完全只读（来源为开发中心，不可在共享中心编辑）",
-          "knowledgeEditable": "✅ 上架者本人可点击右上角「编辑展示信息」修改"
+          "knowledgeEditable": "✅ 上架者本人可点击右上角「编辑展示信息」修改",
+          "attachments": "附件",
+          "content": "内容",
+          "contentEmpty": "暂无内容",
+          "contentFilled": "已填写",
+          "processVersion": "流程版本"
         },
         "editKnowledge": "编辑",
         "editKnowledgeTip": "跳转到知识编辑页（Story 005 范围）",
         "overview": "资产概览",
-        "noOverview": "暂无概览，请上架者补充"
+        "noOverview": "暂无概览，请上架者补充",
+        "attachment": {
+          "download": "下载",
+          "title": "附件"
+        },
+        "attachmentDownloadStarted": "附件下载已开始",
+        "history": {
+          "changeNote": "变更说明",
+          "changeTitle": "变更记录",
+          "releaseNote": "发布说明",
+          "releaseTitle": "发布记录"
+        },
+        "noDownload": "暂无下载记录",
+        "reuseDialog": {
+          "confirm": "确认复用",
+          "nameHelp": "请输入新流程的名称",
+          "nameLabel": "流程名称",
+          "namePlaceholder": "请输入流程名称",
+          "nameRequired": "请输入流程名称",
+          "nameTaken": "该名称已被占用",
+          "nameTooLong": "名称不能超过 100 个字符",
+          "title": "复用为新流程"
+        }
       },
       "skill": {
         "category": "分类",
@@ -4402,7 +4434,11 @@
         "saveSuccess": "展示信息已保存",
         "saveFailed": "保存失败，请重试",
         "noPermission": "你没有编辑该资产展示信息的权限",
-        "noVersionTip": "保存不会创建新版本"
+        "noVersionTip": "保存不会创建新版本",
+        "existingCover": "当前封面"
+      },
+      "myReused": {
+        "drawerTitle": "我已复用的资产"
       }
     },
     "status": {
