@@ -35,6 +35,7 @@ import { useOpenProcess } from './hooks/useOpenProcess';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import type { LYProcessResponse, LYProcessDependency, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
 import { BASIC_INFO_USER_POOL } from '@/mocks/processBasicInfo';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 
 const { Title, Text } = Typography;
