@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 import emptyImg from '@/assets/empty-state/no-data.png';
 import FilterPopover from '@/components/FilterPopover';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 
 import { type ShareAsset, type DisplayStatus as StoreDisplayStatus, queryMyPublished, toDisplayStatus, getAll, subscribe } from './store';
 import { useMyPublishedQuery, type TypeFilter, type DisplayStatus } from './hooks/useMyPublishedQuery';
@@ -22,13 +23,13 @@ const PAGE_SIZE = 12;
 
 const useStoreVersion = () => useSyncExternalStore(subscribe, () => getAll().length);
 
-// 状态标签颜色映射（简洁色块，无图标）
-const STATUS_TAG_COLOR: Record<StoreDisplayStatus, 'green' | 'grey' | 'orange' | 'red' | 'blue'> = {
+// 状态色点颜色映射（与需求中心 StatusDot 一致）
+const STATUS_DOT_COLOR: Record<StoreDisplayStatus, StatusDotColor> = {
   DRAFT: 'grey',
   PENDING_APPROVAL: 'orange',
   PUBLISHED: 'green',
   REJECTED: 'red',
-  UNLISTED: 'grey',
+  UNLISTED: 'light-blue',
 };
 
 const MySharedPage = () => {
@@ -124,10 +125,10 @@ const MySharedPage = () => {
     {
       title: t('sharing.assetSupply.col.status'),
       dataIndex: 'shareStatus',
-      width: 100,
+      width: 120,
       render: (_: unknown, a: ShareAsset) => {
         const ds = toDisplayStatus(a.shareStatus);
-        return <Tag color={STATUS_TAG_COLOR[ds]} size="small" type="light">{statusLabel(ds)}</Tag>;
+        return <StatusDot color={STATUS_DOT_COLOR[ds]} label={statusLabel(ds)} />;
       },
     },
     {
