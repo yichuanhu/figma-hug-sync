@@ -1,21 +1,27 @@
-修复 sharing 命名空间下 7 个翻译键缺失/被覆盖问题。
+## 问题原因
 
-## 改动文件
-- `public/i18n/zh-CN.json`
-- `public/i18n/en.json`
+流程列表的「关联需求」列现在使用的是 `requirement_id`。
 
-## 修复内容
+当前 mock 流程数据里，部分流程的 `requirement_id` 被随机生成成 `req-xxxxxxxx`，这些 ID 并不对应需求列表里的真实需求数据，所以无法通过 `fetchRequirementBriefByIds` 查到 `req_no`，最终只能回退显示原始 `req-短ID`。
 
-1. **合并重复的 `sharing.assetSupply.col`**：删除第二个覆盖块，在保留的 col 中补回 `description`、`reuseCount` 字段（zh / en 同步）。
-2. **补 `sharing.market.filter.type`**：zh `"类型"` / en `"Type"`。
-3. **补 `sharing.market.detail.videoSectionTitle`**：zh `"演示视频"` / en `"Demo video"`。
-4. **在 `sharing.market.detail` 下新增 `hero` 子树**：
-   - `publishedAt`：`"发布于 {{date}}"` / `"Published {{date}}"`
-   - `reuseCount`：`"{{count}} 次复用"` / `"{{count}} reuses"`
-   - `downloadCount`：`"{{count}} 次下载"` / `"{{count}} downloads"`
-   - `defaultCover.fallback|workflow|knowledge|skill|snippet`
+需求列表的「编号」列显示的是需求对象里的 `req_no`，格式为 `REQ-2026-xxxx`，因此两边不一致。
 
-## 验证
-- Python `object_pairs_hook` 重扫两份 JSON，确认无重复键。
-- Python 解析 7 个完整 key，确认全部命中。
-- 不修改任何业务代码。
+## 修复计划
+
+1. **统一流程关联需求的数据来源**
+   - 不再让流程 mock 数据随机生成 `req-xxxxxxxx`。
+   - 将流程的 `requirement_id` 指向需求中心真实存在的需求 `id`。
+
+2. **保留现有显示逻辑**
+   - 流程列表仍通过 `requirement_id` 查询需求 brief。
+   - 查询成功后继续显示需求编号 `REQ-2026-xxxx`，必要时带标题。
+   - 无关联需求仍显示 `-`。
+
+3. **同步详情页与筛选项**
+   - 流程详情抽屉里的关联需求也会使用同一套 brief 查询结果。
+   - 「关联需求」筛选下拉会显示真实需求编号，不再出现 `req-短ID`。
+
+4. **验证**
+   - 检查流程列表关联需求列不再出现随机 `req-xxxxxxxx`。
+   - 确认点击关联需求仍能跳转/打开对应需求。
+   - 确认需求列表编号与流程关联需求显示一致。
