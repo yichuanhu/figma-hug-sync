@@ -465,6 +465,7 @@ const RequirementsWorkbench = () => {
       key: 'action',
       width: 60,
       fixed: 'right' as const,
+      align: 'center' as const,
       render: (_: unknown, record: RequirementItem) => {
         const status = normalizeStatus(record.status);
         const cfg = statusConfigV2[status];

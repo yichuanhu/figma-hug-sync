@@ -171,6 +171,7 @@ const CostBaselineConfigPage = () => {
     {
       title: '操作',
       fixed: 'right' as const,
+      align: 'center' as const,
       width: 80,
       render: (_: unknown, record: CostBaselineItem) => (
         <Dropdown
@@ -281,7 +282,7 @@ const CostBaselineConfigPage = () => {
               columns={columns}
               rowKey="id"
               pagination={false}
-             scroll={{ x: 1100 }}/>
+             scroll={{ x: 'max-content', y: '100%' }}/>
             {total > 0 && (
               <div className="list-pagination">
                 <Text type="tertiary">

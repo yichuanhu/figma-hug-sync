@@ -212,6 +212,7 @@ const MetricsConfig = () => {
       title: t('common.actions'),
       width: 180,
       fixed: 'right' as const,
+      align: 'center' as const,
       render: (_: unknown, row: CustomMetricWithSnapshot) => (
         <div className="metrics-config-actions">
           <Tooltip content={t('common.edit')}>
@@ -382,7 +383,7 @@ const MetricsConfig = () => {
           columns={columns}
           size="small"
           pagination={false}
-         scroll={{ x: 1100 }}/>
+         scroll={{ x: 'max-content', y: '100%' }}/>
       )}
 
       {data.length > 0 && (

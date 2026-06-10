@@ -457,6 +457,7 @@ const QueueTriggerList = ({ pendingTriggerId, onPendingHandled }: QueueTriggerLi
     {
       title: t('common.actions'),
       fixed: 'right' as const,
+      align: 'center' as const,
       dataIndex: 'actions',
       width: 80,
       render: (_: unknown, record: LYQueueTriggerResponse) => (
@@ -595,7 +596,7 @@ const QueueTriggerList = ({ pendingTriggerId, onPendingHandled }: QueueTriggerLi
             size="small"
             dataSource={list}
             columns={columns}
-            scroll={{ x: 1300 }}
+            scroll={{ x: 'max-content', y: '100%' }}
             rowKey="trigger_id"
             loading={loading && !isInitialLoad}
             empty={

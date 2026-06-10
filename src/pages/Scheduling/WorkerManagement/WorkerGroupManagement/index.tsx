@@ -350,6 +350,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       dataIndex: 'action',
       key: 'action',
       fixed: 'right' as const, width: 80,
+      align: 'center' as const,
       render: (_: unknown, record: LYWorkerGroupResponse) => (
         <Dropdown
           trigger="click"
@@ -460,7 +461,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           <Table 
             size="small"
             columns={columns}
-            scroll={{ x: 1300 }} 
+            scroll={{ x: 'max-content', y: '100%' }} 
             dataSource={list}
             loading={loading}
             rowKey="id"

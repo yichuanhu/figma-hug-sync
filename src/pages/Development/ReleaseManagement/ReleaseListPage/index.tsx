@@ -357,6 +357,7 @@ const ReleaseListPage: React.FC = () => {
     {
       title: t('common.actions'),
       fixed: 'right' as const,
+      align: 'center' as const,
       dataIndex: 'actions',
       width: 60,
       render: (_: unknown, record: LYReleaseResponse) => (

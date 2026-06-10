@@ -186,6 +186,7 @@ const LinkedCredentialsDrawer = ({
     {
       title: t('common.actions'),
       fixed: 'right' as const,
+      align: 'center' as const,
       key: 'actions',
       width: 100,
       render: (_: unknown, record: LinkedCredential) => (

@@ -467,6 +467,7 @@ const TimeTriggerList = ({ pendingTriggerId, onPendingHandled }: TimeTriggerList
     {
       title: t('common.actions'),
       fixed: 'right' as const,
+      align: 'center' as const,
       dataIndex: 'actions',
       width: 80,
       render: (_: unknown, record: LYTimeTriggerResponse) => (
@@ -601,7 +602,7 @@ const TimeTriggerList = ({ pendingTriggerId, onPendingHandled }: TimeTriggerList
             rowKey="trigger_id"
             loading={loading && !isInitialLoad}
             columns={columns}
-            scroll={{ x: 1300 }}
+            scroll={{ x: 'max-content', y: '100%' }}
             empty={
               <EmptyState
                 variant={hasFilters ? 'noResult' : 'noData'}
