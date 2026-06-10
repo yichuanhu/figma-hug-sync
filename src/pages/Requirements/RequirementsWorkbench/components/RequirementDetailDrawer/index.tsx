@@ -21,6 +21,7 @@ import ClassificationTagsField from '@/components/ClassificationTagsField';
 
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 import { Lightbulb, Pencil, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X, Ban, PowerOff, GitBranchPlus } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
