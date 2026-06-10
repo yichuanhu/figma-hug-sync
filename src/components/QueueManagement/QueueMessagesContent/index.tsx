@@ -37,6 +37,7 @@ import RequeueMessageModal from './components/RequeueMessageModal';
 import MessageDetailDrawer from './components/MessageDetailDrawer';
 import BatchOperationBar from './components/BatchOperationBar';
 
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 
 // Mock数据生成
