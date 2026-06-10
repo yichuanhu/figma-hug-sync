@@ -122,11 +122,10 @@ const QueueDetailDrawer = ({
           </Descriptions.Item>
           {context === 'development' && (
             <Descriptions.Item itemKey={t('queue.detail.isPublished')}>
-              {queue.is_published ? (
-                <Tag color="green">{t('queue.detail.published')}</Tag>
-              ) : (
-                <Tag color="grey">{t('queue.detail.unpublished')}</Tag>
-              )}
+              <StatusDot
+                color={queue.is_published ? 'green' : 'grey'}
+                label={queue.is_published ? t('queue.detail.published') : t('queue.detail.unpublished')}
+              />
             </Descriptions.Item>
           )}
           <Descriptions.Item itemKey={t('common.owningDepartment')}>
