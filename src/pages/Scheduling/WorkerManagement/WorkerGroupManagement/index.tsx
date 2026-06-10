@@ -350,6 +350,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       dataIndex: 'action',
       key: 'action',
       fixed: 'right' as const, width: 80,
+      align: 'center' as const,
       render: (_: unknown, record: LYWorkerGroupResponse) => (
         <Dropdown
           trigger="click"

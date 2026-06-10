@@ -1045,6 +1045,7 @@ const TaskManagementPage = () => {
     {
       title: t('common.actions'),
         fixed: 'right' as const,
+        align: 'center' as const,
       dataIndex: 'action',
       key: 'action',
       width: 60,

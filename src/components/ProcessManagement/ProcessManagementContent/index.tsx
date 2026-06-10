@@ -726,6 +726,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       dataIndex: 'action',
       key: 'action',
       fixed: 'right' as const, width: 60,
+      align: 'center' as const,
       render: (_: unknown, record: LYProcessResponse) => (
         <Dropdown
           trigger="click"

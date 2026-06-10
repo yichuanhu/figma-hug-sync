@@ -145,6 +145,7 @@ const OfflineApprovalsPage = () => {
     { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v: string) => fmtTime(v) },
     {
       title: '操作', dataIndex: 'action', key: 'action', fixed: 'right' as const, width: 60,
+      align: 'center' as const,
       render: (_: unknown, r: ProcessOfflineRequest) => (
         <Dropdown
           trigger="click"

@@ -171,6 +171,7 @@ const CostBaselineConfigPage = () => {
     {
       title: '操作',
       fixed: 'right' as const,
+      align: 'center' as const,
       width: 80,
       render: (_: unknown, record: CostBaselineItem) => (
         <Dropdown

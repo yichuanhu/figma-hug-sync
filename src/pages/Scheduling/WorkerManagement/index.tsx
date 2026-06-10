@@ -1470,6 +1470,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       key: 'action',
       width: 60,
       fixed: 'right' as const,
+      align: 'center' as const,
       render: (_: unknown, record: LYWorkerResponse) => (
         <Dropdown
           trigger="click"

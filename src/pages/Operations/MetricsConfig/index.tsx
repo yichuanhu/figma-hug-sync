@@ -212,6 +212,7 @@ const MetricsConfig = () => {
       title: t('common.actions'),
       width: 180,
       fixed: 'right' as const,
+      align: 'center' as const,
       render: (_: unknown, row: CustomMetricWithSnapshot) => (
         <div className="metrics-config-actions">
           <Tooltip content={t('common.edit')}>

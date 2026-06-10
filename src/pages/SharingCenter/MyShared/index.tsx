@@ -150,6 +150,7 @@ const MySharedPage = () => {
       title: t('sharing.assetSupply.col.action'),
       width: 72,
       fixed: 'right' as const,
+      align: 'center' as const,
       render: (_: unknown, a: ShareAsset) => (
         a.shareStatus === 'UNLISTED' ? null : (
           <span onClick={(e) => e.stopPropagation()}>
