@@ -26,6 +26,7 @@ import ExpandableText from '@/components/ExpandableText';
 import DepartmentPath from '@/components/DepartmentPath';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
+import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import './index.less';
 import { ExternalLink, HelpCircle, Link, Link2, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 import DependencyTab from './components/DependencyTab';
