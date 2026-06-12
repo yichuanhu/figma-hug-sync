@@ -91,7 +91,7 @@ const defaultVersions: ProcessVersion[] = [
   },
   {
     id: 'pv-002',
-    process_id: 'proc-002',
+    process_id: 'process-2',
     process_name: '财务报销审批流程',
     version: '2.0.1',
     developer_id: 'user-dev-002',
@@ -113,7 +113,7 @@ const defaultVersions: ProcessVersion[] = [
   },
   {
     id: 'pv-003',
-    process_id: 'proc-003',
+    process_id: 'process-3',
     process_name: '人事入职流程',
     version: '1.5.0',
     developer_id: 'user-dev-003',
@@ -135,7 +135,7 @@ const defaultVersions: ProcessVersion[] = [
   },
   {
     id: 'pv-004',
-    process_id: 'proc-004',
+    process_id: 'process-4',
     process_name: '客户信息同步',
     version: '0.9.3',
     developer_id: 'user-dev-001',
@@ -155,7 +155,7 @@ const defaultVersions: ProcessVersion[] = [
   },
   {
     id: 'pv-005',
-    process_id: 'proc-005',
+    process_id: 'process-5',
     process_name: '采购订单导入',
     version: '0.1.0',
     developer_id: 'user-dev-002',
