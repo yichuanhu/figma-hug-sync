@@ -665,6 +665,15 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       ),
     }]),
     {
+      title: t('development.processDevelopment.approvalHint.column'),
+      dataIndex: '__approvalHint',
+      key: '__approvalHint',
+      width: 150,
+      render: (_: unknown, record: LYProcessResponse) => (
+        <ApprovalHintCell hint={approvalHints.get(record.id)} onOpen={handleOpenApprovalProgress} />
+      ),
+    },
+    {
       title: t('common.owningDepartment'),
       dataIndex: 'owning_department_name',
       key: 'owning_department_name',
