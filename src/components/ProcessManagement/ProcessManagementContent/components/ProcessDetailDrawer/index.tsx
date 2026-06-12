@@ -33,6 +33,7 @@ import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
 import DocumentsTab from './components/DocumentsTab';
+import ApprovalProgressTab from './components/ApprovalProgressTab';
 
 import {
   getProcessBasicInfo,
@@ -821,6 +822,12 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             context={context}
           />
         </TabPane>
+
+        <TabPane tab="审批进度" itemKey="approval">
+          <ApprovalProgressTab processId={processData.id} context={context} />
+        </TabPane>
+
+
 
 
         <TabPane tab={`资料${documentCount ? ` (${documentCount})` : ''}`} itemKey="documents">

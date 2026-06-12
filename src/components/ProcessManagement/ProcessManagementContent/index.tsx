@@ -32,7 +32,6 @@ import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import OfflineRequestModal from './components/OfflineRequestModal';
 import ApprovalHintCell from './components/ApprovalHintCell';
-import ApprovalProgressDrawer from './components/ApprovalProgressDrawer';
 import { useProcessApprovalHints, type ApprovalHint } from './hooks/useProcessApprovalHints';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
@@ -392,13 +391,10 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
 
   // 审批提示（按入口隔离：开发=发布、调度=下线）
   const approvalHints = useProcessApprovalHints(context);
-  const [approvalDrawer, setApprovalDrawer] = useState<{ visible: boolean; mode: 'publish' | 'offline'; targetId: string | null }>({
-    visible: false,
-    mode: 'publish',
-    targetId: null,
-  });
-  const handleOpenApprovalProgress = (hint: ApprovalHint) => {
-    setApprovalDrawer({ visible: true, mode: hint.kind, targetId: hint.targetId });
+  const handleOpenApprovalProgress = (_hint: ApprovalHint, record: LYProcessResponse) => {
+    setSelectedProcess(record);
+    setDetailInitialTab('approval');
+    setDetailDrawerVisible(true);
   };
 
   // 状态选项 - 调度中心隐藏筛选
@@ -670,7 +666,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       key: '__approvalHint',
       width: 150,
       render: (_: unknown, record: LYProcessResponse) => (
-        <ApprovalHintCell hint={approvalHints.get(record.id)} onOpen={handleOpenApprovalProgress} />
+        <ApprovalHintCell hint={approvalHints.get(record.id)} onOpen={(hint) => handleOpenApprovalProgress(hint, record)} />
       ),
     },
     {
@@ -1038,7 +1034,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       {/* 流程详情抽屉 */}
       <ProcessDetailDrawer
         visible={detailDrawerVisible}
-        onClose={() => setDetailDrawerVisible(false)}
+        onClose={() => { setDetailDrawerVisible(false); setDetailInitialTab('detail'); }}
         processData={selectedProcess}
         onEdit={isSchedulingContext ? undefined : () => handleEdit()}
         onRun={handleRun}
@@ -1089,12 +1085,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         } : null}
       />
 
-      <ApprovalProgressDrawer
-        visible={approvalDrawer.visible}
-        onClose={() => setApprovalDrawer((s) => ({ ...s, visible: false }))}
-        mode={approvalDrawer.mode}
-        targetId={approvalDrawer.targetId}
-      />
+
     </div>
   );
 };
