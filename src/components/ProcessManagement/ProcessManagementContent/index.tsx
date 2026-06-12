@@ -632,12 +632,23 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       title: t('development.processDevelopment.fields.processName'),
       dataIndex: 'name',
       key: 'name',
-      width: 160,
+      width: isSchedulingContext ? 240 : 160,
       ellipsis: true,
       sorter: true,
       onHeaderCell: () => ({
         onClick: () => handleSort('name'),
       }),
+      render: isSchedulingContext
+        ? (name: string, record: LYProcessResponse) => {
+            const hint = approvalHints.get(record.id);
+            return (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</span>
+                {hint && <ApprovalHintCell hint={hint} onOpen={(h) => handleOpenApprovalProgress(h, record)} />}
+              </div>
+            );
+          }
+        : undefined,
     },
     {
       title: t('common.description'),
@@ -652,23 +663,21 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       title: t('common.status'),
       dataIndex: 'status',
       key: 'status',
-      width: 100,
-      render: (status: string) => (
-        <StatusDot
-          color={(statusConfig[status]?.color as StatusDotColor) || 'grey'}
-          label={t(statusConfig[status]?.i18nKey || 'development.processDevelopment.status.developing')}
-        />
-      ),
+      width: 180,
+      render: (status: string, record: LYProcessResponse) => {
+        const hint = approvalHints.get(record.id);
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <StatusDot
+              color={(statusConfig[status]?.color as StatusDotColor) || 'grey'}
+              label={t(statusConfig[status]?.i18nKey || 'development.processDevelopment.status.developing')}
+            />
+            {hint && <ApprovalHintCell hint={hint} onOpen={(h) => handleOpenApprovalProgress(h, record)} />}
+          </div>
+        );
+      },
     }]),
-    {
-      title: t('development.processDevelopment.approvalHint.column'),
-      dataIndex: '__approvalHint',
-      key: '__approvalHint',
-      width: 150,
-      render: (_: unknown, record: LYProcessResponse) => (
-        <ApprovalHintCell hint={approvalHints.get(record.id)} onOpen={(hint) => handleOpenApprovalProgress(hint, record)} />
-      ),
-    },
+
     {
       title: t('common.owningDepartment'),
       dataIndex: 'owning_department_name',
