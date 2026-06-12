@@ -1034,7 +1034,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       {/* 流程详情抽屉 */}
       <ProcessDetailDrawer
         visible={detailDrawerVisible}
-        onClose={() => setDetailDrawerVisible(false)}
+        onClose={() => { setDetailDrawerVisible(false); setDetailInitialTab('detail'); }}
         processData={selectedProcess}
         onEdit={isSchedulingContext ? undefined : () => handleEdit()}
         onRun={handleRun}
