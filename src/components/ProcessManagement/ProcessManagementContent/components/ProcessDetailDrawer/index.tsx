@@ -823,6 +823,12 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           />
         </TabPane>
 
+        <TabPane tab="审批进度" itemKey="approval">
+          <ApprovalProgressTab processId={processData.id} context={context} />
+        </TabPane>
+
+
+
 
         <TabPane tab={`资料${documentCount ? ` (${documentCount})` : ''}`} itemKey="documents">
           <DocumentsTab
