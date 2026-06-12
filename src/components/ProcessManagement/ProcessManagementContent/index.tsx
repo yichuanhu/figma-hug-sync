@@ -1085,12 +1085,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         } : null}
       />
 
-      <ApprovalProgressDrawer
-        visible={approvalDrawer.visible}
-        onClose={() => setApprovalDrawer((s) => ({ ...s, visible: false }))}
-        mode={approvalDrawer.mode}
-        targetId={approvalDrawer.targetId}
-      />
+
     </div>
   );
 };
