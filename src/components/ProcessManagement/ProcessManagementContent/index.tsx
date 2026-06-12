@@ -32,7 +32,6 @@ import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import OfflineRequestModal from './components/OfflineRequestModal';
 import ApprovalHintCell from './components/ApprovalHintCell';
-import ApprovalProgressDrawer from './components/ApprovalProgressDrawer';
 import { useProcessApprovalHints, type ApprovalHint } from './hooks/useProcessApprovalHints';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
