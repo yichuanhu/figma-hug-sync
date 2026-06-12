@@ -53,7 +53,7 @@ export interface ProcessVersion {
   resources?: Array<{ resource_type: string; resource_name: string }>;
 }
 
-const STORAGE_KEY = 'apa.processVersionApproval.v2';
+const STORAGE_KEY = 'apa.processVersionApproval.v3';
 
 const now = (offsetH = 0) => new Date(Date.now() - offsetH * 3_600_000).toISOString();
 
@@ -73,9 +73,12 @@ const defaultVersions: ProcessVersion[] = [
     submitted_at: now(24),
     publish_note: '修复订单状态同步偶发延迟问题，并优化超时重试。',
     status: 'PENDING_APPROVAL',
-    current_level: 1,
+    approval_template_snapshot: getApprovalFlowById('pflow-001'),
+    current_level: 2,
     total_levels: 2,
-    records: [],
+    records: [
+      { level: 1, approver_id: 'user-mgr', approver_name: '林经理', action: 'approve', comment: '同意发布，下个版本注意补充回归用例。', acted_at: now(12) },
+    ],
     input_parameters: [
       { name: 'orderId', type: 'string', required: true, description: '订单 ID' },
       { name: 'channel', type: 'string', required: false, description: '业务渠道' },
@@ -104,6 +107,7 @@ const defaultVersions: ProcessVersion[] = [
     submitted_at: now(36),
     publish_note: '补充财务月结时段的发票校验规则。',
     status: 'PENDING_APPROVAL',
+    approval_template_snapshot: getApprovalFlowById('pflow-002'),
     current_level: 1,
     total_levels: 1,
     records: [],
@@ -126,6 +130,7 @@ const defaultVersions: ProcessVersion[] = [
     submitted_at: now(96),
     status: 'PUBLISHED',
     deployed_at: now(72),
+    approval_template_snapshot: getApprovalFlowById('pflow-001'),
     current_level: 2,
     total_levels: 2,
     records: [
@@ -166,6 +171,52 @@ const defaultVersions: ProcessVersion[] = [
     package_checksum: 'e5f67890123456789abcdef0123456ab',
     uploaded_at: now(8),
     status: 'UPLOADED',
+  },
+  {
+    id: 'pv-006',
+    process_id: 'process-6',
+    process_name: '合同审批流程',
+    version: '3.1.0',
+    developer_id: 'user-dev-004',
+    developer_name: '赵敏',
+    department_id: 'dept-apa-product',
+    department_name: getDepartmentName('dept-apa-product') || '产品研发部',
+    package_size: 5_882_011,
+    package_checksum: 'f67890123456789abcdef0123456abcd',
+    uploaded_at: now(60),
+    submitted_at: now(40),
+    publish_note: '新增多方会签节点和盖章环节回执。',
+    status: 'PENDING_APPROVAL',
+    approval_template_snapshot: getApprovalFlowById('pflow-003'),
+    current_level: 3,
+    total_levels: 3,
+    records: [
+      { level: 1, approver_id: 'user-mgr', approver_name: '林经理', action: 'approve', comment: '业务侧已确认。', acted_at: now(28) },
+      { level: 2, approver_id: 'user-arch-001', approver_name: '架构组 王工', action: 'approve', comment: '架构评审通过，注意会签接口幂等。', acted_at: now(10) },
+    ],
+    input_parameters: [
+      { name: 'contractId', type: 'string', required: true, description: '合同 ID' },
+    ],
+  },
+  {
+    id: 'pv-007',
+    process_id: 'process-7',
+    process_name: '客户信息同步',
+    version: '1.0.0',
+    developer_id: 'user-dev-003',
+    developer_name: '王五',
+    department_id: 'dept-finance',
+    department_name: getDepartmentName('dept-finance') || '财务部',
+    package_size: 1_456_780,
+    package_checksum: '90123456789abcdef0123456abcdef01',
+    uploaded_at: now(3),
+    submitted_at: now(1),
+    publish_note: '首次上线，对接 CRM 客户主数据。',
+    status: 'PENDING_APPROVAL',
+    approval_template_snapshot: getApprovalFlowById('pflow-002'),
+    current_level: 1,
+    total_levels: 1,
+    records: [],
   },
 ];
 
