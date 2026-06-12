@@ -53,14 +53,14 @@ export interface ProcessVersion {
   resources?: Array<{ resource_type: string; resource_name: string }>;
 }
 
-const STORAGE_KEY = 'apa.processVersionApproval.v1';
+const STORAGE_KEY = 'apa.processVersionApproval.v2';
 
 const now = (offsetH = 0) => new Date(Date.now() - offsetH * 3_600_000).toISOString();
 
 const defaultVersions: ProcessVersion[] = [
   {
     id: 'pv-001',
-    process_id: 'proc-001',
+    process_id: 'process-1',
     process_name: '订单自动处理流程',
     version: '1.2.0',
     developer_id: 'user-dev-001',
