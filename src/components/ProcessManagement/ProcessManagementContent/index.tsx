@@ -1088,6 +1088,13 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
           department_name: (offlineRequestProcess as any).owning_department_name || '',
         } : null}
       />
+
+      <ApprovalProgressDrawer
+        visible={approvalDrawer.visible}
+        onClose={() => setApprovalDrawer((s) => ({ ...s, visible: false }))}
+        mode={approvalDrawer.mode}
+        targetId={approvalDrawer.targetId}
+      />
     </div>
   );
 };
