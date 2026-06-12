@@ -31,6 +31,9 @@ import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import OfflineRequestModal from './components/OfflineRequestModal';
+import ApprovalHintCell from './components/ApprovalHintCell';
+import ApprovalProgressDrawer from './components/ApprovalProgressDrawer';
+import { useProcessApprovalHints, type ApprovalHint } from './hooks/useProcessApprovalHints';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import type { LYProcessResponse, LYProcessDependency, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
@@ -386,6 +389,17 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const [editingProcess, setEditingProcess] = useState<LYProcessResponse | null>(null);
 
   const { openProcess, OpenProcessModal } = useOpenProcess();
+
+  // 审批提示（按入口隔离：开发=发布、调度=下线）
+  const approvalHints = useProcessApprovalHints(context);
+  const [approvalDrawer, setApprovalDrawer] = useState<{ visible: boolean; mode: 'publish' | 'offline'; targetId: string | null }>({
+    visible: false,
+    mode: 'publish',
+    targetId: null,
+  });
+  const handleOpenApprovalProgress = (hint: ApprovalHint) => {
+    setApprovalDrawer({ visible: true, mode: hint.kind, targetId: hint.targetId });
+  };
 
   // 状态选项 - 调度中心隐藏筛选
   const statusOptions = useMemo(() => [
