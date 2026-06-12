@@ -391,13 +391,10 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
 
   // 审批提示（按入口隔离：开发=发布、调度=下线）
   const approvalHints = useProcessApprovalHints(context);
-  const [approvalDrawer, setApprovalDrawer] = useState<{ visible: boolean; mode: 'publish' | 'offline'; targetId: string | null }>({
-    visible: false,
-    mode: 'publish',
-    targetId: null,
-  });
-  const handleOpenApprovalProgress = (hint: ApprovalHint) => {
-    setApprovalDrawer({ visible: true, mode: hint.kind, targetId: hint.targetId });
+  const handleOpenApprovalProgress = (_hint: ApprovalHint, record: LYProcessResponse) => {
+    setSelectedProcess(record);
+    setDetailInitialTab('approval');
+    setDetailDrawerVisible(true);
   };
 
   // 状态选项 - 调度中心隐藏筛选
