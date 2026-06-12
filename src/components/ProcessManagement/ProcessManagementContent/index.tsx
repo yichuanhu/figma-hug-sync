@@ -666,7 +666,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       key: '__approvalHint',
       width: 150,
       render: (_: unknown, record: LYProcessResponse) => (
-        <ApprovalHintCell hint={approvalHints.get(record.id)} onOpen={handleOpenApprovalProgress} />
+        <ApprovalHintCell hint={approvalHints.get(record.id)} onOpen={(hint) => handleOpenApprovalProgress(hint, record)} />
       ),
     },
     {
