@@ -1576,6 +1576,30 @@
       "actions": {
         "openProcess": "Open Process"
       },
+      "approvalHint": {
+        "column": "Approval",
+        "publishPending": "Publish pending",
+        "offlinePending": "Offline pending",
+        "offlineExecuting": "Offlining",
+        "offlineFailed": "Offline failed",
+        "levelTooltip": "Level {{current}} / {{total}} · click to view",
+        "viewProgress": "Click to view approval progress",
+        "titlePublish": "Publish approval progress",
+        "titleOffline": "Offline approval progress",
+        "readonlyTip": "Read-only view. Approve/Reject buttons are visible only to the current approver.",
+        "applicant": "Applicant",
+        "department": "Department",
+        "submittedAt": "Submitted",
+        "publishNote": "Publish note",
+        "offlineReason": "Reason",
+        "executionError": "Error",
+        "executedAt": "Executed at",
+        "noTemplate": "No approval flow configured.",
+        "lvApproved": "Approved",
+        "lvRejected": "Rejected",
+        "lvPending": "Pending",
+        "lvWaiting": "Waiting"
+      },
       "empty": {
         "title": "No Data",
         "filterDescription": "No matching processes found, try adjusting filters",
