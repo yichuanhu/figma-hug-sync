@@ -1,26 +1,34 @@
-# 统一把审批徽标放到「流程名称」列
+# 审批徽标视觉升级：实心彩圆 + 白色图标
 
-## 改动
+## 背景
+当前徽标是浅色底 + 彩色图标（例如浅蓝底配蓝色图标），在浅色表格行里对比度不足，截图里几乎看不见。
 
-**`ProcessManagementContent/index.tsx`**
+## 方案
 
-1. **流程名称列**：开发中心与调度中心都使用同一个 `render`，名称右侧追加 `ApprovalHintCell`
-   ```
-   <div flex gap=6 minWidth=0>
-     <span ellipsis>{name}</span>
-     {hint && <ApprovalHintCell ... />}
-   </div>
-   ```
-   - 列宽统一调整为 240（开发中心从 160 提升，给徽标留位置）
+把 `ApprovalHintCell` 改为**实心彩色圆 + 白色图标**，类似 iOS 通知徽标，一眼可见。
 
-2. **状态列**（仅开发中心）：移除内部的 `ApprovalHintCell`，恢复只渲染 `StatusDot`，宽度回到 100
+### 具体改动
 
-3. 调度中心不新增独立列
+**`ApprovalHintCell/index.tsx`**
 
-## 不在范围
-- 不动徽标视觉、Tooltip、点击行为、mock、其它列
+- 移除浅色背景方案，改为纯色实心圆
+- 尺寸保持 18×18px，`borderRadius: 50%`
+- 加一层微阴影 `box-shadow: 0 1px 2px rgba(0,0,0,0.12)` 让它从表格行里"浮"出来
+- 鼠标 hover 时 `transform: scale(1.08)`，过渡 120ms
 
-## 验收
-- 开发中心与调度中心，列表行的「流程名称」后都能看到鲜艳实心圆徽标
-- 状态列回到紧凑模式（只剩状态点 + 文字），不再换行
-- 点击徽标打开「审批进度」Tab
+配色与图标映射：
+
+| 场景 | 背景色 | Lucide 图标（白色，size 11） |
+|---|---|---|
+| 发布审批中 `publish` | `#3B82F6` 亮蓝 | `Send`（纸飞机） |
+| 下线审批中 `PENDING_APPROVAL` | `#F59E0B` 琥珀 | `ShieldAlert`（盾+叹号） |
+| 下线执行中 `APPROVED` | `#8B5CF6` 紫 | `Rocket`（火箭） |
+| 下线失败 其它 | `#EF4444` 红 | `OctagonAlert`（八边形警示） |
+
+### 不在范围
+- Tooltip 文案、点击行为、列位置、列宽、mock 数据 均不变
+
+### 验收
+- 列表中「流程名称」后的徽标为鲜艳实心圆 + 白色图标，与浅色行背景形成强对比
+- hover 有轻微放大动效
+- 无审批时仍不渲染（不显示 `-`）

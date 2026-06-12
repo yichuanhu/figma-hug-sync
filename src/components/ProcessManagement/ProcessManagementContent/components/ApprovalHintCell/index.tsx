@@ -1,10 +1,11 @@
 /**
  * 流程列表「审批中」提示徽标
  *
- * 紧凑型图标徽标，悬浮 Tooltip 显示完整文案，点击触发外部回调。
+ * 实心彩圆 + 白色 Lucide 图标，类似 iOS 通知徽标，
+ * 悬浮 Tooltip 显示完整文案，点击触发外部回调。
  */
 import { Tooltip } from '@douyinfe/semi-ui';
-import { FileUp, PowerOff, PlayCircle, AlertTriangle } from 'lucide-react';
+import { Send, ShieldAlert, Rocket, OctagonAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ApprovalHint } from '../../hooks/useProcessApprovalHints';
 
@@ -17,24 +18,24 @@ const ApprovalHintCell = ({ hint, onOpen }: Props) => {
   const { t } = useTranslation();
   if (!hint) return null;
 
-  let color: 'blue' | 'orange' | 'red' = 'blue';
-  let Icon = FileUp;
+  let bg = '#3B82F6';
+  let Icon = Send;
   let textKey = '';
   if (hint.kind === 'publish') {
-    color = 'blue';
-    Icon = FileUp;
+    bg = '#3B82F6';
+    Icon = Send;
     textKey = 'development.processDevelopment.approvalHint.publishPending';
   } else if (hint.status === 'PENDING_APPROVAL') {
-    color = 'orange';
-    Icon = PowerOff;
+    bg = '#F59E0B';
+    Icon = ShieldAlert;
     textKey = 'development.processDevelopment.approvalHint.offlinePending';
   } else if (hint.status === 'APPROVED') {
-    color = 'blue';
-    Icon = PlayCircle;
+    bg = '#8B5CF6';
+    Icon = Rocket;
     textKey = 'development.processDevelopment.approvalHint.offlineExecuting';
   } else {
-    color = 'red';
-    Icon = AlertTriangle;
+    bg = '#EF4444';
+    Icon = OctagonAlert;
     textKey = 'development.processDevelopment.approvalHint.offlineFailed';
   }
 
@@ -58,13 +59,17 @@ const ApprovalHintCell = ({ hint, onOpen }: Props) => {
           width: 18,
           height: 18,
           borderRadius: '50%',
-          background: `var(--semi-color-${color}-light-default)`,
-          color: `var(--semi-color-${color})`,
+          background: bg,
+          color: '#fff',
           cursor: 'pointer',
           flexShrink: 0,
+          boxShadow: '0 1px 2px rgba(0,0,0,0.12)',
+          transition: 'transform 120ms ease',
         }}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
       >
-        <Icon size={12} strokeWidth={2} />
+        <Icon size={11} strokeWidth={2.4} color="#fff" />
       </span>
     </Tooltip>
   );
