@@ -31,6 +31,9 @@ import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import OfflineRequestModal from './components/OfflineRequestModal';
+import ApprovalHintCell from './components/ApprovalHintCell';
+import ApprovalProgressDrawer from './components/ApprovalProgressDrawer';
+import { useProcessApprovalHints, type ApprovalHint } from './hooks/useProcessApprovalHints';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import type { LYProcessResponse, LYProcessDependency, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
@@ -387,6 +390,17 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
 
   const { openProcess, OpenProcessModal } = useOpenProcess();
 
+  // 审批提示（按入口隔离：开发=发布、调度=下线）
+  const approvalHints = useProcessApprovalHints(context);
+  const [approvalDrawer, setApprovalDrawer] = useState<{ visible: boolean; mode: 'publish' | 'offline'; targetId: string | null }>({
+    visible: false,
+    mode: 'publish',
+    targetId: null,
+  });
+  const handleOpenApprovalProgress = (hint: ApprovalHint) => {
+    setApprovalDrawer({ visible: true, mode: hint.kind, targetId: hint.targetId });
+  };
+
   // 状态选项 - 调度中心隐藏筛选
   const statusOptions = useMemo(() => [
     { value: 'DEVELOPING', label: t('development.processDevelopment.status.developing') },
@@ -650,6 +664,15 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         />
       ),
     }]),
+    {
+      title: t('development.processDevelopment.approvalHint.column'),
+      dataIndex: '__approvalHint',
+      key: '__approvalHint',
+      width: 150,
+      render: (_: unknown, record: LYProcessResponse) => (
+        <ApprovalHintCell hint={approvalHints.get(record.id)} onOpen={handleOpenApprovalProgress} />
+      ),
+    },
     {
       title: t('common.owningDepartment'),
       dataIndex: 'owning_department_name',
@@ -1064,6 +1087,13 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
           department_id: (offlineRequestProcess as any).owning_department_id || '',
           department_name: (offlineRequestProcess as any).owning_department_name || '',
         } : null}
+      />
+
+      <ApprovalProgressDrawer
+        visible={approvalDrawer.visible}
+        onClose={() => setApprovalDrawer((s) => ({ ...s, visible: false }))}
+        mode={approvalDrawer.mode}
+        targetId={approvalDrawer.targetId}
       />
     </div>
   );

@@ -1484,6 +1484,30 @@
       "actions": {
         "openProcess": "打开流程"
       },
+      "approvalHint": {
+        "column": "审批提示",
+        "publishPending": "发布审批中",
+        "offlinePending": "下线审批中",
+        "offlineExecuting": "下线执行中",
+        "offlineFailed": "下线失败",
+        "levelTooltip": "当前第 {{current}} / {{total}} 级，点击查看进度",
+        "viewProgress": "点击查看审批进度",
+        "titlePublish": "发布审批进度",
+        "titleOffline": "停用审批进度",
+        "readonlyTip": "你正在以只读身份查看审批进度，操作按钮仅对当前审批人可见。",
+        "applicant": "申请人",
+        "department": "所属部门",
+        "submittedAt": "提交时间",
+        "publishNote": "发布说明",
+        "offlineReason": "停用原因",
+        "executionError": "执行错误",
+        "executedAt": "执行时间",
+        "noTemplate": "未配置审批流，提交后将直接生效",
+        "lvApproved": "已通过",
+        "lvRejected": "已拒绝",
+        "lvPending": "审批中",
+        "lvWaiting": "待审批"
+      },
       "detail": {
         "tabs": {
           "detail": "基本信息",
