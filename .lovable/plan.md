@@ -1,52 +1,23 @@
 ## 目标
-取消独立的 `ApprovalProgressDrawer` 入口，将「审批进度」改为流程详情抽屉（`ProcessDetailDrawer`）内的一个 Tab，与「详情/版本/依赖/资料/工作量/ROI」并列。点击列表上的「发布审批中 / 下线审批中 / 下线执行中 / 下线失败」Tag 直接打开流程详情抽屉并定位到该 Tab。
+取消独立的「审批提示」列，将审批 Tag 并入「状态」列，状态点之后紧跟一个小号 Tag（如 `● 开发中 [发布审批中]`、`● 已发布 [下线审批中]`）。点击 Tag 仍然打开流程详情抽屉「审批进度」Tab。
 
 ## 改动范围
 
-### 1. 新增 `ProcessDetailDrawer/components/ApprovalProgressTab/index.{tsx,less}`
-- 入参：`processId`、`context`（development | scheduling）
-- 内部根据 context 选择数据源：
-  - development：取该流程**最新的** `PENDING_APPROVAL / REJECTED / APPROVED` 版本（`fetchProcessVersions` + 按 `process_id` 过滤）；展示发布场景元信息（版本号、发布说明、申请人、部门、提交时间）+ 多级时间线
-  - scheduling：取该流程**最新的** offline request（`fetchOfflineApprovals` + 按 `process_id` 过滤）；展示停用场景元信息（申请人、部门、提交时间、停用原因、执行错误/执行时间）+ 多级时间线
-- 没有任何审批记录时，用 `EmptyState`（`no-data`）+ 文案「暂无审批记录」
-- 复用现有 `renderLevels` 视觉与文案 i18n key（直接迁移现有 `ApprovalProgressDrawer` 的渲染函数）
-- 顶部保留只读提示横条 + 状态 Tag（待审批 / 审批通过 / 已拒绝 / 下线执行中 / 下线失败）
-- 订阅 `subscribeProcessVersionChange / subscribeOfflineRequestChange` 实时刷新
+仅 `src/components/ProcessManagement/ProcessManagementContent/index.tsx`：
 
-### 2. `ProcessDetailDrawer/index.tsx`
-- `Tabs` 新增 `<TabPane itemKey="approval" tab="审批进度">`，位置放在「依赖」之后、「资料」之前
-- Tab 标题旁可加一个 Tag 角标（如「待审」「失败」），让用户一眼看到状态；无审批记录时不显示角标
-- 接收新 prop `initialTab` 已存在，无需新增；只需支持值 `'approval'`
-- `ProcessDetailDrawerProps` 不变（context 已有）
-
-### 3. `ProcessManagementContent/index.tsx`
-- 删除 `ApprovalProgressDrawer` import、`approvalDrawer` state、`handleOpenApprovalProgress`、JSX 中的 `<ApprovalProgressDrawer />`
-- 改写 `ApprovalHintCell` 的 `onOpen` 回调：
-  ```ts
-  const handleOpenApprovalHint = (hint: ApprovalHint, record: LYProcessResponse) => {
-    setSelectedProcess(record);
-    setInitialTab('approval');
-    setDetailDrawerVisible(true);
-  };
-  ```
-- 需要新增/复用一个 `initialTab` state（当前打开抽屉的入口控制），传给 `<ProcessDetailDrawer initialTab={initialTab} />`
-- 列表行 `onClick` 默认仍打开 `detail` tab；点击 Tag 时 stopPropagation + 走上面的回调
-
-### 4. `ApprovalHintCell/index.tsx`
-- `onOpen` 签名从 `(hint) => void` 改为 `(hint) => void` 不变，但调用方在列上重新绑定为传递 record（在 ProcessManagementContent 的列 render 里 inline 闭包即可，组件本身不动）
-
-### 5. 删除 `ApprovalProgressDrawer` 目录
-- `index.tsx`、`index.less` 全部删除（视觉与逻辑被新 Tab 取代）
-- 现有 i18n key（`titlePublish/titleOffline/readonlyTip/applicant/...`）继续在新 Tab 中使用，**不动 i18n 文件**
+1. **删除独立列**：移除 `__approvalHint` 这一列定义（约 663–671 行）。
+2. **改造 `status` 列**：
+   - 列宽从当前值调整到 ~180px（开发中心场景需要容纳「已发布 + 发布审批中」）；调度中心同步。
+   - render 中状态点之后，若 `approvalHints.get(record.id)` 存在则渲染 `<ApprovalHintCell hint={...} onOpen={...} />`，与 `StatusDot` 水平排版（flex + gap 8px）。
+3. **调度中心**：当前调度入口隐藏「状态」筛选，但仍需展示状态列。若调度入口本身已隐藏状态列，则在调度入口保留一个轻量列 "" 仅渲染 ApprovalHintCell（避免回到独立列）—— 探查后确认调度场景的列定义是否含 status；如果调度无 status 列，则将 Tag 合入「流程名称」单元格右侧（fallback 方案，仅调度中心）。
+4. **i18n**：删除/不再使用 `approvalHint.column` 表头 key（保留也无影响，不动 json）。
 
 ## 不在范围
-- 不修改 mock 数据（已在上一轮补全多级 records）
-- 不修改 `useProcessApprovalHints` Hook（仍用于在列上渲染 Tag）
-- 不改其它 Tab / 抽屉头部操作按钮
+- 不动 `ApprovalHintCell` 组件内部样式（Tag size="small" prefixIcon 视觉直接复用）。
+- 不动 mock 数据、Hook、抽屉。
 
 ## 验收
-1. 调度中心流程列表，点击「下线审批中」Tag → 弹出流程详情抽屉，自动停留在「审批进度」Tab，内容包含停用原因、依赖摘要、L1/L2 时间线
-2. 开发中心点击「发布审批中」Tag → 同抽屉，Tab 显示版本号 + 发布说明 + 时间线
-3. 直接点击行打开详情抽屉时，仍默认 `detail` Tab；切换到「审批进度」可看到同样内容
-4. 无任何审批记录的流程，「审批进度」Tab 仍可访问，显示空状态
-5. 全局搜索 `ApprovalProgressDrawer` 应只剩新 Tab 引用，旧抽屉目录已删除
+1. 开发中心：状态列同行内并列显示 `● 开发中` + 蓝色「发布审批中」Tag；无审批的行只显示状态点，列空间不再被「-」占用。
+2. 调度中心：`● 已发布` + 橙/蓝/红「下线审批中/下线执行中/下线失败」Tag。
+3. 点击 Tag 依然停止冒泡并打开详情抽屉「审批进度」Tab。
+4. 表格整体可视宽度变宽，归属部门/关联需求等列得到更多空间。
