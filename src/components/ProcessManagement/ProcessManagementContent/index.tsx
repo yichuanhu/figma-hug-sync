@@ -632,23 +632,21 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       title: t('development.processDevelopment.fields.processName'),
       dataIndex: 'name',
       key: 'name',
-      width: isSchedulingContext ? 240 : 160,
+      width: 240,
       ellipsis: true,
       sorter: true,
       onHeaderCell: () => ({
         onClick: () => handleSort('name'),
       }),
-      render: isSchedulingContext
-        ? (name: string, record: LYProcessResponse) => {
-            const hint = approvalHints.get(record.id);
-            return (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</span>
-                {hint && <ApprovalHintCell hint={hint} onOpen={(h) => handleOpenApprovalProgress(h, record)} />}
-              </div>
-            );
-          }
-        : undefined,
+      render: (name: string, record: LYProcessResponse) => {
+        const hint = approvalHints.get(record.id);
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</span>
+            {hint && <ApprovalHintCell hint={hint} onOpen={(h) => handleOpenApprovalProgress(h, record)} />}
+          </div>
+        );
+      },
     },
     {
       title: t('common.description'),
@@ -663,20 +661,15 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       title: t('common.status'),
       dataIndex: 'status',
       key: 'status',
-      width: 140,
-      render: (status: string, record: LYProcessResponse) => {
-        const hint = approvalHints.get(record.id);
-        return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
-            <StatusDot
-              color={(statusConfig[status]?.color as StatusDotColor) || 'grey'}
-              label={t(statusConfig[status]?.i18nKey || 'development.processDevelopment.status.developing')}
-            />
-            {hint && <ApprovalHintCell hint={hint} onOpen={(h) => handleOpenApprovalProgress(h, record)} />}
-          </div>
-        );
-      },
+      width: 100,
+      render: (status: string) => (
+        <StatusDot
+          color={(statusConfig[status]?.color as StatusDotColor) || 'grey'}
+          label={t(statusConfig[status]?.i18nKey || 'development.processDevelopment.status.developing')}
+        />
+      ),
     }]),
+
 
 
     {
