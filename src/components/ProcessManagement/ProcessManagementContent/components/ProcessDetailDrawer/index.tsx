@@ -33,6 +33,7 @@ import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
 import DocumentsTab from './components/DocumentsTab';
+import ApprovalProgressTab from './components/ApprovalProgressTab';
 
 import {
   getProcessBasicInfo,
