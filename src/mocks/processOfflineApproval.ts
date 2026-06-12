@@ -55,7 +55,7 @@ export interface ProcessOfflineRequest {
   execution_error?: string;
 }
 
-const STORAGE_KEY = 'apa.processOfflineApproval.v2';
+const STORAGE_KEY = 'apa.processOfflineApproval.v3';
 
 const now = (offsetH = 0) => new Date(Date.now() - offsetH * 3_600_000).toISOString();
 
@@ -129,9 +129,12 @@ const defaultRequests: ProcessOfflineRequest[] = [
     submitted_at: now(20),
     dependency_snapshot: { blocking: false, triggers: [], task_templates: [], running_tasks: [], scheduling_refs: [] },
     status: 'PENDING_APPROVAL',
-    current_level: 1,
+    approval_template_snapshot: getApprovalFlowById('oflow-001'),
+    current_level: 2,
     total_levels: 2,
-    records: [],
+    records: [
+      { level: 1, approver_id: 'user-mgr', approver_name: '林经理', action: 'approve', comment: '同意下线，确认无残余依赖。', acted_at: now(8) },
+    ],
   },
   {
     id: 'por-004',
@@ -162,6 +165,7 @@ const defaultRequests: ProcessOfflineRequest[] = [
     submitted_at: now(56),
     dependency_snapshot: { blocking: false, triggers: [], task_templates: [], running_tasks: [], scheduling_refs: [] },
     status: 'EXECUTED',
+    approval_template_snapshot: getApprovalFlowById('oflow-001'),
     current_level: 1,
     total_levels: 1,
     executed_at: now(40),
@@ -185,6 +189,72 @@ const defaultRequests: ProcessOfflineRequest[] = [
     total_levels: 2,
     records: [
       { level: 1, approver_id: 'user-mgr', approver_name: '林经理', action: 'reject', comment: '该流程仍有外部业务依赖，请确认后再申请。', acted_at: now(80) },
+    ],
+  },
+  {
+    id: 'por-005',
+    process_id: 'process-8',
+    process_name: 'Employee Performance Summary',
+    applicant_id: 'user-006',
+    applicant_name: 'Tom Liu',
+    department_id: 'dept-apa-product',
+    department_name: getDepartmentName('dept-apa-product') || '产品研发部',
+    reason: '该流程已并入新版绩效平台，原流程下线以避免重复调度。',
+    submitted_at: now(2),
+    dependency_snapshot: { blocking: false, triggers: [], task_templates: [], running_tasks: [], scheduling_refs: [] },
+    status: 'PENDING_APPROVAL',
+    approval_template_snapshot: getApprovalFlowById('oflow-001'),
+    current_level: 1,
+    total_levels: 2,
+    records: [],
+  },
+  {
+    id: 'por-006',
+    process_id: 'process-1',
+    process_name: '订单自动处理流程',
+    applicant_id: 'user-007',
+    applicant_name: 'Alice Wu',
+    department_id: 'dept-finance',
+    department_name: getDepartmentName('dept-finance') || '财务部',
+    reason: '订单链路已迁移至新版处理流程，原流程申请下线。',
+    submitted_at: now(30),
+    dependency_snapshot: { blocking: false, triggers: [], task_templates: [], running_tasks: [], scheduling_refs: [] },
+    status: 'APPROVED',
+    approval_template_snapshot: getApprovalFlowById('oflow-001'),
+    current_level: 2,
+    total_levels: 2,
+    records: [
+      { level: 1, approver_id: 'user-mgr', approver_name: '林经理', action: 'approve', comment: '同意下线，已和上游确认切换。', acted_at: now(20) },
+      { level: 2, approver_id: 'user-ops-001', approver_name: '运维同学', action: 'approve', comment: '审批通过，准备执行下线。', acted_at: now(4) },
+    ],
+  },
+  {
+    id: 'por-007',
+    process_id: 'process-4',
+    process_name: '采购申请',
+    applicant_id: 'user-008',
+    applicant_name: 'Henry Zhou',
+    department_id: 'dept-apa-product',
+    department_name: getDepartmentName('dept-apa-product') || '产品研发部',
+    reason: '采购系统升级，原审批流程下线。',
+    submitted_at: now(50),
+    dependency_snapshot: {
+      blocking: true,
+      triggers: [],
+      task_templates: [],
+      running_tasks: [
+        { id: 'task-process-4-run', name: '采购申请 运行中任务 #3120', status: 'RUNNING' },
+      ],
+      scheduling_refs: [],
+    },
+    status: 'EXECUTION_FAILED',
+    approval_template_snapshot: getApprovalFlowById('oflow-001'),
+    current_level: 2,
+    total_levels: 2,
+    execution_error: '执行时检测到运行中任务，停用未完成。',
+    records: [
+      { level: 1, approver_id: 'user-mgr', approver_name: '林经理', action: 'approve', comment: '同意。', acted_at: now(36) },
+      { level: 2, approver_id: 'user-ops-001', approver_name: '运维同学', action: 'approve', comment: '可执行。', acted_at: now(20) },
     ],
   },
 ];
