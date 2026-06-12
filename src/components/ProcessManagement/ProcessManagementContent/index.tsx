@@ -663,11 +663,11 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       title: t('common.status'),
       dataIndex: 'status',
       key: 'status',
-      width: 180,
+      width: 140,
       render: (status: string, record: LYProcessResponse) => {
         const hint = approvalHints.get(record.id);
         return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
             <StatusDot
               color={(statusConfig[status]?.color as StatusDotColor) || 'grey'}
               label={t(statusConfig[status]?.i18nKey || 'development.processDevelopment.status.developing')}
@@ -677,6 +677,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         );
       },
     }]),
+
 
     {
       title: t('common.owningDepartment'),
