@@ -384,7 +384,7 @@ const RequirementDetailDrawer = ({
     const isHistory = viewingVersion !== 'current';
     const availableTabs: string[] = ['overview', 'approval', 'assessment', 'cost'].filter(showTab);
     if (!isHistory) {
-      ['effort', 'devScheme', 'changeLog'].forEach((k) => { if (showTab(k)) availableTabs.push(k); });
+      ['effort', 'devScheme', 'followers', 'changeLog'].forEach((k) => { if (showTab(k)) availableTabs.push(k); });
     }
     if (!availableTabs.includes(activeTab)) {
       setActiveTab('overview');
