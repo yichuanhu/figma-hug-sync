@@ -3,7 +3,7 @@
  */
 import { useMemo, useState } from 'react';
 import { Avatar, Button, Modal, Select, Toast, Tooltip, Typography } from '@douyinfe/semi-ui';
-import { Eye, EyeOff, Plus, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import type { RequirementItem } from '../../../types';
 import './index.less';
 
