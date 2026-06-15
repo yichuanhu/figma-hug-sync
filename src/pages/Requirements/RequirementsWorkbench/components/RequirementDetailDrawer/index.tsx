@@ -14,6 +14,7 @@ import ApprovalSection from './ApprovalSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import EffortTab from './EffortTab';
+import FollowersTab from './FollowersTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ChangeLogTab from '../ChangeLogTab';
 import DevSchemeDocsTab from '../DevSchemeDocsTab';
