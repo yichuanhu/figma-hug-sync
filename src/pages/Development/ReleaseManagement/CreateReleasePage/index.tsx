@@ -160,6 +160,10 @@ const CreateReleasePage: React.FC = () => {
       return;
     }
 
+    // 服务端兜底校验（mock R-16）：提交前再次确认所有流程属于同一发布范围
+    if (!validateScopeConsistency()) return;
+
+
     // Story-005：发布前校验 — 工作空间必须存在同部门下的关联需求
     const allWs = await fetchAllWorkspaces();
     const validWs = allWs.filter((w) => w.linkedRequirementIds.length > 0);
