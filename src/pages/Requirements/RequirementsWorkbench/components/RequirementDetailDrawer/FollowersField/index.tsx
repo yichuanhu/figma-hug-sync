@@ -1,9 +1,8 @@
 /**
- * 需求关注者 - 紧凑字段版
- * 仅记录手动添加的关注者，不再与流程角色合并
+ * 需求关注者 - 紧凑字段版（chip 样式）
  */
 import { useMemo, useState } from 'react';
-import { Avatar, AvatarGroup, Button, Modal, Select, Toast, Tooltip, Typography } from '@douyinfe/semi-ui';
+import { Avatar, Button, Modal, Select, Toast, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { Eye, EyeOff, Plus, X } from 'lucide-react';
 import type { RequirementItem } from '../../../types';
 import './index.less';
@@ -67,22 +66,6 @@ const FollowersField = ({ data: _data }: Props) => {
     });
   };
 
-  const renderUserTooltip = (f: FollowerEntry) => (
-    <div className="requirement-followers-field-tooltip">
-      <div className="requirement-followers-field-tooltip-meta">
-        <Text strong size="small">{f.userName}</Text>
-        {f.department && <Text type="tertiary" size="small">{f.department}</Text>}
-      </div>
-      <Button
-        size="small"
-        theme="borderless"
-        type="danger"
-        icon={<X size={12} strokeWidth={2} />}
-        onClick={() => handleRemove(f.userId, f.userName)}
-      />
-    </div>
-  );
-
   return (
     <div className="requirement-followers-field">
       <div className="requirement-followers-field-header">
@@ -101,28 +84,36 @@ const FollowersField = ({ data: _data }: Props) => {
           {isFollowing ? '已关注' : '关注'}
         </Button>
       </div>
+
       <div className="requirement-followers-field-body">
-        {followers.length > 0 ? (
-          <AvatarGroup size="extra-small" maxCount={6} overlapFrom="end">
-            {followers.map((f) => (
-              <Tooltip
-                key={f.userId}
-                content={renderUserTooltip(f)}
-                position="top"
-                trigger="hover"
-                clickToHide
+        {followers.map((f) => (
+          <Tooltip
+            key={f.userId}
+            content={f.department ? `${f.userName} · ${f.department}` : f.userName}
+            position="top"
+          >
+            <div className="requirement-followers-chip">
+              <Avatar
+                size="extra-extra-small"
+                style={{ backgroundColor: 'var(--semi-color-text-0)', color: 'var(--semi-color-bg-0)' }}
               >
-                <Avatar
-                  style={{ backgroundColor: 'var(--semi-color-text-0)', color: 'var(--semi-color-bg-0)' }}
-                >
-                  {f.userName.slice(0, 1).toUpperCase()}
-                </Avatar>
-              </Tooltip>
-            ))}
-          </AvatarGroup>
-        ) : (
-          <Text type="tertiary" size="small">暂无关注者</Text>
-        )}
+                {f.userName.slice(0, 1).toUpperCase()}
+              </Avatar>
+              <span className="requirement-followers-chip-name">{f.userName}</span>
+              <button
+                type="button"
+                className="requirement-followers-chip-remove"
+                aria-label={`移除 ${f.userName}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemove(f.userId, f.userName);
+                }}
+              >
+                <X size={10} strokeWidth={2.5} />
+              </button>
+            </div>
+          </Tooltip>
+        ))}
         <Tooltip content="添加关注者" position="top">
           <button
             type="button"
