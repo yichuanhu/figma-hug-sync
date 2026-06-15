@@ -18,18 +18,8 @@
   &-body {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
-
-    .semi-avatar {
-      border: 2px solid var(--semi-color-bg-2);
-      transition: transform 0.15s ease;
-
-      &:hover {
-        transform: translateY(-2px);
-        z-index: 2;
-      }
-    }
   }
 
   &-add {
@@ -52,19 +42,67 @@
       background: var(--semi-color-primary-light-default);
     }
   }
+}
 
-  &-tooltip {
-    display: flex;
+.requirement-followers-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px 2px 2px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--semi-color-fill-0);
+  max-width: 160px;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--semi-color-fill-1);
+
+    .requirement-followers-chip-remove {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  .semi-avatar {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  &-name {
+    font-size: 12px;
+    color: var(--semi-color-text-0);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  &-remove {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: none;
+    background: var(--semi-color-text-0);
+    color: var(--semi-color-bg-0);
+    display: inline-flex;
     align-items: center;
-    gap: 12px;
-    min-width: 180px;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 
-    &-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      flex: 1;
-      min-width: 0;
+    &:hover {
+      transform: scale(1.1);
     }
   }
 }
