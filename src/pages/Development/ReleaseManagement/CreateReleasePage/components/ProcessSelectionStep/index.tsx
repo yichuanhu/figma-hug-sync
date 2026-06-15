@@ -30,7 +30,29 @@ interface ProcessVersion {
 
 interface ProcessWithVersions extends LYPublishableProcessResponse {
   versions: ProcessVersion[];
+  owner_department_id: string;
+  owner_department_name: string;
+  publish_approval_template_id?: string;
+  publish_approval_template_name?: string;
+  publish_approval_template_visible?: boolean;
+  publish_approval_required: boolean;
+  publish_selection_scope_key: string;
 }
+
+const DEPARTMENTS = [
+  { id: 'dept-finance', name: '财务部' },
+  { id: 'dept-hr', name: '人事部' },
+  { id: 'dept-rd', name: '研发部' },
+  { id: 'dept-ops', name: '运营部' },
+];
+
+const TEMPLATES: Record<string, { id: string; name: string; enabled: boolean }> = {
+  finance: { id: 'tpl-finance', name: '财务发布审批', enabled: true },
+  cross: { id: 'tpl-cross', name: '跨部门发布审批', enabled: true },
+  disabled: { id: 'tpl-disabled', name: '运营发布登记', enabled: false },
+};
+
+const getScopeKey = (p: ProcessWithVersions) => p.publish_selection_scope_key;
 
 interface ProcessSelectionStepProps {
   selectedProcesses: SelectedProcess[];
