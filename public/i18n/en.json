@@ -3212,7 +3212,19 @@
       "missingDependencyBanner": "The following processes contain invalid dependency resources. Please handle them before releasing.",
       "goHandleDependency": "Go to Handle",
       "cannotPublishMissing": "Cannot release: invalid dependency resources exist",
-      "hasMissingDependency": "Has invalid dependencies"
+      "hasMissingDependency": "Has invalid dependencies",
+      "scope": {
+        "templateTag": "Approval · {{name}}",
+        "templateTagNoPerm": "Approval required",
+        "noTemplateTag": "No approval · {{dept}}",
+        "lockedBannerTemplate": "Release scope: {{name}} (approval required)",
+        "lockedBannerTemplateDisabled": "Release scope: {{name}} (no approval)",
+        "lockedBannerNoTemplate": "Release scope: {{dept}} · no approval",
+        "clearLock": "Clear selection to unlock",
+        "incompatibleTooltip": "This process is outside the current release approval scope and cannot be released together with the already-selected processes",
+        "summarySelected": "Current release scope"
+      },
+      "crossScopeError": "Cross-scope batch release is not supported. Please select processes sharing the same release approval template or the same no-template department scope."
     },
     "actions": {
       "rollback": "Rollback"
