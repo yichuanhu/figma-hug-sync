@@ -178,9 +178,19 @@ const FollowersTab = ({ data }: FollowersTabProps) => {
     setModalOpen(false);
   };
 
-  const handleRemoveManual = (userId: string) => {
-    setManualFollowers((prev) => prev.filter((f) => f.userId !== userId));
-    Toast.success('已移除');
+  const handleRemoveManual = (userId: string, userName: string) => {
+    Modal.confirm({
+      title: '移除关注者',
+      content: `确定要移除 ${userName} 吗？`,
+      centered: true,
+      okText: '确定',
+      cancelText: '取消',
+      okType: 'danger',
+      onOk: () => {
+        setManualFollowers((prev) => prev.filter((f) => f.userId !== userId));
+        Toast.success('已移除');
+      },
+    });
   };
 
   return (
@@ -299,7 +309,7 @@ const FollowersTab = ({ data }: FollowersTabProps) => {
                         theme="borderless"
                         type="tertiary"
                         icon={<X size={14} strokeWidth={2} />}
-                        onClick={() => handleRemoveManual(f.userId)}
+                        onClick={() => handleRemoveManual(f.userId, f.userName)}
                       />
                     </Tooltip>
                   )}
