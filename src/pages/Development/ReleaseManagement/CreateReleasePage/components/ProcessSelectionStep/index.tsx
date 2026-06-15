@@ -278,10 +278,36 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     return new Set(selectedProcesses.map((sp) => sp.process.id));
   }, [selectedProcesses]);
 
+  // 范围锁定：根据已选第一项派生 scopeKey
+  const lockedScopeKey = useMemo<string | null>(() => {
+    if (selectedProcesses.length === 0) return null;
+    return (selectedProcesses[0].process as ProcessWithVersions).publish_selection_scope_key ?? null;
+  }, [selectedProcesses]);
+
+  const lockedSample = selectedProcesses[0]?.process as ProcessWithVersions | undefined;
+
+  const isCompatible = (p: ProcessWithVersions) =>
+    !lockedScopeKey || p.publish_selection_scope_key === lockedScopeKey;
+
+  // 锁定提示条文案
+  const lockedBannerText = useMemo(() => {
+    if (!lockedSample) return '';
+    if (lockedSample.publish_approval_template_id) {
+      const name =
+        lockedSample.publish_approval_template_visible && lockedSample.publish_approval_template_name
+          ? lockedSample.publish_approval_template_name
+          : t('release.create.scope.templateTagNoPerm');
+      return lockedSample.publish_approval_required
+        ? t('release.create.scope.lockedBannerTemplate', { name })
+        : t('release.create.scope.lockedBannerTemplateDisabled', { name });
+    }
+    return t('release.create.scope.lockedBannerNoTemplate', { dept: lockedSample.owner_department_name });
+  }, [lockedSample, t]);
+
   // Left勾选processing - 同步toRight
   const handleLeftCheck = (process: ProcessWithVersions, checked: boolean) => {
     if (checked) {
-      // addtoAlready选List
+      if (!isCompatible(process)) return;
       const newSelection: SelectedProcess = {
         process,
         version_id: process.latest_version_id,
@@ -289,24 +315,22 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
       };
       onSelectionChange([...selectedProcesses, newSelection]);
     } else {
-      // fromAlready选Listremove
       onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== process.id));
     }
   };
 
-  // 全选Left
+  // 全选Left：只作用于当前锁定范围内的兼容流程
   const handleLeftCheckAll = (checked: boolean) => {
     if (checked) {
-      // add所has未选's Process
-      const unselectedProcesses = processList.filter((p) => !selectedIds.has(p.id));
-      const newSelections: SelectedProcess[] = unselectedProcesses.map((process) => ({
-        process,
-        version_id: process.latest_version_id,
-        version_number: process.latest_version,
-      }));
-      onSelectionChange([...selectedProcesses, ...newSelections]);
+      const toAdd = processList
+        .filter((p) => !selectedIds.has(p.id) && isCompatible(p))
+        .map<SelectedProcess>((process) => ({
+          process,
+          version_id: process.latest_version_id,
+          version_number: process.latest_version,
+        }));
+      onSelectionChange([...selectedProcesses, ...toAdd]);
     } else {
-      // remove当前List所hasAlready选's Process
       const currentListIds = new Set(processList.map((p) => p.id));
       onSelectionChange(selectedProcesses.filter((sp) => !currentListIds.has(sp.process.id)));
     }
@@ -315,6 +339,10 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   // fromRightremove
   const handleRemoveFromRight = (processId: string) => {
     onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== processId));
+  };
+
+  const handleClearAll = () => {
+    onSelectionChange([]);
   };
 
   // ModifyVersion
@@ -339,10 +367,32 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     { value: 'unpublished', label: t('release.create.processStatus.unpublished') },
   ];
 
-  // 当前ListSelected's Count
-  const currentListSelectedCount = processList.filter((p) => selectedIds.has(p.id)).length;
-  const isLeftAllChecked = processList.length > 0 && currentListSelectedCount === processList.length;
-  const isLeftIndeterminate = currentListSelectedCount > 0 && currentListSelectedCount < processList.length;
+  // 当前List中兼容、可选的 Process（用于全选 checkbox 状态计算）
+  const compatibleInList = processList.filter((p) => isCompatible(p));
+  const currentListSelectedCount = compatibleInList.filter((p) => selectedIds.has(p.id)).length;
+  const isLeftAllChecked =
+    compatibleInList.length > 0 && currentListSelectedCount === compatibleInList.length;
+  const isLeftIndeterminate =
+    currentListSelectedCount > 0 && currentListSelectedCount < compatibleInList.length;
+
+  const renderScopeTag = (process: ProcessWithVersions) => {
+    if (process.publish_approval_template_id) {
+      const name =
+        process.publish_approval_template_visible && process.publish_approval_template_name
+          ? t('release.create.scope.templateTag', { name: process.publish_approval_template_name })
+          : t('release.create.scope.templateTagNoPerm');
+      return (
+        <Tag size="small" color="violet">
+          {name}
+        </Tag>
+      );
+    }
+    return (
+      <Tag size="small" color="grey">
+        {t('release.create.scope.noTemplateTag', { dept: process.owner_department_name })}
+      </Tag>
+    );
+  };
 
   return (
     <div className="process-selection-step">
