@@ -375,22 +375,52 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   const isLeftIndeterminate =
     currentListSelectedCount > 0 && currentListSelectedCount < compatibleInList.length;
 
-  const renderScopeTag = (process: ProcessWithVersions) => {
-    if (process.publish_approval_template_id) {
-      const name =
-        process.publish_approval_template_visible && process.publish_approval_template_name
-          ? t('release.create.scope.templateTag', { name: process.publish_approval_template_name })
-          : t('release.create.scope.templateTagNoPerm');
-      return (
-        <Tag size="small" color="violet">
-          {name}
-        </Tag>
-      );
+  const renderRowMeta = (process: ProcessWithVersions) => {
+    const hasNewVersion = hasNewVersionToPublish(process);
+    let statusKey: 'pending' | 'new' | 'published' = 'pending';
+    let statusText = t('release.create.processStatus.unpublished');
+    if (!process.is_published) {
+      statusKey = 'pending';
+      statusText = t('release.create.processStatus.unpublished');
+    } else if (hasNewVersion) {
+      statusKey = 'new';
+      statusText = t('release.create.processStatus.hasNewVersion');
+    } else {
+      statusKey = 'published';
+      statusText = t('release.create.processStatus.published');
     }
+
+    const approvalNode = process.publish_approval_template_id ? (
+      <span className="row-meta__approval row-meta__approval--required">
+        <span className="row-meta__approval-prefix">
+          {t('release.create.scope.approvalRequired', { defaultValue: '需审批' })}
+        </span>
+        <span className="row-meta__dot-sep">·</span>
+        <span className="row-meta__approval-name">
+          {process.publish_approval_template_visible && process.publish_approval_template_name
+            ? process.publish_approval_template_name
+            : t('release.create.scope.templateTagNoPerm')}
+        </span>
+      </span>
+    ) : (
+      <span className="row-meta__approval row-meta__approval--none">
+        <span>{t('release.create.scope.approvalNone', { defaultValue: '无需审批' })}</span>
+        <span className="row-meta__dot-sep">·</span>
+        <span>{process.owner_department_name}</span>
+      </span>
+    );
+
     return (
-      <Tag size="small" color="grey">
-        {t('release.create.scope.noTemplateTag', { dept: process.owner_department_name })}
-      </Tag>
+      <div className="row-meta">
+        <span className={`row-meta__status row-meta__status--${statusKey}`}>
+          <span className="row-meta__dot" />
+          <span>{statusText}</span>
+        </span>
+        <span className="row-meta__sep">|</span>
+        {approvalNode}
+        <span className="row-meta__sep">|</span>
+        <span className="row-meta__version">{process.latest_version}</span>
+      </div>
     );
   };
 
