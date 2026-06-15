@@ -19,6 +19,7 @@ import type { SelectedProcess } from '../../index';
 import './index.less';
 import { Inbox, Lock, X } from 'lucide-react';
 import { Tooltip } from '@douyinfe/semi-ui';
+import StatusDot from '@/components/StatusDot';
 
 const { Text } = Typography;
 
