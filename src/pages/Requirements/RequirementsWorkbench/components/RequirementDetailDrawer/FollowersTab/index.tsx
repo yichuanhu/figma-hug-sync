@@ -193,7 +193,6 @@ const FollowersTab = ({ data }: FollowersTabProps) => {
         description={
           <Text size="small">
             关注者由系统根据关联流程自动同步（流程负责人、开发者、代码审核员），也可手动添加。
-            关注者拥有需求的只读访问权限，不能编辑、删除或参与审批。
           </Text>
         }
         style={{ marginBottom: 0 }}
