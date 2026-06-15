@@ -234,7 +234,10 @@ const FollowersTab = ({ data }: FollowersTabProps) => {
       ) : (
         <div className="requirement-followers-list">
           {followers.map((f) => {
-            const isManualOnly = f.sources.every((s) => s.role === 'manual');
+            const hasAuto = f.sources.some((s) => s.role !== 'manual');
+            const hasManual = f.sources.some((s) => s.role === 'manual');
+            const isManualOnly = hasManual && !hasAuto;
+            const isManualLocked = hasManual && hasAuto;
             return (
               <div key={f.userId} className="requirement-followers-item">
                 <div className="requirement-followers-item-user">
@@ -256,26 +259,39 @@ const FollowersTab = ({ data }: FollowersTabProps) => {
                   </div>
                 </div>
                 <div className="requirement-followers-item-sources">
-                  {f.sources.map((s, i) => (
-                    <Tooltip
-                      key={`${s.processId ?? 'manual'}-${s.role}-${i}`}
-                      content={s.role === 'manual' ? '由管理员手动添加' : `来源流程：${s.processName}`}
-                      position="top"
-                    >
-                      <Tag
-                        color={ROLE_COLOR[s.role]}
-                        type="light"
-                        prefixIcon={
-                          s.role === 'manual'
-                            ? <Hand size={12} strokeWidth={2} />
-                            : <GitBranch size={12} strokeWidth={2} />
+                  {f.sources.map((s, i) => {
+                    const isManualTag = s.role === 'manual';
+                    const locked = isManualTag && isManualLocked;
+                    return (
+                      <Tooltip
+                        key={`${s.processId ?? 'manual'}-${s.role}-${i}`}
+                        content={
+                          locked
+                            ? '该成员已由关联流程自动同步覆盖，手动来源已锁定，无法单独移除'
+                            : isManualTag
+                              ? '由管理员手动添加'
+                              : `来源流程：${s.processName}`
                         }
-                        className="requirement-followers-source-tag"
+                        position="top"
                       >
-                        {s.role === 'manual' ? ROLE_LABEL.manual : `${s.processName} · ${ROLE_LABEL[s.role]}`}
-                      </Tag>
-                    </Tooltip>
-                  ))}
+                        <Tag
+                          color={locked ? 'grey' : ROLE_COLOR[s.role]}
+                          type="light"
+                          prefixIcon={
+                            locked
+                              ? <Lock size={12} strokeWidth={2} />
+                              : isManualTag
+                                ? <Hand size={12} strokeWidth={2} />
+                                : <GitBranch size={12} strokeWidth={2} />
+                          }
+                          className="requirement-followers-source-tag"
+                          style={locked ? { opacity: 0.75 } : undefined}
+                        >
+                          {isManualTag ? `${ROLE_LABEL.manual}${locked ? '（已锁定）' : ''}` : `${s.processName} · ${ROLE_LABEL[s.role]}`}
+                        </Tag>
+                      </Tooltip>
+                    );
+                  })}
                   {isManualOnly && (
                     <Tooltip content="移除关注者" position="top">
                       <Button
