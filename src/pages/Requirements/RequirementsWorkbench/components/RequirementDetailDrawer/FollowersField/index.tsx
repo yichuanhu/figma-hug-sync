@@ -32,7 +32,6 @@ const FollowersField = ({ data: _data }: Props) => {
   const [followers, setFollowers] = useState<FollowerEntry[]>([]);
   const [addOpen, setAddOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
-  const [isFollowing, setIsFollowing] = useState(true);
 
   const existingIds = useMemo(() => new Set(followers.map((f) => f.userId)), [followers]);
   const candidates = CANDIDATE_POOL.filter((c) => !existingIds.has(c.userId));
@@ -70,20 +69,8 @@ const FollowersField = ({ data: _data }: Props) => {
     <div className="requirement-followers-field">
       <div className="requirement-followers-field-header">
         <Text type="tertiary" size="small">关注</Text>
-        <Button
-          size="small"
-          theme="borderless"
-          type={isFollowing ? 'tertiary' : 'primary'}
-          icon={isFollowing ? <Eye size={14} strokeWidth={2} /> : <EyeOff size={14} strokeWidth={2} />}
-          onClick={() => {
-            setIsFollowing((v) => !v);
-            Toast.success(isFollowing ? '已取消关注' : '已关注');
-          }}
-          className="requirement-followers-field-toggle"
-        >
-          {isFollowing ? '已关注' : '关注'}
-        </Button>
       </div>
+
 
       <div className="requirement-followers-field-body">
         {followers.map((f) => (
