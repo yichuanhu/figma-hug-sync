@@ -550,6 +550,15 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
             </Text>
           </div>
 
+          {lockedScopeKey && (
+            <div className="scope-summary">
+              <Text type="tertiary" size="small">
+                {t('release.create.scope.summarySelected')}：{lockedBannerText.replace(/^本次发布范围：|^Release scope: /, '')}
+              </Text>
+            </div>
+          )}
+
+
           <div className="transfer-panel-body">
             {selectedProcesses.length > 0 ? (
               <div className="selected-list">
