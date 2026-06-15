@@ -7,7 +7,7 @@
 
 import { useMemo, useState } from 'react';
 import { Avatar, Tag, Typography, Banner, Tooltip, Button, Modal, Select, Toast } from '@douyinfe/semi-ui';
-import { Info, GitBranch, UserPlus, Hand, X } from 'lucide-react';
+import { Info, GitBranch, UserPlus, Hand, X, Lock } from 'lucide-react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import EmptyState from '@/components/EmptyState';
 import type { RequirementItem, LinkedProcess } from '../../../types';
