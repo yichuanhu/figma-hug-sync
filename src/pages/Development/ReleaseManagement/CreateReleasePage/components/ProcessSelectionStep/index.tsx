@@ -428,6 +428,18 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
             </Space>
           </div>
 
+          {lockedScopeKey && (
+            <div className="scope-lock-banner">
+              <div className="scope-lock-banner-text">
+                <Lock size={14} strokeWidth={2} />
+                <span>{lockedBannerText}</span>
+              </div>
+              <a className="scope-lock-banner-action" onClick={handleClearAll}>
+                {t('release.create.scope.clearLock')}
+              </a>
+            </div>
+          )}
+
           <div className="transfer-panel-select-all">
             <Checkbox
               checked={isLeftAllChecked}
@@ -437,7 +449,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
               <Text size="small">{t('common.selectAll')}</Text>
             </Checkbox>
             <Text type="tertiary" size="small">
-              {currentListSelectedCount}/{processList.length}
+              {currentListSelectedCount}/{compatibleInList.length}
             </Text>
           </div>
 
