@@ -717,6 +717,17 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
+            {!isHistoryMode && showTab('followers') && (
+              <TabPane
+                tab={t('requirements.detail.tab.followers')}
+                itemKey="followers"
+              >
+                <div className="requirement-detail-tab-content">
+                  <FollowersTab data={effectiveData} />
+                </div>
+              </TabPane>
+            )}
+
             {!isHistoryMode && showTab('changeLog') && (
               <TabPane
                 tab={t('requirements.detail.tab.changeLog')}
