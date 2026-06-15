@@ -461,11 +461,12 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                     const isSelected = selectedIds.has(process.id);
                     const hasNewVersion = hasNewVersionToPublish(process);
                     const hasMissingDeps = (process.dependencies || []).some((d) => d.status === 'MISSING');
-                    
-                    // 确定标签Type and 文字
+                    const compatible = isCompatible(process);
+                    const disabled = !compatible;
+
                     let tagColor: 'green' | 'blue' | 'grey' = 'grey';
                     let tagText = t('release.create.processStatus.unpublished');
-                    
+
                     if (!process.is_published) {
                       tagColor = 'grey';
                       tagText = t('release.create.processStatus.unpublished');
@@ -476,17 +477,22 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                       tagColor = 'green';
                       tagText = t('release.create.processStatus.published');
                     }
-                    
-                    return (
+
+                    const row = (
                       <div
                         key={process.id}
-                        className="process-item"
-                        onClick={() => handleLeftCheck(process, !isSelected)}
+                        className={`process-item${disabled ? ' is-disabled' : ''}`}
+                        onClick={() => {
+                          if (disabled) return;
+                          handleLeftCheck(process, !isSelected);
+                        }}
                       >
                         <Checkbox
                           checked={isSelected}
+                          disabled={disabled}
                           onChange={(e) => {
                             e.stopPropagation();
+                            if (disabled) return;
                             handleLeftCheck(process, e.target.checked);
                           }}
                         />
@@ -497,6 +503,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                               <AlertTriangle size={14} strokeWidth={2} style={{ color: 'var(--semi-color-warning)', flexShrink: 0 }} />
                             </Tooltip>
                           )}
+                          {renderScopeTag(process)}
                           <Tag size="small" color={tagColor}>
                             {tagText}
                           </Tag>
@@ -505,6 +512,18 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                           {process.latest_version}
                         </Text>
                       </div>
+                    );
+
+                    return disabled ? (
+                      <Tooltip
+                        key={process.id}
+                        content={t('release.create.scope.incompatibleTooltip')}
+                        position="top"
+                      >
+                        {row}
+                      </Tooltip>
+                    ) : (
+                      row
                     );
                   })}
                 </div>
