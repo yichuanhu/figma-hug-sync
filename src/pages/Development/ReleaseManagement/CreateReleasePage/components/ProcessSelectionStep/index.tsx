@@ -17,7 +17,7 @@ import type { LYPublishableProcessResponse, LYListResponseLYPublishableProcessRe
 import type { SelectedProcess } from '../../index';
 
 import './index.less';
-import { AlertTriangle, Inbox, X } from 'lucide-react';
+import { AlertTriangle, Inbox, Lock, X } from 'lucide-react';
 import { Tooltip } from '@douyinfe/semi-ui';
 
 const { Text } = Typography;
@@ -30,7 +30,29 @@ interface ProcessVersion {
 
 interface ProcessWithVersions extends LYPublishableProcessResponse {
   versions: ProcessVersion[];
+  owner_department_id: string;
+  owner_department_name: string;
+  publish_approval_template_id?: string;
+  publish_approval_template_name?: string;
+  publish_approval_template_visible?: boolean;
+  publish_approval_required: boolean;
+  publish_selection_scope_key: string;
 }
+
+const DEPARTMENTS = [
+  { id: 'dept-finance', name: '财务部' },
+  { id: 'dept-hr', name: '人事部' },
+  { id: 'dept-rd', name: '研发部' },
+  { id: 'dept-ops', name: '运营部' },
+];
+
+const TEMPLATES: Record<string, { id: string; name: string; enabled: boolean }> = {
+  finance: { id: 'tpl-finance', name: '财务发布审批', enabled: true },
+  cross: { id: 'tpl-cross', name: '跨部门发布审批', enabled: true },
+  disabled: { id: 'tpl-disabled', name: '运营发布登记', enabled: false },
+};
+
+const getScopeKey = (p: ProcessWithVersions) => p.publish_selection_scope_key;
 
 interface ProcessSelectionStepProps {
   selectedProcesses: SelectedProcess[];
@@ -129,6 +151,18 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     );
   }
 
+  const dept = DEPARTMENTS[index % DEPARTMENTS.length];
+  // Distribute: 0,1=finance(enabled), 2=cross(enabled), 3=disabled(enabled=false), 4,5=no template
+  const mod = index % 6;
+  let tpl: { id: string; name: string; enabled: boolean } | undefined;
+  if (mod === 0 || mod === 1) tpl = TEMPLATES.finance;
+  else if (mod === 2) tpl = TEMPLATES.cross;
+  else if (mod === 3) tpl = TEMPLATES.disabled;
+
+  const scopeKey = tpl
+    ? `template:${tpl.id}`
+    : `department:${dept.id}:no-template`;
+
   return {
     id: `process-${index + 1}`,
     name: names[index % names.length],
@@ -140,6 +174,13 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     updated_at: new Date(Date.now() - index * 24 * 60 * 60 * 1000).toISOString(),
     versions,
     dependencies: mockDeps,
+    owner_department_id: dept.id,
+    owner_department_name: dept.name,
+    publish_approval_template_id: tpl?.id,
+    publish_approval_template_name: tpl?.name,
+    publish_approval_template_visible: true,
+    publish_approval_required: !!(tpl && tpl.enabled),
+    publish_selection_scope_key: scopeKey,
   };
 };
 
@@ -237,10 +278,36 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     return new Set(selectedProcesses.map((sp) => sp.process.id));
   }, [selectedProcesses]);
 
+  // 范围锁定：根据已选第一项派生 scopeKey
+  const lockedScopeKey = useMemo<string | null>(() => {
+    if (selectedProcesses.length === 0) return null;
+    return (selectedProcesses[0].process as ProcessWithVersions).publish_selection_scope_key ?? null;
+  }, [selectedProcesses]);
+
+  const lockedSample = selectedProcesses[0]?.process as ProcessWithVersions | undefined;
+
+  const isCompatible = (p: ProcessWithVersions) =>
+    !lockedScopeKey || p.publish_selection_scope_key === lockedScopeKey;
+
+  // 锁定提示条文案
+  const lockedBannerText = useMemo(() => {
+    if (!lockedSample) return '';
+    if (lockedSample.publish_approval_template_id) {
+      const name =
+        lockedSample.publish_approval_template_visible && lockedSample.publish_approval_template_name
+          ? lockedSample.publish_approval_template_name
+          : t('release.create.scope.templateTagNoPerm');
+      return lockedSample.publish_approval_required
+        ? t('release.create.scope.lockedBannerTemplate', { name })
+        : t('release.create.scope.lockedBannerTemplateDisabled', { name });
+    }
+    return t('release.create.scope.lockedBannerNoTemplate', { dept: lockedSample.owner_department_name });
+  }, [lockedSample, t]);
+
   // Left勾选processing - 同步toRight
   const handleLeftCheck = (process: ProcessWithVersions, checked: boolean) => {
     if (checked) {
-      // addtoAlready选List
+      if (!isCompatible(process)) return;
       const newSelection: SelectedProcess = {
         process,
         version_id: process.latest_version_id,
@@ -248,24 +315,22 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
       };
       onSelectionChange([...selectedProcesses, newSelection]);
     } else {
-      // fromAlready选Listremove
       onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== process.id));
     }
   };
 
-  // 全选Left
+  // 全选Left：只作用于当前锁定范围内的兼容流程
   const handleLeftCheckAll = (checked: boolean) => {
     if (checked) {
-      // add所has未选's Process
-      const unselectedProcesses = processList.filter((p) => !selectedIds.has(p.id));
-      const newSelections: SelectedProcess[] = unselectedProcesses.map((process) => ({
-        process,
-        version_id: process.latest_version_id,
-        version_number: process.latest_version,
-      }));
-      onSelectionChange([...selectedProcesses, ...newSelections]);
+      const toAdd = processList
+        .filter((p) => !selectedIds.has(p.id) && isCompatible(p))
+        .map<SelectedProcess>((process) => ({
+          process,
+          version_id: process.latest_version_id,
+          version_number: process.latest_version,
+        }));
+      onSelectionChange([...selectedProcesses, ...toAdd]);
     } else {
-      // remove当前List所hasAlready选's Process
       const currentListIds = new Set(processList.map((p) => p.id));
       onSelectionChange(selectedProcesses.filter((sp) => !currentListIds.has(sp.process.id)));
     }
@@ -274,6 +339,10 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   // fromRightremove
   const handleRemoveFromRight = (processId: string) => {
     onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== processId));
+  };
+
+  const handleClearAll = () => {
+    onSelectionChange([]);
   };
 
   // ModifyVersion
@@ -298,10 +367,32 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     { value: 'unpublished', label: t('release.create.processStatus.unpublished') },
   ];
 
-  // 当前ListSelected's Count
-  const currentListSelectedCount = processList.filter((p) => selectedIds.has(p.id)).length;
-  const isLeftAllChecked = processList.length > 0 && currentListSelectedCount === processList.length;
-  const isLeftIndeterminate = currentListSelectedCount > 0 && currentListSelectedCount < processList.length;
+  // 当前List中兼容、可选的 Process（用于全选 checkbox 状态计算）
+  const compatibleInList = processList.filter((p) => isCompatible(p));
+  const currentListSelectedCount = compatibleInList.filter((p) => selectedIds.has(p.id)).length;
+  const isLeftAllChecked =
+    compatibleInList.length > 0 && currentListSelectedCount === compatibleInList.length;
+  const isLeftIndeterminate =
+    currentListSelectedCount > 0 && currentListSelectedCount < compatibleInList.length;
+
+  const renderScopeTag = (process: ProcessWithVersions) => {
+    if (process.publish_approval_template_id) {
+      const name =
+        process.publish_approval_template_visible && process.publish_approval_template_name
+          ? t('release.create.scope.templateTag', { name: process.publish_approval_template_name })
+          : t('release.create.scope.templateTagNoPerm');
+      return (
+        <Tag size="small" color="violet">
+          {name}
+        </Tag>
+      );
+    }
+    return (
+      <Tag size="small" color="grey">
+        {t('release.create.scope.noTemplateTag', { dept: process.owner_department_name })}
+      </Tag>
+    );
+  };
 
   return (
     <div className="process-selection-step">
@@ -337,6 +428,18 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
             </Space>
           </div>
 
+          {lockedScopeKey && (
+            <div className="scope-lock-banner">
+              <div className="scope-lock-banner-text">
+                <Lock size={14} strokeWidth={2} />
+                <span>{lockedBannerText}</span>
+              </div>
+              <a className="scope-lock-banner-action" onClick={handleClearAll}>
+                {t('release.create.scope.clearLock')}
+              </a>
+            </div>
+          )}
+
           <div className="transfer-panel-select-all">
             <Checkbox
               checked={isLeftAllChecked}
@@ -346,7 +449,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
               <Text size="small">{t('common.selectAll')}</Text>
             </Checkbox>
             <Text type="tertiary" size="small">
-              {currentListSelectedCount}/{processList.length}
+              {currentListSelectedCount}/{compatibleInList.length}
             </Text>
           </div>
 
@@ -358,11 +461,12 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                     const isSelected = selectedIds.has(process.id);
                     const hasNewVersion = hasNewVersionToPublish(process);
                     const hasMissingDeps = (process.dependencies || []).some((d) => d.status === 'MISSING');
-                    
-                    // 确定标签Type and 文字
+                    const compatible = isCompatible(process);
+                    const disabled = !compatible;
+
                     let tagColor: 'green' | 'blue' | 'grey' = 'grey';
                     let tagText = t('release.create.processStatus.unpublished');
-                    
+
                     if (!process.is_published) {
                       tagColor = 'grey';
                       tagText = t('release.create.processStatus.unpublished');
@@ -373,17 +477,22 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                       tagColor = 'green';
                       tagText = t('release.create.processStatus.published');
                     }
-                    
-                    return (
+
+                    const row = (
                       <div
                         key={process.id}
-                        className="process-item"
-                        onClick={() => handleLeftCheck(process, !isSelected)}
+                        className={`process-item${disabled ? ' is-disabled' : ''}`}
+                        onClick={() => {
+                          if (disabled) return;
+                          handleLeftCheck(process, !isSelected);
+                        }}
                       >
                         <Checkbox
                           checked={isSelected}
+                          disabled={disabled}
                           onChange={(e) => {
                             e.stopPropagation();
+                            if (disabled) return;
                             handleLeftCheck(process, e.target.checked);
                           }}
                         />
@@ -394,6 +503,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                               <AlertTriangle size={14} strokeWidth={2} style={{ color: 'var(--semi-color-warning)', flexShrink: 0 }} />
                             </Tooltip>
                           )}
+                          {renderScopeTag(process)}
                           <Tag size="small" color={tagColor}>
                             {tagText}
                           </Tag>
@@ -402,6 +512,18 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                           {process.latest_version}
                         </Text>
                       </div>
+                    );
+
+                    return disabled ? (
+                      <Tooltip
+                        key={process.id}
+                        content={t('release.create.scope.incompatibleTooltip')}
+                        position="top"
+                      >
+                        {row}
+                      </Tooltip>
+                    ) : (
+                      row
                     );
                   })}
                 </div>
@@ -427,6 +549,15 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
               {selectedProcesses.length} {t('release.create.items')}
             </Text>
           </div>
+
+          {lockedScopeKey && (
+            <div className="scope-summary">
+              <Text type="tertiary" size="small">
+                {t('release.create.scope.summarySelected')}：{lockedBannerText.replace(/^本次发布范围：|^Release scope: /, '')}
+              </Text>
+            </div>
+          )}
+
 
           <div className="transfer-panel-body">
             {selectedProcesses.length > 0 ? (

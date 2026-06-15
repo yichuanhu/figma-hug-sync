@@ -120,6 +120,21 @@ const CreateReleasePage: React.FC = () => {
     });
   }, [selectedProcesses]);
 
+  // 校验所有已选流程是否属于同一发布范围
+  const validateScopeConsistency = (): boolean => {
+    if (selectedProcesses.length <= 1) return true;
+    const first = selectedProcesses[0].process as unknown as { publish_selection_scope_key?: string };
+    const key = first.publish_selection_scope_key;
+    const consistent = selectedProcesses.every(
+      (sp) => (sp.process as unknown as { publish_selection_scope_key?: string }).publish_selection_scope_key === key,
+    );
+    if (!consistent) {
+      Toast.error(t('release.create.crossScopeError'));
+      return false;
+    }
+    return true;
+  };
+
   // processingStep变化
   const handleNext = () => {
     if (currentStep === 0) {
@@ -127,6 +142,7 @@ const CreateReleasePage: React.FC = () => {
         Toast.warning(t('release.create.validation.noProcessSelected'));
         return;
       }
+      if (!validateScopeConsistency()) return;
       setCurrentStep(1);
     }
   };
@@ -143,6 +159,10 @@ const CreateReleasePage: React.FC = () => {
       Toast.warning(t('release.create.validation.descriptionRequired'));
       return;
     }
+
+    // 服务端兜底校验（mock R-16）：提交前再次确认所有流程属于同一发布范围
+    if (!validateScopeConsistency()) return;
+
 
     // Story-005：发布前校验 — 工作空间必须存在同部门下的关联需求
     const allWs = await fetchAllWorkspaces();
