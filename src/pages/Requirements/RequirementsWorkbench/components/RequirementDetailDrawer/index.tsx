@@ -14,7 +14,7 @@ import ApprovalSection from './ApprovalSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import EffortTab from './EffortTab';
-import FollowersTab from './FollowersTab';
+import FollowersField from './FollowersField';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ChangeLogTab from '../ChangeLogTab';
 import DevSchemeDocsTab from '../DevSchemeDocsTab';
@@ -180,6 +180,10 @@ const PropertyPanel = ({
           readonly
         />
       </div>
+
+      <div className="requirement-detail-property-divider" />
+
+      <FollowersField data={data} />
 
       {data.status === 'DRAFT' && (() => {
         const submitLabel = t('requirements.detail.submitForApproval');
@@ -359,7 +363,7 @@ const RequirementDetailDrawer = ({
   const visibleTabs = useMemo<Set<string>>(() => {
     if (context === 'assessment') return new Set(['overview', 'assessment']);
     if (context === 'approval') return new Set(['overview', 'approval']);
-    return new Set(['overview', 'approval', 'assessment', 'cost', 'effort', 'devScheme', 'followers', 'changeLog']);
+    return new Set(['overview', 'approval', 'assessment', 'cost', 'effort', 'devScheme', 'changeLog']);
   }, [context]);
   const showTab = (key: string) => visibleTabs.has(key);
 
@@ -384,7 +388,7 @@ const RequirementDetailDrawer = ({
     const isHistory = viewingVersion !== 'current';
     const availableTabs: string[] = ['overview', 'approval', 'assessment', 'cost'].filter(showTab);
     if (!isHistory) {
-      ['effort', 'devScheme', 'followers', 'changeLog'].forEach((k) => { if (showTab(k)) availableTabs.push(k); });
+      ['effort', 'devScheme', 'changeLog'].forEach((k) => { if (showTab(k)) availableTabs.push(k); });
     }
     if (!availableTabs.includes(activeTab)) {
       setActiveTab('overview');
@@ -717,16 +721,6 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
-            {!isHistoryMode && showTab('followers') && (
-              <TabPane
-                tab={t('requirements.detail.tab.followers')}
-                itemKey="followers"
-              >
-                <div className="requirement-detail-tab-content">
-                  <FollowersTab data={effectiveData} />
-                </div>
-              </TabPane>
-            )}
 
             {!isHistoryMode && showTab('changeLog') && (
               <TabPane
