@@ -19,6 +19,7 @@ import type { SelectedProcess } from '../../index';
 import './index.less';
 import { Inbox, Lock, X } from 'lucide-react';
 import { Tooltip } from '@douyinfe/semi-ui';
+import StatusDot from '@/components/StatusDot';
 
 const { Text } = Typography;
 
@@ -377,16 +378,16 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
 
   const renderRowMeta = (process: ProcessWithVersions) => {
     const hasNewVersion = hasNewVersionToPublish(process);
-    let statusKey: 'pending' | 'new' | 'published' = 'pending';
+    let statusColor: 'cyan' | 'orange' | 'green' = 'cyan';
     let statusText = t('release.create.processStatus.unpublished');
     if (!process.is_published) {
-      statusKey = 'pending';
+      statusColor = 'cyan';
       statusText = t('release.create.processStatus.unpublished');
     } else if (hasNewVersion) {
-      statusKey = 'new';
+      statusColor = 'orange';
       statusText = t('release.create.processStatus.hasNewVersion');
     } else {
-      statusKey = 'published';
+      statusColor = 'green';
       statusText = t('release.create.processStatus.published');
     }
 
@@ -412,10 +413,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
 
     return (
       <div className="row-meta">
-        <span className={`row-meta__status row-meta__status--${statusKey}`}>
-          <span className="row-meta__dot" />
-          <span>{statusText}</span>
-        </span>
+        <StatusDot color={statusColor} label={statusText} />
         <span className="row-meta__sep">|</span>
         {approvalNode}
         <span className="row-meta__sep">|</span>
