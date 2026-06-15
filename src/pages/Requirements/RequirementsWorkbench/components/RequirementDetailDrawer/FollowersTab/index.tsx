@@ -309,7 +309,7 @@ const FollowersTab = ({ data }: FollowersTabProps) => {
                         theme="borderless"
                         type="tertiary"
                         icon={<X size={14} strokeWidth={2} />}
-                        onClick={() => handleRemoveManual(f.userId)}
+                        onClick={() => handleRemoveManual(f.userId, f.userName)}
                       />
                     </Tooltip>
                   )}
