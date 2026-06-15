@@ -155,7 +155,7 @@ const FollowersTab = ({ data }: FollowersTabProps) => {
       {followers.length === 0 ? (
         <div style={{ padding: '48px 0' }}>
           <EmptyState
-            variant="no-data"
+            variant="noData"
             title="暂无关注者"
             description="需求关联流程后，流程相关人员将自动成为关注者。"
           />
