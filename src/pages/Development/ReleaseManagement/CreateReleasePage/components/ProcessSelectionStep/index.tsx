@@ -489,24 +489,8 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                 <div className="process-list">
                 {processList.map((process) => {
                     const isSelected = selectedIds.has(process.id);
-                    const hasNewVersion = hasNewVersionToPublish(process);
-                    const hasMissingDeps = (process.dependencies || []).some((d) => d.status === 'MISSING');
                     const compatible = isCompatible(process);
                     const disabled = !compatible;
-
-                    let tagColor: 'green' | 'blue' | 'grey' = 'grey';
-                    let tagText = t('release.create.processStatus.unpublished');
-
-                    if (!process.is_published) {
-                      tagColor = 'grey';
-                      tagText = t('release.create.processStatus.unpublished');
-                    } else if (hasNewVersion) {
-                      tagColor = 'blue';
-                      tagText = t('release.create.processStatus.hasNewVersion');
-                    } else {
-                      tagColor = 'green';
-                      tagText = t('release.create.processStatus.published');
-                    }
 
                     const row = (
                       <div
@@ -526,21 +510,10 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                             handleLeftCheck(process, e.target.checked);
                           }}
                         />
-                        <div className="process-item-content">
+                        <div className="process-item-content process-item-content--column">
                           <Text className="process-name" ellipsis={{ showTooltip: true }}>{process.name}</Text>
-                          {hasMissingDeps && (
-                            <Tooltip content={t('release.create.hasMissingDependency')} position="top">
-                              <AlertTriangle size={14} strokeWidth={2} style={{ color: 'var(--semi-color-warning)', flexShrink: 0 }} />
-                            </Tooltip>
-                          )}
-                          {renderScopeTag(process)}
-                          <Tag size="small" color={tagColor}>
-                            {tagText}
-                          </Tag>
+                          {renderRowMeta(process)}
                         </div>
-                        <Text type="tertiary" size="small">
-                          {process.latest_version}
-                        </Text>
                       </div>
                     );
 
