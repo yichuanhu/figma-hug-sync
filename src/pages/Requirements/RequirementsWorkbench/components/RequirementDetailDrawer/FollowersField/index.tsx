@@ -2,7 +2,7 @@
  * 需求关注者 - 紧凑字段版（chip 样式）
  */
 import { useMemo, useState } from 'react';
-import { Avatar, Button, Modal, Select, Toast, Tooltip, Typography } from '@douyinfe/semi-ui';
+import { Avatar, Modal, Select, Toast, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { Plus, X } from 'lucide-react';
 import type { RequirementItem } from '../../../types';
 import './index.less';
