@@ -192,7 +192,7 @@ const FollowersTab = ({ data }: FollowersTabProps) => {
         icon={<Info size={16} strokeWidth={2} />}
         description={
           <Text size="small">
-            关注者由系统根据关联流程自动同步（流程负责人、开发者、代码审核员），也可手动添加。
+            关注者由系统根据关联流程自动同步（流程负责人、开发者、代码审核员），也可手动添加。手动添加的成员若后续被流程覆盖，将自动锁定且无法单独移除。
           </Text>
         }
         style={{ marginBottom: 0 }}
