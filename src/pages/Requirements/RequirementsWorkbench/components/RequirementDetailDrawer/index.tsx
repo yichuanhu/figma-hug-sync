@@ -359,7 +359,7 @@ const RequirementDetailDrawer = ({
   const visibleTabs = useMemo<Set<string>>(() => {
     if (context === 'assessment') return new Set(['overview', 'assessment']);
     if (context === 'approval') return new Set(['overview', 'approval']);
-    return new Set(['overview', 'approval', 'assessment', 'cost', 'effort', 'devScheme', 'changeLog']);
+    return new Set(['overview', 'approval', 'assessment', 'cost', 'effort', 'devScheme', 'followers', 'changeLog']);
   }, [context]);
   const showTab = (key: string) => visibleTabs.has(key);
 
