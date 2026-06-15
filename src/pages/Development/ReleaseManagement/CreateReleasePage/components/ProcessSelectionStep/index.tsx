@@ -151,6 +151,18 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     );
   }
 
+  const dept = DEPARTMENTS[index % DEPARTMENTS.length];
+  // Distribute: 0,1=finance(enabled), 2=cross(enabled), 3=disabled(enabled=false), 4,5=no template
+  const mod = index % 6;
+  let tpl: { id: string; name: string; enabled: boolean } | undefined;
+  if (mod === 0 || mod === 1) tpl = TEMPLATES.finance;
+  else if (mod === 2) tpl = TEMPLATES.cross;
+  else if (mod === 3) tpl = TEMPLATES.disabled;
+
+  const scopeKey = tpl
+    ? `template:${tpl.id}`
+    : `department:${dept.id}:no-template`;
+
   return {
     id: `process-${index + 1}`,
     name: names[index % names.length],
@@ -162,6 +174,13 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     updated_at: new Date(Date.now() - index * 24 * 60 * 60 * 1000).toISOString(),
     versions,
     dependencies: mockDeps,
+    owner_department_id: dept.id,
+    owner_department_name: dept.name,
+    publish_approval_template_id: tpl?.id,
+    publish_approval_template_name: tpl?.name,
+    publish_approval_template_visible: true,
+    publish_approval_required: !!(tpl && tpl.enabled),
+    publish_selection_scope_key: scopeKey,
   };
 };
 
