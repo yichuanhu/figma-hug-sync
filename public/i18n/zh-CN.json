@@ -2751,7 +2751,19 @@
       "missingDependencyBanner": "以下流程包含已失效的依赖资源，请先前往处理后再发布",
       "goHandleDependency": "前往处理",
       "cannotPublishMissing": "存在失效依赖资源，无法发布",
-      "hasMissingDependency": "存在失效依赖"
+      "hasMissingDependency": "存在失效依赖",
+      "scope": {
+        "templateTag": "需审批 · {{name}}",
+        "templateTagNoPerm": "需审批",
+        "noTemplateTag": "无需审批 · {{dept}}",
+        "lockedBannerTemplate": "本次发布范围：{{name}}（需审批）",
+        "lockedBannerTemplateDisabled": "本次发布范围：{{name}}（无需审批）",
+        "lockedBannerNoTemplate": "本次发布范围：{{dept}} · 无需审批",
+        "clearLock": "清空已选解除锁定",
+        "incompatibleTooltip": "该流程不在当前发布审批范围内，不能与当前已选流程一起发布",
+        "summarySelected": "当前发布范围"
+      },
+      "crossScopeError": "暂不支持跨发布范围批量发布，请选择命中同一发布审批模板或同一无模板部门范围的流程版本"
     },
     "rollback": {
       "title": "确认回退",
