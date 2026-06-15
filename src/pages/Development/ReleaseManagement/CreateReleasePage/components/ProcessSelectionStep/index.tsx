@@ -17,7 +17,7 @@ import type { LYPublishableProcessResponse, LYListResponseLYPublishableProcessRe
 import type { SelectedProcess } from '../../index';
 
 import './index.less';
-import { AlertTriangle, Inbox, Lock, X } from 'lucide-react';
+import { Inbox, Lock, X } from 'lucide-react';
 import { Tooltip } from '@douyinfe/semi-ui';
 
 const { Text } = Typography;
