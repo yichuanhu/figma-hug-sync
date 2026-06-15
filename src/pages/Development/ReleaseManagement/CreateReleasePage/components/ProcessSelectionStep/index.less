@@ -75,6 +75,12 @@
       align-items: center;
       gap: 8px;
       min-width: 0;
+
+      &.process-item-content--column {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
     }
 
     .process-name {
@@ -82,6 +88,79 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      max-width: 100%;
+    }
+
+    .row-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      line-height: 1;
+      color: var(--semi-color-text-2);
+      max-width: 100%;
+      overflow: hidden;
+
+      .row-meta__sep {
+        color: var(--semi-color-border);
+      }
+
+      .row-meta__dot-sep {
+        margin: 0 4px;
+        color: var(--semi-color-text-2);
+        opacity: 0.5;
+      }
+
+      .row-meta__dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        margin-right: 6px;
+        background-color: currentColor;
+        vertical-align: middle;
+      }
+
+      .row-meta__status {
+        display: inline-flex;
+        align-items: center;
+        font-weight: 500;
+
+        &.row-meta__status--pending {
+          color: var(--semi-color-text-2);
+          .row-meta__dot { background-color: var(--semi-color-text-2); opacity: 0.6; }
+        }
+        &.row-meta__status--new {
+          color: var(--semi-color-primary);
+        }
+        &.row-meta__status--published {
+          color: var(--semi-color-success);
+        }
+      }
+
+      .row-meta__approval {
+        display: inline-flex;
+        align-items: center;
+        color: var(--semi-color-text-2);
+        min-width: 0;
+
+        .row-meta__approval-prefix {
+          color: var(--semi-color-primary);
+        }
+
+        .row-meta__approval-name {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 200px;
+        }
+      }
+
+      .row-meta__version {
+        font-family: var(--semi-font-family-code, ui-monospace, SFMono-Regular, Menlo, monospace);
+        color: var(--semi-color-text-2);
+        opacity: 0.75;
+      }
     }
 
     &.is-disabled {
