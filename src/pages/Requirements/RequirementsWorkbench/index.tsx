@@ -357,7 +357,7 @@ const RequirementsWorkbench = () => {
       title: t('requirements.fields.reqNo', '编号'),
       dataIndex: 'req_no',
       key: 'req_no',
-      width: 130,
+      width: 120,
       fixed: 'left' as const,
       render: (v: string | undefined, r: RequirementItem) => (
         <Text type="tertiary" size="small" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -369,7 +369,7 @@ const RequirementsWorkbench = () => {
       title: t('requirements.fields.title'),
       dataIndex: 'title',
       key: 'title',
-      width: 280,
+      width: 360,
       fixed: 'left' as const,
       ellipsis: true,
       sorter: true,
