@@ -797,6 +797,7 @@ const RequirementsWorkbench = () => {
                 onClick: () => {
                   if (record) {
                     setSelectedRecord(record as RequirementItem);
+                    setInitialDrawerTab(undefined);
                     if (!detailDrawerVisible) setDetailDrawerVisible(true);
                   }
                 },
