@@ -39,6 +39,7 @@ import {
   MOCK_CURRENT_USER_ID,
   
   getRequirementEffortSummary,
+  listChangeLogs,
 } from './mockData';
 import { statusConfigV2, legacyStatusMap, statusOptionsV2, isBusinessOnlyEdit } from './statusConfig';
 
@@ -123,7 +124,23 @@ const RequirementsWorkbench = () => {
         departmentFilter: effectiveDepartmentFilter,
         statusFilter,
       });
-      setListResponse(response);
+      // 派生近 7 天未读变更条数（仅列表展示用）
+      const sevenDaysAgo = Date.now() - 7 * 86400_000;
+      const enrichedList = await Promise.all(
+        response.list.map(async (item) => {
+          if (!['DEVELOPING', 'LAUNCHED', 'OFFLINE'].includes(item.status)) return item;
+          try {
+            const logs = await listChangeLogs(item.id);
+            const count = logs.filter(
+              (l) => new Date(l.publishedAt).getTime() >= sevenDaysAgo,
+            ).length;
+            return count > 0 ? { ...item, unreadChangeCount: count } : item;
+          } catch {
+            return item;
+          }
+        }),
+      );
+      setListResponse({ ...response, list: enrichedList });
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
@@ -357,7 +374,16 @@ const RequirementsWorkbench = () => {
       ellipsis: true,
       sorter: true,
       onHeaderCell: () => ({ onClick: () => handleSort('title') }),
-      render: (_: string, record: RequirementItem) => <TitleCell record={record} />,
+      render: (_: string, record: RequirementItem) => (
+        <TitleCell
+          record={record}
+          onViewChanges={(r) => {
+            setSelectedRecord(r);
+            setInitialDrawerTab('changeLog');
+            setDetailDrawerVisible(true);
+          }}
+        />
+      ),
     },
     {
       title: t('common.status'),

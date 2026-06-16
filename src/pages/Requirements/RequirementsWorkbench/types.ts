@@ -488,6 +488,8 @@ export interface RequirementItem {
   version?: number;
   /** STORY-006：当前审批/评估轮次；首次提交为 1，每次 resubmit 后 +1 */
   round?: number;
+  /** 列表展示用：近 7 天内未读变更条数（由 loadData 派生写入，不入库） */
+  unreadChangeCount?: number;
 
   // ===== 旧字段（兼容旧弹窗与抽屉，新代码请勿使用） =====
   involvedTech?: ("UI_AUTOMATION" | "ADP")[];
