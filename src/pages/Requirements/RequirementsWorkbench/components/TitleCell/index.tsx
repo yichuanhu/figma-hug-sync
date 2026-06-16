@@ -1,6 +1,6 @@
 import { Typography, Tooltip } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import { Bell } from 'lucide-react';
+import { History } from 'lucide-react';
 import type { RequirementItem } from '../../types';
 import './index.less';
 
@@ -22,7 +22,7 @@ const TitleCell = ({ record, onViewChanges }: TitleCellProps) => {
           <Tooltip
             content={t('requirements.list.unreadChange.tooltip', {
               count: unread,
-              defaultValue: `有 ${unread} 条未读变更，点击查看`,
+              defaultValue: `${unread} 条未读变更，点击查看`,
             })}
           >
             <button
@@ -33,8 +33,8 @@ const TitleCell = ({ record, onViewChanges }: TitleCellProps) => {
                 onViewChanges?.(record);
               }}
             >
-              <Bell size={12} strokeWidth={2} className="req-title-cell__change-icon" />
-              <span className="req-title-cell__change-count">{unread}</span>
+              <History size={12} strokeWidth={2} className="req-title-cell__change-icon" />
+              <span className="req-title-cell__change-count">{unread > 99 ? '99+' : unread}</span>
             </button>
           </Tooltip>
         )}
