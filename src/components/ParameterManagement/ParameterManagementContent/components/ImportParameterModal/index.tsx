@@ -59,14 +59,13 @@ const ImportParameterModal = ({
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet([
       ['parameter_name', 'parameter_type', 'dev_value', 'description'],
-      ['参数名称（必填，最多30字符）', '类型 text/boolean/number（必填）', '开发值（必填，需匹配类型）', '描述（选填，最多500字符）'],
       ['HeartbeatInterval', 'number', '30', '心跳检测间隔（秒）'],
       ['EnableDebug', 'boolean', 'True', '是否开启调试模式'],
       ['DefaultLanguage', 'text', 'zh-CN', '默认语言'],
     ]);
     ws['!cols'] = [{ wch: 24 }, { wch: 22 }, { wch: 24 }, { wch: 40 }];
     XLSX.utils.book_append_sheet(wb, ws, 'Parameters');
-    XLSX.writeFile(wb, '参数批量导入模板.xlsx');
+    XLSX.writeFile(wb, 'parameter_import_template.xlsx');
   };
 
   const validateFile = (f: File): boolean => {
