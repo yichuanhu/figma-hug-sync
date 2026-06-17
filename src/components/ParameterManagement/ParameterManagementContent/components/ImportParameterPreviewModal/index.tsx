@@ -44,16 +44,9 @@ const ImportParameterPreviewModal = ({
   const errorCount = validation.errors.filter((e) => e.row_number !== null).length;
   const totalParsed = validation.total_parsed;
 
-  const willUpdate = validation.valid_rows.filter((r) =>
-    existingNames.has(r.parameter_name.trim().toLowerCase()),
-  ).length;
-  const willCreate = validCount - willUpdate;
-
   const summary = [
     { key: 'total', label: t('parameter.import.preview.totalParsed'), value: totalParsed, color: 'var(--semi-color-text-0)' },
     { key: 'valid', label: t('parameter.import.preview.validCount'), value: validCount, color: 'var(--semi-color-success)' },
-    { key: 'create', label: t('parameter.import.preview.willCreate'), value: willCreate, color: 'var(--semi-color-primary)' },
-    { key: 'update', label: t('parameter.import.preview.willUpdate'), value: willUpdate, color: 'var(--semi-color-warning)' },
     { key: 'error', label: t('parameter.import.preview.errorCount'), value: errorCount, color: 'var(--semi-color-danger)' },
   ];
 
