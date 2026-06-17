@@ -211,8 +211,7 @@ const ImportParameterModal = ({
               <Form.Slot label={t('common.owner')}>
                 <OwnerSearchSelect
                   value={defaultOwnerId}
-                  onChange={(v) => setDefaultOwnerId(v as string)}
-                  departmentId={defaultDepartmentId}
+                  onChange={(v: string) => setDefaultOwnerId(v)}
                   style={{ width: '100%' }}
                 />
               </Form.Slot>
