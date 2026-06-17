@@ -24,7 +24,7 @@ import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import DepartmentSearchSelect, { expandDepartmentValues } from '@/components/DepartmentSearchSelect';
 import { debounce } from 'lodash';
-import { Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Trash2, Upload, UserPlus } from 'lucide-react';
 import type {
   LYParameterResponse,
   LYParameterListResultResponse,
@@ -34,6 +34,7 @@ import type {
 import CreateParameterModal from './components/CreateParameterModal';
 import EditParameterModal from './components/EditParameterModal';
 import ParameterDetailDrawer from './components/ParameterDetailDrawer';
+import ImportParameterModal from './components/ImportParameterModal';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
 import './index.less';
@@ -222,6 +223,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   const [createDefaultName, setCreateDefaultName] = useState<string | undefined>();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [importModalVisible, setImportModalVisible] = useState(false);
 
   // 处理从依赖页跳转来的 openCreate
   const location = useLocation();
@@ -613,14 +615,24 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
             </Space>
           </Col>
           <Col>
-            <Button
-              icon={<Plus size={16} strokeWidth={2} />}
-              theme="solid"
-              type="primary"
-              onClick={() => setCreateModalVisible(true)}
-            >
-              {t('parameter.createParameter')}
-            </Button>
+            <Space>
+              {context === 'development' && (
+                <Button
+                  icon={<Upload size={16} strokeWidth={2} />}
+                  onClick={() => setImportModalVisible(true)}
+                >
+                  {t('parameter.import.entry')}
+                </Button>
+              )}
+              <Button
+                icon={<Plus size={16} strokeWidth={2} />}
+                theme="solid"
+                type="primary"
+                onClick={() => setCreateModalVisible(true)}
+              >
+                {t('parameter.createParameter')}
+              </Button>
+            </Space>
           </Col>
         </Row>
       </div>
