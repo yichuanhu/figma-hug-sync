@@ -746,6 +746,15 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         }}
       />
 
+      {context === 'development' && (
+        <ImportParameterModal
+          visible={importModalVisible}
+          existingNames={(listResponse?.data || []).map((p) => p.parameter_name)}
+          onCancel={() => setImportModalVisible(false)}
+          onComplete={() => { setImportModalVisible(false); loadData(); }}
+        />
+      )}
+
       {renderCollaboratorPanel('PARAMETER', context)}
     </div>
   );
