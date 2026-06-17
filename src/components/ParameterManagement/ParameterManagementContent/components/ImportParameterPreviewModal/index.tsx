@@ -78,15 +78,6 @@ const ImportParameterPreviewModal = ({
     { title: t('parameter.import.cols.name'), dataIndex: 'parameter_name', key: 'parameter_name', width: 160, ellipsis: { showTitle: true } },
     { title: t('parameter.import.cols.type'), dataIndex: 'parameter_type', key: 'parameter_type', width: 90, render: (v: number) => <Tag color="blue" type="light">{typeLabel(v)}</Tag> },
     { title: t('parameter.import.cols.value'), dataIndex: 'parameter_value', key: 'parameter_value', width: 160, ellipsis: { showTitle: true } },
-    {
-      title: t('parameter.import.cols.action'),
-      key: 'action',
-      width: 80,
-      render: (_: unknown, row: ParsedParameterRow) =>
-        existingNames.has(row.parameter_name.trim().toLowerCase())
-          ? <Tag color="orange" type="light">{t('parameter.import.subStatus.updated')}</Tag>
-          : <Tag color="green" type="light">{t('parameter.import.subStatus.created')}</Tag>,
-    },
     { title: t('common.description'), dataIndex: 'parameter_description', key: 'parameter_description', ellipsis: { showTitle: true }, render: (v?: string) => v || '-' },
   ];
 
