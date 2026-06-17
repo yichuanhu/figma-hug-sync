@@ -32,7 +32,7 @@ const ImportParameterPreviewModal = ({
   visible,
   fileName,
   validation,
-  existingNames,
+  
   loading,
   onCancel,
   onConfirm,
