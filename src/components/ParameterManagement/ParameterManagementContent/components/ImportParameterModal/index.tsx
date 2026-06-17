@@ -1,8 +1,11 @@
 import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Button, Toast, Typography } from '@douyinfe/semi-ui';
+import { Modal, Button, Toast, Typography, Form } from '@douyinfe/semi-ui';
 import { Inbox, Download, FileText, X } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import {
   mockImportParameters,
   validateParameterImportRows,
@@ -44,6 +47,10 @@ const ImportParameterModal = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
+  // 新建参数默认归属设置（仅作用于本次导入中新建的参数）
+  const [defaultDepartmentId, setDefaultDepartmentId] = useState<string>(MOCK_CURRENT_USER.department_id);
+  const [defaultOwnerId, setDefaultOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
+
   const existingNameSet = new Set(existingNames.map((n) => n.trim().toLowerCase()));
 
   const reset = () => {
@@ -58,12 +65,12 @@ const ImportParameterModal = ({
   const handleDownloadTemplate = () => {
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet([
-      ['parameter_name', 'parameter_type', 'dev_value', 'description'],
-      ['HeartbeatInterval', 'number', '30', '心跳检测间隔（秒）'],
-      ['EnableDebug', 'boolean', 'True', '是否开启调试模式'],
-      ['DefaultLanguage', 'text', 'zh-CN', '默认语言'],
+      ['parameter_name', 'parameter_type', 'parameter_value', 'parameter_description'],
+      ['HeartbeatInterval', 'NUMBER', '30', '心跳检测间隔（秒）'],
+      ['EnableDebug', 'BOOLEAN', 'True', '是否开启调试模式'],
+      ['DefaultLanguage', 'TEXT', 'zh-CN', '默认语言'],
     ]);
-    ws['!cols'] = [{ wch: 24 }, { wch: 22 }, { wch: 24 }, { wch: 40 }];
+    ws['!cols'] = [{ wch: 24 }, { wch: 18 }, { wch: 24 }, { wch: 40 }];
     XLSX.utils.book_append_sheet(wb, ws, 'Parameters');
     XLSX.writeFile(wb, 'parameter_import_template.xlsx');
   };
@@ -95,23 +102,15 @@ const ImportParameterModal = ({
     rows.forEach((row, idx) => {
       const parameter_name = String(row['parameter_name'] ?? '').trim();
       const parameter_type_raw = String(row['parameter_type'] ?? '').trim();
-      const dev_value = String(row['dev_value'] ?? '').trim();
-      const description = String(row['description'] ?? '').trim();
-      // 跳过模板的中文说明示例行
-      if (
-        parameter_name.includes('（') ||
-        parameter_type_raw.includes('（') ||
-        dev_value.includes('（')
-      ) {
-        return;
-      }
-      if (!parameter_name && !parameter_type_raw && !dev_value && !description) return;
+      const parameter_value = String(row['parameter_value'] ?? '').trim();
+      const parameter_description = String(row['parameter_description'] ?? '').trim();
+      if (!parameter_name && !parameter_type_raw && !parameter_value && !parameter_description) return;
       parsed.push({
         row_number: idx + 2,
         parameter_name,
         parameter_type_raw,
-        dev_value,
-        description: description || undefined,
+        parameter_value,
+        parameter_description: parameter_description || undefined,
       });
     });
     return parsed;
@@ -119,6 +118,14 @@ const ImportParameterModal = ({
 
   const handlePreview = async () => {
     if (!file) return;
+    if (!defaultDepartmentId) {
+      Toast.warning(t('parameter.import.errors.deptRequired'));
+      return;
+    }
+    if (!defaultOwnerId) {
+      Toast.warning(t('parameter.import.errors.ownerRequired'));
+      return;
+    }
     setParsing(true);
     try {
       const parsed = await parseFile(file);
@@ -159,7 +166,7 @@ const ImportParameterModal = ({
         footer={null}
         closeOnEsc
         maskClosable={false}
-        width={520}
+        width={560}
       >
         <div className="import-parameter-modal-body">
           <div className="import-parameter-modal-section">
@@ -184,6 +191,32 @@ const ImportParameterModal = ({
               <li>{t('parameter.import.tip4')}</li>
               <li>{t('parameter.import.tip5')}</li>
             </ol>
+          </div>
+
+          <div className="import-parameter-modal-section">
+            <Text strong style={{ marginBottom: 8 }}>
+              {t('parameter.import.defaultsTitle')}
+            </Text>
+            <Text type="tertiary" size="small" style={{ marginBottom: 10 }}>
+              {t('parameter.import.defaultsHint')}
+            </Text>
+            <Form labelPosition="left" labelWidth={96} className="import-parameter-modal-defaults">
+              <Form.Slot label={t('common.owningDepartment')}>
+                <DepartmentSearchSelect
+                  value={defaultDepartmentId}
+                  onChange={(v) => setDefaultDepartmentId(v as string)}
+                  style={{ width: '100%' }}
+                />
+              </Form.Slot>
+              <Form.Slot label={t('common.owner')}>
+                <OwnerSearchSelect
+                  value={defaultOwnerId}
+                  onChange={(v) => setDefaultOwnerId(v as string)}
+                  departmentId={defaultDepartmentId}
+                  style={{ width: '100%' }}
+                />
+              </Form.Slot>
+            </Form>
           </div>
 
           <div
