@@ -670,6 +670,86 @@
     "empty": {
       "filterDescription": "No matching parameters found, try adjusting filters",
       "defaultDescription": "No parameters yet, click \"New Parameter\" to start"
+    },
+    "import": {
+      "entry": "Import",
+      "title": "Batch Import Parameters",
+      "resultTitle": "Import Result",
+      "downloadSection": "Download Template",
+      "downloadTemplate": "Download parameter import template",
+      "tipsTitle": "Tips:",
+      "tip1": "Fill in by template format. Do not modify headers: parameter_name / parameter_type / dev_value / description",
+      "tip2": "parameter_type only supports text / boolean / number",
+      "tip3": "Existing parameters will be matched by name and the dev value will be overwritten; otherwise they will be created",
+      "tip4": "Import only updates the development value. Production value and publish status are not affected",
+      "tip5": "Up to 500 valid rows per import. File size must not exceed 5MB",
+      "dropzoneHint": "Drag .xlsx file here, or click to select",
+      "nextButton": "Next: Validate",
+      "errors": {
+        "format": "Only .xlsx files are supported",
+        "size": "File size must not exceed 5MB",
+        "empty": "No data rows parsed. Please check the file content",
+        "parse": "Failed to parse the file. Please check the template format"
+      },
+      "preview": {
+        "title": "Import Preview - Validation",
+        "fileLabel": "File",
+        "totalParsed": "Parsed",
+        "validCount": "Valid",
+        "willCreate": "Will Create",
+        "willUpdate": "Will Update",
+        "errorCount": "Errors",
+        "tabs": {
+          "valid": "Valid Rows",
+          "error": "Error Details"
+        },
+        "noValidRows": "No valid rows. Please fix errors and re-upload",
+        "errorTypeCol": "Error Type",
+        "errorType": {
+          "emptyField": "Empty Field",
+          "nameTooLong": "Name Too Long",
+          "duplicateName": "Duplicate Name",
+          "invalidType": "Invalid Type",
+          "invalidValue": "Invalid Value",
+          "descTooLong": "Description Too Long",
+          "exceedLimit": "Exceeds Limit"
+        },
+        "allValid": "All rows passed validation. Ready to import",
+        "confirm": "Confirm Import ({{count}})"
+      },
+      "summary": {
+        "total": "Total",
+        "success": "Success",
+        "created": "Created",
+        "updated": "Updated",
+        "failed": "Failed"
+      },
+      "status": {
+        "success": "Success",
+        "failed": "Failed"
+      },
+      "subStatus": {
+        "created": "Created",
+        "updated": "Updated"
+      },
+      "cols": {
+        "row": "Row",
+        "name": "Parameter Name",
+        "type": "Type",
+        "devValue": "Dev Value",
+        "action": "Action",
+        "status": "Status",
+        "subStatus": "Sub Status",
+        "reason": "Reason"
+      },
+      "failedExport": {
+        "download": "Download Failed Rows",
+        "summary": "{{frontend}} frontend validation failures + {{server}} server import failures. Download full details.",
+        "serverFailed": "Server Import Failed",
+        "cols": {
+          "errorType": "Error Type"
+        }
+      }
     }
   },
   "file": {

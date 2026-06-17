@@ -595,6 +595,86 @@
     "empty": {
       "filterDescription": "没有找到匹配的参数，请尝试调整筛选条件",
       "defaultDescription": "还没有创建任何参数，点击「新建参数」开始"
+    },
+    "import": {
+      "entry": "批量导入",
+      "title": "批量导入参数",
+      "resultTitle": "导入结果",
+      "downloadSection": "下载模板",
+      "downloadTemplate": "下载参数批量导入模板",
+      "tipsTitle": "提示：",
+      "tip1": "请按模板格式填写，勿修改表头：parameter_name / parameter_type / dev_value / description",
+      "tip2": "parameter_type 仅支持 text / boolean / number",
+      "tip3": "已存在的参数将按参数名匹配并覆盖更新开发值；不存在则新建",
+      "tip4": "导入仅作用于开发中心开发值，不会修改生产值与发布状态",
+      "tip5": "单次导入有效数据上限 500 行，文件大小不超过 5MB",
+      "dropzoneHint": "将 .xlsx 文件拖拽到此处，或点击选择",
+      "nextButton": "下一步：校验数据",
+      "errors": {
+        "format": "仅支持 .xlsx 格式文件",
+        "size": "文件大小不能超过 5MB",
+        "empty": "未解析到任何数据行，请检查文件内容",
+        "parse": "文件解析失败，请检查模板格式"
+      },
+      "preview": {
+        "title": "导入预览 - 数据校验",
+        "fileLabel": "文件",
+        "totalParsed": "解析行数",
+        "validCount": "有效行数",
+        "willCreate": "将新建",
+        "willUpdate": "将更新",
+        "errorCount": "错误行数",
+        "tabs": {
+          "valid": "有效数据",
+          "error": "错误明细"
+        },
+        "noValidRows": "暂无有效数据，请修正错误后重新上传",
+        "errorTypeCol": "错误类型",
+        "errorType": {
+          "emptyField": "字段为空",
+          "nameTooLong": "名称过长",
+          "duplicateName": "名称重复",
+          "invalidType": "类型非法",
+          "invalidValue": "值格式错误",
+          "descTooLong": "描述过长",
+          "exceedLimit": "超出上限"
+        },
+        "allValid": "全部数据校验通过，可直接导入",
+        "confirm": "确认导入 {{count}} 行"
+      },
+      "summary": {
+        "total": "导入总数",
+        "success": "成功",
+        "created": "新建",
+        "updated": "更新",
+        "failed": "失败"
+      },
+      "status": {
+        "success": "成功",
+        "failed": "失败"
+      },
+      "subStatus": {
+        "created": "新建",
+        "updated": "更新"
+      },
+      "cols": {
+        "row": "行号",
+        "name": "参数名称",
+        "type": "类型",
+        "devValue": "开发值",
+        "action": "操作",
+        "status": "状态",
+        "subStatus": "子状态",
+        "reason": "原因"
+      },
+      "failedExport": {
+        "download": "下载失败数据",
+        "summary": "失败数据共 {{frontend}} 条前端校验失败 + {{server}} 条服务端导入失败，可下载完整明细",
+        "serverFailed": "服务端导入失败",
+        "cols": {
+          "errorType": "错误类型"
+        }
+      }
     }
   },
   "file": {
