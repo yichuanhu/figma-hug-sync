@@ -76,7 +76,7 @@ const ImportParameterResultModal = ({ visible, result, validation, fileName, raw
     (rawRows ?? []).forEach((r) => rowMap.set(r.row_number, r));
 
     const rows: (string | number)[][] = [
-      ['parameter_name', 'parameter_type', 'dev_value', 'description',
+      ['parameter_name', 'parameter_type', 'parameter_value', 'parameter_description',
         t('parameter.import.failedExport.cols.errorType'),
         t('parameter.import.cols.reason')],
     ];
@@ -86,8 +86,8 @@ const ImportParameterResultModal = ({ visible, result, validation, fileName, raw
       rows.push([
         src?.parameter_name ?? e.parameter_name ?? '',
         src?.parameter_type_raw ?? '',
-        src?.dev_value ?? '',
-        src?.description ?? '',
+        src?.parameter_value ?? '',
+        src?.parameter_description ?? '',
         errorTypeLabel(t, e.type),
         e.reason,
       ]);
@@ -97,8 +97,8 @@ const ImportParameterResultModal = ({ visible, result, validation, fileName, raw
       rows.push([
         src?.parameter_name ?? r.parameter_name ?? '',
         src?.parameter_type_raw ?? '',
-        src?.dev_value ?? '',
-        src?.description ?? '',
+        src?.parameter_value ?? '',
+        src?.parameter_description ?? '',
         t('parameter.import.failedExport.serverFailed'),
         r.reason || '',
       ]);
