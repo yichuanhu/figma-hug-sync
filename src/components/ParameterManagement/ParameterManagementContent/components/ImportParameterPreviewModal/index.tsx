@@ -15,7 +15,7 @@ interface Props {
   visible: boolean;
   fileName: string;
   validation: ParamValidationResult | null;
-  existingNames: Set<string>;
+  existingNames?: Set<string>;
   loading?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
@@ -32,7 +32,7 @@ const ImportParameterPreviewModal = ({
   visible,
   fileName,
   validation,
-  existingNames,
+  
   loading,
   onCancel,
   onConfirm,
@@ -44,16 +44,9 @@ const ImportParameterPreviewModal = ({
   const errorCount = validation.errors.filter((e) => e.row_number !== null).length;
   const totalParsed = validation.total_parsed;
 
-  const willUpdate = validation.valid_rows.filter((r) =>
-    existingNames.has(r.parameter_name.trim().toLowerCase()),
-  ).length;
-  const willCreate = validCount - willUpdate;
-
   const summary = [
     { key: 'total', label: t('parameter.import.preview.totalParsed'), value: totalParsed, color: 'var(--semi-color-text-0)' },
     { key: 'valid', label: t('parameter.import.preview.validCount'), value: validCount, color: 'var(--semi-color-success)' },
-    { key: 'create', label: t('parameter.import.preview.willCreate'), value: willCreate, color: 'var(--semi-color-primary)' },
-    { key: 'update', label: t('parameter.import.preview.willUpdate'), value: willUpdate, color: 'var(--semi-color-warning)' },
     { key: 'error', label: t('parameter.import.preview.errorCount'), value: errorCount, color: 'var(--semi-color-danger)' },
   ];
 
@@ -85,15 +78,6 @@ const ImportParameterPreviewModal = ({
     { title: t('parameter.import.cols.name'), dataIndex: 'parameter_name', key: 'parameter_name', width: 160, ellipsis: { showTitle: true } },
     { title: t('parameter.import.cols.type'), dataIndex: 'parameter_type', key: 'parameter_type', width: 90, render: (v: number) => <Tag color="blue" type="light">{typeLabel(v)}</Tag> },
     { title: t('parameter.import.cols.value'), dataIndex: 'parameter_value', key: 'parameter_value', width: 160, ellipsis: { showTitle: true } },
-    {
-      title: t('parameter.import.cols.action'),
-      key: 'action',
-      width: 80,
-      render: (_: unknown, row: ParsedParameterRow) =>
-        existingNames.has(row.parameter_name.trim().toLowerCase())
-          ? <Tag color="orange" type="light">{t('parameter.import.subStatus.updated')}</Tag>
-          : <Tag color="green" type="light">{t('parameter.import.subStatus.created')}</Tag>,
-    },
     { title: t('common.description'), dataIndex: 'parameter_description', key: 'parameter_description', ellipsis: { showTitle: true }, render: (v?: string) => v || '-' },
   ];
 
