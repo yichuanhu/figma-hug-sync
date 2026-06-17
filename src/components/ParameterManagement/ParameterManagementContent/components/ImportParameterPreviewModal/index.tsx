@@ -15,7 +15,7 @@ interface Props {
   visible: boolean;
   fileName: string;
   validation: ParamValidationResult | null;
-  existingNames: Set<string>;
+  existingNames?: Set<string>;
   loading?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
