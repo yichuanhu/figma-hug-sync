@@ -2,7 +2,7 @@ import type { ParameterType } from '@/api/index';
 
 export const PARAM_IMPORT_ROW_LIMIT = 500;
 export const PARAM_NAME_MAX_LEN = 30;
-export const PARAM_DESC_MAX_LEN = 500;
+export const PARAM_DESC_MAX_LEN = 2000;
 export const PARAM_TEXT_VALUE_MAX_LEN = 65535;
 
 export interface ParsedParameterRow {
@@ -10,8 +10,8 @@ export interface ParsedParameterRow {
   parameter_name: string;
   parameter_type_raw: string;
   parameter_type?: ParameterType;
-  dev_value: string;
-  description?: string;
+  parameter_value: string;
+  parameter_description?: string;
 }
 
 export type ParamImportErrorType =
@@ -72,7 +72,7 @@ export const validateParameterImportRows = (
     const missing: string[] = [];
     if (!r.parameter_name) missing.push('parameter_name');
     if (!r.parameter_type_raw) missing.push('parameter_type');
-    if (!r.dev_value) missing.push('dev_value');
+    if (!r.parameter_value) missing.push('parameter_value');
     if (missing.length > 0) {
       errors.push({
         row_number: r.row_number,
@@ -97,7 +97,7 @@ export const validateParameterImportRows = (
         row_number: r.row_number,
         parameter_name: r.parameter_name,
         type: 'INVALID_TYPE',
-        reason: `参数类型「${r.parameter_type_raw}」无效，应为 text / boolean / number`,
+        reason: `参数类型「${r.parameter_type_raw}」无效，仅支持 TEXT / BOOLEAN / NUMBER`,
       });
       return;
     }
@@ -107,7 +107,7 @@ export const validateParameterImportRows = (
   // 2) 值格式
   const stepTwo: ParsedParameterRow[] = [];
   stepOne.forEach((r) => {
-    const value = r.dev_value;
+    const value = r.parameter_value;
     if (r.parameter_type === 2) {
       if (!BOOL_VALUES.has(value.trim().toLowerCase())) {
         errors.push({
@@ -139,7 +139,7 @@ export const validateParameterImportRows = (
         return;
       }
     }
-    if (r.description && r.description.length > PARAM_DESC_MAX_LEN) {
+    if (r.parameter_description && r.parameter_description.length > PARAM_DESC_MAX_LEN) {
       errors.push({
         row_number: r.row_number,
         parameter_name: r.parameter_name,
@@ -179,19 +179,16 @@ export const validateParameterImportRows = (
   const validRows = exceededLimit ? allValid.slice(0, PARAM_IMPORT_ROW_LIMIT) : allValid;
 
   if (exceededLimit) {
-    errors.push({
-      row_number: null,
-      type: 'EXCEED_LIMIT',
-      reason: `单次导入有效数据上限 ${PARAM_IMPORT_ROW_LIMIT} 行，已截断 ${allValid.length - PARAM_IMPORT_ROW_LIMIT} 行`,
+    // 每条超限行单独进入错误明细，便于用户在错误 Tab 中定位
+    allValid.slice(PARAM_IMPORT_ROW_LIMIT).forEach((r) => {
+      errors.push({
+        row_number: r.row_number,
+        parameter_name: r.parameter_name,
+        type: 'EXCEED_LIMIT',
+        reason: `超出单次导入上限 ${PARAM_IMPORT_ROW_LIMIT} 行，已自动剔除`,
+      });
     });
   }
-
-  // 标记后端会判断的“将更新”行（仅用于预览展示，不视为错误）
-  validRows.forEach((r) => {
-    if (existingNames.has(r.parameter_name.trim().toLowerCase())) {
-      // no-op，结果阶段决定 created/updated
-    }
-  });
 
   return {
     total_parsed: totalParsed,
