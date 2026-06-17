@@ -1,0 +1,45 @@
+.import-parameter-result-modal {
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &-summary {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    padding: 12px;
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+
+    &-cell {
+      text-align: center;
+    }
+
+    &-value {
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+  }
+
+  &-failed-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--semi-color-danger-light-default);
+    border-radius: 6px;
+  }
+
+  &-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+    padding-top: 16px;
+    padding-bottom: 12px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+}
