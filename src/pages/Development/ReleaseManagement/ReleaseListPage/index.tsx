@@ -411,22 +411,21 @@ const ReleaseListPage: React.FC = () => {
       },
     },
     {
-      title: '当前审批进度',
+      title: '审批进度',
       dataIndex: 'current_approver_label',
-      width: 160,
-      ellipsis: true,
+      width: 100,
+      align: 'center',
       render: (_: unknown, record: LYReleaseResponse) => {
         const ext = record as unknown as ReleaseApplicantExtension;
         const s = ext.approval_status;
         if (!s) return '-';
         if (s === 'PENDING_APPROVAL' || s === 'APPROVING') {
-          if (ext.current_approver_label) return <Text size="small">{ext.current_approver_label}</Text>;
           if (ext.total_approval_levels) {
-            return <Text size="small" type="tertiary">第 {ext.current_approval_level} / {ext.total_approval_levels} 级</Text>;
+            return <Text>第 {ext.current_approval_level} / {ext.total_approval_levels} 级</Text>;
           }
+          if (ext.current_approver_label) return <Text>{ext.current_approver_label}</Text>;
         }
-        const cfg = RELEASE_APPROVAL_STATUS_TAG[s];
-        return cfg ? <Tag color={cfg.color} type="light">{cfg.text}</Tag> : '-';
+        return '-';
       },
     },
     {
