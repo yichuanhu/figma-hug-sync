@@ -7,8 +7,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Typography, Table, Tag, Input, Button, Space, Row, Col, Popover,
+  Typography, Table, Tag, Input, Button, Space, Row, Col, Popover, Pagination,
 } from '@douyinfe/semi-ui';
+import { useTranslation } from 'react-i18next';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import { Plus } from 'lucide-react';
