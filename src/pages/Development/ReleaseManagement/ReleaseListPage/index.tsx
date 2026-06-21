@@ -554,6 +554,7 @@ const ReleaseListPage: React.FC = () => {
           onClose={() => {
             setDetailDrawerVisible(false);
             setSelectedRelease(null);
+            if (routeId) navigate('/dev-center/release-management', { replace: true });
           }}
           onNavigate={(release) => {
             setSelectedRelease(release);
