@@ -235,7 +235,7 @@ const OfflineRequestsPage = () => {
           <Table
             size="small"
             columns={columns}
-            dataSource={filteredData}
+            dataSource={pagedData}
             loading={loading}
             rowKey="id"
             empty={<EmptyState variant="noData" description="暂无下线申请，点击右上角发起申请" />}
@@ -245,8 +245,32 @@ const OfflineRequestsPage = () => {
               onClick: () => record && openDetail(record as ProcessOfflineRequest),
             })}
             pagination={false}
-            scroll={{ y: 'calc(100vh - 320px)' }}
+            scroll={{ y: 'calc(100vh - 360px)' }}
           />
+        )}
+
+        {total > 0 && (
+          <div className="list-pagination">
+            <Text type="tertiary">
+              {t('common.showingRecords', {
+                start: (currentPage - 1) * pageSize + 1,
+                end: Math.min(currentPage * pageSize, total),
+                total,
+              })}
+            </Text>
+            <div className="list-pagination-right">
+              <Text type="tertiary">{t('common.totalPages', { total: Math.ceil(total / pageSize) })}</Text>
+              <Pagination
+                currentPage={currentPage}
+                pageSize={pageSize}
+                total={total}
+                showSizeChanger
+                pageSizeOpts={[10, 20, 50, 100]}
+                onPageChange={setCurrentPage}
+                onPageSizeChange={(s) => { setPageSize(s); setCurrentPage(1); }}
+              />
+            </div>
+          </div>
         )}
       </div>
 
