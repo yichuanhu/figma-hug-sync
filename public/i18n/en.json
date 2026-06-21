@@ -1670,8 +1670,6 @@
         "offlineFailed": "Offline failed",
         "levelTooltip": "Level {{current}} / {{total}} · click to view",
         "viewProgress": "Click to view approval progress",
-        "titlePublish": "Publish approval progress",
-        "titleOffline": "Offline approval progress",
         "readonlyTip": "Read-only view. Approve/Reject buttons are visible only to the current approver.",
         "applicant": "Applicant",
         "department": "Department",

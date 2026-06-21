@@ -155,6 +155,7 @@ const App = () => {
           {/* 发布管理 */}
           <Route path="/dev-center/release-management" element={<ReleaseListPage />} />
           <Route path="/dev-center/release-management/create" element={<CreateReleasePage />} />
+          <Route path="/dev-center/release-management/:id" element={<ReleaseListPage />} />
           <Route path="/dev-center/publish-approvals" element={<PublishApprovalsPage />} />
           <Route path="/dev-center/publish-approvals/:id" element={<Navigate to="/dev-center/publish-approvals" replace />} />
 

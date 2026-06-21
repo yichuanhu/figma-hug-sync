@@ -1579,8 +1579,6 @@
         "offlineFailed": "下线失败",
         "levelTooltip": "当前第 {{current}} / {{total}} 级，点击查看进度",
         "viewProgress": "点击查看审批进度",
-        "titlePublish": "发布审批进度",
-        "titleOffline": "停用审批进度",
         "readonlyTip": "你正在以只读身份查看审批进度，操作按钮仅对当前审批人可见。",
         "applicant": "申请人",
         "department": "所属部门",
