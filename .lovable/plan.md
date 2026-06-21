@@ -1,87 +1,36 @@
+## 范围修正
 
-# 补齐未实现项 — 实施计划
+之前对发布列表/详情做了过度补齐（多了 `申请状态` 列 + `执行结果` Tab）。本次按用户要求收敛回最小集。
 
-按用户确认，分四块补齐。所有改动遵循既有内存规范（Drawer 900px、Modal 520px、表格 size="small"、外置分页、Lucide 图标）。
+## 1. 列表：只保留一列"当前审批进度"
 
-## 1. 修复 hint 深链 + 清理废弃 i18n
+**文件**：`src/pages/Development/ReleaseManagement/ReleaseListPage/index.tsx`
 
-**`src/components/ProcessManagement/ProcessManagementContent/index.tsx`**
+- **删除**之前新增的 `申请状态` 列（dataIndex=`approval_status`）。
+- **保留并重命名**：`当前审批节点` → `当前审批进度`（dataIndex=`current_approver_label`，宽 160）。
+  - 渲染逻辑合并状态信息：
+    - 终态（已通过/已拒绝/已撤销/执行成功/执行失败）→ 显示对应 Tag（复用 `RELEASE_APPROVAL_STATUS_TAG`）。
+    - 进行中（`PENDING_APPROVAL` / `APPROVING`）→ 显示 `current_approver_label`，无则 `第 X / Y 级`。
+- 其它列保持原状。
 
-- 重写 `handleOpenApprovalProgress(hint, record)`：不再 `setDetailInitialTab('approval')`，改为：
-  - `hint.kind === 'publish'` → `navigate('/dev-center/release-management/' + hint.requestId)`
-  - 否则 → `navigate('/dev-center/offline-requests/' + hint.requestId)`
-- 删除已无用的 `detailInitialTab='approval'` 相关分支与 state（若仅此处使用则整体移除）
+## 2. 详情：删除"执行结果"Tab，保留"审批流程"Tab
 
-**`src/components/ProcessManagement/ProcessManagementContent/hooks/useProcessApprovalHints.ts`**
+**文件**：`src/pages/Development/ReleaseManagement/components/ReleaseDetailDrawer/index.tsx`
 
-- 确认 `ApprovalHint` 含 `requestId`；若缺，从 mock 中补出。
+- 删除 `renderExecutionTab` 函数及其 `<TabPane itemKey="execution">`。
+- 保留：
+  - `基本信息`（含申请状态 + 当前审批节点行 — 仍保留在描述列表中）
+  - `审批流程`（Timeline）
+  - `已发布的流程和资源`
+- 不动 mock 数据结构、不动其它组件。
 
-**`public/i18n/zh-CN.json` 与 `en.json`**
+## 不做
 
-- 删除 `approvalProgress.titlePublish`、`approvalProgress.titleOffline` 及仅该 Tab 引用的 `publishPending`、`offlinePending`（如有引用则保留对应在 ApprovalHintCell 用到的 key，仅清理无引用项）
-- 用 `rg` 二次校验：删除前确认无引用，避免悬挂。
+- 不改 `ReleaseApplicantExtension` mock 类型（字段仍然存在，只是不再渲染执行 Tab）。
+- 不改流程下线（OfflineRequests）相关文件。
+- 不改 i18n。
 
-## 2. 补齐流程发布申请人详情
+## 文件清单
 
-**`src/pages/Development/ReleaseManagement/components/ReleaseDetailDrawer/index.tsx`**
-
-- 新增 Tab：
-  - 「审批流程」：Timeline，节点字段 `level / approver / action(APPROVE/REJECT/PENDING) / time / comment`，与下线申请详情同套视觉（抽出共享 `<ApprovalTimeline />` 复用组件至 `src/components/shared/ApprovalTimeline/`）
-  - 「执行结果」：执行状态 Tag + 执行时间 + 失败原因（ExpandableText）
-- 基本信息 Tab 保留现状，仅新增「当前审批节点」字段
-
-**`src/pages/Development/ReleaseManagement/ReleaseListPage/index.tsx`**
-
-- 表格新增列：
-  - 「申请状态」（PENDING_APPROVAL / APPROVING / APPROVED / REJECTED / EXECUTING / SUCCESS / FAILED / CANCELLED）— 复用统一 STATUS_TAG 配色
-  - 「当前审批节点」（如 "L2 · 张三"）
-- 接入 `useParams<{ id?: string }>()`：路由命中 `:id` 时自动 setSelectedReleaseId 并打开抽屉；关闭抽屉时 `navigate('/dev-center/release-management')` 清除参数
-
-**`src/App.tsx`**
-
-- 新增路由 `/dev-center/release-management/:id` → `ReleaseListPage`
-
-**i18n**
-
-- `release.detail.approvalProcess` / `release.detail.executionResult` / `release.list.columns.approvalStatus` / `release.list.columns.currentLevel` 等中英文
-
-## 3. 补齐流程下线列表细节
-
-**`src/pages/Development/OfflineRequests/index.tsx`**
-
-- 列补齐：版本（`process_version`）、申请原因（截断 + Popover 显示完整内容，与现有 ExpandableText 行为一致）、申请时间
-- 状态枚举对齐 8 项：`PENDING_APPROVAL / APPROVING / APPROVED / REJECTED / EXECUTING / EXECUTION_SUCCESS / EXECUTION_FAILED / CANCELLED`；统一 STATUS_TAG 配色（待审批/审批中=blue，已通过/执行成功=green，已拒绝/执行失败=red，执行中=blue，已撤销=grey）
-- 顶部筛选区新增时间筛选（DatePicker range，复用 release 列表同款）
-
-## 4. 重构 mock 为类型化 API
-
-**`src/mocks/processOfflineApproval.ts`** 扩展为分组导出，符合 `mem://tech-stack/api-interface-specification-v2`：
-
-```ts
-export const offlineRequestApi = {
-  listApplicantOfflineRequests(params: ListApplicantOfflineRequestsParams): Promise<LYListResponse<OfflineRequest>>,
-  getOfflineRequestDetail(id: string): Promise<OfflineRequestDetail>,
-  checkCurrentOfflineRequest(processId: string): Promise<{ hasActive: boolean; existingRequestId?: string }>,
-  checkOfflineDependencies(processId: string): Promise<{ blockers: DependencyGroup[]; passed: boolean }>,
-  submitOfflineRequest(payload: SubmitOfflineRequestPayload): Promise<{ requestId: string }>,
-};
-```
-
-- 所有 mock 字段使用英文 + 中文混合（流程名等业务文案保持中文，与既有 mock 风格一致）
-- ID 规范：`offline-req-001` 等
-- 内部数据池基于 8 个状态分布生成；申请人列表按当前 mock 用户过滤
-- `OfflineRequestsPage`、`CreateOfflineRequestModal`、`ApplicantDetailDrawer` 切换到新 API
-
-## 实施顺序
-
-1. mock 类型化重构（其他模块依赖）
-2. hint 深链 + i18n 清理（最小，立即修复点击空白 bug）
-3. 下线列表细节
-4. 发布申请人详情（含共享 ApprovalTimeline 抽取）
-
-## 验证
-
-- 流程列表点击 publish / offline hint → 跳转到对应申请详情抽屉
-- 直接访问 `/dev-center/release-management/<id>` / `/dev-center/offline-requests/<id>` → 自动打开详情
-- `rg "approvalProgress\\.(titlePublish|titleOffline)"` 无残留引用
-- 8 个状态在下线申请列表、筛选、Tag 均能正确渲染
+- `src/pages/Development/ReleaseManagement/ReleaseListPage/index.tsx`
+- `src/pages/Development/ReleaseManagement/components/ReleaseDetailDrawer/index.tsx`

@@ -189,30 +189,8 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     );
   };
 
-  const renderExecutionTab = () => {
-    if (!approvalTagCfg) {
-      return <div className="release-detail-drawer-tab-content"><Text type="tertiary">暂无执行信息</Text></div>;
-    }
-    return (
-      <div className="release-detail-drawer-tab-content">
-        <Descriptions
-          align="left"
-          data={[
-            { key: '执行状态', value: <Tag color={approvalTagCfg.color} type="light">{approvalTagCfg.text}</Tag> },
-            { key: '执行时间', value: ext.execution_at ? formatTime(ext.execution_at) : '-' },
-          ]}
-        />
-        {ext.execution_error && (
-          <div className="release-detail-drawer-section release-detail-drawer-error" style={{ marginTop: 16 }}>
-            <Title heading={6} className="release-detail-drawer-section-title">失败原因</Title>
-            <div className="release-detail-drawer-error-content">
-              <Paragraph type="danger" style={{ margin: 0 }}>{ext.execution_error}</Paragraph>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
+
+
 
 
 
@@ -317,9 +295,6 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
           </TabPane>
           <TabPane tab="审批流程" itemKey="approval">
             {renderApprovalTab()}
-          </TabPane>
-          <TabPane tab="执行结果" itemKey="execution">
-            {renderExecutionTab()}
           </TabPane>
           <TabPane tab={t('release.detail.publishedProcessesAndResources')} itemKey="processes">
             {renderProcessesTab()}
