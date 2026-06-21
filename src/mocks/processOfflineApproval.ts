@@ -375,10 +375,36 @@ export const getOfflineRequestById = (id: string): ProcessOfflineRequest | undef
 export interface SubmitOfflineRequestPayload {
   processId: string;
   processName: string;
+  processVersion?: string;
   departmentId: string;
   departmentName: string;
   reason: string;
 }
+
+/** 统一 8 状态枚举的标签/配色，供列表、抽屉、筛选共用 */
+export const OFFLINE_STATUS_TAG: Record<OfflineRequestStatus, { color: 'blue' | 'green' | 'red' | 'orange' | 'cyan' | 'grey'; text: string }> = {
+  PENDING_APPROVAL: { color: 'blue', text: '待审批' },
+  APPROVING: { color: 'blue', text: '审批中' },
+  APPROVED: { color: 'cyan', text: '已通过(待执行)' },
+  REJECTED: { color: 'red', text: '已拒绝' },
+  EXECUTING: { color: 'blue', text: '执行中' },
+  EXECUTION_SUCCESS: { color: 'green', text: '执行成功' },
+  EXECUTED: { color: 'green', text: '已下线' },
+  EXECUTION_FAILED: { color: 'red', text: '执行失败' },
+  CANCELLED: { color: 'grey', text: '已撤销' },
+};
+
+/** 用于筛选下拉的 8 项（隐藏 EXECUTED 旧值，仅作为 EXECUTION_SUCCESS 的兼容别名） */
+export const OFFLINE_STATUS_FILTER_OPTIONS: { label: string; value: OfflineRequestStatus }[] = [
+  { label: '待审批', value: 'PENDING_APPROVAL' },
+  { label: '审批中', value: 'APPROVING' },
+  { label: '已通过(待执行)', value: 'APPROVED' },
+  { label: '已拒绝', value: 'REJECTED' },
+  { label: '执行中', value: 'EXECUTING' },
+  { label: '执行成功', value: 'EXECUTION_SUCCESS' },
+  { label: '执行失败', value: 'EXECUTION_FAILED' },
+  { label: '已撤销', value: 'CANCELLED' },
+];
 
 export const submitOfflineRequest = async (
   payload: SubmitOfflineRequestPayload,
