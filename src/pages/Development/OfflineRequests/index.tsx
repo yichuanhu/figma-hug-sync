@@ -116,17 +116,17 @@ const OfflineRequestsPage = () => {
 
   const columns = useMemo(() => [
     {
-      title: '流程名称', dataIndex: 'process_name', ellipsis: { showTitle: true },
+      title: '流程名称', dataIndex: 'process_name', width: 260, ellipsis: { showTitle: true },
       render: (v: string) => <Text strong>{v}</Text>,
     },
     {
-      title: '状态', dataIndex: 'status', width: 130,
+      title: '状态', dataIndex: 'status', width: 100,
       render: (s: OfflineRequestStatus) => (
         <Tag color={OFFLINE_STATUS_TAG[s].color as TagColor} type="light" size="small">{OFFLINE_STATUS_TAG[s].text}</Tag>
       ),
     },
     {
-      title: '审批进度', dataIndex: 'current_level', width: 100, align: 'center' as const,
+      title: '审批进度', dataIndex: 'current_level', width: 110, align: 'center' as const,
       render: (_: unknown, r: ProcessOfflineRequest) => {
         if (r.status === 'PENDING_APPROVAL' || r.status === 'APPROVING') {
           if (r.total_levels) return <Text>第 {r.current_level} / {r.total_levels} 级</Text>;
@@ -139,9 +139,9 @@ const OfflineRequestsPage = () => {
       title: '申请人', dataIndex: 'applicant_name', width: 130,
       render: (v: string, r: ProcessOfflineRequest) => <UserNameWithCard name={v} userId={r.applicant_id} />,
     },
-    { title: '所属部门', dataIndex: 'department_name', width: 160, ellipsis: { showTitle: true } },
+    { title: '所属部门', dataIndex: 'department_name', width: 180, ellipsis: { showTitle: true } },
     {
-      title: '申请原因', dataIndex: 'reason', ellipsis: { showTitle: false },
+      title: '申请原因', dataIndex: 'reason', width: 120, ellipsis: { showTitle: false },
       render: (v: string) => (
         <Popover
           position="top"
@@ -152,7 +152,7 @@ const OfflineRequestsPage = () => {
         </Popover>
       ),
     },
-    { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v: string) => fmtTime(v) },
+    { title: '提交时间', dataIndex: 'submitted_at', width: 180, render: (v: string) => fmtTime(v) },
   ], []);
 
   // 搜索/筛选变化时重置到第 1 页
