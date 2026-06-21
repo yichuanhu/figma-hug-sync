@@ -35,7 +35,11 @@ const fmtTime = (iso?: string) => (iso ? new Date(iso).toLocaleString('zh-CN', {
 
 const OfflineRequestsPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { id: routeId } = useParams<{ id?: string }>();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
