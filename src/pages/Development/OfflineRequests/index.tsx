@@ -136,17 +136,20 @@ const OfflineRequestsPage = () => {
       ),
     },
     {
-      title: '审批进度', dataIndex: 'current_level', width: 110,
-      render: (_: unknown, r: ProcessOfflineRequest) =>
-        (r.status === 'PENDING_APPROVAL' || r.status === 'APPROVING') && r.total_levels
-          ? <Text size="small" type="tertiary">第 {r.current_level} / {r.total_levels} 级</Text>
-          : '-',
-    },
-    {
       title: '状态', dataIndex: 'status', width: 130,
       render: (s: OfflineRequestStatus) => (
         <Tag color={OFFLINE_STATUS_TAG[s].color as TagColor} type="light" size="small">{OFFLINE_STATUS_TAG[s].text}</Tag>
       ),
+    },
+    {
+      title: '审批进度', dataIndex: 'current_level', width: 100, align: 'center' as const,
+      render: (_: unknown, r: ProcessOfflineRequest) => {
+        if (r.status === 'PENDING_APPROVAL' || r.status === 'APPROVING') {
+          if (r.total_levels) return <Text>第 {r.current_level} / {r.total_levels} 级</Text>;
+          if (r.current_approver_label) return <Text>{r.current_approver_label}</Text>;
+        }
+        return '-';
+      },
     },
     { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v: string) => fmtTime(v) },
   ], []);
