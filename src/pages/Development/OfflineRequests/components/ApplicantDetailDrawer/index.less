@@ -1,20 +1,54 @@
 .offline-request-applicant-drawer {
-  &-body {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding-bottom: 8px;
+  &-tabs {
+    .semi-tabs-content {
+      padding: 0;
+    }
   }
 
-  .detail-section {
-    .info-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 8px;
-      font-size: 13px;
+  &-tab-content {
+    padding: 16px 0 8px;
+
+    .section-title {
+      margin: 0 0 12px;
+      &:not(:first-child) { margin-top: 20px; }
     }
-    .info-row-block { flex-direction: column; gap: 4px; }
-    .dependency-group { margin-bottom: 8px; }
-    .dependency-group ul { margin: 4px 0 0 16px; padding: 0; }
+
+    .process-card {
+      border: 1px solid var(--semi-color-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+
+      &:hover {
+        background-color: var(--semi-color-fill-0);
+        border-color: var(--semi-color-primary-light-default);
+      }
+
+      &-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+    }
+
+    .process-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      flex: 1;
+
+      .link-icon {
+        color: var(--semi-color-text-2);
+        flex-shrink: 0;
+      }
+    }
+
+    .dependency-group {
+      margin-bottom: 8px;
+      ul { margin: 4px 0 0 16px; padding: 0; }
+    }
   }
 }
