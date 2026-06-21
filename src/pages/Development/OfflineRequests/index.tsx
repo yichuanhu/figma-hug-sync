@@ -159,9 +159,18 @@ const OfflineRequestsPage = () => {
     { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v: string) => fmtTime(v) },
   ], []);
 
+  // 搜索/筛选变化时重置到第 1 页
+  useEffect(() => { setCurrentPage(1); }, [keyword, statusFilter, dateFilter]);
+
+  const total = filteredData.length;
+  const pagedData = useMemo(
+    () => filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [filteredData, currentPage, pageSize],
+  );
+
   const pagination = useMemo(() => ({
-    currentPage: 1, totalPages: 1, pageSize: filteredData.length, total: filteredData.length,
-  }), [filteredData]);
+    currentPage, totalPages: Math.max(1, Math.ceil(total / pageSize)), pageSize, total,
+  }), [currentPage, pageSize, total]);
 
   return (
     <div className="offline-requests">
