@@ -7,7 +7,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Typography, Table, Tag, Input, Button, Space, Row, Col,
+  Typography, Table, Tag, Input, Button, Space, Row, Col, Popover,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
@@ -44,6 +44,7 @@ const OfflineRequestsPage = () => {
 
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [dateFilter, setDateFilter] = useState<[Date, Date] | null>(null);
   const [filterVisible, setFilterVisible] = useState(false);
   const [allList, setAllList] = useState<ProcessOfflineRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,8 +93,17 @@ const OfflineRequestsPage = () => {
     if (statusFilter.length > 0) {
       data = data.filter((r) => statusFilter.includes(r.status));
     }
+    if (dateFilter && dateFilter.length === 2) {
+      const [start, end] = dateFilter;
+      const startT = start.getTime();
+      const endT = end.getTime();
+      data = data.filter((r) => {
+        const t = new Date(r.submitted_at).getTime();
+        return t >= startT && t <= endT;
+      });
+    }
     return data;
-  }, [allList, keyword, statusFilter]);
+  }, [allList, keyword, statusFilter, dateFilter]);
 
   const openDetail = (record: ProcessOfflineRequest) => {
     setSelectedRecord(record);
