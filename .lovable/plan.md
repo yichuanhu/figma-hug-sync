@@ -1,23 +1,13 @@
 ## 下线列表列调整
 
-目标：移除"版本"列，剩余 7 列顺序对齐截图需求。
+列已按截图重排并移除"版本"列（用户已确认完全移除）。当前 7 列顺序：
 
-### 1. 列顺序重排（`OfflineRequests/index.tsx`）
+1. **流程名称** — 粗体
+2. **状态** — width 130，`OFFLINE_STATUS_TAG` 映射
+3. **审批进度** — width 100，align center，仅 `PENDING_APPROVAL` / `APPROVING` 显示 `第 X / Y 级` 或 `current_approver_label`，其余终态显示 `-`
+4. **申请人** — width 130，`UserNameWithCard`
+5. **所属部门** — width 160
+6. **申请原因** — Popover 悬浮全文
+7. **提交时间** — width 170
 
-移除 `process_version` 列定义，剩余列按以下顺序排列：
-
-1. **流程名称** — `dataIndex: 'process_name'`，保持粗体渲染
-2. **状态** — `dataIndex: 'status'`，width 130，`OFFLINE_STATUS_TAG` 映射
-3. **审批进度** — `dataIndex: 'current_level'`，width 100，align center，仅 `PENDING_APPROVAL` / `APPROVING` 显示进度或标签，其余终态显示 `-`
-4. **申请人** — `dataIndex: 'applicant_name'`，width 130，`UserNameWithCard`
-5. **所属部门** — `dataIndex: 'department_name'`，width 160
-6. **申请原因** — `dataIndex: 'reason'`，Popover 悬浮全文，保持现状
-7. **提交时间** — `dataIndex: 'submitted_at'`，width 170
-
-### 2. TableSkeleton 同步
-
-`columns` 从 `6` 改为 `7`，`columnWidths` 重新分配为 7 列比例。
-
-### 不修改的内容
-- 审批进度渲染逻辑（已有，保持不变）
-- 分页、筛选、抽屉、创建弹窗等其他逻辑
+`TableSkeleton` 同步为 7 列。该修改已在上一轮 build 中完成，若需进一步调整请说明具体差异。
