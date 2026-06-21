@@ -391,10 +391,13 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
 
   // 审批提示（按入口隔离：开发=发布、调度=下线）
   const approvalHints = useProcessApprovalHints(context);
-  const handleOpenApprovalProgress = (_hint: ApprovalHint, record: LYProcessResponse) => {
-    setSelectedProcess(record);
-    setDetailInitialTab('approval');
-    setDetailDrawerVisible(true);
+  // hint 入口已迁移：发布 → 发布管理详情；下线 → 下线申请详情
+  const handleOpenApprovalProgress = (hint: ApprovalHint, _record: LYProcessResponse) => {
+    if (hint.kind === 'publish') {
+      navigate(`/dev-center/release-management/${hint.targetId}`);
+    } else {
+      navigate(`/dev-center/offline-requests/${hint.targetId}`);
+    }
   };
 
   // 状态选项 - 调度中心隐藏筛选

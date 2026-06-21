@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -152,6 +152,7 @@ const ReleaseListPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { id: routeId } = useParams<{ id?: string }>();
 
   const [listResponse, setListResponse] =
     useState<LYListResponseLYReleaseResponse>({
@@ -215,18 +216,18 @@ const ReleaseListPage: React.FC = () => {
     loadData();
   }, [queryParams, activeFilters]);
 
-  // URL Parameterprocessing - openDetails
+  // URL Parameterprocessing - openDetails（兼容 ?releaseId= 与 /:id 两种方式）
   useEffect(() => {
-    const releaseId = searchParams.get('releaseId');
+    const releaseId = routeId || searchParams.get('releaseId');
     if (releaseId && listResponse.list.length > 0) {
       const release = listResponse.list.find((r) => r.release_id === releaseId);
       if (release) {
         setSelectedRelease(release);
         setDetailDrawerVisible(true);
-        setSearchParams({}, { replace: true });
+        if (!routeId) setSearchParams({}, { replace: true });
       }
     }
-  }, [searchParams, listResponse]);
+  }, [searchParams, routeId, listResponse]);
 
   // Searchdebounced
   const handleSearch = useMemo(
@@ -553,6 +554,7 @@ const ReleaseListPage: React.FC = () => {
           onClose={() => {
             setDetailDrawerVisible(false);
             setSelectedRelease(null);
+            if (routeId) navigate('/dev-center/release-management', { replace: true });
           }}
           onNavigate={(release) => {
             setSelectedRelease(release);
