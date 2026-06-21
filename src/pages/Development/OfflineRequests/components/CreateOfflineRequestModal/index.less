@@ -1,0 +1,40 @@
+.create-offline-request-modal {
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &-existing-tip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--semi-color-primary-light-default);
+    border-radius: 6px;
+    color: var(--semi-color-text-0);
+    font-size: 13px;
+  }
+
+  &-dependency-group {
+    border: 1px solid var(--semi-color-border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+
+    ul { margin: 4px 0 0 16px; padding: 0; }
+  }
+
+  &-blocker-banner {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 8px 12px;
+    background: var(--semi-color-danger-light-default);
+    border-radius: 6px;
+    color: var(--semi-color-danger);
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+}

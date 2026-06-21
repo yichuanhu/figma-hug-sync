@@ -1,0 +1,239 @@
+/**
+ * 流程下线 — 申请人入口（FEAT-027 issue-002 / issue-006）
+ *
+ * 承载：发起下线申请、申请列表、申请详情。
+ * 不承载审批人工作台（那是「停用审批」页面）。
+ */
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  Typography, Table, Tag, Input, Button, Space, Row, Col,
+} from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
+import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
+import { Plus } from 'lucide-react';
+import EmptyState from '@/components/EmptyState';
+import TableSkeleton from '@/components/TableSkeleton';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
+import FilterPopover from '@/components/FilterPopover';
+import {
+  fetchOfflineApprovals,
+  subscribeOfflineRequestChange,
+  type ProcessOfflineRequest,
+  type OfflineRequestStatus,
+} from '@/mocks/processOfflineApproval';
+import ApplicantDetailDrawer from './components/ApplicantDetailDrawer';
+import CreateOfflineRequestModal from './components/CreateOfflineRequestModal';
+import './index.less';
+
+const { Title, Text } = Typography;
+
+const STATUS_TAG: Record<OfflineRequestStatus, { color: TagColor; text: string }> = {
+  PENDING_APPROVAL: { color: 'blue', text: '待审批' },
+  APPROVED: { color: 'cyan', text: '已通过(待执行)' },
+  EXECUTED: { color: 'green', text: '已下线' },
+  REJECTED: { color: 'red', text: '已拒绝' },
+  EXECUTION_FAILED: { color: 'orange', text: '执行失败' },
+};
+
+const fmtTime = (iso?: string) => (iso ? new Date(iso).toLocaleString('zh-CN', { hour12: false }) : '-');
+
+const OfflineRequestsPage = () => {
+  const navigate = useNavigate();
+  const { id: routeId } = useParams<{ id?: string }>();
+
+  const [keyword, setKeyword] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [allList, setAllList] = useState<ProcessOfflineRequest[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<ProcessOfflineRequest | null>(null);
+  const [createVisible, setCreateVisible] = useState(false);
+
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
+    try {
+      const data = await fetchOfflineApprovals({ status: 'ALL' });
+      setAllList(data);
+      setSelectedRecord((prev) => {
+        if (!prev) return prev;
+        return data.find((d) => d.id === prev.id) ?? prev;
+      });
+    } finally {
+      if (!silent) setLoading(false);
+      setIsInitialLoad(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+  useEffect(() => subscribeOfflineRequestChange(() => load(true)), [load]);
+
+  // 深链：/dev-center/offline-requests/:id 打开对应申请详情
+  useEffect(() => {
+    if (!routeId || allList.length === 0) return;
+    const target = allList.find((r) => r.id === routeId);
+    if (target) {
+      setSelectedRecord(target);
+      setDrawerVisible(true);
+    }
+  }, [routeId, allList]);
+
+  const filteredData = useMemo(() => {
+    let data = [...allList];
+    if (keyword.trim()) {
+      const kw = keyword.trim().toLowerCase();
+      data = data.filter((r) =>
+        r.process_name.toLowerCase().includes(kw)
+        || r.applicant_name.toLowerCase().includes(kw));
+    }
+    if (statusFilter.length > 0) {
+      data = data.filter((r) => statusFilter.includes(r.status));
+    }
+    return data;
+  }, [allList, keyword, statusFilter]);
+
+  const openDetail = (record: ProcessOfflineRequest) => {
+    setSelectedRecord(record);
+    setDrawerVisible(true);
+  };
+
+  const closeDetail = () => {
+    setDrawerVisible(false);
+    if (routeId) navigate('/dev-center/offline-requests', { replace: true });
+  };
+
+  const columns = useMemo(() => [
+    {
+      title: '流程名称', dataIndex: 'process_name', ellipsis: { showTitle: true },
+      render: (v: string) => <Text strong>{v}</Text>,
+    },
+    {
+      title: '申请人', dataIndex: 'applicant_name', width: 130,
+      render: (v: string, r: ProcessOfflineRequest) => <UserNameWithCard name={v} userId={r.applicant_id} />,
+    },
+    { title: '所属部门', dataIndex: 'department_name', width: 160, ellipsis: { showTitle: true } },
+    {
+      title: '审批进度', dataIndex: 'current_level', width: 110,
+      render: (_: unknown, r: ProcessOfflineRequest) =>
+        r.status === 'PENDING_APPROVAL' && r.total_levels
+          ? <Text size="small" type="tertiary">第 {r.current_level} / {r.total_levels} 级</Text>
+          : '-',
+    },
+    {
+      title: '状态', dataIndex: 'status', width: 130,
+      render: (s: OfflineRequestStatus) => (
+        <Tag color={STATUS_TAG[s].color} type="light" size="small">{STATUS_TAG[s].text}</Tag>
+      ),
+    },
+    { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v: string) => fmtTime(v) },
+  ], []);
+
+  const pagination = useMemo(() => ({
+    currentPage: 1, totalPages: 1, pageSize: filteredData.length, total: filteredData.length,
+  }), [filteredData]);
+
+  return (
+    <div className="offline-requests">
+      <div className="offline-requests-header">
+        <div className="offline-requests-header-title">
+          <Title heading={3} className="title">流程下线</Title>
+          <Text type="tertiary">查看你发起的下线申请，或为单个已发布流程发起下线申请。</Text>
+        </div>
+        <Button
+          theme="solid"
+          type="primary"
+          icon={<Plus size={16} strokeWidth={2} />}
+          onClick={() => setCreateVisible(true)}
+        >
+          发起下线申请
+        </Button>
+      </div>
+
+      <div className="offline-requests-content">
+        <Row type="flex" justify="space-between" align="middle" className="offline-requests-toolbar">
+          <Col>
+            <Space>
+              <Input
+                prefix={<IconSearchStroked />}
+                placeholder="搜索流程名称 / 申请人"
+                className="offline-requests-search-input"
+                value={keyword}
+                onChange={setKeyword}
+                showClear
+              />
+              <FilterPopover
+                visible={filterVisible}
+                onVisibleChange={setFilterVisible}
+                onConfirm={(values) => setStatusFilter((values.status as string[]) || [])}
+                sections={[
+                  {
+                    key: 'status',
+                    label: '状态',
+                    type: 'checkbox',
+                    options: [
+                      { label: '待审批', value: 'PENDING_APPROVAL' },
+                      { label: '已通过(待执行)', value: 'APPROVED' },
+                      { label: '已下线', value: 'EXECUTED' },
+                      { label: '已拒绝', value: 'REJECTED' },
+                      { label: '执行失败', value: 'EXECUTION_FAILED' },
+                    ],
+                    value: statusFilter,
+                  },
+                ]}
+              />
+            </Space>
+          </Col>
+        </Row>
+
+        {isInitialLoad ? (
+          <TableSkeleton rows={6} columns={6} columnWidths={['28%', '14%', '17%', '13%', '14%', '14%']} />
+        ) : (
+          <Table
+            size="small"
+            columns={columns}
+            dataSource={filteredData}
+            loading={loading}
+            rowKey="id"
+            empty={<EmptyState variant="noData" description="暂无下线申请，点击右上角发起申请" />}
+            onRow={(record) => ({
+              style: { cursor: 'pointer' },
+              className: selectedRecord?.id === record?.id && drawerVisible ? 'offline-requests-row-selected' : undefined,
+              onClick: () => record && openDetail(record as ProcessOfflineRequest),
+            })}
+            pagination={false}
+            scroll={{ y: 'calc(100vh - 320px)' }}
+          />
+        )}
+      </div>
+
+      <ApplicantDetailDrawer
+        visible={drawerVisible}
+        onClose={closeDetail}
+        data={selectedRecord}
+        dataList={filteredData}
+        onNavigate={(item) => setSelectedRecord(item)}
+        pagination={pagination}
+      />
+
+      <CreateOfflineRequestModal
+        visible={createVisible}
+        onCancel={() => setCreateVisible(false)}
+        onSuccess={(req) => {
+          load(true).then(() => {
+            setSelectedRecord(req);
+            setDrawerVisible(true);
+          });
+        }}
+        onJumpExisting={(existing) => {
+          setSelectedRecord(existing);
+          setDrawerVisible(true);
+        }}
+      />
+    </div>
+  );
+};
+
+export default OfflineRequestsPage;

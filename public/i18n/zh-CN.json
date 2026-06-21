@@ -112,6 +112,7 @@
     "taskList": "任务列表",
     "publishManagement": "流程上下线管理",
     "processPublish": "流程发布",
+    "offlineRequests": "流程下线",
     "publishApprovals": "发布审批",
     "publishApprovalTemplates": "发布审批模板",
     "offlineApprovals": "停用审批",

@@ -33,7 +33,7 @@ import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
 import RoiConfigTab from './components/RoiConfigTab';
 import DocumentsTab from './components/DocumentsTab';
-import ApprovalProgressTab from './components/ApprovalProgressTab';
+// 申请人审批进度查看已迁移至「流程发布」「流程下线」申请详情，详情抽屉不再承载审批进度 Tab
 
 import {
   getProcessBasicInfo,
@@ -823,9 +823,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           />
         </TabPane>
 
-        <TabPane tab="审批进度" itemKey="approval">
-          <ApprovalProgressTab processId={processData.id} context={context} />
-        </TabPane>
+        {/* 「审批进度」Tab 已按 2026-06-18 变更移除：申请人改为前往「流程发布」/「流程下线」申请详情查看 */}
 
 
 

@@ -254,6 +254,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     // 发布管理 - 分组标题
     { key: 'publishManagement', labelKey: 'sidebar.publishManagement', isGroupLabel: true },
     { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={18} strokeWidth={2} />, path: '/dev-center/release-management' },
+    { key: 'offlineRequests', labelKey: 'sidebar.offlineRequests', icon: <Forward size={18} strokeWidth={2} />, path: '/dev-center/offline-requests' },
     { key: 'publishApprovals', labelKey: 'sidebar.publishApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/dev-center/publish-approvals' },
     { key: 'offlineApprovals', labelKey: 'sidebar.offlineApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/dev-center/offline-approvals' },
     { key: 'approvalTemplates', labelKey: 'sidebar.approvalTemplates', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/dev-center/approval-templates/publish' },
@@ -401,6 +402,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     }
     if (pathname.startsWith('/dev-center/offline-approvals')) {
       return 'offlineApprovals';
+    }
+    if (pathname.startsWith('/dev-center/offline-requests')) {
+      return 'offlineRequests';
     }
     if (pathname.startsWith('/requirements/list')) {
       return 'requirementsList';

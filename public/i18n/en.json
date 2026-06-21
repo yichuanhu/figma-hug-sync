@@ -143,6 +143,7 @@
     "taskList": "Task List",
     "publishManagement": "Process Lifecycle Management",
     "processPublish": "Process Release",
+    "offlineRequests": "Process Offline",
     "publishApprovals": "Release Approvals",
     "publishApprovalTemplates": "Release Approval Templates",
     "offlineApprovals": "Offline Approvals",

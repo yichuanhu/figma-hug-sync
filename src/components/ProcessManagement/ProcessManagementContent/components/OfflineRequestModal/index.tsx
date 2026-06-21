@@ -120,7 +120,7 @@ const OfflineRequestModal = ({ visible, onCancel, onSuccess, process }: OfflineR
         footer={
           <Space>
             <Button onClick={onCancel}>关闭</Button>
-            <Button type="primary" theme="solid" onClick={() => { onCancel(); navigate('/dev-center/offline-approvals'); }}>查看申请</Button>
+            <Button type="primary" theme="solid" onClick={() => { onCancel(); navigate(`/dev-center/offline-requests/${existing.id}`); }}>查看申请</Button>
           </Space>
         }
       >
