@@ -126,6 +126,18 @@ const OfflineRequestsPage = () => {
     },
     { title: '所属部门', dataIndex: 'department_name', width: 160, ellipsis: { showTitle: true } },
     {
+      title: '申请原因', dataIndex: 'reason', ellipsis: { showTitle: false },
+      render: (v: string) => (
+        <Popover
+          position="top"
+          showArrow
+          content={<div style={{ maxWidth: 320, maxHeight: 200, overflowY: 'auto', padding: '4px 8px', lineHeight: 1.6 }}>{v}</div>}
+        >
+          <Text ellipsis={{ showTooltip: false }} style={{ width: '100%' }}>{v}</Text>
+        </Popover>
+      ),
+    },
+    {
       title: '审批进度', dataIndex: 'current_level', width: 110,
       render: (_: unknown, r: ProcessOfflineRequest) =>
         r.status === 'PENDING_APPROVAL' && r.total_levels
@@ -177,7 +189,11 @@ const OfflineRequestsPage = () => {
               <FilterPopover
                 visible={filterVisible}
                 onVisibleChange={setFilterVisible}
-                onConfirm={(values) => setStatusFilter((values.status as string[]) || [])}
+                onConfirm={(values) => {
+                  setStatusFilter((values.status as string[]) || []);
+                  const dv = values.submitted_at as [Date, Date] | undefined;
+                  setDateFilter(dv && dv.length === 2 ? dv : null);
+                }}
                 sections={[
                   {
                     key: 'status',
@@ -191,6 +207,12 @@ const OfflineRequestsPage = () => {
                       { label: '执行失败', value: 'EXECUTION_FAILED' },
                     ],
                     value: statusFilter,
+                  },
+                  {
+                    key: 'submitted_at',
+                    label: '提交时间',
+                    type: 'dateRange',
+                    value: dateFilter,
                   },
                 ]}
               />
