@@ -157,8 +157,8 @@ const ApplicantDetailDrawer = ({ visible, onClose, data, dataList, onNavigate, p
       currentId={data.id}
       onNavigate={onNavigate}
       pagination={pagination}
-      defaultWidth={900}
-      storageKey="offlineRequestApplicantDrawerWidth"
+      defaultWidth={1000}
+      storageKey="offlineRequestApplicantDrawerWidth.v2"
       className="offline-request-applicant-drawer"
     >
       <Tabs type="line" className="offline-request-applicant-drawer-tabs">
