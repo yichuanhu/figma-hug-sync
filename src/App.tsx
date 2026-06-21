@@ -25,6 +25,7 @@ import ReleaseListPage from "@/pages/Development/ReleaseManagement/ReleaseListPa
 import CreateReleasePage from "@/pages/Development/ReleaseManagement/CreateReleasePage";
 import PublishApprovalsPage from "@/pages/Development/PublishApprovals";
 import OfflineApprovalsPage from "@/pages/Development/OfflineApprovals";
+import OfflineRequestsPage from "@/pages/Development/OfflineRequests";
 // Scheduling - Worker Management
 import WorkerManagementPage from "@/pages/Scheduling/WorkerManagement/WorkerManagementPage";
 // Scheduling - Credential Management
@@ -160,6 +161,10 @@ const App = () => {
           {/* 流程停用审批 (FEAT-027) */}
           <Route path="/dev-center/offline-approvals" element={<OfflineApprovalsPage />} />
           <Route path="/dev-center/offline-approvals/:id" element={<Navigate to="/dev-center/offline-approvals" replace />} />
+
+          {/* 流程下线 - 申请人入口 (FEAT-027 issue-002 / issue-006) */}
+          <Route path="/dev-center/offline-requests" element={<OfflineRequestsPage />} />
+          <Route path="/dev-center/offline-requests/:id" element={<OfflineRequestsPage />} />
 
           {/* 审批模板（合并发布/停用模板） */}
           <Route path="/dev-center/approval-templates" element={<Navigate to="/dev-center/approval-templates/publish" replace />} />
