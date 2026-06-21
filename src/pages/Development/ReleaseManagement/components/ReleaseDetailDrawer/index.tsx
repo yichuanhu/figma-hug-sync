@@ -120,11 +120,20 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
 
   const typeConfig = releaseTypeConfig[release.release_type];
   const statusCfg = statusConfig[release.publish_status];
+  const ext = release as unknown as Partial<ReleaseApplicantExtension>;
+  const approvalTagCfg = ext.approval_status ? RELEASE_APPROVAL_STATUS_TAG[ext.approval_status] : undefined;
 
   const descData = [
     { key: t('release.detail.releaseId'), value: release.release_id },
     { key: t('release.detail.releaseType'), value: typeConfig ? <Tag color={typeConfig.color}>{t(typeConfig.i18nKey)}</Tag> : '-' },
     { key: t('release.detail.status'), value: statusCfg ? <Tag color={statusCfg.color}>{t(statusCfg.i18nKey)}</Tag> : '-' },
+    ...(approvalTagCfg ? [{ key: '申请状态', value: <Tag color={approvalTagCfg.color} type="light">{approvalTagCfg.text}</Tag> }] : []),
+    ...(ext.current_approver_label || ext.total_approval_levels ? [{
+      key: '当前审批节点',
+      value: ext.current_approver_label
+        ? <Text>{ext.current_approver_label}</Text>
+        : <Text type="tertiary">第 {ext.current_approval_level} / {ext.total_approval_levels} 级</Text>,
+    }] : []),
     { key: t('release.detail.publisher'), value: release.publisher_name ? <UserNameWithCard name={release.publisher_name} userId={release.publisher_id} department={(release as any).publisher_department} role={(release as any).publisher_role} email={(release as any).publisher_email} /> : '-' },
     { key: t('release.detail.publishTime'), value: formatTime(release.publish_time) },
     { key: t('common.description'), value: <ExpandableText text={release.description} maxLines={3} /> },
@@ -143,6 +152,68 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
       )}
     </div>
   );
+
+  const renderApprovalTab = () => {
+    const records = ext.approval_records ?? [];
+    if (records.length === 0) {
+      return (
+        <div className="release-detail-drawer-tab-content">
+          <Text type="tertiary">暂无审批记录</Text>
+        </div>
+      );
+    }
+    return (
+      <div className="release-detail-drawer-tab-content">
+        {ext.total_approval_levels && (
+          <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 12 }}>
+            当前第 {ext.current_approval_level} / {ext.total_approval_levels} 级
+          </Text>
+        )}
+        <Timeline>
+          {records.map((r, idx) => {
+            const type = r.action === 'APPROVE' ? 'success' : r.action === 'REJECT' ? 'error' : 'default';
+            const actionText = r.action === 'APPROVE' ? '通过' : r.action === 'REJECT' ? '拒绝' : '待审批';
+            const tagColor: 'green' | 'red' | 'grey' = r.action === 'APPROVE' ? 'green' : r.action === 'REJECT' ? 'red' : 'grey';
+            return (
+              <Timeline.Item key={idx} type={type} time={r.acted_at ? formatTime(r.acted_at) : undefined}>
+                <Space>
+                  <Text strong>{r.approver_name}</Text>
+                  <Tag color={tagColor} type="light" size="small">{actionText}（第 {r.level} 级）</Tag>
+                </Space>
+                {r.comment && <div><Text type="tertiary" size="small">{r.comment}</Text></div>}
+              </Timeline.Item>
+            );
+          })}
+        </Timeline>
+      </div>
+    );
+  };
+
+  const renderExecutionTab = () => {
+    if (!approvalTagCfg) {
+      return <div className="release-detail-drawer-tab-content"><Text type="tertiary">暂无执行信息</Text></div>;
+    }
+    return (
+      <div className="release-detail-drawer-tab-content">
+        <Descriptions
+          align="left"
+          data={[
+            { key: '执行状态', value: <Tag color={approvalTagCfg.color} type="light">{approvalTagCfg.text}</Tag> },
+            { key: '执行时间', value: ext.execution_at ? formatTime(ext.execution_at) : '-' },
+          ]}
+        />
+        {ext.execution_error && (
+          <div className="release-detail-drawer-section release-detail-drawer-error" style={{ marginTop: 16 }}>
+            <Title heading={6} className="release-detail-drawer-section-title">失败原因</Title>
+            <div className="release-detail-drawer-error-content">
+              <Paragraph type="danger" style={{ margin: 0 }}>{ext.execution_error}</Paragraph>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
 
 
   const renderProcessesTab = () => (
