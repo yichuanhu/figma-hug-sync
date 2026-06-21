@@ -197,13 +197,7 @@ const OfflineRequestsPage = () => {
                     key: 'status',
                     label: '状态',
                     type: 'checkbox',
-                    options: [
-                      { label: '待审批', value: 'PENDING_APPROVAL' },
-                      { label: '已通过(待执行)', value: 'APPROVED' },
-                      { label: '已下线', value: 'EXECUTED' },
-                      { label: '已拒绝', value: 'REJECTED' },
-                      { label: '执行失败', value: 'EXECUTION_FAILED' },
-                    ],
+                    options: OFFLINE_STATUS_FILTER_OPTIONS,
                     value: statusFilter,
                   },
                   {
