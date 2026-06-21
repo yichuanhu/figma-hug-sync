@@ -72,12 +72,9 @@ interface Props {
 const ApplicantDetailDrawer = ({ visible, onClose, data, dataList, onNavigate, pagination }: Props) => {
   if (!data) return null;
 
-  const title = (
-    <Space spacing={8}>
-      <span>{data.process_name} 的下线申请</span>
-      <Tag color={STATUS_TAG[data.status].color} type="light">{STATUS_TAG[data.status].text}</Tag>
-    </Space>
-  );
+  const title = '申请详情';
+
+
 
   return (
     <DetailDrawerWrapper<ProcessOfflineRequest>
