@@ -1,0 +1,43 @@
+// 流程下线 - 申请人页面样式（对齐 OfflineApprovals 风格）
+.offline-requests {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &-header {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+
+    &-title {
+      .title { margin-bottom: 8px; }
+    }
+  }
+
+  &-content {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-toolbar {
+    margin-bottom: 12px;
+    flex-shrink: 0;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  &-search-input {
+    width: 320px;
+    min-width: 320px;
+  }
+
+  .semi-table-row.offline-requests-row-selected {
+    background-color: var(--semi-color-fill-1);
+  }
+}
