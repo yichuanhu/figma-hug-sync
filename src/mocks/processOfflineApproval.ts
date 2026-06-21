@@ -11,10 +11,14 @@ import { getDepartmentName } from './departmentData';
 
 export type OfflineRequestStatus =
   | 'PENDING_APPROVAL'
+  | 'APPROVING'
   | 'APPROVED'
   | 'REJECTED'
-  | 'EXECUTED'
-  | 'EXECUTION_FAILED';
+  | 'EXECUTING'
+  | 'EXECUTED'           // 兼容旧值，等同于 EXECUTION_SUCCESS
+  | 'EXECUTION_SUCCESS'
+  | 'EXECUTION_FAILED'
+  | 'CANCELLED';
 
 export type OfflineApprovalAction = 'approve' | 'reject';
 
@@ -39,6 +43,8 @@ export interface ProcessOfflineRequest {
   id: string;
   process_id: string;
   process_name: string;
+  /** 申请下线时的流程版本号，例如 v1.2.0 */
+  process_version: string;
   applicant_id: string;
   applicant_name: string;
   department_id: string;
@@ -50,6 +56,8 @@ export interface ProcessOfflineRequest {
   approval_template_snapshot?: ApprovalFlowTemplate;
   current_level?: number;
   total_levels?: number;
+  /** 当前审批节点名称（如 "L2 · 张三"）— 仅审批中状态有意义 */
+  current_approver_label?: string;
   records: OfflineApprovalRecord[];
   executed_at?: string;
   execution_error?: string;
@@ -121,6 +129,7 @@ const defaultRequests: ProcessOfflineRequest[] = [
     id: 'por-001',
     process_id: 'process-3',
     process_name: 'Employee Onboarding Flow',
+    process_version: 'v2.3.0',
     applicant_id: 'user-002',
     applicant_name: 'Jane Doe',
     department_id: 'dept-apa-product',
@@ -128,10 +137,11 @@ const defaultRequests: ProcessOfflineRequest[] = [
     reason: '该流程已被新一代入职引擎替代，建议下线避免误调度。',
     submitted_at: now(20),
     dependency_snapshot: { blocking: false, triggers: [], task_templates: [], running_tasks: [], scheduling_refs: [] },
-    status: 'PENDING_APPROVAL',
+    status: 'APPROVING',
     approval_template_snapshot: getApprovalFlowById('oflow-001'),
     current_level: 2,
     total_levels: 2,
+    current_approver_label: 'L2 · 运维同学',
     records: [
       { level: 1, approver_id: 'user-mgr', approver_name: '林经理', action: 'approve', comment: '同意下线，确认无残余依赖。', acted_at: now(8) },
     ],
@@ -140,6 +150,7 @@ const defaultRequests: ProcessOfflineRequest[] = [
     id: 'por-004',
     process_id: 'process-5',
     process_name: 'Contract Approval Flow',
+    process_version: 'v1.0.4',
     applicant_id: 'user-005',
     applicant_name: 'Linda Chen',
     department_id: 'dept-legal',
@@ -147,7 +158,7 @@ const defaultRequests: ProcessOfflineRequest[] = [
     reason: '该流程已无任何触发器、任务模板及调度引用，且部门未配置停用审批，提交后已直接执行下线。',
     submitted_at: now(6),
     dependency_snapshot: { blocking: false, triggers: [], task_templates: [], running_tasks: [], scheduling_refs: [] },
-    status: 'EXECUTED',
+    status: 'EXECUTION_SUCCESS',
     current_level: 1,
     total_levels: 1,
     executed_at: now(6),
@@ -157,6 +168,7 @@ const defaultRequests: ProcessOfflineRequest[] = [
     id: 'por-002',
     process_id: 'process-7',
     process_name: 'Customer Info Sync',
+    process_version: 'v3.1.2',
     applicant_id: 'user-003',
     applicant_name: 'Mike Wang',
     department_id: 'dept-finance',
@@ -164,7 +176,7 @@ const defaultRequests: ProcessOfflineRequest[] = [
     reason: '业务系统已不再使用该同步链路。',
     submitted_at: now(56),
     dependency_snapshot: { blocking: false, triggers: [], task_templates: [], running_tasks: [], scheduling_refs: [] },
-    status: 'EXECUTED',
+    status: 'EXECUTION_SUCCESS',
     approval_template_snapshot: getApprovalFlowById('oflow-001'),
     current_level: 1,
     total_levels: 1,
@@ -177,6 +189,7 @@ const defaultRequests: ProcessOfflineRequest[] = [
     id: 'por-003',
     process_id: 'process-9',
     process_name: 'Sales Data Summary',
+    process_version: 'v1.5.0',
     applicant_id: 'user-004',
     applicant_name: 'David Zhao',
     department_id: 'dept-apa-product',
@@ -195,6 +208,7 @@ const defaultRequests: ProcessOfflineRequest[] = [
     id: 'por-005',
     process_id: 'process-8',
     process_name: 'Employee Performance Summary',
+    process_version: 'v2.0.0',
     applicant_id: 'user-006',
     applicant_name: 'Tom Liu',
     department_id: 'dept-apa-product',
@@ -206,12 +220,14 @@ const defaultRequests: ProcessOfflineRequest[] = [
     approval_template_snapshot: getApprovalFlowById('oflow-001'),
     current_level: 1,
     total_levels: 2,
+    current_approver_label: 'L1 · 林经理',
     records: [],
   },
   {
     id: 'por-006',
     process_id: 'process-1',
     process_name: '订单自动处理流程',
+    process_version: 'v4.2.1',
     applicant_id: 'user-007',
     applicant_name: 'Alice Wu',
     department_id: 'dept-finance',
@@ -232,6 +248,7 @@ const defaultRequests: ProcessOfflineRequest[] = [
     id: 'por-007',
     process_id: 'process-4',
     process_name: '采购申请',
+    process_version: 'v1.8.0',
     applicant_id: 'user-008',
     applicant_name: 'Henry Zhou',
     department_id: 'dept-apa-product',
@@ -256,6 +273,45 @@ const defaultRequests: ProcessOfflineRequest[] = [
       { level: 1, approver_id: 'user-mgr', approver_name: '林经理', action: 'approve', comment: '同意。', acted_at: now(36) },
       { level: 2, approver_id: 'user-ops-001', approver_name: '运维同学', action: 'approve', comment: '可执行。', acted_at: now(20) },
     ],
+  },
+  {
+    id: 'por-008',
+    process_id: 'process-6',
+    process_name: 'Daily Reconciliation',
+    process_version: 'v2.1.0',
+    applicant_id: 'user-009',
+    applicant_name: 'Sophia Liu',
+    department_id: 'dept-finance',
+    department_name: getDepartmentName('dept-finance') || '财务部',
+    reason: '审批通过后正在批量解除调度并清理触发器，预计 5 分钟内完成。',
+    submitted_at: now(3),
+    dependency_snapshot: { blocking: false, triggers: [], task_templates: [], running_tasks: [], scheduling_refs: [] },
+    status: 'EXECUTING',
+    approval_template_snapshot: getApprovalFlowById('oflow-001'),
+    current_level: 2,
+    total_levels: 2,
+    records: [
+      { level: 1, approver_id: 'user-mgr', approver_name: '林经理', action: 'approve', comment: '同意下线。', acted_at: now(2) },
+      { level: 2, approver_id: 'user-ops-001', approver_name: '运维同学', action: 'approve', comment: '可执行。', acted_at: now(1) },
+    ],
+  },
+  {
+    id: 'por-009',
+    process_id: 'process-10',
+    process_name: 'Marketing Email Dispatcher',
+    process_version: 'v1.2.5',
+    applicant_id: 'user-010',
+    applicant_name: 'Daniel Xu',
+    department_id: 'dept-apa-product',
+    department_name: getDepartmentName('dept-apa-product') || '产品研发部',
+    reason: '提交后发现仍有部分活动依赖，已主动撤销本次下线申请。',
+    submitted_at: now(72),
+    dependency_snapshot: { blocking: false, triggers: [], task_templates: [], running_tasks: [], scheduling_refs: [] },
+    status: 'CANCELLED',
+    approval_template_snapshot: getApprovalFlowById('oflow-001'),
+    current_level: 1,
+    total_levels: 2,
+    records: [],
   },
 ];
 
@@ -319,10 +375,36 @@ export const getOfflineRequestById = (id: string): ProcessOfflineRequest | undef
 export interface SubmitOfflineRequestPayload {
   processId: string;
   processName: string;
+  processVersion?: string;
   departmentId: string;
   departmentName: string;
   reason: string;
 }
+
+/** 统一 8 状态枚举的标签/配色，供列表、抽屉、筛选共用 */
+export const OFFLINE_STATUS_TAG: Record<OfflineRequestStatus, { color: 'blue' | 'green' | 'red' | 'orange' | 'cyan' | 'grey'; text: string }> = {
+  PENDING_APPROVAL: { color: 'blue', text: '待审批' },
+  APPROVING: { color: 'blue', text: '审批中' },
+  APPROVED: { color: 'cyan', text: '已通过(待执行)' },
+  REJECTED: { color: 'red', text: '已拒绝' },
+  EXECUTING: { color: 'blue', text: '执行中' },
+  EXECUTION_SUCCESS: { color: 'green', text: '执行成功' },
+  EXECUTED: { color: 'green', text: '已下线' },
+  EXECUTION_FAILED: { color: 'red', text: '执行失败' },
+  CANCELLED: { color: 'grey', text: '已撤销' },
+};
+
+/** 用于筛选下拉的 8 项（隐藏 EXECUTED 旧值，仅作为 EXECUTION_SUCCESS 的兼容别名） */
+export const OFFLINE_STATUS_FILTER_OPTIONS: { label: string; value: OfflineRequestStatus }[] = [
+  { label: '待审批', value: 'PENDING_APPROVAL' },
+  { label: '审批中', value: 'APPROVING' },
+  { label: '已通过(待执行)', value: 'APPROVED' },
+  { label: '已拒绝', value: 'REJECTED' },
+  { label: '执行中', value: 'EXECUTING' },
+  { label: '执行成功', value: 'EXECUTION_SUCCESS' },
+  { label: '执行失败', value: 'EXECUTION_FAILED' },
+  { label: '已撤销', value: 'CANCELLED' },
+];
 
 export const submitOfflineRequest = async (
   payload: SubmitOfflineRequestPayload,
@@ -350,6 +432,7 @@ export const submitOfflineRequest = async (
     id: `por-${Date.now()}`,
     process_id: payload.processId,
     process_name: payload.processName,
+    process_version: payload.processVersion ?? 'v1.0.0',
     applicant_id: 'user-current',
     applicant_name: '当前用户',
     department_id: payload.departmentId,

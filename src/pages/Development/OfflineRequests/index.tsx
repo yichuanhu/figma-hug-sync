@@ -19,6 +19,8 @@ import FilterPopover from '@/components/FilterPopover';
 import {
   fetchOfflineApprovals,
   subscribeOfflineRequestChange,
+  OFFLINE_STATUS_TAG,
+  OFFLINE_STATUS_FILTER_OPTIONS,
   type ProcessOfflineRequest,
   type OfflineRequestStatus,
 } from '@/mocks/processOfflineApproval';
@@ -27,14 +29,6 @@ import CreateOfflineRequestModal from './components/CreateOfflineRequestModal';
 import './index.less';
 
 const { Title, Text } = Typography;
-
-const STATUS_TAG: Record<OfflineRequestStatus, { color: TagColor; text: string }> = {
-  PENDING_APPROVAL: { color: 'blue', text: '待审批' },
-  APPROVED: { color: 'cyan', text: '已通过(待执行)' },
-  EXECUTED: { color: 'green', text: '已下线' },
-  REJECTED: { color: 'red', text: '已拒绝' },
-  EXECUTION_FAILED: { color: 'orange', text: '执行失败' },
-};
 
 const fmtTime = (iso?: string) => (iso ? new Date(iso).toLocaleString('zh-CN', { hour12: false }) : '-');
 
@@ -121,6 +115,10 @@ const OfflineRequestsPage = () => {
       render: (v: string) => <Text strong>{v}</Text>,
     },
     {
+      title: '版本', dataIndex: 'process_version', width: 100,
+      render: (v: string) => <Text size="small" type="tertiary">{v || '-'}</Text>,
+    },
+    {
       title: '申请人', dataIndex: 'applicant_name', width: 130,
       render: (v: string, r: ProcessOfflineRequest) => <UserNameWithCard name={v} userId={r.applicant_id} />,
     },
@@ -140,14 +138,14 @@ const OfflineRequestsPage = () => {
     {
       title: '审批进度', dataIndex: 'current_level', width: 110,
       render: (_: unknown, r: ProcessOfflineRequest) =>
-        r.status === 'PENDING_APPROVAL' && r.total_levels
+        (r.status === 'PENDING_APPROVAL' || r.status === 'APPROVING') && r.total_levels
           ? <Text size="small" type="tertiary">第 {r.current_level} / {r.total_levels} 级</Text>
           : '-',
     },
     {
       title: '状态', dataIndex: 'status', width: 130,
       render: (s: OfflineRequestStatus) => (
-        <Tag color={STATUS_TAG[s].color} type="light" size="small">{STATUS_TAG[s].text}</Tag>
+        <Tag color={OFFLINE_STATUS_TAG[s].color as TagColor} type="light" size="small">{OFFLINE_STATUS_TAG[s].text}</Tag>
       ),
     },
     { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v: string) => fmtTime(v) },
@@ -199,13 +197,7 @@ const OfflineRequestsPage = () => {
                     key: 'status',
                     label: '状态',
                     type: 'checkbox',
-                    options: [
-                      { label: '待审批', value: 'PENDING_APPROVAL' },
-                      { label: '已通过(待执行)', value: 'APPROVED' },
-                      { label: '已下线', value: 'EXECUTED' },
-                      { label: '已拒绝', value: 'REJECTED' },
-                      { label: '执行失败', value: 'EXECUTION_FAILED' },
-                    ],
+                    options: OFFLINE_STATUS_FILTER_OPTIONS,
                     value: statusFilter,
                   },
                   {

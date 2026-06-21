@@ -11,17 +11,12 @@ import type {
   ProcessOfflineRequest,
   OfflineRequestStatus,
 } from '@/mocks/processOfflineApproval';
+import { OFFLINE_STATUS_TAG } from '@/mocks/processOfflineApproval';
 import './index.less';
 
 const { Text, Paragraph } = Typography;
 
-const STATUS_TAG: Record<OfflineRequestStatus, { color: 'blue' | 'green' | 'red' | 'orange' | 'cyan'; text: string }> = {
-  PENDING_APPROVAL: { color: 'blue', text: '待审批' },
-  APPROVED: { color: 'cyan', text: '已通过(待执行)' },
-  EXECUTED: { color: 'green', text: '已下线' },
-  REJECTED: { color: 'red', text: '已拒绝' },
-  EXECUTION_FAILED: { color: 'orange', text: '执行失败' },
-};
+const STATUS_TAG = OFFLINE_STATUS_TAG;
 
 const fmtTime = (iso?: string) => (iso ? new Date(iso).toLocaleString('zh-CN', { hour12: false }) : '-');
 

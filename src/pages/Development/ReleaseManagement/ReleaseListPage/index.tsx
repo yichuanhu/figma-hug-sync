@@ -36,8 +36,105 @@ import { Ellipsis, Filter, Plus } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
+// 申请状态（审批阶段）— 8 项与流程下线申请保持一致
+export type ReleaseApprovalStatus =
+  | 'PENDING_APPROVAL'
+  | 'APPROVING'
+  | 'APPROVED'
+  | 'REJECTED'
+  | 'EXECUTING'
+  | 'EXECUTION_SUCCESS'
+  | 'EXECUTION_FAILED'
+  | 'CANCELLED';
+
+export const RELEASE_APPROVAL_STATUS_TAG: Record<ReleaseApprovalStatus, { color: 'blue' | 'green' | 'red' | 'cyan' | 'grey'; text: string }> = {
+  PENDING_APPROVAL: { color: 'blue', text: '待审批' },
+  APPROVING: { color: 'blue', text: '审批中' },
+  APPROVED: { color: 'cyan', text: '已通过(待执行)' },
+  REJECTED: { color: 'red', text: '已拒绝' },
+  EXECUTING: { color: 'blue', text: '执行中' },
+  EXECUTION_SUCCESS: { color: 'green', text: '执行成功' },
+  EXECUTION_FAILED: { color: 'red', text: '执行失败' },
+  CANCELLED: { color: 'grey', text: '已撤销' },
+};
+
+export interface ReleaseApprovalRecord {
+  level: number;
+  approver_name: string;
+  action: 'APPROVE' | 'REJECT' | 'PENDING';
+  acted_at?: string;
+  comment?: string;
+}
+
+/** 申请人视角扩展字段（mock，附加到 LYReleaseResponse 上） */
+export interface ReleaseApplicantExtension {
+  approval_status: ReleaseApprovalStatus;
+  current_approval_level?: number;
+  total_approval_levels?: number;
+  current_approver_label?: string;
+  approval_records: ReleaseApprovalRecord[];
+  execution_at?: string;
+  execution_error?: string;
+}
+
+const APPROVAL_STATUS_POOL: ReleaseApprovalStatus[] = [
+  'EXECUTION_SUCCESS', 'APPROVING', 'EXECUTION_FAILED', 'PENDING_APPROVAL',
+  'APPROVED', 'REJECTED', 'EXECUTING', 'CANCELLED',
+];
+
+const buildApprovalExtension = (index: number, baseTime: Date): ReleaseApplicantExtension => {
+  const status = APPROVAL_STATUS_POOL[index % APPROVAL_STATUS_POOL.length];
+  const total = 2;
+  const records: ReleaseApprovalRecord[] = [];
+  let current = 1;
+  let label: string | undefined;
+  const t1 = new Date(baseTime.getTime() - 6 * 3600_000).toISOString();
+  const t2 = new Date(baseTime.getTime() - 2 * 3600_000).toISOString();
+
+  switch (status) {
+    case 'PENDING_APPROVAL':
+      label = 'L1 · 林经理';
+      records.push({ level: 1, approver_name: '林经理', action: 'PENDING' });
+      break;
+    case 'APPROVING':
+      current = 2;
+      label = 'L2 · 运维同学';
+      records.push({ level: 1, approver_name: '林经理', action: 'APPROVE', acted_at: t1, comment: '同意发布。' });
+      records.push({ level: 2, approver_name: '运维同学', action: 'PENDING' });
+      break;
+    case 'APPROVED':
+      current = 2;
+      records.push({ level: 1, approver_name: '林经理', action: 'APPROVE', acted_at: t1, comment: '同意。' });
+      records.push({ level: 2, approver_name: '运维同学', action: 'APPROVE', acted_at: t2, comment: '审批通过，准备执行。' });
+      break;
+    case 'REJECTED':
+      records.push({ level: 1, approver_name: '林经理', action: 'REJECT', acted_at: t1, comment: '部分流程缺少回归测试报告，请补齐后再申请。' });
+      break;
+    case 'EXECUTING':
+    case 'EXECUTION_SUCCESS':
+    case 'EXECUTION_FAILED':
+      current = 2;
+      records.push({ level: 1, approver_name: '林经理', action: 'APPROVE', acted_at: t1, comment: '同意。' });
+      records.push({ level: 2, approver_name: '运维同学', action: 'APPROVE', acted_at: t2, comment: '可执行。' });
+      break;
+    case 'CANCELLED':
+      records.push({ level: 1, approver_name: '林经理', action: 'PENDING' });
+      break;
+  }
+
+  return {
+    approval_status: status,
+    current_approval_level: current,
+    total_approval_levels: total,
+    current_approver_label: label,
+    approval_records: records,
+    execution_at: status === 'EXECUTION_SUCCESS' ? baseTime.toISOString() : undefined,
+    execution_error: status === 'EXECUTION_FAILED' ? '执行时检测到 PARAM-CONFIG_PATH 缺失，发布未完成。' : undefined,
+  };
+};
+
 // Mock Datageneration器
-const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
+const generateMockReleaseResponse = (index: number): LYReleaseResponse & ReleaseApplicantExtension => {
   const releaseTypes: ReleaseType[] = [
     'FIRST_RELEASE',
     'REQUIREMENT_CHANGE',
@@ -46,7 +143,6 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
     'VERSION_ROLLBACK',
     'OPTIMIZATION',
   ];
-  const statuses: ReleaseStatus[] = ['SUCCESS', 'FAILED', 'PUBLISHING'];
   const releaseType = releaseTypes[index % releaseTypes.length];
   const status = index === 2 ? 'FAILED' : index === 0 ? 'PUBLISHING' : 'SUCCESS';
 
@@ -105,6 +201,7 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
         : []),
     ],
     resources: [],
+    ...buildApprovalExtension(index, date),
   };
 };
 
@@ -311,6 +408,30 @@ const ReleaseListPage: React.FC = () => {
         ) : (
           '-'
         );
+      },
+    },
+    {
+      title: '申请状态',
+      dataIndex: 'approval_status',
+      width: 130,
+      render: (_: unknown, record: LYReleaseResponse) => {
+        const s = (record as unknown as ReleaseApplicantExtension).approval_status;
+        const cfg = s ? RELEASE_APPROVAL_STATUS_TAG[s] : undefined;
+        return cfg ? <Tag color={cfg.color} type="light">{cfg.text}</Tag> : '-';
+      },
+    },
+    {
+      title: '当前审批节点',
+      dataIndex: 'current_approver_label',
+      width: 160,
+      ellipsis: true,
+      render: (_: unknown, record: LYReleaseResponse) => {
+        const ext = record as unknown as ReleaseApplicantExtension;
+        if (ext.current_approver_label) return <Text size="small">{ext.current_approver_label}</Text>;
+        if (ext.total_approval_levels && (ext.approval_status === 'APPROVING' || ext.approval_status === 'PENDING_APPROVAL')) {
+          return <Text size="small" type="tertiary">第 {ext.current_approval_level} / {ext.total_approval_levels} 级</Text>;
+        }
+        return '-';
       },
     },
     {
