@@ -179,72 +179,76 @@ const CreateOfflineRequestModal = ({ visible, onCancel, onSuccess, onJumpExistin
       }
     >
       <div className="create-offline-request-modal-body">
-        <Form layout="vertical">
-          <Form.Slot label="目标流程" required>
-            <Select
-              style={{ width: '100%' }}
-              placeholder="请选择需要下线的流程（仅展示已发布且在权限范围内的流程）"
-              value={selectedId}
-              onChange={(v) => setSelectedId(v as string)}
-              loading={loadingOptions}
-              filter
-              showClear
-            >
-              {options.map((opt) => (
-                <Select.Option key={opt.id} value={opt.id}>
-                  <Space>
-                    <span>{opt.name}</span>
-                    <Text type="tertiary" size="small">{opt.current_version}</Text>
-                    <Text type="tertiary" size="small">· {opt.department_name}</Text>
-                  </Space>
-                </Select.Option>
-              ))}
-            </Select>
-            <Text type="tertiary" size="small" style={{ marginTop: 4, display: 'block' }}>
-              每次仅可选择 1 个流程，不支持批量下线申请
-            </Text>
-          </Form.Slot>
-
-          {selected && existing && (
-            <div className="create-offline-request-modal-existing-tip">
-              <span>该流程已有进行中的下线申请（{existing.status}），不能重复提交</span>
-              <Button
-                size="small"
-                theme="solid"
-                type="primary"
-                onClick={() => {
-                  onCancel();
-                  onJumpExisting?.(existing);
-                }}
-              >
-                查看现有申请
-              </Button>
-            </div>
-          )}
-
-          {selected && !existing && (
-            <Form.Slot label="依赖检查">
-              {renderDependency()}
-            </Form.Slot>
-          )}
-
-          <Form.Slot
-            label="下线原因"
-            required
-            error={selected && !existing && reason && !reasonValid ? '下线原因需 10–1000 字符' : undefined}
+        <div>
+          <div style={{ marginBottom: 6, fontSize: 13 }}>
+            <Text strong>目标流程</Text> <Text type="danger">*</Text>
+          </div>
+          <Select
+            style={{ width: '100%' }}
+            placeholder="请选择需要下线的流程（仅展示已发布且在权限范围内的流程）"
+            value={selectedId}
+            onChange={(v) => setSelectedId(v as string)}
+            loading={loadingOptions}
+            filter
+            showClear
           >
-            <Form.TextArea
-              field="reason"
-              noLabel
-              placeholder="请说明下线原因（10–1000 字符）"
-              initValue={reason}
-              onChange={(v) => setReason(v as string)}
-              maxCount={1000}
-              autosize={{ minRows: 4, maxRows: 8 }}
-              disabled={!selected || !!existing}
-            />
-          </Form.Slot>
-        </Form>
+            {options.map((opt) => (
+              <Select.Option key={opt.id} value={opt.id}>
+                <Space>
+                  <span>{opt.name}</span>
+                  <Text type="tertiary" size="small">{opt.current_version}</Text>
+                  <Text type="tertiary" size="small">· {opt.department_name}</Text>
+                </Space>
+              </Select.Option>
+            ))}
+          </Select>
+          <Text type="tertiary" size="small" style={{ marginTop: 4, display: 'block' }}>
+            每次仅可选择 1 个流程，不支持批量下线申请
+          </Text>
+        </div>
+
+        {selected && existing && (
+          <div className="create-offline-request-modal-existing-tip">
+            <span>该流程已有进行中的下线申请（{existing.status}），不能重复提交</span>
+            <Button
+              size="small"
+              theme="solid"
+              type="primary"
+              onClick={() => {
+                onCancel();
+                onJumpExisting?.(existing);
+              }}
+            >
+              查看现有申请
+            </Button>
+          </div>
+        )}
+
+        {selected && !existing && (
+          <div>
+            <div style={{ marginBottom: 6, fontSize: 13 }}><Text strong>依赖检查</Text></div>
+            {renderDependency()}
+          </div>
+        )}
+
+        <div>
+          <div style={{ marginBottom: 6, fontSize: 13 }}>
+            <Text strong>下线原因</Text> <Text type="danger">*</Text>
+          </div>
+          <Input.TextArea
+            placeholder="请说明下线原因（10–1000 字符）"
+            value={reason}
+            onChange={(v) => setReason(v)}
+            maxCount={1000}
+            autosize={{ minRows: 4, maxRows: 8 }}
+            disabled={!selected || !!existing}
+          />
+          {selected && !existing && reason.length > 0 && !reasonValid && (
+            <Text type="danger" size="small" style={{ marginTop: 4, display: 'block' }}>
+              下线原因需 10–1000 字符
+            </Text>
+          )}
+        </div>
       </div>
     </Modal>
   );
