@@ -411,6 +411,30 @@ const ReleaseListPage: React.FC = () => {
       },
     },
     {
+      title: '申请状态',
+      dataIndex: 'approval_status',
+      width: 130,
+      render: (_: unknown, record: LYReleaseResponse) => {
+        const s = (record as unknown as ReleaseApplicantExtension).approval_status;
+        const cfg = s ? RELEASE_APPROVAL_STATUS_TAG[s] : undefined;
+        return cfg ? <Tag color={cfg.color} type="light">{cfg.text}</Tag> : '-';
+      },
+    },
+    {
+      title: '当前审批节点',
+      dataIndex: 'current_approver_label',
+      width: 160,
+      ellipsis: true,
+      render: (_: unknown, record: LYReleaseResponse) => {
+        const ext = record as unknown as ReleaseApplicantExtension;
+        if (ext.current_approver_label) return <Text size="small">{ext.current_approver_label}</Text>;
+        if (ext.total_approval_levels && (ext.approval_status === 'APPROVING' || ext.approval_status === 'PENDING_APPROVAL')) {
+          return <Text size="small" type="tertiary">第 {ext.current_approval_level} / {ext.total_approval_levels} 级</Text>;
+        }
+        return '-';
+      },
+    },
+    {
       title: t('release.list.columns.processes'),
       dataIndex: 'contents',
       width: 100,
