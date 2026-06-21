@@ -226,7 +226,7 @@ const OfflineRequestsPage = () => {
         </Row>
 
         {isInitialLoad ? (
-          <TableSkeleton rows={6} columns={7} columnWidths={['24%', '12%', '10%', '12%', '14%', '14%', '14%']} />
+          <TableSkeleton rows={6} columns={7} columnWidths={['24%', '9%', '10%', '12%', '16%', '10%', '19%']} />
         ) : (
           <Table
             size="small"
