@@ -115,6 +115,10 @@ const OfflineRequestsPage = () => {
       render: (v: string) => <Text strong>{v}</Text>,
     },
     {
+      title: '版本', dataIndex: 'process_version', width: 100,
+      render: (v: string) => <Text size="small" type="tertiary">{v || '-'}</Text>,
+    },
+    {
       title: '申请人', dataIndex: 'applicant_name', width: 130,
       render: (v: string, r: ProcessOfflineRequest) => <UserNameWithCard name={v} userId={r.applicant_id} />,
     },
@@ -134,14 +138,14 @@ const OfflineRequestsPage = () => {
     {
       title: '审批进度', dataIndex: 'current_level', width: 110,
       render: (_: unknown, r: ProcessOfflineRequest) =>
-        r.status === 'PENDING_APPROVAL' && r.total_levels
+        (r.status === 'PENDING_APPROVAL' || r.status === 'APPROVING') && r.total_levels
           ? <Text size="small" type="tertiary">第 {r.current_level} / {r.total_levels} 级</Text>
           : '-',
     },
     {
       title: '状态', dataIndex: 'status', width: 130,
       render: (s: OfflineRequestStatus) => (
-        <Tag color={STATUS_TAG[s].color} type="light" size="small">{STATUS_TAG[s].text}</Tag>
+        <Tag color={OFFLINE_STATUS_TAG[s].color as TagColor} type="light" size="small">{OFFLINE_STATUS_TAG[s].text}</Tag>
       ),
     },
     { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v: string) => fmtTime(v) },
