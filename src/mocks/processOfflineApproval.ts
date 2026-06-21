@@ -406,6 +406,7 @@ export const submitOfflineRequest = async (
     id: `por-${Date.now()}`,
     process_id: payload.processId,
     process_name: payload.processName,
+    process_version: payload.processVersion ?? 'v1.0.0',
     applicant_id: 'user-current',
     applicant_name: '当前用户',
     department_id: payload.departmentId,
