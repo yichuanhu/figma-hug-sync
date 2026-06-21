@@ -7,8 +7,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Typography, Table, Tag, Input, Button, Space, Row, Col, Popover,
+  Typography, Table, Tag, Input, Button, Space, Row, Col, Popover, Pagination,
 } from '@douyinfe/semi-ui';
+import { useTranslation } from 'react-i18next';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import { Plus } from 'lucide-react';
@@ -34,7 +35,11 @@ const fmtTime = (iso?: string) => (iso ? new Date(iso).toLocaleString('zh-CN', {
 
 const OfflineRequestsPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { id: routeId } = useParams<{ id?: string }>();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
@@ -154,9 +159,18 @@ const OfflineRequestsPage = () => {
     { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v: string) => fmtTime(v) },
   ], []);
 
+  // 搜索/筛选变化时重置到第 1 页
+  useEffect(() => { setCurrentPage(1); }, [keyword, statusFilter, dateFilter]);
+
+  const total = filteredData.length;
+  const pagedData = useMemo(
+    () => filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [filteredData, currentPage, pageSize],
+  );
+
   const pagination = useMemo(() => ({
-    currentPage: 1, totalPages: 1, pageSize: filteredData.length, total: filteredData.length,
-  }), [filteredData]);
+    currentPage, totalPages: Math.max(1, Math.ceil(total / pageSize)), pageSize, total,
+  }), [currentPage, pageSize, total]);
 
   return (
     <div className="offline-requests">
@@ -221,7 +235,7 @@ const OfflineRequestsPage = () => {
           <Table
             size="small"
             columns={columns}
-            dataSource={filteredData}
+            dataSource={pagedData}
             loading={loading}
             rowKey="id"
             empty={<EmptyState variant="noData" description="暂无下线申请，点击右上角发起申请" />}
@@ -231,8 +245,32 @@ const OfflineRequestsPage = () => {
               onClick: () => record && openDetail(record as ProcessOfflineRequest),
             })}
             pagination={false}
-            scroll={{ y: 'calc(100vh - 320px)' }}
+            scroll={{ y: 'calc(100vh - 360px)' }}
           />
+        )}
+
+        {total > 0 && (
+          <div className="list-pagination">
+            <Text type="tertiary">
+              {t('common.showingRecords', {
+                start: (currentPage - 1) * pageSize + 1,
+                end: Math.min(currentPage * pageSize, total),
+                total,
+              })}
+            </Text>
+            <div className="list-pagination-right">
+              <Text type="tertiary">{t('common.totalPages', { total: Math.ceil(total / pageSize) })}</Text>
+              <Pagination
+                currentPage={currentPage}
+                pageSize={pageSize}
+                total={total}
+                showSizeChanger
+                pageSizeOpts={[10, 20, 50, 100]}
+                onPageChange={setCurrentPage}
+                onPageSizeChange={(s) => { setPageSize(s); setCurrentPage(1); }}
+              />
+            </div>
+          </div>
         )}
       </div>
 
