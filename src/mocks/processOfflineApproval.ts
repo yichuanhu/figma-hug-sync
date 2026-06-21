@@ -11,10 +11,14 @@ import { getDepartmentName } from './departmentData';
 
 export type OfflineRequestStatus =
   | 'PENDING_APPROVAL'
+  | 'APPROVING'
   | 'APPROVED'
   | 'REJECTED'
-  | 'EXECUTED'
-  | 'EXECUTION_FAILED';
+  | 'EXECUTING'
+  | 'EXECUTED'           // 兼容旧值，等同于 EXECUTION_SUCCESS
+  | 'EXECUTION_SUCCESS'
+  | 'EXECUTION_FAILED'
+  | 'CANCELLED';
 
 export type OfflineApprovalAction = 'approve' | 'reject';
 
@@ -39,6 +43,8 @@ export interface ProcessOfflineRequest {
   id: string;
   process_id: string;
   process_name: string;
+  /** 申请下线时的流程版本号，例如 v1.2.0 */
+  process_version: string;
   applicant_id: string;
   applicant_name: string;
   department_id: string;
@@ -50,6 +56,8 @@ export interface ProcessOfflineRequest {
   approval_template_snapshot?: ApprovalFlowTemplate;
   current_level?: number;
   total_levels?: number;
+  /** 当前审批节点名称（如 "L2 · 张三"）— 仅审批中状态有意义 */
+  current_approver_label?: string;
   records: OfflineApprovalRecord[];
   executed_at?: string;
   execution_error?: string;
