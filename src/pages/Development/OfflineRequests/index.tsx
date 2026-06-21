@@ -120,8 +120,20 @@ const OfflineRequestsPage = () => {
       render: (v: string) => <Text strong>{v}</Text>,
     },
     {
-      title: '版本', dataIndex: 'process_version', width: 100,
-      render: (v: string) => <Text size="small" type="tertiary">{v || '-'}</Text>,
+      title: '状态', dataIndex: 'status', width: 130,
+      render: (s: OfflineRequestStatus) => (
+        <Tag color={OFFLINE_STATUS_TAG[s].color as TagColor} type="light" size="small">{OFFLINE_STATUS_TAG[s].text}</Tag>
+      ),
+    },
+    {
+      title: '审批进度', dataIndex: 'current_level', width: 100, align: 'center' as const,
+      render: (_: unknown, r: ProcessOfflineRequest) => {
+        if (r.status === 'PENDING_APPROVAL' || r.status === 'APPROVING') {
+          if (r.total_levels) return <Text>第 {r.current_level} / {r.total_levels} 级</Text>;
+          if (r.current_approver_label) return <Text>{r.current_approver_label}</Text>;
+        }
+        return '-';
+      },
     },
     {
       title: '申请人', dataIndex: 'applicant_name', width: 130,
@@ -139,22 +151,6 @@ const OfflineRequestsPage = () => {
           <Text ellipsis={{ showTooltip: false }} style={{ width: '100%' }}>{v}</Text>
         </Popover>
       ),
-    },
-    {
-      title: '状态', dataIndex: 'status', width: 130,
-      render: (s: OfflineRequestStatus) => (
-        <Tag color={OFFLINE_STATUS_TAG[s].color as TagColor} type="light" size="small">{OFFLINE_STATUS_TAG[s].text}</Tag>
-      ),
-    },
-    {
-      title: '审批进度', dataIndex: 'current_level', width: 100, align: 'center' as const,
-      render: (_: unknown, r: ProcessOfflineRequest) => {
-        if (r.status === 'PENDING_APPROVAL' || r.status === 'APPROVING') {
-          if (r.total_levels) return <Text>第 {r.current_level} / {r.total_levels} 级</Text>;
-          if (r.current_approver_label) return <Text>{r.current_approver_label}</Text>;
-        }
-        return '-';
-      },
     },
     { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v: string) => fmtTime(v) },
   ], []);
@@ -230,7 +226,7 @@ const OfflineRequestsPage = () => {
         </Row>
 
         {isInitialLoad ? (
-          <TableSkeleton rows={6} columns={6} columnWidths={['28%', '14%', '17%', '13%', '14%', '14%']} />
+          <TableSkeleton rows={6} columns={7} columnWidths={['24%', '12%', '10%', '12%', '14%', '14%', '14%']} />
         ) : (
           <Table
             size="small"
