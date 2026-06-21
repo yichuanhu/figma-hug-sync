@@ -142,7 +142,7 @@ const OfflineRequestsPage = () => {
       ),
     },
     {
-      title: '审批进度', dataIndex: 'current_level', width: 100, align: 'center',
+      title: '审批进度', dataIndex: 'current_level', width: 100, align: 'center' as const,
       render: (_: unknown, r: ProcessOfflineRequest) => {
         if (r.status === 'PENDING_APPROVAL' || r.status === 'APPROVING') {
           if (r.total_levels) return <Text>第 {r.current_level} / {r.total_levels} 级</Text>;
