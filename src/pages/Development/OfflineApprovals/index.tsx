@@ -31,13 +31,8 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
-const STATUS_TAG: Record<OfflineRequestStatus, { color: TagColor; text: string }> = {
-  PENDING_APPROVAL: { color: 'blue', text: '待审批' },
-  APPROVED: { color: 'cyan', text: '已通过(待执行)' },
-  EXECUTED: { color: 'green', text: '已下线' },
-  REJECTED: { color: 'red', text: '已拒绝' },
-  EXECUTION_FAILED: { color: 'orange', text: '执行失败' },
-};
+import { OFFLINE_STATUS_TAG as STATUS_TAG_RAW } from '@/mocks/processOfflineApproval';
+const STATUS_TAG: Record<OfflineRequestStatus, { color: TagColor; text: string }> = STATUS_TAG_RAW as Record<OfflineRequestStatus, { color: TagColor; text: string }>;
 
 const fmtTime = (iso?: string) => (iso ? new Date(iso).toLocaleString('zh-CN', { hour12: false }) : '-');
 
