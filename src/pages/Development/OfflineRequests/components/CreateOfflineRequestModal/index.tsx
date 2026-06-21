@@ -8,7 +8,7 @@
  * 原因必填，10–1000 字符；提交成功后回调通知列表刷新并定位详情。
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Modal, Form, Select, Toast, Spin, Tag, Typography, Button, Space } from '@douyinfe/semi-ui';
+import { Modal, Select, Toast, Spin, Tag, Typography, Button, Space, TextArea } from '@douyinfe/semi-ui';
 import { AlertTriangle } from 'lucide-react';
 import {
   checkOfflineDependency,
@@ -235,7 +235,7 @@ const CreateOfflineRequestModal = ({ visible, onCancel, onSuccess, onJumpExistin
           <div style={{ marginBottom: 6, fontSize: 13 }}>
             <Text strong>下线原因</Text> <Text type="danger">*</Text>
           </div>
-          <Input.TextArea
+          <TextArea
             placeholder="请说明下线原因（10–1000 字符）"
             value={reason}
             onChange={(v) => setReason(v)}
