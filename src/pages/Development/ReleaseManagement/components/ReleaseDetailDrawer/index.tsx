@@ -315,6 +315,12 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
           <TabPane tab={t('release.detail.basicInfo')} itemKey="basicInfo">
             {renderBasicInfoTab()}
           </TabPane>
+          <TabPane tab="审批流程" itemKey="approval">
+            {renderApprovalTab()}
+          </TabPane>
+          <TabPane tab="执行结果" itemKey="execution">
+            {renderExecutionTab()}
+          </TabPane>
           <TabPane tab={t('release.detail.publishedProcessesAndResources')} itemKey="processes">
             {renderProcessesTab()}
           </TabPane>
