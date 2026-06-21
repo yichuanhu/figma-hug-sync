@@ -7,16 +7,19 @@ import {
   Tag,
   Tabs,
   TabPane,
+  Timeline,
+  Space,
 } from '@douyinfe/semi-ui';
 import type { LYReleaseResponse, ReleaseType, ReleaseStatus, ResourceType } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
+import { RELEASE_APPROVAL_STATUS_TAG, type ReleaseApplicantExtension } from '../../ReleaseListPage';
 
 import './index.less';
 import { ExternalLink } from 'lucide-react';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 interface ReleaseDetailDrawerProps {
   visible: boolean;
