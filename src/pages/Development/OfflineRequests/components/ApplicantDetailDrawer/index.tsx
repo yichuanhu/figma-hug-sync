@@ -92,9 +92,18 @@ const ApplicantDetailDrawer = ({ visible, onClose, data, dataList, onNavigate, p
       <div className="offline-request-applicant-drawer-body">
         <Card className="detail-section" title="基本信息">
           <div className="info-row">
+            <Text type="tertiary">流程名称：</Text>
+            <Text>{data.process_name}</Text>
+          </div>
+          <div className="info-row">
+            <Text type="tertiary">状态：</Text>
+            <Tag color={STATUS_TAG[data.status].color} type="light" size="small">{STATUS_TAG[data.status].text}</Tag>
+          </div>
+          <div className="info-row">
             <Text type="tertiary">申请人：</Text>
             <UserNameWithCard name={data.applicant_name} userId={data.applicant_id} />
           </div>
+
           <div className="info-row"><Text type="tertiary">所属部门：</Text><Text>{data.department_name}</Text></div>
           <div className="info-row"><Text type="tertiary">提交时间：</Text><Text>{fmtTime(data.submitted_at)}</Text></div>
           {data.executed_at && (
