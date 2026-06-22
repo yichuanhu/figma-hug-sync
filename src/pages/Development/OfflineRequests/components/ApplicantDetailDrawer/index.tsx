@@ -12,6 +12,7 @@ import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import ExpandableText from '@/components/ExpandableText';
 import {
   type ProcessOfflineRequest,
+  type DependencyCheckSnapshot,
   OFFLINE_STATUS_TAG,
 } from '@/mocks/processOfflineApproval';
 import './index.less';
@@ -22,37 +23,40 @@ const STATUS_TAG = OFFLINE_STATUS_TAG;
 
 const fmtTime = (iso?: string) => (iso ? new Date(iso).toLocaleString('zh-CN', { hour12: false }) : '-');
 
-const renderDependency = (r: ProcessOfflineRequest) => {
-  const d = r.dependency_snapshot;
+const DEPENDENCY_GROUP_TITLES: Record<keyof DependencyCheckSnapshot, string> = {
+  blocking: '',
+  triggers: '启用中的触发器',
+  task_templates: '引用的任务模板',
+  running_tasks: '运行中/排队中任务',
+  scheduling_refs: '调度中心其他引用',
+};
+
+const renderDependency = (d: DependencyCheckSnapshot) => {
   const empty = d.triggers.length + d.task_templates.length + d.running_tasks.length + d.scheduling_refs.length === 0;
   if (empty) return <Tag color="green" type="light" size="small">依赖检查通过</Tag>;
   return (
-    <div>
-      {d.blocking && <Tag color="red" type="light" size="small" style={{ marginBottom: 8 }}>存在阻塞依赖</Tag>}
-      {d.triggers.length > 0 && (
-        <div className="dependency-group">
-          <Text strong size="small">启用中的触发器</Text>
-          <ul>{d.triggers.map((t) => <li key={t.id}><Text size="small">{t.name}（{t.type}）</Text></li>)}</ul>
+    <div className="dependency-list">
+      {d.blocking && (
+        <div className="dependency-card dependency-card-blocker">
+          <Text type="danger" size="small" strong>存在阻塞依赖，当前不可下线</Text>
         </div>
       )}
-      {d.task_templates.length > 0 && (
-        <div className="dependency-group">
-          <Text strong size="small">引用此流程的任务模板</Text>
-          <ul>{d.task_templates.map((t) => <li key={t.id}><Text size="small">{t.name}</Text></li>)}</ul>
-        </div>
-      )}
-      {d.running_tasks.length > 0 && (
-        <div className="dependency-group">
-          <Text strong size="small">运行中/排队中任务</Text>
-          <ul>{d.running_tasks.map((t) => <li key={t.id}><Text size="small">{t.name}（{t.status}）</Text></li>)}</ul>
-        </div>
-      )}
-      {d.scheduling_refs.length > 0 && (
-        <div className="dependency-group">
-          <Text strong size="small">调度中心其他引用</Text>
-          <ul>{d.scheduling_refs.map((t) => <li key={t.id}><Text size="small">{t.name}</Text></li>)}</ul>
-        </div>
-      )}
+      {(Object.keys(DEPENDENCY_GROUP_TITLES) as Array<keyof DependencyCheckSnapshot>)
+        .filter((k) => k !== 'blocking')
+        .map((k) => {
+          const items = d[k] as Array<{ id: string; name: string }>;
+          if (items.length === 0) return null;
+          return (
+            <div key={String(k)} className="dependency-card">
+              <Text type="tertiary" size="small" strong>{DEPENDENCY_GROUP_TITLES[k]}</Text>
+              <ul>
+                {items.map((item) => (
+                  <li key={item.id}><Text size="small" ellipsis={{ showTooltip: true }}>{item.name}</Text></li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
     </div>
   );
 };
@@ -132,19 +136,19 @@ const ApplicantDetailDrawer = ({ visible, onClose, data, dataList, onNavigate, p
 
   const renderImpactTab = () => (
     <div className="offline-request-applicant-drawer-tab-content">
-      <Title heading={6} className="section-title">下线目标流程</Title>
+      <Text strong size="small" className="section-title">下线目标流程</Text>
       <div className="process-card" onClick={handleProcessClick}>
         <div className="process-card-header">
           <span className="process-name">
-            <Text strong ellipsis={{ showTooltip: true }}>{data.process_name}</Text>
+            <Text ellipsis={{ showTooltip: true }}>{data.process_name}</Text>
             <ExternalLink size={16} strokeWidth={2} className="link-icon" />
           </span>
-          {data.process_version && <Tag size="small" color="blue">{data.process_version}</Tag>}
+          {data.process_version && <Tag size="small" color="blue" type="light">{data.process_version}</Tag>}
         </div>
       </div>
 
-      <Title heading={6} className="section-title">依赖检查快照</Title>
-      {renderDependency(data)}
+      <Text strong size="small" className="section-title">依赖检查快照</Text>
+      {renderDependency(data.dependency_snapshot)}
     </div>
   );
 
