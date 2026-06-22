@@ -1,8 +1,5 @@
 /**
- * 停用审批详情抽屉（与需求审批/发布审批版式统一）
- *
- * 左侧 Tabs：概览（基本信息 + 依赖检查） / 审批流程（Timeline + 审批操作）
- * 右侧属性面板：状态、所属部门、申请人、提交时间...
+ * 停用审批详情抽屉（卡片化布局，与发布详情视觉统一）
  */
 import { useState } from 'react';
 import { Typography, Tag, Tabs, TabPane, Timeline, Space, Button, Modal, Form, Toast, TextArea, Banner } from '@douyinfe/semi-ui';
@@ -11,6 +8,7 @@ import DetailDrawerWrapper, { type PaginationInfo } from '@/components/DetailDra
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import StatusDot, { type StatusDotColor } from '@/components/StatusDot';
 import ExpandableText from '@/components/ExpandableText';
+import EmptyState from '@/components/EmptyState';
 import {
   approveOfflineRequest,
   rejectOfflineRequest,
@@ -19,11 +17,17 @@ import {
 } from '@/mocks/processOfflineApproval';
 import { OFFLINE_STATUS_TAG as STATUS_TAG } from '@/mocks/processOfflineApproval';
 import { CURRENT_APPROVAL_USER_ID } from '@/pages/Development/PublishApprovals/currentUser';
+// 复用发布详情抽屉的卡片样式
+import '../../../ReleaseManagement/components/ReleaseDetailDrawer/index.less';
 import './index.less';
 
 const { Text, Title } = Typography;
 
 const fmtTime = (iso?: string) => (iso ? new Date(iso).toLocaleString('zh-CN', { hour12: false }) : '-');
+
+const statusColorMap: Record<string, StatusDotColor> = {
+  blue: 'blue', green: 'green', red: 'red', orange: 'orange', cyan: 'cyan', grey: 'grey',
+};
 
 const renderDependency = (r: ProcessOfflineRequest) => {
   const d = r.dependency_snapshot;
@@ -71,53 +75,36 @@ interface OfflineApprovalDetailDrawerProps {
 
 const OfflinePropertyPanel: React.FC<{ data: ProcessOfflineRequest }> = ({ data }) => {
   const tag = STATUS_TAG[data.status];
-  const statusColorMap: Record<string, StatusDotColor> = {
-    blue: 'blue', green: 'green', red: 'red', orange: 'orange', cyan: 'cyan', grey: 'grey',
-  };
+
+  const items: { label: string; value: React.ReactNode }[] = [
+    { label: '审批状态', value: <StatusDot color={statusColorMap[tag.color] || 'grey'} label={tag.text} /> },
+    { label: '申请人', value: <UserNameWithCard name={data.applicant_name} userId={data.applicant_id} /> },
+    { label: '所属部门', value: <Text strong>{data.department_name || '-'}</Text> },
+  ];
+
+  if (data.status === 'PENDING_APPROVAL' && data.total_levels) {
+    items.push({
+      label: '当前级别',
+      value: <Text strong>当前第 {data.current_level} / {data.total_levels} 级</Text>,
+    });
+  }
+
+  items.push(
+    { label: '提交时间', value: <Text>{fmtTime(data.submitted_at)}</Text> },
+    { label: '申请编号', value: <Text>{data.id}</Text> },
+  );
+  if (data.executed_at) {
+    items.push({ label: '下线时间', value: <Text>{fmtTime(data.executed_at)}</Text> });
+  }
+
   return (
-    <div className="requirement-detail-property-panel">
-      <div className="requirement-detail-property-group">
-        <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">状态</Text>
-          <div>
-            <StatusDot color={statusColorMap[tag.color] || 'grey'} label={tag.text} />
-          </div>
+    <div className="detail-property-stacked">
+      {items.map((it) => (
+        <div key={it.label} className="detail-property-stacked-item">
+          <Text type="tertiary" size="small" className="detail-property-stacked-label">{it.label}</Text>
+          <div className="detail-property-stacked-value">{it.value}</div>
         </div>
-        {data.status === 'PENDING_APPROVAL' && data.total_levels ? (
-          <div className="requirement-detail-property-item">
-            <Text type="tertiary" size="small">审批进度</Text>
-            <Text size="small">第 {data.current_level} / {data.total_levels} 级</Text>
-          </div>
-        ) : null}
-      </div>
-
-      <div className="requirement-detail-property-divider" />
-
-      <div className="requirement-detail-property-group">
-        <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">所属部门</Text>
-          <Text>{data.department_name || '-'}</Text>
-        </div>
-        <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">申请人</Text>
-          <UserNameWithCard name={data.applicant_name} userId={data.applicant_id} />
-        </div>
-      </div>
-
-      <div className="requirement-detail-property-divider" />
-
-      <div className="requirement-detail-property-group">
-        <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">提交时间</Text>
-          <Text size="small">{fmtTime(data.submitted_at)}</Text>
-        </div>
-        {data.executed_at && (
-          <div className="requirement-detail-property-item">
-            <Text type="tertiary" size="small">下线时间</Text>
-            <Text size="small">{fmtTime(data.executed_at)}</Text>
-          </div>
-        )}
-      </div>
+      ))}
     </div>
   );
 };
@@ -127,7 +114,7 @@ const OfflineApprovalDetailDrawer = ({
 }: OfflineApprovalDetailDrawerProps) => {
   const [rejectVisible, setRejectVisible] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
-  const [approveComment, setApproveComment] = useState('');
+  const [comment, setComment] = useState('');
   const [acting, setActing] = useState(false);
 
   if (!data) return null;
@@ -136,6 +123,7 @@ const OfflineApprovalDetailDrawer = ({
   const isFailed = data.status === 'EXECUTION_FAILED';
   const reviewedByMe = data.records.some((r) => r.approver_id === CURRENT_APPROVAL_USER_ID);
   const canApprove = isPending && !reviewedByMe;
+  const tag = STATUS_TAG[data.status];
 
   const doApprove = () => {
     Modal.confirm({
@@ -149,7 +137,7 @@ const OfflineApprovalDetailDrawer = ({
           if (next.status === 'EXECUTION_FAILED') Toast.warning('审批通过，但执行失败，请稍后重试');
           else if (next.status === 'EXECUTED') Toast.success('已通过并完成下线');
           else Toast.success('已通过，等待下一级审批');
-          setApproveComment('');
+          setComment('');
           onAfterAction?.();
         } catch (e) {
           Toast.error((e as Error).message);
@@ -191,14 +179,29 @@ const OfflineApprovalDetailDrawer = ({
     }
   };
 
-  const title = `${data.process_name} 的停用申请`;
+  // 抽屉标题
+  const drawerTitle = (
+    <div className="detail-drawer-title">
+      <Text strong style={{ fontSize: 16 }}>{data.id}</Text>
+      <Tag color="grey" type="light" size="small">流程：{data.process_name}</Tag>
+      <StatusDot color={statusColorMap[tag.color] || 'grey'} label={tag.text} />
+    </div>
+  );
+
+  // 审批流（基于 total_levels 构造）
+  const totalLevels = data.total_levels ?? data.records.length;
+  const flowItems: Array<{ level: number; status: 'done' | 'pending'; record?: typeof data.records[0] }> = [];
+  for (let lv = 1; lv <= totalLevels; lv += 1) {
+    const rec = data.records.find((r) => r.level === lv);
+    flowItems.push({ level: lv, status: rec ? 'done' : 'pending', record: rec });
+  }
 
   return (
     <>
       <DetailDrawerWrapper<ProcessOfflineRequest>
         visible={visible}
         onClose={onClose}
-        title={title}
+        title={drawerTitle}
         dataList={dataList}
         currentId={data.id}
         onNavigate={onNavigate}
@@ -211,76 +214,135 @@ const OfflineApprovalDetailDrawer = ({
         <div className="requirement-detail-layout">
           <div className="requirement-detail-left">
             <Tabs type="line" className="requirement-detail-tabs">
-              <TabPane tab="概览" itemKey="overview">
-                <div className="offline-approval-detail-drawer-tab-content">
+              <TabPane tab="停用申请" itemKey="overview">
+                <div className="detail-cards-container">
                   {data.execution_error && (
                     <Banner type="danger" fullMode={false} closeIcon={null}
                       description={`执行错误：${data.execution_error}`}
-                      style={{ marginBottom: 16 }} />
+                      style={{ marginBottom: 0 }} />
                   )}
 
-                  <div className="offline-approval-detail-drawer-section">
-                    <Title heading={6} className="offline-approval-detail-drawer-section-title">停用原因</Title>
-                    <ExpandableText text={data.reason || '-'} maxLines={6} />
+                  {/* 卡片1：停用申请快照 */}
+                  <div className="detail-snapshot-card">
+                    <Title heading={6} className="detail-card-title">停用申请快照</Title>
+                    <div className="detail-snapshot-grid">
+                      <Text type="tertiary" className="detail-snapshot-label">申请编号</Text>
+                      <Text>{data.id}</Text>
+
+                      <Text type="tertiary" className="detail-snapshot-label">流程名称</Text>
+                      <Text>{data.process_name}</Text>
+
+                      <Text type="tertiary" className="detail-snapshot-label">流程版本</Text>
+                      <Text>{data.process_version}</Text>
+
+                      <Text type="tertiary" className="detail-snapshot-label">申请状态</Text>
+                      <div><StatusDot color={statusColorMap[tag.color] || 'grey'} label={tag.text} /></div>
+
+                      <Text type="tertiary" className="detail-snapshot-label">提交时间</Text>
+                      <Text>{fmtTime(data.submitted_at)}</Text>
+
+                      <Text type="tertiary" className="detail-snapshot-label">停用原因</Text>
+                      <div><ExpandableText text={data.reason || '-'} maxLines={6} /></div>
+                    </div>
                   </div>
 
-                  <div className="offline-approval-detail-drawer-section">
-                    <Title heading={6} className="offline-approval-detail-drawer-section-title">依赖检查快照</Title>
+                  {/* 卡片2：依赖检查快照 */}
+                  <div className="detail-snapshot-card">
+                    <Title heading={6} className="detail-card-title">依赖检查快照</Title>
                     {renderDependency(data)}
                   </div>
                 </div>
               </TabPane>
 
-              <TabPane tab="审批流程" itemKey="approval">
-                <div className="offline-approval-detail-drawer-tab-content">
-                  {data.approval_template_snapshot && (
-                    <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 12 }}>
-                      审批流：{data.approval_template_snapshot.name}
-                      {isPending && data.total_levels ? `（当前第 ${data.current_level} / ${data.total_levels} 级）` : ''}
-                    </Text>
-                  )}
-                  {data.records.length > 0 ? (
-                    <Timeline>
-                      {data.records.map((r, idx) => (
-                        <Timeline.Item key={idx} type={r.action === 'approve' ? 'success' : 'error'} time={fmtTime(r.acted_at)}>
-                          <Space>
-                            <Text strong>{r.approver_name}</Text>
-                            <Tag color={r.action === 'approve' ? 'green' : 'red'} type="light" size="small">
-                              {r.action === 'approve' ? '通过' : '拒绝'}（第 {r.level} 级）
-                            </Tag>
-                          </Space>
-                          {r.comment && <div><Text type="tertiary" size="small">{r.comment}</Text></div>}
-                        </Timeline.Item>
-                      ))}
-                    </Timeline>
-                  ) : (
-                    <Text type="tertiary" size="small">暂无审批记录</Text>
-                  )}
+              <TabPane tab="审批进度" itemKey="approval">
+                <div className="detail-cards-container">
+                  {/* 卡片：审批流 */}
+                  <div className="detail-snapshot-card">
+                    <div className="detail-card-header">
+                      <Title heading={6} className="detail-card-title" style={{ margin: 0 }}>审批流</Title>
+                      {data.total_levels ? (
+                        <Text type="tertiary" size="small">当前第 {data.current_level} / {data.total_levels} 级</Text>
+                      ) : null}
+                    </div>
+                    {flowItems.length > 0 ? (
+                      <Timeline>
+                        {flowItems.map((it) => {
+                          if (it.status === 'pending') {
+                            return (
+                              <Timeline.Item key={it.level} type="default" dot={<span className="detail-timeline-dot detail-timeline-dot-pending" />}>
+                                <Space>
+                                  <Text strong>第 {it.level} 级审批</Text>
+                                  <StatusDot color="orange" label="待审批" />
+                                </Space>
+                                {data.current_approver_label && it.level === data.current_level && (
+                                  <div><Text type="tertiary" size="small">{data.current_approver_label}</Text></div>
+                                )}
+                              </Timeline.Item>
+                            );
+                          }
+                          const r = it.record!;
+                          return (
+                            <Timeline.Item key={it.level} type={r.action === 'approve' ? 'success' : 'error'} time={fmtTime(r.acted_at)}>
+                              <Space>
+                                <Text strong>第 {it.level} 级审批</Text>
+                                <Tag color={r.action === 'approve' ? 'green' : 'red'} type="light" size="small">
+                                  {r.action === 'approve' ? '通过' : '拒绝'}
+                                </Tag>
+                              </Space>
+                              <div><Text type="tertiary" size="small">{r.approver_name}</Text></div>
+                              {r.comment && <div><Text size="small">{r.comment}</Text></div>}
+                            </Timeline.Item>
+                          );
+                        })}
+                      </Timeline>
+                    ) : (
+                      <Text type="tertiary" size="small">暂无审批流配置</Text>
+                    )}
+                  </div>
+
+                  {/* 卡片：审批记录 */}
+                  <div className="detail-snapshot-card">
+                    <Title heading={6} className="detail-card-title">审批记录</Title>
+                    {data.records.length === 0 ? (
+                      <EmptyState variant="noData" description="暂无审批记录" size={120} />
+                    ) : (
+                      <Timeline>
+                        {data.records.map((r, idx) => (
+                          <Timeline.Item key={idx} type={r.action === 'approve' ? 'success' : 'error'} time={fmtTime(r.acted_at)}>
+                            <Space>
+                              <Text strong>{r.approver_name}</Text>
+                              <Tag color={r.action === 'approve' ? 'green' : 'red'} type="light" size="small">
+                                {r.action === 'approve' ? '通过' : '拒绝'}（第 {r.level} 级）
+                              </Tag>
+                            </Space>
+                            {r.comment && <div><Text type="tertiary" size="small">{r.comment}</Text></div>}
+                          </Timeline.Item>
+                        ))}
+                      </Timeline>
+                    )}
+                  </div>
 
                   {canApprove && (
-                    <div className="offline-approval-detail-drawer-approve-actions">
+                    <div className="detail-approve-actions">
                       <Text strong size="small" style={{ display: 'block', marginBottom: 8 }}>审批</Text>
                       <TextArea
                         placeholder="请输入审批意见（拒绝时必填）"
-                        value={approveComment}
-                        onChange={setApproveComment}
+                        value={comment}
+                        onChange={setComment}
                         rows={3}
                         maxLength={500}
                         showClear
                         style={{ marginBottom: 12 }}
                       />
-                      <div className="offline-approval-detail-drawer-approve-buttons">
+                      <div className="detail-approve-buttons">
                         <Button theme="solid" type="primary" style={{ flex: 1, height: 32 }} loading={acting} onClick={doApprove}>
                           通过
                         </Button>
                         <Button
                           theme="solid" type="danger" style={{ flex: 1, height: 32 }} loading={acting}
                           onClick={() => {
-                            if (!approveComment.trim()) {
-                              Toast.warning('请填写拒绝原因');
-                              return;
-                            }
-                            setRejectReason(approveComment.trim());
+                            if (!comment.trim()) { Toast.warning('请填写拒绝原因'); return; }
+                            setRejectReason(comment.trim());
                             setRejectVisible(true);
                           }}
                         >
@@ -291,7 +353,7 @@ const OfflineApprovalDetailDrawer = ({
                   )}
 
                   {isFailed && (
-                    <div className="offline-approval-detail-drawer-approve-actions">
+                    <div className="detail-approve-actions">
                       <Button theme="solid" type="warning" block icon={<RefreshCw size={14} />} loading={acting} onClick={handleRetry}>
                         重试执行
                       </Button>
