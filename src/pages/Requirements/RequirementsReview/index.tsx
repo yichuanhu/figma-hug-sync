@@ -575,6 +575,29 @@ const RequirementsReview = () => {
             )}
           </TabPane>
         </Tabs>
+        {total > 0 && (
+          <div className="list-pagination">
+            <Text type="tertiary">
+              {t('common.showingRecords', {
+                start: (page - 1) * pageSize + 1,
+                end: Math.min(page * pageSize, total),
+                total,
+              })}
+            </Text>
+            <div className="list-pagination-right">
+              <Text type="tertiary">{t('common.totalPages', { total: Math.ceil(total / pageSize) })}</Text>
+              <Pagination
+                currentPage={page}
+                pageSize={pageSize}
+                total={total}
+                showSizeChanger
+                pageSizeOpts={[10, 20, 50, 100]}
+                onPageChange={setPage}
+                onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 审批确认弹窗 */}
