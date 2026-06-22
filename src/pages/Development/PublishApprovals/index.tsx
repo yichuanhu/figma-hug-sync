@@ -216,6 +216,27 @@ const PublishApprovalsPage = () => {
       },
     },
     {
+      title: '状态', dataIndex: 'audit_status', width: 120,
+      render: (_: unknown, r: LYReleaseResponse) => {
+        let color: 'blue' | 'green' | 'red' = 'blue';
+        let text = '待审批';
+        if (r.audit_status === 'APPROVED') { color = 'green'; text = '已通过'; }
+        else if (r.audit_status === 'REJECTED') { color = 'red'; text = '已拒绝'; }
+        return <Tag color={color} type="light" size="small">{text}</Tag>;
+      },
+    },
+    {
+      title: '审批进度', dataIndex: 'current_approval_level', width: 110,
+      render: (_: unknown, r: LYReleaseResponse) =>
+        r.publish_status === 'PENDING_APPROVAL' && r.total_approval_levels ? (
+          <Text size="small" type="tertiary">第 {r.current_approval_level} / {r.total_approval_levels} 级</Text>
+        ) : '-',
+    },
+    {
+      title: '流程数', dataIndex: 'process_count', width: 70, align: 'center' as const,
+      render: (_: unknown, r: LYReleaseResponse) => r.contents?.length ?? 0,
+    },
+    {
       title: '流程', dataIndex: 'contents', ellipsis: true,
       render: (contents: LYReleaseResponse['contents']) => {
         if (!contents?.length) return '-';
@@ -223,10 +244,6 @@ const PublishApprovalsPage = () => {
           ? <Text ellipsis={{ showTooltip: true }}>{contents[0].process_name} 等 {contents.length} 个</Text>
           : <Text ellipsis={{ showTooltip: true }}>{contents[0].process_name}</Text>;
       },
-    },
-    {
-      title: '流程数', dataIndex: 'process_count', width: 70, align: 'center' as const,
-      render: (_: unknown, r: LYReleaseResponse) => r.contents?.length ?? 0,
     },
     {
       title: '发布人', dataIndex: 'publisher_name', width: 120, ellipsis: true,
@@ -237,25 +254,7 @@ const PublishApprovalsPage = () => {
           email={r.publisher_email || undefined} />
       ) : '-',
     },
-    { title: '所属部门', dataIndex: 'publisher_department', width: 140, ellipsis: true, render: (v?: string) => v || '-' },
     { title: '提交时间', dataIndex: 'publish_time', width: 160, render: (v?: string) => fmtTime(v) },
-    {
-      title: '审批进度', dataIndex: 'current_approval_level', width: 110,
-      render: (_: unknown, r: LYReleaseResponse) =>
-        r.publish_status === 'PENDING_APPROVAL' && r.total_approval_levels ? (
-          <Text size="small" type="tertiary">第 {r.current_approval_level} / {r.total_approval_levels} 级</Text>
-        ) : '-',
-    },
-    {
-      title: '审批状态', dataIndex: 'audit_status', width: 120,
-      render: (_: unknown, r: LYReleaseResponse) => {
-        let color: 'blue' | 'green' | 'red' = 'blue';
-        let text = '待审批';
-        if (r.audit_status === 'APPROVED') { color = 'green'; text = '已通过'; }
-        else if (r.audit_status === 'REJECTED') { color = 'red'; text = '已拒绝'; }
-        return <Tag color={color} type="light" size="small">{text}</Tag>;
-      },
-    },
     {
       title: '操作', dataIndex: 'action', key: 'action', width: 60,
       render: (_: unknown, r: LYReleaseResponse) => (
