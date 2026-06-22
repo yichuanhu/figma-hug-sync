@@ -444,7 +444,7 @@ const PublishApprovalsPage = () => {
         releaseList={filteredData}
         onClose={() => setDrawerVisible(false)}
         onNavigate={(item) => setSelected(item)}
-        extraActions={extraActions}
+        approvalContext={approvalContext}
       />
 
       <Modal
