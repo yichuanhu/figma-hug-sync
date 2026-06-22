@@ -499,7 +499,7 @@ const RequirementsReview = () => {
               <Table
                 size="small"
                 columns={getColumns(true)}
-                dataSource={filteredData}
+                dataSource={pagedData}
                 loading={loading}
                 rowKey="id"
                 empty={<EmptyState variant="noData" description={t('requirements.review.noPending')} />}
@@ -527,7 +527,7 @@ const RequirementsReview = () => {
               <Table
                 size="small"
                 columns={getColumns(false)}
-                dataSource={filteredData}
+                dataSource={pagedData}
                 loading={loading}
                 rowKey="id"
                 empty={<EmptyState variant="noData" description={t('requirements.review.noReviewed')} />}
@@ -554,7 +554,7 @@ const RequirementsReview = () => {
               <Table
                 size="small"
                 columns={getColumns(true)}
-                dataSource={filteredData}
+                dataSource={pagedData}
                 loading={loading}
                 rowKey="id"
                 empty={<EmptyState variant="noData" description={t('requirements.review.noRecords')} />}
