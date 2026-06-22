@@ -247,16 +247,13 @@ const PublishApprovalsPage = () => {
         ) : '-',
     },
     {
-      title: '审批 / 发布结果', dataIndex: 'audit_status', width: 180,
+      title: '审批状态', dataIndex: 'audit_status', width: 120,
       render: (_: unknown, r: LYReleaseResponse) => {
-        const ps = getReleaseStatusDisplay(r);
-        const as = getAuditStatusDisplay(r.audit_status);
-        return (
-          <Space spacing={4} wrap>
-            {as && <Tag color={as.color} type="light" size="small">{as.text}</Tag>}
-            <Tag color={ps.color} type="light" size="small">{ps.text}</Tag>
-          </Space>
-        );
+        let color: 'blue' | 'green' | 'red' = 'blue';
+        let text = '待审批';
+        if (r.audit_status === 'APPROVED') { color = 'green'; text = '已通过'; }
+        else if (r.audit_status === 'REJECTED') { color = 'red'; text = '已拒绝'; }
+        return <Tag color={color} type="light" size="small">{text}</Tag>;
       },
     },
     {
