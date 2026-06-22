@@ -321,20 +321,6 @@ const ReleaseListPage: React.FC = () => {
       },
     },
     {
-      title: '发布内容', dataIndex: 'contents', ellipsis: true,
-      render: (contents: LYReleaseResponse['contents']) => {
-        if (!contents || contents.length === 0) return '-';
-        const first = contents[0].process_name;
-        return contents.length > 1
-          ? <Text ellipsis={{ showTooltip: true }}>{first} 等 {contents.length} 个流程</Text>
-          : <Text ellipsis={{ showTooltip: true }}>{first}</Text>;
-      },
-    },
-    {
-      title: '流程数', dataIndex: 'process_count', width: 80, align: 'center',
-      render: (_: unknown, r: LYReleaseResponse) => r.contents?.length ?? r.process_count ?? 0,
-    },
-    {
       title: '状态', dataIndex: 'publish_status', width: 120,
       render: (_: unknown, r: LYReleaseResponse) => {
         const d = getReleaseStatusDisplay(r);
@@ -342,7 +328,19 @@ const ReleaseListPage: React.FC = () => {
       },
     },
     {
-      title: '发布人', dataIndex: 'publisher_name', width: 130, ellipsis: true,
+      title: '流程数', dataIndex: 'process_count', width: 80, align: 'center',
+      render: (_: unknown, r: LYReleaseResponse) => r.contents?.length ?? r.process_count ?? 0,
+    },
+    {
+      title: '资源数', dataIndex: 'resource_count', width: 80, align: 'center',
+      render: (_: unknown, r: LYReleaseResponse) => r.resources?.length ?? r.resource_count ?? 0,
+    },
+    {
+      title: '描述', dataIndex: 'description', ellipsis: true,
+      render: (v?: string) => <Text ellipsis={{ showTooltip: true }}>{v || '-'}</Text>,
+    },
+    {
+      title: '发布者', dataIndex: 'publisher_name', width: 130, ellipsis: true,
       render: (_text: string, record: LYReleaseResponse) => {
         if (!record.publisher_name) return '-';
         return (
@@ -355,7 +353,6 @@ const ReleaseListPage: React.FC = () => {
         );
       },
     },
-    { title: '所属部门', dataIndex: 'publisher_department', width: 160, ellipsis: true, render: (v?: string) => v || '-' },
     {
       title: '提交时间', dataIndex: 'publish_time', width: 170,
       render: (time: string) => time
