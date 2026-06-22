@@ -1,76 +1,22 @@
-// ReleaseDetailDrawer 发布详情抽屉样式
+// ReleaseDetailDrawer 发布详情抽屉样式（与 RequirementDetailDrawer 版式统一）
+@import "../../../../Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/index.less";
+
 .release-detail-drawer {
-  // 标题区域 - 与自动化流程抽屉保持一致
-  .release-detail-drawer-header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding-right: 0;
-
-    .release-detail-drawer-header-title-wrapper {
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-    }
-
-    .release-detail-drawer-header-actions {
-      flex-shrink: 0;
-    }
-
-    .release-detail-drawer-header-title {
-      margin: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .release-detail-drawer-header-divider {
-      height: 16px;
-      margin: 0 8px 0 4px;
-    }
-
-    .release-detail-drawer-header-close-btn {
-      margin-left: 4px;
-    }
-  }
-
-  // 拖拽把手
-  .release-detail-drawer-resize-handle {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 6px;
-    cursor: ew-resize;
-    z-index: 100;
-  }
-
   // 内容区域
   .release-detail-drawer-content {
     padding: 0;
     height: 100%;
   }
 
-  // Tab 容器 - 固定 tab 栏，内容滚动
-  &-tabs {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  // Tab 内容区域
   .release-detail-drawer-tab-content {
-    padding: 16px 24px;
+    padding: 16px 16px 24px 24px;
   }
 
-  // 分组区域 - 统一间距为 24px
+  // 分组区域
   .release-detail-drawer-section {
     margin-top: 24px;
   }
 
-  // 区块标题 - 统一样式，与卡片间距 8px
   .release-detail-drawer-section-title {
     margin-bottom: 8px;
     display: flex;
@@ -78,15 +24,7 @@
     gap: 8px;
   }
 
-  // 流程列表与标题的间距
-  .release-detail-drawer-process-list {
-    margin-top: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  // 资源列表与标题的间距
+  .release-detail-drawer-process-list,
   .release-detail-drawer-resource-list {
     margin-top: 8px;
     display: flex;
@@ -94,23 +32,7 @@
     gap: 12px;
   }
 
-  // 流程名称可点击样式
-  .release-detail-drawer-process-name {
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    min-width: 0;
-    max-width: 70%;
-    overflow: hidden;
-    transition: color 0.2s;
-
-    &:hover {
-      color: var(--semi-color-primary);
-    }
-  }
-
-  // 资源名称可点击样式
+  .release-detail-drawer-process-name,
   .release-detail-drawer-resource-name {
     cursor: pointer;
     display: inline-flex;
@@ -123,15 +45,17 @@
 
     &:hover {
       color: var(--semi-color-primary);
+
+      .release-detail-drawer-link-icon {
+        color: var(--semi-color-primary);
+      }
     }
   }
 
-  // 资源标签紧跟名称
   .release-detail-drawer-resource-tag {
     flex-shrink: 0;
   }
 
-  // 跳转链接图标
   .release-detail-drawer-link-icon {
     font-size: 12px;
     margin-left: 4px;
@@ -139,128 +63,36 @@
     transition: color 0.2s;
   }
 
-  .release-detail-drawer-process-name:hover .release-detail-drawer-link-icon,
-  .release-detail-drawer-resource-name:hover .release-detail-drawer-link-icon {
-    color: var(--semi-color-primary);
-  }
-
-  // 错误信息区域
-  .release-detail-drawer-error {
-    margin-top: 24px;
-    
-    .release-detail-drawer-error-content {
-      padding: 12px 16px;
-      background: var(--semi-color-danger-light-default);
-      border-radius: 8px;
-      border: 1px solid var(--semi-color-danger-light-hover);
-    }
-  }
-
-  // 流程卡片 - 去掉边框线，与资源卡片样式统一
-  .release-detail-drawer-process-card {
-    padding: 12px 16px;
-    background: var(--semi-color-fill-0);
-    border-radius: 8px;
-
-    .release-detail-drawer-process-card-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-    }
-  }
-
-  // 资源卡片 - 去掉边框线，与流程卡片样式统一
+  .release-detail-drawer-process-card,
   .release-detail-drawer-resource-card {
     padding: 12px 16px;
     background: var(--semi-color-fill-0);
     border-radius: 8px;
-
-    .release-detail-drawer-resource-card-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .release-detail-drawer-resource-card-body {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
   }
 
-  // 值分组展示
-  .release-detail-drawer-value-group {
-    margin-top: 4px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .release-detail-drawer-value-row {
+  .release-detail-drawer-process-card-header,
+  .release-detail-drawer-resource-card-header {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 8px;
+    margin-bottom: 4px;
   }
 
-  // 参数值字段（标签+可滚动值）
-  .release-detail-drawer-value-field {
+  .release-detail-drawer-resource-card-body {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
   }
 
-  .release-detail-drawer-value-scroll {
-    max-height: 60px;
-    overflow-y: auto;
-    word-break: break-all;
-    line-height: 20px;
-    font-size: 14px;
+  // 「审批流程」Tab 底部审批操作区
+  .release-detail-drawer-approve-actions {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--semi-color-border);
   }
 
-  // 无资源提示
-  .release-detail-drawer-no-resources {
-    padding: 24px;
-    text-align: center;
-  }
-
-  // 导航按钮禁用状态修复
-  .semi-button.semi-button-disabled.navigate {
-    padding-top: 0;
-  }
-}
-
-// 全局覆盖 - SideSheet header 和 body 样式
-.card-sidesheet.release-detail-drawer {
-  .semi-sidesheet-header {
-    border-bottom: 1px solid var(--semi-color-border);
-  }
-
-  .semi-sidesheet-body {
-    padding: 0;
-    position: relative;
-  }
-
-  .semi-tabs-bar {
-    padding: 0 24px;
-  }
-
-  .semi-tabs-content {
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .semi-tabs-pane {
-    height: 100%;
-    overflow-y: auto;
-  }
-
-  // Descriptions 标签左对齐
-  .semi-descriptions {
-    .semi-descriptions-item-key {
-      text-align: left;
-    }
+  .release-detail-drawer-approve-buttons {
+    display: flex;
+    gap: 8px;
   }
 }

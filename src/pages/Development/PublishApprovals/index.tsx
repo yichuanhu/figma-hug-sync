@@ -289,16 +289,36 @@ const PublishApprovalsPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []);
 
-  const extraActions = selected && isMyTurn(selected) ? (
-    <Space spacing={8}>
-      <Button type="danger" icon={<XCircle size={14} />} onClick={() => { setRejectReason(''); setRejectVisible(true); }}>
-        拒绝
-      </Button>
-      <Button theme="solid" type="primary" icon={<CheckCircle size={14} />} loading={acting} onClick={() => selected && handleApprove(selected)}>
-        通过
-      </Button>
-    </Space>
-  ) : null;
+  const approvalContext = selected && isMyTurn(selected) ? {
+    canAct: true,
+    acting,
+    onApprove: () => selected && handleApprove(selected),
+    onReject: (reason: string) => {
+      setRejectReason(reason);
+      // 直接提交（已有 reason），不再需要二次确认弹窗
+      void (async () => {
+        if (!selected || !reason.trim()) return;
+        try {
+          setActing(true);
+          await new Promise((r) => setTimeout(r, 400));
+          const records = [...(selected.approval_records ?? [])];
+          const idx = records.findIndex((r) => r.action === 'PENDING' && isCurrentApprover(r));
+          if (idx >= 0) {
+            records[idx] = { ...records[idx], action: 'REJECT', acted_at: new Date().toISOString(), comment: reason.trim() };
+          }
+          mutateRelease(selected.release_id, {
+            approval_records: records,
+            audit_status: 'REJECTED',
+            publish_status: 'REJECTED',
+            reject_reason: reason.trim(),
+          });
+          Toast.success('已拒绝');
+        } finally {
+          setActing(false);
+        }
+      })();
+    },
+  } : undefined;
 
   const pagedData = useMemo(
     () => filteredData.slice((page - 1) * pageSize, page * pageSize),
@@ -424,7 +444,7 @@ const PublishApprovalsPage = () => {
         releaseList={filteredData}
         onClose={() => setDrawerVisible(false)}
         onNavigate={(item) => setSelected(item)}
-        extraActions={extraActions}
+        approvalContext={approvalContext}
       />
 
       <Modal
