@@ -119,7 +119,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
   const mockContents = useMemo(() => {
     if (release?.contents?.length) return release.contents;
     return [
-      { process_id: 'proc-001', process_name: 'SAP_ERP 订单处理流程', version_number: 'v3.2.1', process_description: '示例流程描述。' },
+      { process_id: 'proc-001', process_name: 'SAP_ERP 订单处理流程', version_id: 'v-001', version_number: 'v3.2.1', process_description: '示例流程描述。' },
     ];
   }, [release]);
 
