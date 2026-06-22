@@ -47,7 +47,7 @@ const renderDependency = (d: DependencyCheckSnapshot) => {
           const items = d[k] as Array<{ id: string; name: string }>;
           if (items.length === 0) return null;
           return (
-            <div key={k} className="dependency-card">
+            <div key={String(k)} className="dependency-card">
               <Text type="tertiary" size="small" strong>{DEPENDENCY_GROUP_TITLES[k]}</Text>
               <ul>
                 {items.map((item) => (
