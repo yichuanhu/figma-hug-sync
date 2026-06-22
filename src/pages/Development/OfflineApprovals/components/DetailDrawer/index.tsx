@@ -81,11 +81,8 @@ const OfflinePropertyPanel: React.FC<{ data: ProcessOfflineRequest }> = ({ data 
     { label: '申请人', value: <UserNameWithCard name={data.applicant_name} userId={data.applicant_id} /> },
     { label: '所属部门', value: <Text strong>{data.department_name || '-'}</Text> },
     { label: '提交时间', value: <Text>{fmtTime(data.submitted_at)}</Text> },
+    { label: '执行完成时间', value: <Text>{fmtTime(data.executed_at)}</Text> },
   ];
-
-  if (data.executed_at) {
-    items.push({ label: '执行完成时间', value: <Text>{fmtTime(data.executed_at)}</Text> });
-  }
 
   return (
     <div className="detail-property-stacked">
