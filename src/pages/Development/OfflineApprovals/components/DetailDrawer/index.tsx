@@ -217,9 +217,6 @@ const OfflineApprovalDetailDrawer = ({
                       <Text type="tertiary" className="detail-snapshot-label">流程名称</Text>
                       <Text>{data.process_name}</Text>
 
-                      <Text type="tertiary" className="detail-snapshot-label">流程版本</Text>
-                      <Text>{data.process_version}</Text>
-
                       <Text type="tertiary" className="detail-snapshot-label">停用原因</Text>
                       <div><ExpandableText text={data.reason || '-'} maxLines={6} /></div>
                     </div>
