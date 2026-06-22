@@ -124,10 +124,11 @@ const OfflineApprovalsPage = () => {
       render: (v: string) => <Text strong>{v}</Text>,
     },
     {
-      title: '申请人', dataIndex: 'applicant_name', width: 130,
-      render: (v: string, r: ProcessOfflineRequest) => <UserNameWithCard name={v} userId={r.applicant_id} />,
+      title: '状态', dataIndex: 'status', width: 130,
+      render: (s: OfflineRequestStatus) => (
+        <Tag color={STATUS_TAG[s].color} type="light" size="small">{STATUS_TAG[s].text}</Tag>
+      ),
     },
-    { title: '所属部门', dataIndex: 'department_name', width: 160, ellipsis: true },
     {
       title: '审批进度', dataIndex: 'current_level', width: 130,
       render: (_: unknown, r: ProcessOfflineRequest) =>
@@ -136,11 +137,10 @@ const OfflineApprovalsPage = () => {
           : '-',
     },
     {
-      title: '状态', dataIndex: 'status', width: 130,
-      render: (s: OfflineRequestStatus) => (
-        <Tag color={STATUS_TAG[s].color} type="light" size="small">{STATUS_TAG[s].text}</Tag>
-      ),
+      title: '申请人', dataIndex: 'applicant_name', width: 130,
+      render: (v: string, r: ProcessOfflineRequest) => <UserNameWithCard name={v} userId={r.applicant_id} />,
     },
+    { title: '所属部门', dataIndex: 'department_name', width: 160, ellipsis: true },
     { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v: string) => fmtTime(v) },
     {
       title: '操作', dataIndex: 'action', key: 'action', width: 60,
