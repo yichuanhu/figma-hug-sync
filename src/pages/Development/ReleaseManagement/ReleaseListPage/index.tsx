@@ -16,7 +16,7 @@ import { debounce } from 'lodash';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
-import ReleaseDetailDrawer from '../components/ReleaseDetailDrawer';
+import ReleaseListDetailDrawer from '../components/ReleaseListDetailDrawer';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type {
   LYReleaseResponse,
