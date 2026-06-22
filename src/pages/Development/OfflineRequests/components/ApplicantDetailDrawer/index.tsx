@@ -136,19 +136,19 @@ const ApplicantDetailDrawer = ({ visible, onClose, data, dataList, onNavigate, p
 
   const renderImpactTab = () => (
     <div className="offline-request-applicant-drawer-tab-content">
-      <Title heading={6} className="section-title">下线目标流程</Title>
+      <Text strong size="small" className="section-title">下线目标流程</Text>
       <div className="process-card" onClick={handleProcessClick}>
         <div className="process-card-header">
           <span className="process-name">
-            <Text strong ellipsis={{ showTooltip: true }}>{data.process_name}</Text>
+            <Text ellipsis={{ showTooltip: true }}>{data.process_name}</Text>
             <ExternalLink size={16} strokeWidth={2} className="link-icon" />
           </span>
-          {data.process_version && <Tag size="small" color="blue">{data.process_version}</Tag>}
+          {data.process_version && <Tag size="small" color="blue" type="light">{data.process_version}</Tag>}
         </div>
       </div>
 
-      <Title heading={6} className="section-title">依赖检查快照</Title>
-      {renderDependency(data)}
+      <Text strong size="small" className="section-title">依赖检查快照</Text>
+      {renderDependency(data.dependency_snapshot)}
     </div>
   );
 
