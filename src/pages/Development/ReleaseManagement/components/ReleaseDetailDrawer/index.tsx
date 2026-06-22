@@ -134,12 +134,6 @@ const ReleasePropertyPanel: React.FC<{ release: LYReleaseResponse }> = ({ releas
           <Text type="tertiary" size="small">提交时间</Text>
           <Text size="small">{formatTime(release.publish_time)}</Text>
         </div>
-        {release.published_at && (
-          <div className="requirement-detail-property-item">
-            <Text type="tertiary" size="small">完成时间</Text>
-            <Text size="small">{formatTime(release.published_at)}</Text>
-          </div>
-        )}
       </div>
 
       <div className="requirement-detail-property-divider" />
