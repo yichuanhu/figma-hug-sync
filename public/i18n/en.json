@@ -3339,9 +3339,11 @@
       "OPTIMIZATION": "Optimization"
     },
     "publishStatus": {
-      "PUBLISHING": "Publishing",
-      "SUCCESS": "Success",
-      "FAILED": "Failed"
+      "PENDING_APPROVAL": "Pending Approval",
+      "SUCCESS": "Published",
+      "REJECTED": "Rejected",
+      "FAILED": "Failed",
+      "INVALIDATED": "Invalidated"
     },
     "resourceTypes": {
       "parameter": "Parameter",

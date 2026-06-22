@@ -2591,18 +2591,45 @@ export type ReleaseType =
   | 'VERSION_ROLLBACK'   // 版本回退
   | 'OPTIMIZATION';      // 效果优化
 
-/** 发布状态枚举 */
-export type ReleaseStatus = 
-  | 'PUBLISHING' // 发布中
-  | 'SUCCESS'    // 成功
-  | 'FAILED';    // 失败
+/**
+ * 发布单业务状态（仅四值，移除 PUBLISHING）
+ * - PENDING_APPROVAL: 待审批
+ * - SUCCESS: 已发布
+ * - REJECTED: 已拒绝
+ * - FAILED: 发布失败 / 已失效（细分由 failure_code 区分）
+ */
+export type ReleaseStatus =
+  | 'PENDING_APPROVAL'
+  | 'SUCCESS'
+  | 'REJECTED'
+  | 'FAILED';
+
+/** 审批实例状态（独立于发布状态；无审批流程时为 null） */
+export type ReleaseAuditStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+/** 失败/失效细分 */
+export type ReleaseFailureCode =
+  | 'PROCESS_ARCHIVED_BEFORE_PUBLISH' // 审批通过后流程被归档 → 已失效
+  | 'EXECUTION_ERROR';                // 发布执行异常
+
+/** 流程版本生命周期 */
+export type VersionLifecycle = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 
 /** 资源类型枚举 */
 export type ResourceType = 'PARAMETER' | 'CREDENTIAL' | 'QUEUE' | 'FILE';
 
+/** 审批记录 */
+export interface LYReleaseApprovalRecord {
+  level: number;
+  approver_name: string;
+  action: 'APPROVE' | 'REJECT' | 'PENDING';
+  acted_at?: string;
+  comment?: string;
+}
+
 /**
  * LYReleaseResponse
- * 发布记录响应模型
+ * 发布单响应模型（发布单 = 申请单，包含一个或多个流程版本）
  */
 export interface LYReleaseResponse {
   /** 发布ID: RLS-YYYYMMDD-NNN */
@@ -2621,15 +2648,31 @@ export interface LYReleaseResponse {
   publisher_role?: string | null;
   /** 发布者邮箱 */
   publisher_email?: string | null;
-  /** 发布时间 (ISO 8601) */
+  /** 提交时间 / 最近更新时间 (ISO 8601) */
   publish_time: string;
-  /** 发布状态 */
+  /** 发布单业务状态 */
   publish_status: ReleaseStatus;
+  /** 审批实例状态；null 表示无需审批 */
+  audit_status?: ReleaseAuditStatus | null;
+  /** 失败/失效细分 */
+  failure_code?: ReleaseFailureCode | null;
+  /** 失败原因 */
+  failure_reason?: string | null;
+  /** 拒绝原因 */
+  reject_reason?: string | null;
+  /** 当前审批级别 */
+  current_approval_level?: number;
+  /** 总审批级别 */
+  total_approval_levels?: number;
+  /** 当前审批节点标签 */
+  current_approver_label?: string;
+  /** 审批历史 */
+  approval_records?: LYReleaseApprovalRecord[];
   /** 流程数量 */
   process_count: number;
   /** 资源数量 */
   resource_count: number;
-  /** 错误信息（失败时） */
+  /** 错误信息（失败时；保留兼容字段） */
   error_message?: string | null;
   /** 流程内容 */
   contents: LYReleaseContentResponse[];

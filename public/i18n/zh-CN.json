@@ -2748,16 +2748,22 @@
       }
     },
     "detail": {
-      "title": "发布详情",
-      "releaseId": "发布ID",
+      "title": "发布单详情",
+      "releaseId": "发布编号",
       "releaseType": "发布类型",
       "status": "状态",
-      "publisher": "发布者",
-      "publishTime": "发布时间",
+      "publisher": "发布人",
+      "publishTime": "提交时间",
       "basicInfo": "基本信息",
-      "publishedProcessesAndResources": "已发布的流程和资源",
+      "publishContent": "发布内容",
+      "approvalProcess": "审批过程",
+      "noApprovalNeeded": "本次发布无需审批",
+      "publishedProcessesAndResources": "发布内容",
       "processes": "流程",
       "errorDetails": "错误详情",
+      "failureReason": "失败原因",
+      "rejectReason": "拒绝原因",
+      "archivedBeforePublish": "审批已通过，发布申请已失效 / 流程已归档",
       "previouslyPublished": "先前已发布"
     },
     "create": {
@@ -2874,9 +2880,11 @@
       "OPTIMIZATION": "效果优化"
     },
     "publishStatus": {
-      "PUBLISHING": "发布中",
-      "SUCCESS": "成功",
-      "FAILED": "失败"
+      "PENDING_APPROVAL": "待审批",
+      "SUCCESS": "已发布",
+      "REJECTED": "已拒绝",
+      "FAILED": "发布失败",
+      "INVALIDATED": "已失效"
     },
     "resourceTypes": {
       "parameter": "参数",

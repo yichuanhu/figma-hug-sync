@@ -1,31 +1,26 @@
 /**
- * 发布审批列表页（FEAT-025 STORY-002 - 重构）
+ * 发布审批列表（审批人视角）
  *
- * 对齐需求中心 / 需求审批页：
- *   - 顶部 4 项统计卡（待我审批 / 我审批过的 / 已通过 / 已拒绝）
- *   - 工具栏（搜索 + 状态筛选）
- *   - Tabs：待我审批 / 我审批过的 / 全部
- *   - 详情改为右侧抽屉
+ * 数据以"发布单"为核心（复用 ReleaseListPage 的 mock 生成器），
+ * 展示审批状态 + 发布结果两个维度，操作复用 ReleaseDetailDrawer。
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Typography, Table, Tag, Input, Button, Dropdown, Tabs, TabPane,
-  Row, Col, Space,
+  Row, Col, Space, Modal, Form, Toast,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import { CheckCircle, XCircle, Eye, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import {
-  fetchPublishApprovals,
-  subscribeProcessVersionChange,
-  type ProcessVersion,
-  type VersionStatus,
-} from '@/mocks/processVersionApproval';
-import { CURRENT_APPROVAL_USER_ID } from './currentUser';
-import PublishApprovalDetailDrawer from './components/DetailDrawer';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
+import type {
+  LYReleaseResponse, ReleaseType, ReleaseStatus, LYReleaseApprovalRecord,
+} from '@/api';
+import { generateMockReleaseResponse } from '../ReleaseManagement/ReleaseListPage';
+import ReleaseDetailDrawer from '../ReleaseManagement/components/ReleaseDetailDrawer';
+import { getReleaseStatusDisplay, getAuditStatusDisplay } from '../ReleaseManagement/shared/releaseStatus';
 import pendingIcon from '@/assets/review-stats/pending.png';
 import reviewedIcon from '@/assets/review-stats/reviewed.png';
 import approvedIcon from '@/assets/review-stats/approved.png';
@@ -34,43 +29,67 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
-const STATUS_TAG: Record<VersionStatus, { color: TagColor; text: string }> = {
-  UPLOADED: { color: 'grey', text: '待发布' },
-  PENDING_APPROVAL: { color: 'blue', text: '待审批' },
-  PUBLISHED: { color: 'green', text: '已通过' },
-  REJECTED: { color: 'red', text: '已拒绝' },
+const CURRENT_USER_NAME = '林经理';
+
+const isCurrentApprover = (r: LYReleaseApprovalRecord) => r.approver_name === CURRENT_USER_NAME;
+
+const isMyTurn = (release: LYReleaseResponse) =>
+  release.publish_status === 'PENDING_APPROVAL'
+  && (release.approval_records ?? []).some((r) => r.action === 'PENDING' && isCurrentApprover(r));
+
+const isReviewedByMe = (release: LYReleaseResponse) =>
+  (release.approval_records ?? []).some((r) => r.action !== 'PENDING' && isCurrentApprover(r));
+
+type ReviewTab = 'pending' | 'reviewed' | 'all';
+
+const releaseTypeConfig: Record<ReleaseType, { color: 'blue' | 'cyan' | 'orange' | 'purple' | 'grey' | 'green'; text: string }> = {
+  FIRST_RELEASE: { color: 'blue', text: '首次发布' },
+  REQUIREMENT_CHANGE: { color: 'cyan', text: '需求变更' },
+  BUG_FIX: { color: 'orange', text: '问题修复' },
+  CONFIG_UPDATE: { color: 'purple', text: '配置更新' },
+  VERSION_ROLLBACK: { color: 'grey', text: '版本回退' },
+  OPTIMIZATION: { color: 'green', text: '效果优化' },
 };
 
 const fmtTime = (iso?: string) => (iso ? new Date(iso).toLocaleString('zh-CN', { hour12: false }) : '-');
 
-const isReviewedByMe = (v: ProcessVersion) =>
-  (v.records ?? []).some((r) => r.approver_id === CURRENT_APPROVAL_USER_ID);
-
-const isMyTurn = (v: ProcessVersion) =>
-  v.status === 'PENDING_APPROVAL' && !isReviewedByMe(v);
-
-type ReviewTab = 'pending' | 'reviewed' | 'all';
-
 const PublishApprovalsPage = () => {
   const [activeTab, setActiveTab] = useState<ReviewTab>('pending');
   const [keyword, setKeyword] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<ReleaseStatus[]>([]);
   const [filterVisible, setFilterVisible] = useState(false);
-  const [allList, setAllList] = useState<ProcessVersion[]>([]);
+  const [allList, setAllList] = useState<LYReleaseResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<ProcessVersion | null>(null);
+  const [selected, setSelected] = useState<LYReleaseResponse | null>(null);
+
+  const [rejectVisible, setRejectVisible] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+  const [acting, setActing] = useState(false);
 
   const load = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     try {
-      const data = await fetchPublishApprovals({ keyword: '', status: 'ALL' });
-      setAllList(data);
-      if (selectedRecord) {
-        const fresh = data.find((d) => d.id === selectedRecord.id);
-        if (fresh) setSelectedRecord(fresh);
+      await new Promise((r) => setTimeout(r, 200));
+      // 模拟"我"参与多个发布单审批：把第 0 / 1 / 3 / 4 个发布单的审批人替换为当前用户
+      const list = Array.from({ length: 30 }, (_, i) => {
+        const release = generateMockReleaseResponse(i);
+        const records = (release.approval_records ?? []).map((r) => ({ ...r }));
+        if (records.length > 0) {
+          // 把第一条审批记录关联到当前用户，覆盖原有 approver_name
+          records[0].approver_name = CURRENT_USER_NAME;
+          if (release.current_approver_label && release.publish_status === 'PENDING_APPROVAL') {
+            release.current_approver_label = `L1 · ${CURRENT_USER_NAME}`;
+          }
+        }
+        return { ...release, approval_records: records };
+      });
+      setAllList(list);
+      if (selected) {
+        const fresh = list.find((d) => d.release_id === selected.release_id);
+        if (fresh) setSelected(fresh);
       }
     } finally {
       if (!silent) setLoading(false);
@@ -80,83 +99,167 @@ const PublishApprovalsPage = () => {
   }, []);
 
   useEffect(() => { load(); }, [load]);
-  useEffect(() => subscribeProcessVersionChange(() => load(true)), [load]);
 
   const stats = useMemo(() => {
     let pending = 0, reviewed = 0, approved = 0, rejected = 0;
     allList.forEach((v) => {
       if (isMyTurn(v)) pending += 1;
       if (isReviewedByMe(v)) reviewed += 1;
-      (v.records ?? []).forEach((r) => {
-        if (r.approver_id !== CURRENT_APPROVAL_USER_ID) return;
-        if (r.action === 'approve') approved += 1;
-        if (r.action === 'reject') rejected += 1;
+      (v.approval_records ?? []).forEach((r) => {
+        if (!isCurrentApprover(r)) return;
+        if (r.action === 'APPROVE') approved += 1;
+        if (r.action === 'REJECT') rejected += 1;
       });
     });
     return { pending, reviewed, approved, rejected };
   }, [allList]);
 
   const filteredData = useMemo(() => {
-    let data: ProcessVersion[];
+    let data: LYReleaseResponse[];
     switch (activeTab) {
       case 'pending': data = allList.filter(isMyTurn); break;
       case 'reviewed': data = allList.filter(isReviewedByMe); break;
       case 'all':
-      default:
-        data = allList.filter((v) => v.status !== 'UPLOADED');
-        break;
+      default: data = allList; break;
     }
     if (keyword.trim()) {
       const kw = keyword.toLowerCase().trim();
       data = data.filter((item) =>
-        item.process_name.toLowerCase().includes(kw)
-        || item.developer_name.toLowerCase().includes(kw)
-        || item.version.toLowerCase().includes(kw));
+        item.release_id.toLowerCase().includes(kw)
+        || item.publisher_name.toLowerCase().includes(kw)
+        || item.contents.some((c) => c.process_name.toLowerCase().includes(kw)));
     }
     if (statusFilter.length > 0) {
-      data = data.filter((item) => statusFilter.includes(item.status));
+      data = data.filter((item) => statusFilter.includes(item.publish_status));
     }
     return data;
   }, [activeTab, allList, keyword, statusFilter]);
 
-  const openDetail = (record: ProcessVersion) => {
-    setSelectedRecord(record);
+  const openDetail = (record: LYReleaseResponse) => {
+    setSelected(record);
     setDrawerVisible(true);
+  };
+
+  const mutateRelease = (releaseId: string, patch: Partial<LYReleaseResponse>) => {
+    setAllList((prev) => prev.map((r) => (r.release_id === releaseId ? { ...r, ...patch } : r)));
+    setSelected((prev) => (prev && prev.release_id === releaseId ? { ...prev, ...patch } : prev));
+  };
+
+  const handleApprove = (release: LYReleaseResponse) => {
+    Modal.confirm({
+      title: '确认通过',
+      content: `确认通过「${release.release_id}」的发布申请？`,
+      okText: '通过',
+      onOk: async () => {
+        try {
+          setActing(true);
+          await new Promise((r) => setTimeout(r, 400));
+          const records = [...(release.approval_records ?? [])];
+          const idx = records.findIndex((r) => r.action === 'PENDING' && isCurrentApprover(r));
+          if (idx >= 0) {
+            records[idx] = { ...records[idx], action: 'APPROVE', acted_at: new Date().toISOString(), comment: '同意。' };
+          }
+          const isFinal = (release.current_approval_level ?? 1) >= (release.total_approval_levels ?? 1);
+          mutateRelease(release.release_id, {
+            approval_records: records,
+            current_approval_level: isFinal ? release.current_approval_level : (release.current_approval_level ?? 1) + 1,
+            audit_status: isFinal ? 'APPROVED' : 'PENDING',
+            publish_status: isFinal ? 'SUCCESS' : 'PENDING_APPROVAL',
+            current_approver_label: isFinal ? undefined : '下一级审批人',
+          });
+          Toast.success('已通过');
+        } finally {
+          setActing(false);
+        }
+      },
+    });
+  };
+
+  const submitReject = async () => {
+    if (!selected || !rejectReason.trim()) return;
+    try {
+      setActing(true);
+      await new Promise((r) => setTimeout(r, 400));
+      const records = [...(selected.approval_records ?? [])];
+      const idx = records.findIndex((r) => r.action === 'PENDING' && isCurrentApprover(r));
+      if (idx >= 0) {
+        records[idx] = { ...records[idx], action: 'REJECT', acted_at: new Date().toISOString(), comment: rejectReason.trim() };
+      }
+      mutateRelease(selected.release_id, {
+        approval_records: records,
+        audit_status: 'REJECTED',
+        publish_status: 'REJECTED',
+        reject_reason: rejectReason.trim(),
+      });
+      Toast.success('已拒绝');
+      setRejectVisible(false);
+      setRejectReason('');
+    } finally {
+      setActing(false);
+    }
   };
 
   const columns = useMemo(() => [
     {
-      title: '流程名称', dataIndex: 'process_name', ellipsis: true,
-      render: (v: string, r: ProcessVersion) => (
-        <Space spacing={8}>
-          <Text strong>{v}</Text>
-          <Tag size="small" color="grey" type="light">v{r.version}</Tag>
-        </Space>
-      ),
+      title: '发布编号', dataIndex: 'release_id', width: 170, ellipsis: true,
+      render: (v: string) => <Text strong>{v}</Text>,
     },
-    { title: '开发者', dataIndex: 'developer_name', width: 120, ellipsis: true },
-    { title: '所属部门', dataIndex: 'department_name', width: 160, ellipsis: true },
     {
-      title: '审批进度', dataIndex: 'current_level', width: 130,
-      render: (_: unknown, r: ProcessVersion) =>
-        r.status === 'PENDING_APPROVAL' && r.total_levels ? (
-          <Text size="small" type="tertiary">第 {r.current_level} / {r.total_levels} 级</Text>
+      title: '发布类型', dataIndex: 'release_type', width: 110,
+      render: (t: ReleaseType) => {
+        const cfg = releaseTypeConfig[t];
+        return cfg ? <Tag color={cfg.color} type="light" size="small">{cfg.text}</Tag> : '-';
+      },
+    },
+    {
+      title: '流程', dataIndex: 'contents', ellipsis: true,
+      render: (contents: LYReleaseResponse['contents']) => {
+        if (!contents?.length) return '-';
+        return contents.length > 1
+          ? <Text ellipsis={{ showTooltip: true }}>{contents[0].process_name} 等 {contents.length} 个</Text>
+          : <Text ellipsis={{ showTooltip: true }}>{contents[0].process_name}</Text>;
+      },
+    },
+    {
+      title: '流程数', dataIndex: 'process_count', width: 70, align: 'center' as const,
+      render: (_: unknown, r: LYReleaseResponse) => r.contents?.length ?? 0,
+    },
+    {
+      title: '发布人', dataIndex: 'publisher_name', width: 120, ellipsis: true,
+      render: (_: unknown, r: LYReleaseResponse) => r.publisher_name ? (
+        <UserNameWithCard name={r.publisher_name} userId={r.publisher_id}
+          department={r.publisher_department || undefined}
+          role={r.publisher_role || undefined}
+          email={r.publisher_email || undefined} />
+      ) : '-',
+    },
+    { title: '所属部门', dataIndex: 'publisher_department', width: 140, ellipsis: true, render: (v?: string) => v || '-' },
+    { title: '提交时间', dataIndex: 'publish_time', width: 160, render: (v?: string) => fmtTime(v) },
+    {
+      title: '审批进度', dataIndex: 'current_approval_level', width: 110,
+      render: (_: unknown, r: LYReleaseResponse) =>
+        r.publish_status === 'PENDING_APPROVAL' && r.total_approval_levels ? (
+          <Text size="small" type="tertiary">第 {r.current_approval_level} / {r.total_approval_levels} 级</Text>
         ) : '-',
     },
     {
-      title: '状态', dataIndex: 'status', width: 100,
-      render: (s: VersionStatus) => (
-        <Tag color={STATUS_TAG[s].color} type="light" size="small">{STATUS_TAG[s].text}</Tag>
-      ),
+      title: '审批 / 发布结果', dataIndex: 'audit_status', width: 180,
+      render: (_: unknown, r: LYReleaseResponse) => {
+        const ps = getReleaseStatusDisplay(r);
+        const as = getAuditStatusDisplay(r.audit_status);
+        return (
+          <Space spacing={4} wrap>
+            {as && <Tag color={as.color} type="light" size="small">{as.text}</Tag>}
+            <Tag color={ps.color} type="light" size="small">{ps.text}</Tag>
+          </Space>
+        );
+      },
     },
-    { title: '提交时间', dataIndex: 'submitted_at', width: 170, render: (v?: string) => fmtTime(v) },
     {
       title: '操作', dataIndex: 'action', key: 'action', width: 60,
-      render: (_: unknown, r: ProcessVersion) => (
+      render: (_: unknown, r: LYReleaseResponse) => (
         <Dropdown
-          trigger="click"
-          position="bottomRight"
-          clickToHide
+          trigger="click" position="bottomRight" clickToHide
           render={
             <Dropdown.Menu>
               <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); openDetail(r); }}>
@@ -164,10 +267,10 @@ const PublishApprovalsPage = () => {
               </Dropdown.Item>
               {isMyTurn(r) && (
                 <>
-                  <Dropdown.Item icon={<CheckCircle size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); openDetail(r); }}>
+                  <Dropdown.Item icon={<CheckCircle size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleApprove(r); }}>
                     通过
                   </Dropdown.Item>
-                  <Dropdown.Item icon={<XCircle size={16} strokeWidth={2} />} type="danger" onClick={(e) => { e.stopPropagation(); openDetail(r); }}>
+                  <Dropdown.Item icon={<XCircle size={16} strokeWidth={2} />} type="danger" onClick={(e) => { e.stopPropagation(); openDetail(r); setRejectReason(''); setRejectVisible(true); }}>
                     拒绝
                   </Dropdown.Item>
                 </>
@@ -179,27 +282,35 @@ const PublishApprovalsPage = () => {
         </Dropdown>
       ),
     },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []);
 
-  const pagination = useMemo(() => ({
-    currentPage: 1, totalPages: 1, pageSize: filteredData.length, total: filteredData.length,
-  }), [filteredData]);
+  const extraActions = selected && isMyTurn(selected) ? (
+    <Space spacing={8}>
+      <Button type="danger" icon={<XCircle size={14} />} onClick={() => { setRejectReason(''); setRejectVisible(true); }}>
+        拒绝
+      </Button>
+      <Button theme="solid" type="primary" icon={<CheckCircle size={14} />} loading={acting} onClick={() => selected && handleApprove(selected)}>
+        通过
+      </Button>
+    </Space>
+  ) : null;
 
   const renderTable = (emptyText: string) => (
     isInitialLoad ? (
-      <TableSkeleton rows={6} columns={7} columnWidths={['22%', '12%', '14%', '12%', '10%', '16%', '6%']} />
+      <TableSkeleton rows={6} columns={10} />
     ) : (
       <Table
         size="small"
         columns={columns}
         dataSource={filteredData}
         loading={loading}
-        rowKey="id"
+        rowKey="release_id"
         empty={<EmptyState variant="noData" description={emptyText} />}
         onRow={(record) => ({
           style: { cursor: 'pointer' },
-          className: selectedRecord?.id === record?.id && drawerVisible ? 'publish-approvals-row-selected' : undefined,
-          onClick: () => record && openDetail(record as ProcessVersion),
+          className: selected?.release_id === record?.release_id && drawerVisible ? 'publish-approvals-row-selected' : undefined,
+          onClick: () => record && openDetail(record),
         })}
         pagination={false}
         scroll={{ y: 'calc(100vh - 440px)' }}
@@ -212,7 +323,7 @@ const PublishApprovalsPage = () => {
       <div className="publish-approvals-header">
         <div className="publish-approvals-header-title">
           <Title heading={3} className="title">发布审批</Title>
-          <Text type="tertiary">查看和审批流程版本的发布申请。</Text>
+          <Text type="tertiary">查看和审批发布单的申请，按发布单维度组织审批与结果。</Text>
         </div>
       </div>
 
@@ -244,7 +355,7 @@ const PublishApprovalsPage = () => {
             <Space>
               <Input
                 prefix={<IconSearchStroked />}
-                placeholder="搜索流程名称 / 开发者 / 版本号"
+                placeholder="搜索发布编号 / 发布人 / 流程名"
                 className="publish-approvals-search-input"
                 value={keyword}
                 onChange={setKeyword}
@@ -253,16 +364,15 @@ const PublishApprovalsPage = () => {
               <FilterPopover
                 visible={filterVisible}
                 onVisibleChange={setFilterVisible}
-                onConfirm={(values) => setStatusFilter((values.status as string[]) || [])}
+                onConfirm={(values) => setStatusFilter((values.status as ReleaseStatus[]) || [])}
                 sections={[
                   {
-                    key: 'status',
-                    label: '状态',
-                    type: 'checkbox',
+                    key: 'status', label: '状态', type: 'checkbox',
                     options: [
                       { label: '待审批', value: 'PENDING_APPROVAL' },
-                      { label: '已通过', value: 'PUBLISHED' },
+                      { label: '已发布', value: 'SUCCESS' },
                       { label: '已拒绝', value: 'REJECTED' },
+                      { label: '发布失败 / 已失效', value: 'FAILED' },
                     ],
                     value: statusFilter,
                   },
@@ -273,21 +383,43 @@ const PublishApprovalsPage = () => {
         </Row>
 
         <Tabs activeKey={activeTab} onChange={(k) => setActiveTab(k as ReviewTab)} keepDOM={false}>
-          <TabPane tab="待我审批" itemKey="pending">{renderTable('暂无待审批记录')}</TabPane>
-          <TabPane tab="我审批过的" itemKey="reviewed">{renderTable('暂无审批过的记录')}</TabPane>
-          <TabPane tab="全部" itemKey="all">{renderTable('暂无审批记录')}</TabPane>
+          <TabPane tab="待我审批" itemKey="pending">{renderTable('暂无待审批发布单')}</TabPane>
+          <TabPane tab="我审批过的" itemKey="reviewed">{renderTable('暂无审批过的发布单')}</TabPane>
+          <TabPane tab="全部" itemKey="all">{renderTable('暂无发布单')}</TabPane>
         </Tabs>
       </div>
 
-      <PublishApprovalDetailDrawer
+      <ReleaseDetailDrawer
         visible={drawerVisible}
+        release={selected}
+        releaseList={filteredData}
         onClose={() => setDrawerVisible(false)}
-        data={selectedRecord}
-        dataList={filteredData}
-        onNavigate={(item) => setSelectedRecord(item)}
-        pagination={pagination}
-        onAfterAction={() => load(true)}
+        onNavigate={(item) => setSelected(item)}
+        extraActions={extraActions}
       />
+
+      <Modal
+        title="拒绝发布申请"
+        visible={rejectVisible}
+        onCancel={() => setRejectVisible(false)}
+        onOk={submitReject}
+        okText="确认拒绝"
+        okButtonProps={{ type: 'danger', loading: acting }}
+        width={520}
+      >
+        <Form layout="vertical">
+          <Form.TextArea
+            field="reason"
+            label="拒绝原因"
+            placeholder="请填写拒绝原因（最多 500 字）"
+            initValue={rejectReason}
+            onChange={(v) => setRejectReason(v as string)}
+            maxCount={500}
+            autosize={{ minRows: 4, maxRows: 8 }}
+            rules={[{ required: true, message: '请填写拒绝原因' }]}
+          />
+        </Form>
+      </Modal>
     </div>
   );
 };

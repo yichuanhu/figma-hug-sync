@@ -1,24 +1,19 @@
+/**
+ * 流程发布列表（申请人视角）
+ *
+ * - 以"发布单"为核心，单一业务状态列（getReleaseStatusDisplay 派生）
+ * - 列顺序：发布编号 / 发布类型 / 发布内容摘要 / 流程数量 / 状态 / 发布人 / 部门 / 提交时间 / 操作
+ * - 状态四值：PENDING_APPROVAL / SUCCESS / REJECTED / FAILED（含 PROCESS_ARCHIVED_BEFORE_PUBLISH 失效细分）
+ */
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Typography,
-  Button,
-  Table,
-  Tag,
-  Input,
-  Select,
-  Row,
-  Col,
-  Space,
-  Tooltip,
-  Dropdown,
-  Toast,
+  Typography, Button, Table, Tag, Input, Row, Col, Space, Dropdown,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
-// AppLayout removed
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import ReleaseDetailDrawer from '../components/ReleaseDetailDrawer';
@@ -28,222 +23,198 @@ import type {
   LYListResponseLYReleaseResponse,
   ReleaseType,
   ReleaseStatus,
+  ReleaseAuditStatus,
+  ReleaseFailureCode,
+  LYReleaseApprovalRecord,
   GetReleasesParams,
 } from '@/api';
+import { getReleaseStatusDisplay } from '../shared/releaseStatus';
 
 import './index.less';
-import { Ellipsis, Filter, Plus } from 'lucide-react';
+import { Ellipsis, Plus } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
-// 申请状态（审批阶段）— 8 项与流程下线申请保持一致
-export type ReleaseApprovalStatus =
-  | 'PENDING_APPROVAL'
-  | 'APPROVING'
-  | 'APPROVED'
-  | 'REJECTED'
-  | 'EXECUTING'
-  | 'EXECUTION_SUCCESS'
-  | 'EXECUTION_FAILED'
-  | 'CANCELLED';
+// ============= Mock 数据生成 =============
 
-export const RELEASE_APPROVAL_STATUS_TAG: Record<ReleaseApprovalStatus, { color: 'blue' | 'green' | 'red' | 'cyan' | 'grey'; text: string }> = {
-  PENDING_APPROVAL: { color: 'blue', text: '待审批' },
-  APPROVING: { color: 'blue', text: '审批中' },
-  APPROVED: { color: 'cyan', text: '已通过(待执行)' },
-  REJECTED: { color: 'red', text: '已拒绝' },
-  EXECUTING: { color: 'blue', text: '执行中' },
-  EXECUTION_SUCCESS: { color: 'green', text: '执行成功' },
-  EXECUTION_FAILED: { color: 'red', text: '执行失败' },
-  CANCELLED: { color: 'grey', text: '已撤销' },
-};
-
-export interface ReleaseApprovalRecord {
-  level: number;
-  approver_name: string;
-  action: 'APPROVE' | 'REJECT' | 'PENDING';
-  acted_at?: string;
-  comment?: string;
-}
-
-/** 申请人视角扩展字段（mock，附加到 LYReleaseResponse 上） */
-export interface ReleaseApplicantExtension {
-  approval_status: ReleaseApprovalStatus;
-  current_approval_level?: number;
-  total_approval_levels?: number;
+interface ReleaseSample {
+  publish_status: ReleaseStatus;
+  audit_status: ReleaseAuditStatus | null;
+  failure_code?: ReleaseFailureCode;
+  failure_reason?: string;
+  reject_reason?: string;
+  current_level?: number;
+  total_levels?: number;
   current_approver_label?: string;
-  approval_records: ReleaseApprovalRecord[];
-  execution_at?: string;
-  execution_error?: string;
+  approval_records: LYReleaseApprovalRecord[];
+  needs_approval: boolean;
 }
 
-const APPROVAL_STATUS_POOL: ReleaseApprovalStatus[] = [
-  'EXECUTION_SUCCESS', 'APPROVING', 'EXECUTION_FAILED', 'PENDING_APPROVAL',
-  'APPROVED', 'REJECTED', 'EXECUTING', 'CANCELLED',
-];
-
-const buildApprovalExtension = (index: number, baseTime: Date): ReleaseApplicantExtension => {
-  const status = APPROVAL_STATUS_POOL[index % APPROVAL_STATUS_POOL.length];
-  const total = 2;
-  const records: ReleaseApprovalRecord[] = [];
-  let current = 1;
-  let label: string | undefined;
+const buildSample = (index: number, baseTime: Date): ReleaseSample => {
   const t1 = new Date(baseTime.getTime() - 6 * 3600_000).toISOString();
   const t2 = new Date(baseTime.getTime() - 2 * 3600_000).toISOString();
-
-  switch (status) {
-    case 'PENDING_APPROVAL':
-      label = 'L1 · 林经理';
-      records.push({ level: 1, approver_name: '林经理', action: 'PENDING' });
-      break;
-    case 'APPROVING':
-      current = 2;
-      label = 'L2 · 运维同学';
-      records.push({ level: 1, approver_name: '林经理', action: 'APPROVE', acted_at: t1, comment: '同意发布。' });
-      records.push({ level: 2, approver_name: '运维同学', action: 'PENDING' });
-      break;
-    case 'APPROVED':
-      current = 2;
-      records.push({ level: 1, approver_name: '林经理', action: 'APPROVE', acted_at: t1, comment: '同意。' });
-      records.push({ level: 2, approver_name: '运维同学', action: 'APPROVE', acted_at: t2, comment: '审批通过，准备执行。' });
-      break;
-    case 'REJECTED':
-      records.push({ level: 1, approver_name: '林经理', action: 'REJECT', acted_at: t1, comment: '部分流程缺少回归测试报告，请补齐后再申请。' });
-      break;
-    case 'EXECUTING':
-    case 'EXECUTION_SUCCESS':
-    case 'EXECUTION_FAILED':
-      current = 2;
-      records.push({ level: 1, approver_name: '林经理', action: 'APPROVE', acted_at: t1, comment: '同意。' });
-      records.push({ level: 2, approver_name: '运维同学', action: 'APPROVE', acted_at: t2, comment: '可执行。' });
-      break;
-    case 'CANCELLED':
-      records.push({ level: 1, approver_name: '林经理', action: 'PENDING' });
-      break;
+  // 五类典型样本循环铺数据
+  const mod = index % 5;
+  switch (mod) {
+    case 0:
+      // 待审批（PENDING）
+      return {
+        publish_status: 'PENDING_APPROVAL',
+        audit_status: 'PENDING',
+        current_level: 1, total_levels: 2,
+        current_approver_label: 'L1 · 林经理',
+        approval_records: [{ level: 1, approver_name: '林经理', action: 'PENDING' }],
+        needs_approval: true,
+      };
+    case 1:
+      // 已发布（有审批）
+      return {
+        publish_status: 'SUCCESS',
+        audit_status: 'APPROVED',
+        current_level: 2, total_levels: 2,
+        approval_records: [
+          { level: 1, approver_name: '林经理', action: 'APPROVE', acted_at: t1, comment: '同意。' },
+          { level: 2, approver_name: '运维同学', action: 'APPROVE', acted_at: t2, comment: '已上线。' },
+        ],
+        needs_approval: true,
+      };
+    case 2:
+      // 已发布（无需审批，直发）
+      return {
+        publish_status: 'SUCCESS',
+        audit_status: null,
+        approval_records: [],
+        needs_approval: false,
+      };
+    case 3:
+      // 已拒绝
+      return {
+        publish_status: 'REJECTED',
+        audit_status: 'REJECTED',
+        reject_reason: '部分流程缺少回归测试报告，请补齐后再申请。',
+        current_level: 1, total_levels: 2,
+        approval_records: [
+          { level: 1, approver_name: '林经理', action: 'REJECT', acted_at: t1, comment: '部分流程缺少回归测试报告，请补齐后再申请。' },
+        ],
+        needs_approval: true,
+      };
+    case 4:
+    default:
+      // 失败：奇数为流程归档失效，偶数为执行异常
+      if (index % 10 === 4) {
+        return {
+          publish_status: 'FAILED',
+          audit_status: 'APPROVED',
+          failure_code: 'PROCESS_ARCHIVED_BEFORE_PUBLISH',
+          failure_reason: '审批通过后流程被归档，发布申请已失效。',
+          current_level: 2, total_levels: 2,
+          approval_records: [
+            { level: 1, approver_name: '林经理', action: 'APPROVE', acted_at: t1 },
+            { level: 2, approver_name: '运维同学', action: 'APPROVE', acted_at: t2 },
+          ],
+          needs_approval: true,
+        };
+      }
+      return {
+        publish_status: 'FAILED',
+        audit_status: 'APPROVED',
+        failure_code: 'EXECUTION_ERROR',
+        failure_reason: '执行时检测到 PARAM-CONFIG_PATH 缺失，发布未完成。',
+        current_level: 2, total_levels: 2,
+        approval_records: [
+          { level: 1, approver_name: '林经理', action: 'APPROVE', acted_at: t1 },
+          { level: 2, approver_name: '运维同学', action: 'APPROVE', acted_at: t2 },
+        ],
+        needs_approval: true,
+      };
   }
-
-  return {
-    approval_status: status,
-    current_approval_level: current,
-    total_approval_levels: total,
-    current_approver_label: label,
-    approval_records: records,
-    execution_at: status === 'EXECUTION_SUCCESS' ? baseTime.toISOString() : undefined,
-    execution_error: status === 'EXECUTION_FAILED' ? '执行时检测到 PARAM-CONFIG_PATH 缺失，发布未完成。' : undefined,
-  };
 };
 
-// Mock Datageneration器
-const generateMockReleaseResponse = (index: number): LYReleaseResponse & ReleaseApplicantExtension => {
+export const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
   const releaseTypes: ReleaseType[] = [
-    'FIRST_RELEASE',
-    'REQUIREMENT_CHANGE',
-    'BUG_FIX',
-    'CONFIG_UPDATE',
-    'VERSION_ROLLBACK',
-    'OPTIMIZATION',
+    'FIRST_RELEASE', 'REQUIREMENT_CHANGE', 'BUG_FIX', 'CONFIG_UPDATE', 'VERSION_ROLLBACK', 'OPTIMIZATION',
   ];
   const releaseType = releaseTypes[index % releaseTypes.length];
-  const status = index === 2 ? 'FAILED' : index === 0 ? 'PUBLISHING' : 'SUCCESS';
-
   const date = new Date();
   date.setDate(date.getDate() - index);
   const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
+  const sample = buildSample(index, date);
+
+  const contents = [
+    {
+      process_id: `process-${index}-1`,
+      process_name: index % 4 === 0
+        ? 'SAP_ERP 订单处理与履约流程（含库存检查）'
+        : index % 4 === 1
+          ? '客户信息同步'
+          : index % 4 === 2
+            ? '客户入网 KYC 验证与账户开通企业流程'
+            : '数据备份',
+      version_id: `ver-${index}-1`,
+      version_number: `v1.${index}.0`,
+      process_description: '示例流程描述：覆盖订单校验、库存检查、价格折扣、税费、物流分配、发票生成与客户通知。',
+    },
+    ...(index % 2 === 0
+      ? [{
+          process_id: `process-${index}-2`,
+          process_name: index % 4 === 0 ? '月度财务报表生成与分发流程' : '订单处理',
+          version_id: `ver-${index}-2`,
+          version_number: `v2.${index}.0`,
+          process_description: '示例流程描述（次要流程）。',
+        }]
+      : []),
+  ];
 
   return {
     release_id: `RLS-${dateStr}-${String(index + 1).padStart(3, '0')}`,
     release_type: releaseType,
-    description: index === 2 
-      ? 'Updated order processing logic, fixed inventory check issues' 
-      : `Release description ${index + 1}: Contains multiple process updates and config changes`,
+    description: `发布说明 ${index + 1}：包含多个流程更新和配置变更。`,
     publisher_id: `user-${(index % 3) + 1}`,
-    publisher_name: ['John Smith', 'Jane Doe', 'Mike Wang'][index % 3],
-    publisher_department: ['Engineering', 'Product', 'Operations'][index % 3],
-    publisher_role: ['Senior Engineer', 'Product Manager', 'Ops Engineer'][index % 3],
+    publisher_name: ['张三', '李四', '王五'][index % 3],
+    publisher_department: ['研发部', '产品部', '运维部'][index % 3],
+    publisher_role: ['高级工程师', '产品经理', '运维工程师'][index % 3],
     publisher_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com'][index % 3],
     publish_time: date.toISOString(),
-    publish_status: status,
-    process_count: (index % 3) + 1,
+    publish_status: sample.publish_status,
+    audit_status: sample.audit_status,
+    failure_code: sample.failure_code ?? null,
+    failure_reason: sample.failure_reason ?? null,
+    reject_reason: sample.reject_reason ?? null,
+    current_approval_level: sample.current_level,
+    total_approval_levels: sample.total_levels,
+    current_approver_label: sample.current_approver_label,
+    approval_records: sample.approval_records,
+    process_count: contents.length,
     resource_count: (index % 5) + 2,
-    error_message: status === 'FAILED' ? 'Missing dependency: PARAM-CONFIG_PATH' : null,
-    contents: [
-      {
-        process_id: `process-${index}-1`,
-        process_name: index % 4 === 0 
-          ? 'SAP_ERP_Order_Processing_And_Fulfillment_Workflow_With_Inventory_Check_V3' 
-          : index % 4 === 1 
-            ? 'Customer Info Sync' 
-            : index % 4 === 2 
-              ? 'Customer_Onboarding_KYC_Verification_And_Account_Provisioning_Enterprise_Workflow_With_Compliance_Check'
-              : 'Data Backup',
-        version_id: `ver-${index}-1`,
-        version_number: `v1.${index}.0`,
-        process_description: index % 4 === 0
-          ? 'This process handles all customer orders from SAP ERP system, including order validation, inventory check, pricing, discounts, tax calculation, logistics allocation, invoice generation and customer notification. Supports multi-currency, multi-warehouse, and multi-carrier complex scenarios.'
-          : index % 4 === 2
-            ? 'Full customer onboarding automation covering KYC identity verification, compliance check, risk assessment, account provisioning, permission assignment, welcome email and CRM system sync, supporting multi-country regulatory compliance.'
-            : index % 4 === 3 ? '' : 'Sync customer data from ERP to CRM',
-      },
-      ...(index % 2 === 0
-        ? [
-            {
-              process_id: `process-${index}-2`,
-              process_name: index % 4 === 0 
-                ? 'Monthly_Financial_Report_Generation_And_Distribution_Workflow' 
-                : 'Order Processing',
-              version_id: `ver-${index}-2`,
-              version_number: `v2.${index}.0`,
-              process_description: index % 4 === 0 
-                ? 'Monthly auto-generation of financial reports distributed to relevant department stakeholders, supporting PDF and Excel dual format output.'
-                : 'Process customer orders and validate',
-            },
-          ]
-        : []),
-    ],
+    error_message: sample.failure_reason ?? null,
+    contents,
     resources: [],
-    ...buildApprovalExtension(index, date),
   };
 };
 
-const generateMockListResponse = (
-  params: GetReleasesParams
-): LYListResponseLYReleaseResponse => {
-  const allData = Array.from({ length: 45 }, (_, i) =>
-    generateMockReleaseResponse(i)
-  );
-
+const generateMockListResponse = (params: GetReleasesParams): LYListResponseLYReleaseResponse => {
+  const allData = Array.from({ length: 45 }, (_, i) => generateMockReleaseResponse(i));
   let filtered = allData;
-
   if (params.keyword) {
     const keyword = params.keyword.toLowerCase();
     filtered = filtered.filter(
-      (item) =>
-        item.release_id.toLowerCase().includes(keyword) ||
-        item.description.toLowerCase().includes(keyword)
+      (item) => item.release_id.toLowerCase().includes(keyword)
+        || item.description.toLowerCase().includes(keyword)
+        || item.contents.some((c) => c.process_name.toLowerCase().includes(keyword)),
     );
   }
-
   if (params.release_type) {
-    filtered = filtered.filter(
-      (item) => item.release_type === params.release_type
-    );
+    filtered = filtered.filter((item) => item.release_type === params.release_type);
   }
-
   if (params.publish_status) {
-    filtered = filtered.filter(
-      (item) => item.publish_status === params.publish_status
-    );
+    filtered = filtered.filter((item) => item.publish_status === params.publish_status);
   }
-
   const offset = params.offset || 0;
   const size = params.size || 20;
-  const paginated = filtered.slice(offset, offset + size);
-
-  return {
-    range: { offset, size, total: filtered.length },
-    list: paginated,
-  };
+  return { range: { offset, size, total: filtered.length }, list: filtered.slice(offset, offset + size) };
 };
+
+// ============= 组件 =============
 
 const ReleaseListPage: React.FC = () => {
   const { t } = useTranslation();
@@ -251,57 +222,34 @@ const ReleaseListPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { id: routeId } = useParams<{ id?: string }>();
 
-  const [listResponse, setListResponse] =
-    useState<LYListResponseLYReleaseResponse>({
-      range: { offset: 0, size: 20, total: 0 },
-      list: [],
-    });
-  const [loading, setLoading] = useState(false);
-  const [queryParams, setQueryParams] = useState<GetReleasesParams>({
-    offset: 0,
-    size: 20,
-    keyword: '',
+  const [listResponse, setListResponse] = useState<LYListResponseLYReleaseResponse>({
+    range: { offset: 0, size: 20, total: 0 }, list: [],
   });
-
-  // FilterStatus
+  const [loading, setLoading] = useState(false);
+  const [queryParams, setQueryParams] = useState<GetReleasesParams>({ offset: 0, size: 20, keyword: '' });
   const [filterVisible, setFilterVisible] = useState(false);
   const [activeFilters, setActiveFilters] = useState<{
-    release_type: ReleaseType[];
-    publish_status: ReleaseStatus[];
-    publisher: string[];
+    release_type: ReleaseType[]; publish_status: ReleaseStatus[]; publisher: string[];
     publish_date: [Date, Date] | null;
   }>({ release_type: [], publish_status: [], publisher: [], publish_date: null });
 
-  // Details drawer
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
-  const [selectedRelease, setSelectedRelease] =
-    useState<LYReleaseResponse | null>(null);
+  const [selectedRelease, setSelectedRelease] = useState<LYReleaseResponse | null>(null);
 
   const { range, list } = listResponse;
-  const currentPage =
-    Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
+  const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
+  const filterCount = activeFilters.release_type.length + activeFilters.publish_status.length;
 
-  const filterCount =
-    activeFilters.release_type.length + activeFilters.publish_status.length;
-
-  // LoadingData
   const loadData = async () => {
     setLoading(true);
     try {
-      // Mock API 调use
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((r) => setTimeout(r, 300));
       const response = generateMockListResponse({
         ...queryParams,
-        release_type:
-          activeFilters.release_type.length === 1
-            ? activeFilters.release_type[0]
-            : undefined,
-        publish_status:
-          activeFilters.publish_status.length === 1
-            ? activeFilters.publish_status[0]
-            : undefined,
+        release_type: activeFilters.release_type.length === 1 ? activeFilters.release_type[0] : undefined,
+        publish_status: activeFilters.publish_status.length === 1 ? activeFilters.publish_status[0] : undefined,
       });
       setListResponse(response);
     } finally {
@@ -309,11 +257,8 @@ const ReleaseListPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, [queryParams, activeFilters]);
+  useEffect(() => { loadData(); }, [queryParams, activeFilters]);
 
-  // URL Parameterprocessing - openDetails（兼容 ?releaseId= 与 /:id 两种方式）
   useEffect(() => {
     const releaseId = routeId || searchParams.get('releaseId');
     if (releaseId && listResponse.list.length > 0) {
@@ -326,38 +271,28 @@ const ReleaseListPage: React.FC = () => {
     }
   }, [searchParams, routeId, listResponse]);
 
-  // Searchdebounced
   const handleSearch = useMemo(
-    () =>
-      debounce((value: string) => {
-        setQueryParams((prev) => ({ ...prev, offset: 0, keyword: value }));
-      }, 500),
-    []
+    () => debounce((value: string) => setQueryParams((p) => ({ ...p, offset: 0, keyword: value })), 500),
+    [],
   );
 
-  // FilterOperation
   const handleFilterConfirm = (values: Record<string, unknown>) => {
     const dateValue = values.publish_date as [Date, Date] | undefined;
-    setActiveFilters(prev => ({
+    setActiveFilters((prev) => ({
       ...prev,
       release_type: (values.release_type as ReleaseType[]) || [],
       publish_status: (values.publish_status as ReleaseStatus[]) || [],
       publish_date: dateValue && dateValue.length === 2 ? dateValue : null,
     }));
-    setQueryParams((prev) => ({ ...prev, offset: 0 }));
+    setQueryParams((p) => ({ ...p, offset: 0 }));
   };
 
-  // 行点击
   const handleRowClick = (record: LYReleaseResponse) => {
     setSelectedRelease(record);
     setDetailDrawerVisible(true);
   };
 
-  // ReleaseTypeConfig
-  const releaseTypeConfig: Record<
-    ReleaseType,
-    { color: 'blue' | 'cyan' | 'orange' | 'purple' | 'grey' | 'green'; i18nKey: string }
-  > = {
+  const releaseTypeConfig: Record<ReleaseType, { color: 'blue' | 'cyan' | 'orange' | 'purple' | 'grey' | 'green'; i18nKey: string }> = {
     FIRST_RELEASE: { color: 'blue', i18nKey: 'release.releaseTypes.FIRST_RELEASE' },
     REQUIREMENT_CHANGE: { color: 'cyan', i18nKey: 'release.releaseTypes.REQUIREMENT_CHANGE' },
     BUG_FIX: { color: 'orange', i18nKey: 'release.releaseTypes.BUG_FIX' },
@@ -366,317 +301,191 @@ const ReleaseListPage: React.FC = () => {
     OPTIMIZATION: { color: 'green', i18nKey: 'release.releaseTypes.OPTIMIZATION' },
   };
 
-  // StatusConfig
-  const statusConfig: Record<
-    ReleaseStatus,
-    { color: 'green' | 'red' | 'blue'; i18nKey: string }
-  > = {
-    SUCCESS: { color: 'green', i18nKey: 'release.publishStatus.SUCCESS' },
-    FAILED: { color: 'red', i18nKey: 'release.publishStatus.FAILED' },
-    PUBLISHING: { color: 'blue', i18nKey: 'release.publishStatus.PUBLISHING' },
-  };
+  const statusFilterOptions: { value: ReleaseStatus; label: string }[] = [
+    { value: 'PENDING_APPROVAL', label: '待审批' },
+    { value: 'SUCCESS', label: '已发布' },
+    { value: 'REJECTED', label: '已拒绝' },
+    { value: 'FAILED', label: '发布失败 / 已失效' },
+  ];
 
   const columns: ColumnProps<LYReleaseResponse>[] = [
     {
-      title: t('release.list.columns.releaseId'),
-      dataIndex: 'release_id',
-      width: 180,
-      ellipsis: true,
-      render: (text: string) => text || '-',
+      title: '发布编号', dataIndex: 'release_id', width: 180, ellipsis: true,
+      render: (text: string) => <Text strong>{text || '-'}</Text>,
     },
     {
-      title: t('release.list.columns.releaseType'),
-      dataIndex: 'release_type',
-      width: 120,
+      title: '发布类型', dataIndex: 'release_type', width: 120,
       render: (type: ReleaseType) => {
-        const config = releaseTypeConfig[type];
-        return config ? (
-          <Tag color={config.color}>{t(config.i18nKey)}</Tag>
-        ) : (
-          '-'
-        );
+        const cfg = releaseTypeConfig[type];
+        return cfg ? <Tag color={cfg.color} type="light">{t(cfg.i18nKey)}</Tag> : '-';
       },
     },
     {
-      title: t('release.list.columns.status'),
-      dataIndex: 'publish_status',
-      width: 100,
-      render: (status: ReleaseStatus) => {
-        const config = statusConfig[status];
-        return config ? (
-          <Tag color={config.color}>{t(config.i18nKey)}</Tag>
-        ) : (
-          '-'
-        );
-      },
-    },
-    {
-      title: '审批进度',
-      dataIndex: 'current_approver_label',
-      width: 100,
-      align: 'center',
-      render: (_: unknown, record: LYReleaseResponse) => {
-        const ext = record as unknown as ReleaseApplicantExtension;
-        const s = ext.approval_status;
-        if (!s) return '-';
-        if (s === 'PENDING_APPROVAL' || s === 'APPROVING') {
-          if (ext.total_approval_levels) {
-            return <Text>第 {ext.current_approval_level} / {ext.total_approval_levels} 级</Text>;
-          }
-          if (ext.current_approver_label) return <Text>{ext.current_approver_label}</Text>;
-        }
-        return '-';
-      },
-    },
-    {
-      title: t('release.list.columns.processes'),
-      dataIndex: 'contents',
-      width: 100,
+      title: '发布内容', dataIndex: 'contents', ellipsis: true,
       render: (contents: LYReleaseResponse['contents']) => {
         if (!contents || contents.length === 0) return '-';
-        return <Text>{contents.length}Process</Text>;
+        const first = contents[0].process_name;
+        return contents.length > 1
+          ? <Text ellipsis={{ showTooltip: true }}>{first} 等 {contents.length} 个流程</Text>
+          : <Text ellipsis={{ showTooltip: true }}>{first}</Text>;
       },
     },
     {
-      title: t('release.list.columns.description'),
-      dataIndex: 'description',
-      width: 200,
-      ellipsis: true,
-      render: (text: string) => text || '-',
+      title: '流程数', dataIndex: 'process_count', width: 80, align: 'center',
+      render: (_: unknown, r: LYReleaseResponse) => r.contents?.length ?? r.process_count ?? 0,
     },
     {
-      title: t('release.list.columns.publisher'),
-      dataIndex: 'publisher_name',
-      width: 120,
-      ellipsis: true,
+      title: '状态', dataIndex: 'publish_status', width: 120,
+      render: (_: unknown, r: LYReleaseResponse) => {
+        const d = getReleaseStatusDisplay(r);
+        return <Tag color={d.color} type="light">{d.text}</Tag>;
+      },
+    },
+    {
+      title: '发布人', dataIndex: 'publisher_name', width: 130, ellipsis: true,
       render: (_text: string, record: LYReleaseResponse) => {
         if (!record.publisher_name) return '-';
-        return <UserNameWithCard name={record.publisher_name} userId={record.publisher_id} department={(record as any).publisher_department} role={(record as any).publisher_role} email={(record as any).publisher_email} />;
+        return (
+          <UserNameWithCard
+            name={record.publisher_name} userId={record.publisher_id}
+            department={record.publisher_department || undefined}
+            role={record.publisher_role || undefined}
+            email={record.publisher_email || undefined}
+          />
+        );
       },
     },
+    { title: '所属部门', dataIndex: 'publisher_department', width: 160, ellipsis: true, render: (v?: string) => v || '-' },
     {
-      title: t('release.list.columns.publishTime'),
-      dataIndex: 'publish_time',
-      width: 160,
-      render: (time: string) => {
-        if (!time) return '-';
-        const date = new Date(time);
-        return date.toLocaleString('zh-CN', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-      },
+      title: '提交时间', dataIndex: 'publish_time', width: 170,
+      render: (time: string) => time
+        ? new Date(time).toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+        : '-',
     },
     {
-      title: t('common.actions'),
-      dataIndex: 'actions',
-      width: 60,
+      title: t('common.actions'), dataIndex: 'actions', width: 60,
       render: (_: unknown, record: LYReleaseResponse) => (
         <Dropdown
-          trigger="click"
-          clickToHide
-          position="bottomRight"
+          trigger="click" clickToHide position="bottomRight"
           render={
             <Dropdown.Menu>
-              <Dropdown.Item onClick={(e) => {
-                e.stopPropagation();
-                handleRowClick(record);
-              }}>
+              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleRowClick(record); }}>
                 {t('common.viewDetail')}
               </Dropdown.Item>
             </Dropdown.Menu>
           }
         >
-          <Button
-            icon={<Ellipsis size={16} strokeWidth={2} />}
-            theme="borderless"
-            onClick={(e) => e.stopPropagation()}
-          />
+          <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
   ];
 
-  // Filter选项
-  const releaseTypeOptions = Object.entries(releaseTypeConfig).map(
-    ([value, config]) => ({
-      value,
-      label: t(config.i18nKey),
-    })
-  );
+  const releaseTypeOptions = Object.entries(releaseTypeConfig).map(([value, cfg]) => ({ value, label: t(cfg.i18nKey) }));
 
-  const statusOptions = Object.entries(statusConfig).map(([value, config]) => ({
-    value,
-    label: t(config.i18nKey),
-  }));
-
-  // Release者选项(frommockData提取)
   const publisherOptions = useMemo(() => {
-    const publishers = ['John Smith', 'Jane Doe', 'Mike Wang'];
+    const publishers = ['张三', '李四', '王五'];
     return publishers.map((name) => ({ value: name, label: name }));
   }, []);
 
-  // Sun期快捷选项
   const datePresets = useMemo(() => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     return [
       { text: '今天', start: today, end: now },
-      { text: '最近7天', start: new Date(today.getTime() - 6 * 86400000), end: now },
-      { text: '本M', start: new Date(now.getFullYear(), now.getMonth(), 1), end: now },
+      { text: '最近 7 天', start: new Date(today.getTime() - 6 * 86400000), end: now },
+      { text: '本月', start: new Date(now.getFullYear(), now.getMonth(), 1), end: now },
     ];
   }, []);
 
   return (
-      <div className="release-list-page">
-
-        {/* Title area */}
-        <div className="release-list-page-header">
-          <div className="release-list-page-header-title">
-            <Title heading={3} className="title">
-              {t('release.list.title')}
-            </Title>
-            <Text type="tertiary">{t('release.list.description')}</Text>
-          </div>
-
-          {/* Operation */}
-          <Row
-            type="flex"
-            justify="space-between"
-            align="middle"
-            className="release-list-page-header-toolbar"
-          >
-            <Col>
-              <Space>
-                <Input
-                  prefix={<IconSearchStroked />}
-                  placeholder={t('release.list.searchPlaceholder')}
-                  onChange={handleSearch}
-                  showClear
-                  className="release-list-page-search-input"
-                />
-                <Select
-                  placeholder={t('common.filterPublisher')}
-                  value={activeFilters.publisher}
-                  onChange={(v) => {
-                    setActiveFilters(prev => ({ ...prev, publisher: v as string[] }));
-                    setQueryParams(prev => ({ ...prev, offset: 0 }));
-                  }}
-                  multiple
-                  showClear
-                  maxTagCount={1}
-                  style={{ width: 'auto', minWidth: 120 }}
-                  optionList={publisherOptions}
-                />
-                <FilterPopover
-                  visible={filterVisible}
-                  onVisibleChange={setFilterVisible}
-                  onConfirm={handleFilterConfirm}
-                  sections={[
-                    {
-                      key: 'release_type',
-                      label: t('release.list.columns.releaseType'),
-                      type: 'checkbox',
-                      value: activeFilters.release_type,
-                      options: releaseTypeOptions,
-                    },
-                    {
-                      key: 'publish_status',
-                      label: t('release.list.columns.status'),
-                      type: 'checkbox',
-                      value: activeFilters.publish_status,
-                      options: statusOptions,
-                    },
-                    {
-                      key: 'publish_date',
-                      label: t('release.list.columns.publishTime'),
-                      type: 'dateRange',
-                      value: activeFilters.publish_date,
-                      datePresets,
-                    },
-                  ]}
-                />
-              </Space>
-            </Col>
-            <Col>
-              <Button
-                icon={<Plus size={16} strokeWidth={2} />}
-                theme="solid"
-                type="primary"
-                onClick={() => navigate('/dev-center/release-management/create')}
-              >
-                {t('release.list.newRelease')}
-              </Button>
-            </Col>
-          </Row>
+    <div className="release-list-page">
+      <div className="release-list-page-header">
+        <div className="release-list-page-header-title">
+          <Title heading={3} className="title">{t('release.list.title')}</Title>
+          <Text type="tertiary">{t('release.list.description')}</Text>
         </div>
 
-        {/* Table */}
-        <div className="release-list-page-table">
-          <Table
-            size="small"
-            dataSource={list}
-            columns={columns}
-            rowKey="release_id"
-            loading={loading}
-            scroll={{ y: 'calc(100vh - 320px)' }}
-            empty={
-              <EmptyState
-                variant={queryParams.keyword || filterCount > 0 ? 'noResult' : 'noData'}
-                description={
-                  queryParams.keyword || filterCount > 0
-                    ? t('common.noResult')
-                    : t('release.list.noData')
-                }
+        <Row type="flex" justify="space-between" align="middle" className="release-list-page-header-toolbar">
+          <Col>
+            <Space>
+              <Input
+                prefix={<IconSearchStroked />}
+                placeholder="搜索发布编号 / 流程名称 / 描述"
+                onChange={handleSearch}
+                showClear
+                className="release-list-page-search-input"
               />
-            }
-            pagination={{
-              total,
-              pageSize,
-              currentPage,
-              showSizeChanger: true,
-              showTotal: true,
-              pageSizeOpts: [10, 20, 50, 100],
-              onPageChange: (page) => {
-                setQueryParams((prev) => ({
-                  ...prev,
-                  offset: (page - 1) * pageSize,
-                }));
-              },
-              onPageSizeChange: (size) => {
-                setQueryParams((prev) => ({ ...prev, offset: 0, size }));
-              },
-            }}
-            onRow={(record) => ({
-              onClick: () => handleRowClick(record),
-              style: { cursor: 'pointer' },
-              className:
-                selectedRelease?.release_id === record?.release_id
-                  ? 'release-list-page-row-selected'
-                  : '',
-            })}
-          />
-        </div>
+              <FilterPopover
+                visible={filterVisible}
+                onVisibleChange={setFilterVisible}
+                onConfirm={handleFilterConfirm}
+                sections={[
+                  { key: 'release_type', label: '发布类型', type: 'checkbox', value: activeFilters.release_type, options: releaseTypeOptions },
+                  { key: 'publish_status', label: '状态', type: 'checkbox', value: activeFilters.publish_status, options: statusFilterOptions },
+                  { key: 'publish_date', label: '提交时间', type: 'dateRange', value: activeFilters.publish_date, datePresets },
+                ]}
+              />
+            </Space>
+          </Col>
+          <Col>
+            <Button
+              icon={<Plus size={16} strokeWidth={2} />}
+              theme="solid" type="primary"
+              onClick={() => navigate('/dev-center/release-management/create')}
+            >
+              {t('release.list.newRelease')}
+            </Button>
+          </Col>
+        </Row>
+      </div>
 
-        {/* Details drawer */}
-        <ReleaseDetailDrawer
-          visible={detailDrawerVisible}
-          release={selectedRelease}
-          releaseList={list}
-          onClose={() => {
-            setDetailDrawerVisible(false);
-            setSelectedRelease(null);
-            if (routeId) navigate('/dev-center/release-management', { replace: true });
+      <div className="release-list-page-table">
+        <Table
+          size="small"
+          dataSource={list}
+          columns={columns}
+          rowKey="release_id"
+          loading={loading}
+          scroll={{ y: 'calc(100vh - 320px)' }}
+          empty={
+            <EmptyState
+              variant={queryParams.keyword || filterCount > 0 ? 'noResult' : 'noData'}
+              description={queryParams.keyword || filterCount > 0 ? t('common.noResult') : t('release.list.noData')}
+            />
+          }
+          pagination={{
+            total, pageSize, currentPage,
+            showSizeChanger: true, showTotal: true,
+            pageSizeOpts: [10, 20, 50, 100],
+            onPageChange: (page) => setQueryParams((p) => ({ ...p, offset: (page - 1) * pageSize })),
+            onPageSizeChange: (size) => setQueryParams((p) => ({ ...p, offset: 0, size })),
           }}
-          onNavigate={(release) => {
-            setSelectedRelease(release);
-          }}
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record),
+            style: { cursor: 'pointer' },
+            className: selectedRelease?.release_id === record?.release_id ? 'release-list-page-row-selected' : '',
+          })}
         />
       </div>
+
+      <ReleaseDetailDrawer
+        visible={detailDrawerVisible}
+        release={selectedRelease}
+        releaseList={list}
+        onClose={() => {
+          setDetailDrawerVisible(false);
+          setSelectedRelease(null);
+          if (routeId) navigate('/dev-center/release-management', { replace: true });
+        }}
+        onNavigate={(release) => setSelectedRelease(release)}
+      />
+    </div>
   );
 };
+
+// 兼容旧引用（PublishApprovals 等），导出空别名避免破坏外部 import
+export type ReleaseApplicantExtension = never;
+export const RELEASE_APPROVAL_STATUS_TAG = {} as Record<string, { color: 'grey'; text: string }>;
 
 export default ReleaseListPage;
