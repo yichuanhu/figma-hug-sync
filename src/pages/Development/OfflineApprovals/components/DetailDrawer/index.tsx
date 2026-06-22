@@ -77,24 +77,14 @@ const OfflinePropertyPanel: React.FC<{ data: ProcessOfflineRequest }> = ({ data 
   const tag = STATUS_TAG[data.status];
 
   const items: { label: string; value: React.ReactNode }[] = [
-    { label: '审批状态', value: <StatusDot color={statusColorMap[tag.color] || 'grey'} label={tag.text} /> },
+    { label: '状态', value: <StatusDot color={statusColorMap[tag.color] || 'grey'} label={tag.text} /> },
     { label: '申请人', value: <UserNameWithCard name={data.applicant_name} userId={data.applicant_id} /> },
     { label: '所属部门', value: <Text strong>{data.department_name || '-'}</Text> },
+    { label: '提交时间', value: <Text>{fmtTime(data.submitted_at)}</Text> },
   ];
 
-  if (data.status === 'PENDING_APPROVAL' && data.total_levels) {
-    items.push({
-      label: '当前级别',
-      value: <Text strong>当前第 {data.current_level} / {data.total_levels} 级</Text>,
-    });
-  }
-
-  items.push(
-    { label: '提交时间', value: <Text>{fmtTime(data.submitted_at)}</Text> },
-    { label: '申请编号', value: <Text>{data.id}</Text> },
-  );
   if (data.executed_at) {
-    items.push({ label: '下线时间', value: <Text>{fmtTime(data.executed_at)}</Text> });
+    items.push({ label: '执行完成时间', value: <Text>{fmtTime(data.executed_at)}</Text> });
   }
 
   return (
