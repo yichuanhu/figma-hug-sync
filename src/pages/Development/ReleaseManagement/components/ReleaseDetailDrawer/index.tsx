@@ -150,9 +150,6 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
       <div className="detail-snapshot-card">
         <Title heading={6} className="detail-card-title">发布申请快照</Title>
         <div className="detail-snapshot-grid">
-          <Text type="tertiary" className="detail-snapshot-label">发布编号</Text>
-          <Text>{release.release_id}</Text>
-
           {typeCfg && (
             <>
               <Text type="tertiary" className="detail-snapshot-label">发布类型</Text>
