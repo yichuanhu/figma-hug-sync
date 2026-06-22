@@ -153,6 +153,25 @@ const CreateReleasePage: React.FC = () => {
     }
   };
 
+  // 发布前最终校验：所有流程必须未归档且最新版本生命周期为 DRAFT，
+  // 任一不可发布则不创建发布单，不允许部分发布。
+  const preflightValidatePublishable = (): { ok: boolean; reason?: string } => {
+    for (const sp of selectedProcesses) {
+      const p = sp.process as unknown as {
+        is_archived?: boolean;
+        version_lifecycle?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+        is_published?: boolean;
+      };
+      if (p.is_archived) return { ok: false, reason: `流程「${sp.process.name}」已归档，无法发布` };
+      // 当 mock 暂未提供 version_lifecycle 时，回退到 is_published 反向判定
+      const lifecycle = p.version_lifecycle ?? (p.is_published ? 'PUBLISHED' : 'DRAFT');
+      if (lifecycle !== 'DRAFT') {
+        return { ok: false, reason: `流程「${sp.process.name}」最新版本生命周期为 ${lifecycle}，仅 DRAFT 版本可发布` };
+      }
+    }
+    return { ok: true };
+  };
+
   // processingReleaseSubmit
   const handleSubmit = async () => {
     if (!description.trim()) {
@@ -162,6 +181,13 @@ const CreateReleasePage: React.FC = () => {
 
     // 服务端兜底校验（mock R-16）：提交前再次确认所有流程属于同一发布范围
     if (!validateScopeConsistency()) return;
+
+    // 直发/审批前最终校验：任一流程不可发布则整体不创建
+    const preflight = preflightValidatePublishable();
+    if (!preflight.ok) {
+      Toast.error(preflight.reason || '部分流程已归档或不可发布，请重新选择');
+      return;
+    }
 
 
     // Story-005：发布前校验 — 工作空间必须存在同部门下的关联需求
@@ -186,6 +212,7 @@ const CreateReleasePage: React.FC = () => {
       Toast.warning(t('release.create.validation.missingProductionValues'));
       return;
     }
+
 
     setSubmitting(true);
     try {
