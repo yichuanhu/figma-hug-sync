@@ -15,6 +15,7 @@ import {
   Row,
   Col,
   Space,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
@@ -83,6 +84,12 @@ const RequirementsReview = () => {
   const [approvalTarget, setApprovalTarget] = useState<RequirementItem | null>(null);
   const [approvalReason, setApprovalReason] = useState('');
   const [approvalSubmitting, setApprovalSubmitting] = useState(false);
+
+  // 翻页
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  useEffect(() => { setPage(1); }, [activeTab, searchValue, departmentFilter, includeSubDepts, statusFilter]);
+
 
   // 加载所有需求数据
   const loadData = useCallback(async () => {
@@ -372,14 +379,19 @@ const RequirementsReview = () => {
     return cols;
   };
 
+  const total = filteredData.length;
+  const pagedData = useMemo(
+    () => filteredData.slice((page - 1) * pageSize, page * pageSize),
+    [filteredData, page, pageSize],
+  );
   const pagination = useMemo(
     () => ({
-      currentPage: 1,
-      totalPages: 1,
-      pageSize: filteredData.length,
-      total: filteredData.length,
+      currentPage: page,
+      totalPages: Math.max(1, Math.ceil(total / pageSize)),
+      pageSize,
+      total,
     }),
-    [filteredData],
+    [page, pageSize, total],
   );
 
   return (

@@ -6,7 +6,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Typography, Table, Tag, Input, Button, Dropdown, Tabs, TabPane,
-  Row, Col, Space,
+  Row, Col, Space, Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
@@ -55,6 +55,10 @@ const OfflineApprovalsPage = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<ProcessOfflineRequest | null>(null);
+
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  useEffect(() => { setPage(1); }, [activeTab, keyword, statusFilter]);
 
   const load = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -174,9 +178,14 @@ const OfflineApprovalsPage = () => {
     },
   ], []);
 
+  const total = filteredData.length;
+  const pagedData = useMemo(
+    () => filteredData.slice((page - 1) * pageSize, page * pageSize),
+    [filteredData, page, pageSize],
+  );
   const pagination = useMemo(() => ({
-    currentPage: 1, totalPages: 1, pageSize: filteredData.length, total: filteredData.length,
-  }), [filteredData]);
+    currentPage: page, totalPages: Math.max(1, Math.ceil(total / pageSize)), pageSize, total,
+  }), [page, pageSize, total]);
 
   const renderTable = (emptyText: string) => (
     isInitialLoad ? (
@@ -185,7 +194,7 @@ const OfflineApprovalsPage = () => {
       <Table
         size="small"
         columns={columns}
-        dataSource={filteredData}
+        dataSource={pagedData}
         loading={loading}
         rowKey="id"
         empty={<EmptyState variant="noData" description={emptyText} />}
@@ -272,6 +281,25 @@ const OfflineApprovalsPage = () => {
           <TabPane tab="我审批过的" itemKey="reviewed">{renderTable('暂无审批过的记录')}</TabPane>
           <TabPane tab="全部" itemKey="all">{renderTable('暂无停用审批记录')}</TabPane>
         </Tabs>
+        {total > 0 && (
+          <div className="list-pagination">
+            <Text type="tertiary">
+              {`显示第 ${(page - 1) * pageSize + 1} 条-第 ${Math.min(page * pageSize, total)} 条,共 ${total} 条`}
+            </Text>
+            <div className="list-pagination-right">
+              <Text type="tertiary">{`总页数:${Math.ceil(total / pageSize)}`}</Text>
+              <Pagination
+                currentPage={page}
+                pageSize={pageSize}
+                total={total}
+                showSizeChanger
+                pageSizeOpts={[10, 20, 50, 100]}
+                onPageChange={setPage}
+                onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       <OfflineApprovalDetailDrawer
