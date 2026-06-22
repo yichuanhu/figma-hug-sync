@@ -469,7 +469,7 @@ const ReleaseListPage: React.FC = () => {
         />
       </div>
 
-      <ReleaseDetailDrawer
+      <ReleaseListDetailDrawer
         visible={detailDrawerVisible}
         release={selectedRelease}
         releaseList={list}
