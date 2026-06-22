@@ -1,20 +1,46 @@
+// 停用审批详情抽屉样式（与 RequirementDetailDrawer 版式统一）
+@import "../../../../Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/index.less";
+
 .offline-approval-detail-drawer {
-  &-body {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding-bottom: 8px;
+  .offline-approval-detail-drawer-tab-content {
+    padding: 16px 16px 24px 24px;
   }
 
-  .detail-section {
-    .info-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 8px;
-      font-size: 13px;
+  .offline-approval-detail-drawer-section {
+    margin-top: 0;
+
+    & + & {
+      margin-top: 24px;
     }
-    .info-row-block { flex-direction: column; gap: 4px; }
-    .dependency-group { margin-bottom: 8px; }
-    .dependency-group ul { margin: 4px 0 0 16px; padding: 0; }
+  }
+
+  .offline-approval-detail-drawer-section-title {
+    margin: 0 0 8px 0;
+  }
+
+  .offline-approval-detail-drawer-dependencies {
+    .dependency-group {
+      margin-bottom: 12px;
+
+      ul {
+        margin: 4px 0 0 16px;
+        padding: 0;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .offline-approval-detail-drawer-approve-actions {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+
+  .offline-approval-detail-drawer-approve-buttons {
+    display: flex;
+    gap: 8px;
   }
 }
