@@ -1,25 +1,27 @@
+/**
+ * 发布单详情抽屉
+ *
+ * Tabs:
+ *  1. 基本信息（含拒绝/失败/失效原因）
+ *  2. 审批过程（有审批 Timeline 或 "无需审批"）
+ *  3. 发布内容（流程 + 资源）
+ */
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
-  Typography,
-  Descriptions,
-  Tag,
-  Tabs,
-  TabPane,
-  Timeline,
-  Space,
+  Typography, Descriptions, Tag, Tabs, TabPane, Timeline, Space, Banner,
 } from '@douyinfe/semi-ui';
-import type { LYReleaseResponse, ReleaseType, ReleaseStatus, ResourceType } from '@/api';
+import type { LYReleaseResponse, ReleaseType, ResourceType } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import { RELEASE_APPROVAL_STATUS_TAG, type ReleaseApplicantExtension } from '../../ReleaseListPage';
+import { getReleaseStatusDisplay, getProcessRouteForRelease } from '../../shared/releaseStatus';
 
 import './index.less';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Lock } from 'lucide-react';
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 
 interface ReleaseDetailDrawerProps {
   visible: boolean;
@@ -27,35 +29,24 @@ interface ReleaseDetailDrawerProps {
   releaseList?: LYReleaseResponse[];
   onClose: () => void;
   onNavigate?: (release: LYReleaseResponse) => void;
+  /** 抽屉头部额外操作（审批列表中注入"通过 / 拒绝"） */
+  extraActions?: React.ReactNode;
 }
 
 const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
-  visible,
-  release,
-  releaseList = [],
-  onClose,
-  onNavigate,
+  visible, release, releaseList = [], onClose, onNavigate, extraActions,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // byType分组Resource
   const groupedResources = useMemo(() => {
     if (!release) return { PARAMETER: [], CREDENTIAL: [], QUEUE: [], FILE: [] };
-
     const mockResources = [
-      { resource_id: 'param-001', resource_type: 'PARAMETER' as ResourceType, resource_name: 'Global_System_Timeout_Configuration_For_All_Enterprise_Services_And_Microservices_V2', test_value: '{"timeout_ms":30000,"retry_enabled":true,"retry_count":3,"retry_delay_ms":1000,"circuit_breaker":{"enabled":true,"threshold":5,"reset_timeout_ms":60000},"fallback":{"enabled":true,"default_value":"N/A"},"monitoring":{"log_level":"INFO","alert_threshold_ms":25000}}', production_value: '{"timeout_ms":60000,"retry_enabled":true,"retry_count":5,"retry_delay_ms":2000,"circuit_breaker":{"enabled":true,"threshold":10,"reset_timeout_ms":120000},"fallback":{"enabled":true,"default_value":"SERVICE_UNAVAILABLE"},"monitoring":{"log_level":"WARN","alert_threshold_ms":50000}}', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_V3', 'Inventory Check Process'] },
-      { resource_id: 'param-002', resource_type: 'PARAMETER' as ResourceType, resource_name: 'MaxRetry count', test_value: '3', production_value: '5', use_test_as_production: false, is_previously_published: false, is_manual: true, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3'] },
-      { resource_id: 'param-003', resource_type: 'PARAMETER' as ResourceType, resource_name: 'Enterprise_Database_Connection_String_With_Failover_And_LoadBalancing_Parameters', test_value: 'Server=test-db-cluster.internal.company.com,1433;Database=TestDB_Enterprise_v5;User Id=svc_test_account;Password=********;MultipleActiveResultSets=True;Connection Timeout=30;Encrypt=True;TrustServerCertificate=False;Application Name=RPA_Platform_Test;Max Pool Size=100;Min Pool Size=10;Load Balance Timeout=30;Failover Partner=test-db-failover.internal.company.com', production_value: '', use_test_as_production: true, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', 'Data SyncProcess', 'Monthly_Financial_Report_Generation_And_Distribution_Workflow'] },
-      { resource_id: 'cred-001', resource_type: 'CREDENTIAL' as ResourceType, resource_name: 'SAP_ERP_Production_System_Service_Account_Credentials_With_MFA', test_value: '********', test_username: 'svc_test_sap_erp_integration_account', test_password: '********', production_value: '********', production_username: 'svc_prod_sap_erp_admin_integration', production_password: '********', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', 'Data SyncProcess'] },
-      { resource_id: 'cred-002', resource_type: 'CREDENTIAL' as ResourceType, resource_name: 'Email Service Credential', test_value: '********', test_username: 'mail_test', test_password: '********', production_value: '********', production_username: 'mail_user', production_password: '********', use_test_as_production: true, is_previously_published: false, is_manual: false, used_by_processes: ['Notification Send Process'] },
-      { resource_id: 'queue-001', resource_type: 'QUEUE' as ResourceType, resource_name: 'High_Priority_Order_Processing_Queue_For_Enterprise_Customers_Region_APAC', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3'] },
-      { resource_id: 'file-001', resource_type: 'FILE' as ResourceType, resource_name: 'Enterprise_Order_Invoice_Template_With_MultiLanguage_Support_2024_v3.xlsx', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3'] },
-      { resource_id: 'file-002', resource_type: 'FILE' as ResourceType, resource_name: 'reportConfig', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: false, is_manual: true, used_by_processes: ['Monthly_Financial_Report_Generation_And_Distribution_Workflow'] },
+      { resource_id: 'param-001', resource_type: 'PARAMETER' as ResourceType, resource_name: '全局系统超时配置', test_value: '{"timeout_ms":30000}', production_value: '{"timeout_ms":60000}', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP 订单处理流程'] },
+      { resource_id: 'cred-001', resource_type: 'CREDENTIAL' as ResourceType, resource_name: 'SAP ERP 生产环境服务账号凭据', test_username: 'svc_test_sap', test_password: '********', production_username: 'svc_prod_sap', production_password: '********', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP 订单处理流程'] },
+      { resource_id: 'queue-001', resource_type: 'QUEUE' as ResourceType, resource_name: '高优先级订单处理队列', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP 订单处理流程'] },
     ];
-
-    const resources = release.resources?.length ? release.resources : mockResources;
-
+    const resources = (release.resources?.length ? release.resources : mockResources) as typeof mockResources;
     return {
       PARAMETER: resources.filter((r) => r.resource_type === 'PARAMETER'),
       CREDENTIAL: resources.filter((r) => r.resource_type === 'CREDENTIAL'),
@@ -64,24 +55,20 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     };
   }, [release]);
 
-  // Mock ProcessContent(含超长Name and Description)
   const mockContents = useMemo(() => {
     if (release?.contents?.length) return release.contents;
     return [
-      { process_id: 'proc-001', process_name: 'SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', version_number: 'v3.2.1', process_description: 'Processes all customer orders from SAP ERP system including order validation, inventory check, pricing, discounts, tax calculation, logistics allocation, invoice generation and customer notification. Supports multi-currency, multi-warehouse, multi-carrier complex scenarios with integrated error handling and auto-retry for high reliability and data consistency.' },
-      { process_id: 'proc-002', process_name: 'Inventory Check Process', version_number: 'v1.0.0', process_description: 'Scheduled inventory check' },
-      { process_id: 'proc-003', process_name: 'Monthly_Financial_Report_Generation_And_Distribution_Workflow', version_number: 'v2.1.0', process_description: 'Monthly auto-generation of financial reports distributed to relevant department stakeholders, supporting PDF and Excel dual format output.' },
-      { process_id: 'proc-004', process_name: 'Customer_Onboarding_KYC_Verification_And_Account_Provisioning_Enterprise_Workflow_With_Compliance_Check', version_number: 'v1.3.0', process_description: 'Full customer onboarding automation covering KYC identity verification, compliance check, risk assessment, account provisioning, permission assignment, welcome email and CRM system sync, supporting multi-country regulatory compliance.' },
-      { process_id: 'proc-005', process_name: 'Email Notification', version_number: 'v1.0.2', process_description: '' },
-      { process_id: 'proc-006', process_name: 'Automated_Invoice_Reconciliation_And_Payment_Processing_With_Multi_Currency_Support', version_number: 'v2.0.0', process_description: 'Automated reconciliation and payment processing supporting multi-currency exchange rates, invoice matching, anomaly flagging, manual approval, ERP write-back and direct bank payment instructions to ensure financial data accuracy and timeliness.' },
-      { process_id: 'proc-007', process_name: 'Data Backup', version_number: 'v1.1.0', process_description: 'Daily incremental database backup uploaded to cloud storage.' },
+      { process_id: 'proc-001', process_name: 'SAP_ERP 订单处理流程', version_number: 'v3.2.1', process_description: '示例流程描述。' },
     ];
   }, [release]);
 
   if (!release) return null;
 
+  const statusDisplay = getReleaseStatusDisplay(release);
+
   const handleProcessClick = (processId: string) => {
-    navigate(`/dev-center/automation-process?processId=${processId}`);
+    const r = getProcessRouteForRelease(release, processId);
+    if (r.href) navigate(r.href);
   };
 
   const handleResourceClick = (resourceType: ResourceType, resourceId: string) => {
@@ -100,12 +87,6 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     OPTIMIZATION: { color: 'green', i18nKey: 'release.releaseTypes.OPTIMIZATION' },
   };
 
-  const statusConfig: Record<ReleaseStatus, { color: 'green' | 'red' | 'blue'; i18nKey: string }> = {
-    SUCCESS: { color: 'green', i18nKey: 'release.publishStatus.SUCCESS' },
-    FAILED: { color: 'red', i18nKey: 'release.publishStatus.FAILED' },
-    PUBLISHING: { color: 'blue', i18nKey: 'release.publishStatus.PUBLISHING' },
-  };
-
   const resourceTypeConfig: Record<ResourceType, { i18nKey: string }> = {
     PARAMETER: { i18nKey: 'release.resourceTypes.parameter' },
     CREDENTIAL: { i18nKey: 'release.resourceTypes.credential' },
@@ -113,176 +94,193 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     FILE: { i18nKey: 'release.resourceTypes.file' },
   };
 
-  const formatTime = (time: string) => {
+  const formatTime = (time?: string) => {
     if (!time) return '-';
-    return new Date(time).toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return new Date(time).toLocaleString('zh-CN', {
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+    });
   };
 
   const typeConfig = releaseTypeConfig[release.release_type];
-  const statusCfg = statusConfig[release.publish_status];
-  const ext = release as unknown as Partial<ReleaseApplicantExtension>;
-  const approvalTagCfg = ext.approval_status ? RELEASE_APPROVAL_STATUS_TAG[ext.approval_status] : undefined;
 
   const descData = [
-    { key: t('release.detail.releaseId'), value: release.release_id },
-    { key: t('release.detail.releaseType'), value: typeConfig ? <Tag color={typeConfig.color}>{t(typeConfig.i18nKey)}</Tag> : '-' },
-    { key: t('release.detail.status'), value: statusCfg ? <Tag color={statusCfg.color}>{t(statusCfg.i18nKey)}</Tag> : '-' },
-    ...(approvalTagCfg ? [{ key: '申请状态', value: <Tag color={approvalTagCfg.color} type="light">{approvalTagCfg.text}</Tag> }] : []),
-    ...(ext.current_approver_label || ext.total_approval_levels ? [{
+    { key: '发布编号', value: release.release_id },
+    { key: '发布类型', value: typeConfig ? <Tag color={typeConfig.color} type="light">{t(typeConfig.i18nKey)}</Tag> : '-' },
+    { key: '状态', value: <Tag color={statusDisplay.color} type="light">{statusDisplay.text}</Tag> },
+    ...(release.current_approver_label || release.total_approval_levels ? [{
       key: '当前审批节点',
-      value: ext.current_approver_label
-        ? <Text>{ext.current_approver_label}</Text>
-        : <Text type="tertiary">第 {ext.current_approval_level} / {ext.total_approval_levels} 级</Text>,
+      value: release.current_approver_label
+        ? <Text>{release.current_approver_label}</Text>
+        : <Text type="tertiary">第 {release.current_approval_level} / {release.total_approval_levels} 级</Text>,
     }] : []),
-    { key: t('release.detail.publisher'), value: release.publisher_name ? <UserNameWithCard name={release.publisher_name} userId={release.publisher_id} department={(release as any).publisher_department} role={(release as any).publisher_role} email={(release as any).publisher_email} /> : '-' },
-    { key: t('release.detail.publishTime'), value: formatTime(release.publish_time) },
-    { key: t('common.description'), value: <ExpandableText text={release.description} maxLines={3} /> },
+    {
+      key: '发布人',
+      value: release.publisher_name
+        ? <UserNameWithCard name={release.publisher_name} userId={release.publisher_id}
+            department={release.publisher_department || undefined}
+            role={release.publisher_role || undefined}
+            email={release.publisher_email || undefined} />
+        : '-',
+    },
+    { key: '所属部门', value: release.publisher_department || '-' },
+    { key: '提交时间', value: formatTime(release.publish_time) },
+    { key: '描述', value: <ExpandableText text={release.description} maxLines={3} /> },
   ];
 
   const renderBasicInfoTab = () => (
     <div className="release-detail-drawer-tab-content">
       <Descriptions data={descData} align="left" />
-      {release.publish_status === 'FAILED' && release.error_message && (
-        <div className="release-detail-drawer-section release-detail-drawer-error">
-          <Title heading={6} className="release-detail-drawer-section-title">{t('release.detail.errorDetails')}</Title>
-          <div className="release-detail-drawer-error-content">
-            <Text type="danger">{release.error_message}</Text>
-          </div>
+
+      {release.publish_status === 'REJECTED' && (
+        <div className="release-detail-drawer-section">
+          <Title heading={6} className="release-detail-drawer-section-title">拒绝原因</Title>
+          <Banner type="danger" fullMode={false} closeIcon={null}
+            description={release.reject_reason || '审批被拒绝，未填写拒绝原因。'} />
+        </div>
+      )}
+
+      {release.publish_status === 'FAILED' && release.failure_code === 'PROCESS_ARCHIVED_BEFORE_PUBLISH' && (
+        <div className="release-detail-drawer-section">
+          <Title heading={6} className="release-detail-drawer-section-title">失效原因</Title>
+          <Banner type="warning" fullMode={false} closeIcon={null}
+            description="审批已通过，但发布前流程已被归档，发布申请已失效。请重新创建发布单。" />
+        </div>
+      )}
+
+      {release.publish_status === 'FAILED' && release.failure_code !== 'PROCESS_ARCHIVED_BEFORE_PUBLISH' && (
+        <div className="release-detail-drawer-section">
+          <Title heading={6} className="release-detail-drawer-section-title">失败原因</Title>
+          <Banner type="danger" fullMode={false} closeIcon={null}
+            description={release.failure_reason || release.error_message || '发布执行异常。'} />
         </div>
       )}
     </div>
   );
 
   const renderApprovalTab = () => {
-    const records = ext.approval_records ?? [];
-    if (records.length === 0) {
+    if (release.audit_status === null || release.audit_status === undefined) {
       return (
         <div className="release-detail-drawer-tab-content">
-          <Text type="tertiary">暂无审批记录</Text>
+          <Banner type="info" fullMode={false} closeIcon={null}
+            description="本次发布无需审批，已由系统直接执行。" />
         </div>
       );
     }
+    const records = release.approval_records ?? [];
     return (
       <div className="release-detail-drawer-tab-content">
-        {ext.total_approval_levels && (
+        {release.total_approval_levels && (
           <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 12 }}>
-            当前第 {ext.current_approval_level} / {ext.total_approval_levels} 级
+            当前第 {release.current_approval_level} / {release.total_approval_levels} 级
           </Text>
         )}
-        <Timeline>
-          {records.map((r, idx) => {
-            const type = r.action === 'APPROVE' ? 'success' : r.action === 'REJECT' ? 'error' : 'default';
-            const actionText = r.action === 'APPROVE' ? '通过' : r.action === 'REJECT' ? '拒绝' : '待审批';
-            const tagColor: 'green' | 'red' | 'grey' = r.action === 'APPROVE' ? 'green' : r.action === 'REJECT' ? 'red' : 'grey';
-            return (
-              <Timeline.Item key={idx} type={type} time={r.acted_at ? formatTime(r.acted_at) : undefined}>
-                <Space>
-                  <Text strong>{r.approver_name}</Text>
-                  <Tag color={tagColor} type="light" size="small">{actionText}（第 {r.level} 级）</Tag>
-                </Space>
-                {r.comment && <div><Text type="tertiary" size="small">{r.comment}</Text></div>}
-              </Timeline.Item>
-            );
-          })}
-        </Timeline>
+        {records.length === 0 ? (
+          <Text type="tertiary">暂无审批记录</Text>
+        ) : (
+          <Timeline>
+            {records.map((r, idx) => {
+              const type = r.action === 'APPROVE' ? 'success' : r.action === 'REJECT' ? 'error' : 'default';
+              const actionText = r.action === 'APPROVE' ? '通过' : r.action === 'REJECT' ? '拒绝' : '待审批';
+              const tagColor: 'green' | 'red' | 'grey' = r.action === 'APPROVE' ? 'green' : r.action === 'REJECT' ? 'red' : 'grey';
+              return (
+                <Timeline.Item key={idx} type={type} time={r.acted_at ? formatTime(r.acted_at) : undefined}>
+                  <Space>
+                    <Text strong>{r.approver_name}</Text>
+                    <Tag color={tagColor} type="light" size="small">{actionText}（第 {r.level} 级）</Tag>
+                  </Space>
+                  {r.comment && <div><Text type="tertiary" size="small">{r.comment}</Text></div>}
+                </Timeline.Item>
+              );
+            })}
+          </Timeline>
+        )}
       </div>
     );
   };
 
-
-
-
-
-
-  const renderProcessesTab = () => (
-    <div className="release-detail-drawer-tab-content">
-      <Title heading={6} className="release-detail-drawer-section-title">
-        {t('release.detail.processes')} ({mockContents.length})
-      </Title>
-      <div className="release-detail-drawer-process-list">
-        {mockContents.map((content) => (
-          <div key={content.process_id} className="release-detail-drawer-process-card">
-            <div className="release-detail-drawer-process-card-header">
-              <span onClick={() => handleProcessClick(content.process_id)} className="release-detail-drawer-process-name">
-                <Text strong ellipsis={{ showTooltip: true }}>{content.process_name}</Text>
-                <ExternalLink size={16} strokeWidth={2} className="release-detail-drawer-link-icon" />
-              </span>
-              <Tag size="small" color="blue">{content.version_number}</Tag>
-            </div>
-            {content.process_description && (
-              <Text type="tertiary" ellipsis={{ showTooltip: false }}>{content.process_description}</Text>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {Object.entries(groupedResources).map(([type, resources]) => {
-        if (resources.length === 0) return null;
-        const typeConf = resourceTypeConfig[type as ResourceType];
-        return (
-          <div key={type} className="release-detail-drawer-section">
-            <Title heading={6} className="release-detail-drawer-section-title">{t(typeConf.i18nKey)} ({resources.length})</Title>
-            <div className="release-detail-drawer-resource-list">
-              {resources.map((resource) => (
-                <div key={resource.resource_id} className="release-detail-drawer-resource-card">
-                  <div className="release-detail-drawer-resource-card-header">
-                    <span onClick={() => handleResourceClick(type as ResourceType, resource.resource_id)} className="release-detail-drawer-resource-name">
-                      <Text strong ellipsis={{ showTooltip: true }}>{resource.resource_name}</Text>
-                      <ExternalLink size={16} strokeWidth={2} className="release-detail-drawer-link-icon" />
-                    </span>
-                    {resource.is_manual && <Tag size="small" color="grey" className="release-detail-drawer-resource-tag">{t('release.create.manuallyAdded')}</Tag>}
-                  </div>
-                  <div className="release-detail-drawer-resource-card-body">
-                    <Text type="tertiary" ellipsis={{ showTooltip: true }}>{t('release.create.usedBy')}: {resource.used_by_processes?.join(', ') || '-'}</Text>
-                    <Text type="tertiary">{t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}</Text>
-                    {type === 'CREDENTIAL' && (
-                      <>
-                        <Text type="tertiary" ellipsis={{ showTooltip: true }}>{t('release.create.testValue')}: {(resource as any).test_username || '-'}</Text>
-                        <Text type="tertiary" ellipsis={{ showTooltip: true }}>{t('release.create.productionValue')}: {resource.use_test_as_production ? `${(resource as any).test_username || '-'} (${t('release.create.useTestAsProduction')})` : resource.production_username || '-'}</Text>
-                      </>
-                    )}
-                    {type !== 'QUEUE' && type !== 'FILE' && type !== 'CREDENTIAL' && (
-                      <>
-                        <div className="release-detail-drawer-value-field">
-                          <Text type="tertiary">{t('release.create.testValue')}:</Text>
-                          <div className="release-detail-drawer-value-scroll">
-                            <Text>{resource.test_value || '-'}</Text>
-                          </div>
-                        </div>
-                        <div className="release-detail-drawer-value-field">
-                          <Text type="tertiary">{t('release.create.productionValue')}:</Text>
-                          <div className="release-detail-drawer-value-scroll">
-                            <Text>{resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
+  const renderContentTab = () => {
+    const archivedNotice = release.publish_status === 'FAILED' && release.failure_code === 'PROCESS_ARCHIVED_BEFORE_PUBLISH';
+    return (
+      <div className="release-detail-drawer-tab-content">
+        <Title heading={6} className="release-detail-drawer-section-title">
+          流程 ({mockContents.length})
+        </Title>
+        <div className="release-detail-drawer-process-list">
+          {mockContents.map((content) => {
+            const routeInfo = getProcessRouteForRelease(release, content.process_id);
+            const clickable = !!routeInfo.href;
+            return (
+              <div key={content.process_id} className="release-detail-drawer-process-card">
+                <div className="release-detail-drawer-process-card-header">
+                  <span
+                    onClick={() => clickable && handleProcessClick(content.process_id)}
+                    className="release-detail-drawer-process-name"
+                    style={!clickable ? { cursor: 'not-allowed', opacity: 0.6 } : undefined}
+                  >
+                    <Text strong ellipsis={{ showTooltip: true }}>{content.process_name}</Text>
+                    {clickable
+                      ? <ExternalLink size={16} strokeWidth={2} className="release-detail-drawer-link-icon" />
+                      : <Lock size={14} strokeWidth={2} className="release-detail-drawer-link-icon" />}
+                  </span>
+                  <Tag size="small" color="blue" type="light">{content.version_number}</Tag>
                 </div>
-              ))}
-            </div>
-          </div>
-        );
-      })}
-
-      {Object.values(groupedResources).every((arr) => arr.length === 0) && (
-        <div className="release-detail-drawer-no-resources">
-          <Text type="tertiary">{t('release.create.noDependencies')}</Text>
+                {content.process_description && (
+                  <Text type="tertiary" ellipsis={{ showTooltip: false }}>{content.process_description}</Text>
+                )}
+                {archivedNotice && (
+                  <Text type="tertiary" size="small" style={{ marginTop: 4 }}>发布申请已失效 / 流程已归档</Text>
+                )}
+              </div>
+            );
+          })}
         </div>
-      )}
-    </div>
-  );
+
+        {Object.entries(groupedResources).map(([type, resources]) => {
+          if (resources.length === 0) return null;
+          const typeConf = resourceTypeConfig[type as ResourceType];
+          return (
+            <div key={type} className="release-detail-drawer-section">
+              <Title heading={6} className="release-detail-drawer-section-title">{t(typeConf.i18nKey)} ({resources.length})</Title>
+              <div className="release-detail-drawer-resource-list">
+                {resources.map((resource) => (
+                  <div key={resource.resource_id} className="release-detail-drawer-resource-card">
+                    <div className="release-detail-drawer-resource-card-header">
+                      <span onClick={() => handleResourceClick(type as ResourceType, resource.resource_id)} className="release-detail-drawer-resource-name">
+                        <Text strong ellipsis={{ showTooltip: true }}>{resource.resource_name}</Text>
+                        <ExternalLink size={16} strokeWidth={2} className="release-detail-drawer-link-icon" />
+                      </span>
+                      {resource.is_manual && <Tag size="small" color="grey" className="release-detail-drawer-resource-tag">{t('release.create.manuallyAdded')}</Tag>}
+                    </div>
+                    <div className="release-detail-drawer-resource-card-body">
+                      <Text type="tertiary" ellipsis={{ showTooltip: true }}>{t('release.create.usedBy')}: {resource.used_by_processes?.join(', ') || '-'}</Text>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+
+        {Object.values(groupedResources).every((arr) => arr.length === 0) && (
+          <div className="release-detail-drawer-no-resources">
+            <Text type="tertiary">{t('release.create.noDependencies')}</Text>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <DetailDrawerWrapper
       visible={visible}
       onClose={onClose}
-      title={t('release.detail.title')}
+      title="发布单详情"
       dataList={releaseList}
       currentId={release.release_id}
       getId={(item) => item.release_id}
       onNavigate={(item) => onNavigate?.(item)}
-      extraActions={<></>}
+      extraActions={extraActions ?? <></>}
       defaultWidth={900}
       minWidth={576}
       storageKey="releaseDetailDrawerWidth"
@@ -290,15 +288,9 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     >
       <div className="release-detail-drawer-content">
         <Tabs type="line">
-          <TabPane tab={t('release.detail.basicInfo')} itemKey="basicInfo">
-            {renderBasicInfoTab()}
-          </TabPane>
-          <TabPane tab="审批流程" itemKey="approval">
-            {renderApprovalTab()}
-          </TabPane>
-          <TabPane tab={t('release.detail.publishedProcessesAndResources')} itemKey="processes">
-            {renderProcessesTab()}
-          </TabPane>
+          <TabPane tab="基本信息" itemKey="basicInfo">{renderBasicInfoTab()}</TabPane>
+          <TabPane tab="审批过程" itemKey="approval">{renderApprovalTab()}</TabPane>
+          <TabPane tab="发布内容" itemKey="content">{renderContentTab()}</TabPane>
         </Tabs>
       </div>
     </DetailDrawerWrapper>
