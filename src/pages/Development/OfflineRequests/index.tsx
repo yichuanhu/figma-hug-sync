@@ -12,7 +12,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import { Plus } from 'lucide-react';
+import { Plus, Eye, Ellipsis } from 'lucide-react';
+import { Dropdown } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
@@ -153,6 +154,23 @@ const OfflineRequestsPage = () => {
       ),
     },
     { title: '提交时间', dataIndex: 'submitted_at', width: 180, render: (v: string) => fmtTime(v) },
+    {
+      title: '操作', dataIndex: 'actions', width: 60,
+      render: (_: unknown, r: ProcessOfflineRequest) => (
+        <Dropdown
+          trigger="click" clickToHide position="bottomRight"
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); openDetail(r); }}>
+                查看详情
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          }
+        >
+          <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+        </Dropdown>
+      ),
+    },
   ], []);
 
   // 搜索/筛选变化时重置到第 1 页
@@ -175,18 +193,8 @@ const OfflineRequestsPage = () => {
           <Title heading={3} className="title">流程下线</Title>
           <Text type="tertiary">查看你发起的下线申请，或为单个已发布流程发起下线申请。</Text>
         </div>
-        <Button
-          theme="solid"
-          type="primary"
-          icon={<Plus size={16} strokeWidth={2} />}
-          onClick={() => setCreateVisible(true)}
-        >
-          发起下线申请
-        </Button>
-      </div>
 
-      <div className="offline-requests-content">
-        <Row type="flex" justify="space-between" align="middle" className="offline-requests-toolbar">
+        <Row type="flex" justify="space-between" align="middle" className="offline-requests-header-toolbar">
           <Col>
             <Space>
               <Input
@@ -223,10 +231,22 @@ const OfflineRequestsPage = () => {
               />
             </Space>
           </Col>
+          <Col>
+            <Button
+              theme="solid"
+              type="primary"
+              icon={<Plus size={16} strokeWidth={2} />}
+              onClick={() => setCreateVisible(true)}
+            >
+              发起下线申请
+            </Button>
+          </Col>
         </Row>
+      </div>
 
+      <div className="offline-requests-content">
         {isInitialLoad ? (
-          <TableSkeleton rows={6} columns={7} columnWidths={['24%', '9%', '10%', '12%', '16%', '10%', '19%']} />
+          <TableSkeleton rows={6} columns={8} columnWidths={['24%', '9%', '10%', '12%', '16%', '10%', '15%', '4%']} />
         ) : (
           <Table
             size="small"
@@ -238,7 +258,7 @@ const OfflineRequestsPage = () => {
             onRow={(record) => ({
               style: { cursor: 'pointer' },
               className: selectedRecord?.id === record?.id && drawerVisible ? 'offline-requests-row-selected' : undefined,
-              onClick: () => record && openDetail(record as ProcessOfflineRequest),
+            onClick: () => record && openDetail(record as ProcessOfflineRequest),
             })}
             pagination={false}
             scroll={{ y: 'calc(100vh - 360px)' }}
