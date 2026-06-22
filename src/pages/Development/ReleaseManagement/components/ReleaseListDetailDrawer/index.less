@@ -1,0 +1,108 @@
+// 流程发布列表详情抽屉样式（独立于发布审批抽屉）
+.release-list-detail-drawer {
+  .release-list-detail-drawer-tabs {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .semi-tabs-bar {
+      flex-shrink: 0;
+      padding-left: 24px;
+    }
+
+    .semi-tabs-content {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .semi-tabs-pane {
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+
+  .release-list-detail-drawer-tab-content {
+    padding: 16px 24px 24px 24px;
+  }
+
+  .release-list-detail-drawer-desc {
+    .semi-descriptions-key {
+      color: var(--semi-color-text-2);
+      width: 96px;
+    }
+  }
+
+  // 分组
+  .release-list-detail-drawer-section {
+    margin-top: 24px;
+  }
+
+  .release-list-detail-drawer-section-title {
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  // 流程 / 资源列表卡片
+  .release-list-detail-drawer-process-list,
+  .release-list-detail-drawer-resource-list {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .release-list-detail-drawer-process-card,
+  .release-list-detail-drawer-resource-card {
+    padding: 12px 16px;
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+  }
+
+  .release-list-detail-drawer-process-card-header,
+  .release-list-detail-drawer-resource-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .release-list-detail-drawer-resource-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .release-list-detail-drawer-process-name,
+  .release-list-detail-drawer-resource-name {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    max-width: 70%;
+    overflow: hidden;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--semi-color-primary);
+
+      .release-list-detail-drawer-link-icon {
+        color: var(--semi-color-primary);
+      }
+    }
+  }
+
+  .release-list-detail-drawer-resource-tag {
+    flex-shrink: 0;
+  }
+
+  .release-list-detail-drawer-link-icon {
+    font-size: 12px;
+    margin-left: 4px;
+    color: var(--semi-color-tertiary);
+    transition: color 0.2s;
+  }
+}
