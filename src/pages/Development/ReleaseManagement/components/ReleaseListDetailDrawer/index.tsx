@@ -191,7 +191,7 @@ const ReleaseListDetailDrawer: React.FC<ReleaseListDetailDrawerProps> = ({
     return (
       <div className="release-list-detail-drawer-tab-content">
         <div className="release-list-detail-drawer-section" style={{ marginTop: 0 }}>
-          <Text strong size="small" type="tertiary" className="release-list-detail-drawer-section-title">流程 ({contents.length})</Text>
+          <Text strong size="small" className="release-list-detail-drawer-section-title">流程 ({contents.length})</Text>
           <div className="release-list-detail-drawer-process-list">
             {contents.map((content) => {
               const routeInfo = getProcessRouteForRelease(release, content.process_id);
@@ -228,7 +228,7 @@ const ReleaseListDetailDrawer: React.FC<ReleaseListDetailDrawerProps> = ({
           const typeConf = resourceTypeConfig[type as ResourceType];
           return (
             <div key={type} className="release-list-detail-drawer-section">
-              <Text strong size="small" type="tertiary" className="release-list-detail-drawer-section-title">{t(typeConf.i18nKey)} ({resources.length})</Text>
+              <Text strong size="small" className="release-list-detail-drawer-section-title">{t(typeConf.i18nKey)} ({resources.length})</Text>
               <div className="release-list-detail-drawer-resource-list">
                 {resources.map((resource) => (
                   <div key={resource.resource_id} className="release-list-detail-drawer-resource-card">
