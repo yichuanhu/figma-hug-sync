@@ -63,7 +63,7 @@ const ReleasePropertyPanel: React.FC<{ release: LYReleaseResponse }> = ({ releas
       value: <StatusDot color={status.color as StatusDotColor} label={status.text} />,
     },
     {
-      label: '开发者',
+      label: '发布者',
       value: release.publisher_name ? (
         <UserNameWithCard
           name={release.publisher_name}
@@ -74,15 +74,7 @@ const ReleasePropertyPanel: React.FC<{ release: LYReleaseResponse }> = ({ releas
         />
       ) : <Text>-</Text>,
     },
-    { label: '所属部门', value: <Text strong>{release.publisher_department || '-'}</Text> },
   ];
-
-  if (release.publish_status === 'PENDING_APPROVAL' && release.total_approval_levels) {
-    items.push({
-      label: '当前级别',
-      value: <Text strong>当前第 {release.current_approval_level} / {release.total_approval_levels} 级</Text>,
-    });
-  }
 
   items.push(
     { label: '提交时间', value: <Text>{formatTime(release.publish_time)}</Text> },
@@ -128,12 +120,10 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
   const status = getReleaseStatusDisplay(release);
   const typeCfg = releaseTypeConfig[release.release_type];
 
-  // 抽屉标题：编号 + 流程数 Tag + 状态点
+  // 抽屉标题：编号
   const drawerTitle = (
     <div className="detail-drawer-title">
       <Text strong style={{ fontSize: 16 }}>{release.release_id}</Text>
-      <Tag color="grey" type="light" size="small">共 {mockContents.length} 个流程</Tag>
-      <StatusDot color={status.color as StatusDotColor} label={status.text} />
     </div>
   );
 
@@ -170,17 +160,11 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
             </>
           )}
 
-          <Text type="tertiary" className="detail-snapshot-label">发布状态</Text>
-          <div><StatusDot color={status.color as StatusDotColor} label={status.text} /></div>
-
           <Text type="tertiary" className="detail-snapshot-label">流程数量</Text>
           <Text>{mockContents.length}</Text>
 
           <Text type="tertiary" className="detail-snapshot-label">资源数量</Text>
           <Text>{groupedResources.length}</Text>
-
-          <Text type="tertiary" className="detail-snapshot-label">提交时间</Text>
-          <Text>{formatTime(release.publish_time)}</Text>
 
           {release.description && (
             <>
