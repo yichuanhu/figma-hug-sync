@@ -191,7 +191,7 @@ const ReleaseListDetailDrawer: React.FC<ReleaseListDetailDrawerProps> = ({
     return (
       <div className="release-list-detail-drawer-tab-content">
         <div className="release-list-detail-drawer-section" style={{ marginTop: 0 }}>
-          <Title heading={6} className="release-list-detail-drawer-section-title">流程 ({contents.length})</Title>
+          <Text strong size="small" type="tertiary" className="release-list-detail-drawer-section-title">流程 ({contents.length})</Text>
           <div className="release-list-detail-drawer-process-list">
             {contents.map((content) => {
               const routeInfo = getProcessRouteForRelease(release, content.process_id);
@@ -204,7 +204,7 @@ const ReleaseListDetailDrawer: React.FC<ReleaseListDetailDrawerProps> = ({
                       className="release-list-detail-drawer-process-name"
                       style={!clickable ? { cursor: 'not-allowed', opacity: 0.6 } : undefined}
                     >
-                      <Text strong ellipsis={{ showTooltip: true }}>{content.process_name}</Text>
+                      <Text ellipsis={{ showTooltip: true }}>{content.process_name}</Text>
                       {clickable
                         ? <ExternalLink size={16} strokeWidth={2} className="release-list-detail-drawer-link-icon" />
                         : <Lock size={14} strokeWidth={2} className="release-list-detail-drawer-link-icon" />}
@@ -228,13 +228,13 @@ const ReleaseListDetailDrawer: React.FC<ReleaseListDetailDrawerProps> = ({
           const typeConf = resourceTypeConfig[type as ResourceType];
           return (
             <div key={type} className="release-list-detail-drawer-section">
-              <Title heading={6} className="release-list-detail-drawer-section-title">{t(typeConf.i18nKey)} ({resources.length})</Title>
+              <Text strong size="small" type="tertiary" className="release-list-detail-drawer-section-title">{t(typeConf.i18nKey)} ({resources.length})</Text>
               <div className="release-list-detail-drawer-resource-list">
                 {resources.map((resource) => (
                   <div key={resource.resource_id} className="release-list-detail-drawer-resource-card">
                     <div className="release-list-detail-drawer-resource-card-header">
                       <span onClick={() => handleResourceClick(type as ResourceType, resource.resource_id)} className="release-list-detail-drawer-resource-name">
-                        <Text strong ellipsis={{ showTooltip: true }}>{resource.resource_name}</Text>
+                        <Text ellipsis={{ showTooltip: true }}>{resource.resource_name}</Text>
                         <ExternalLink size={16} strokeWidth={2} className="release-list-detail-drawer-link-icon" />
                       </span>
                       {resource.is_manual && <Tag size="small" color="grey" className="release-list-detail-drawer-resource-tag">{t('release.create.manuallyAdded')}</Tag>}
