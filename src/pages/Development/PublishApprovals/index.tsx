@@ -233,7 +233,8 @@ const PublishApprovalsPage = () => {
         ) : '-',
     },
     {
-      title: '流程数', dataIndex: 'process_count', width: 70, align: 'center' as const,
+      title: '流程数', dataIndex: 'process_count', width: 80, align: 'center' as const,
+      style: { whiteSpace: 'nowrap' },
       render: (_: unknown, r: LYReleaseResponse) => r.contents?.length ?? 0,
     },
     {
