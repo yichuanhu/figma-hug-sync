@@ -15,6 +15,7 @@ import {
   Row,
   Col,
   Space,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
@@ -83,6 +84,12 @@ const RequirementsReview = () => {
   const [approvalTarget, setApprovalTarget] = useState<RequirementItem | null>(null);
   const [approvalReason, setApprovalReason] = useState('');
   const [approvalSubmitting, setApprovalSubmitting] = useState(false);
+
+  // 翻页
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  useEffect(() => { setPage(1); }, [activeTab, searchValue, departmentFilter, includeSubDepts, statusFilter]);
+
 
   // 加载所有需求数据
   const loadData = useCallback(async () => {
@@ -372,14 +379,19 @@ const RequirementsReview = () => {
     return cols;
   };
 
+  const total = filteredData.length;
+  const pagedData = useMemo(
+    () => filteredData.slice((page - 1) * pageSize, page * pageSize),
+    [filteredData, page, pageSize],
+  );
   const pagination = useMemo(
     () => ({
-      currentPage: 1,
-      totalPages: 1,
-      pageSize: filteredData.length,
-      total: filteredData.length,
+      currentPage: page,
+      totalPages: Math.max(1, Math.ceil(total / pageSize)),
+      pageSize,
+      total,
     }),
-    [filteredData],
+    [page, pageSize, total],
   );
 
   return (
@@ -487,7 +499,7 @@ const RequirementsReview = () => {
               <Table
                 size="small"
                 columns={getColumns(true)}
-                dataSource={filteredData}
+                dataSource={pagedData}
                 loading={loading}
                 rowKey="id"
                 empty={<EmptyState variant="noData" description={t('requirements.review.noPending')} />}
@@ -515,7 +527,7 @@ const RequirementsReview = () => {
               <Table
                 size="small"
                 columns={getColumns(false)}
-                dataSource={filteredData}
+                dataSource={pagedData}
                 loading={loading}
                 rowKey="id"
                 empty={<EmptyState variant="noData" description={t('requirements.review.noReviewed')} />}
@@ -542,7 +554,7 @@ const RequirementsReview = () => {
               <Table
                 size="small"
                 columns={getColumns(true)}
-                dataSource={filteredData}
+                dataSource={pagedData}
                 loading={loading}
                 rowKey="id"
                 empty={<EmptyState variant="noData" description={t('requirements.review.noRecords')} />}
@@ -563,6 +575,29 @@ const RequirementsReview = () => {
             )}
           </TabPane>
         </Tabs>
+        {total > 0 && (
+          <div className="list-pagination">
+            <Text type="tertiary">
+              {t('common.showingRecords', {
+                start: (page - 1) * pageSize + 1,
+                end: Math.min(page * pageSize, total),
+                total,
+              })}
+            </Text>
+            <div className="list-pagination-right">
+              <Text type="tertiary">{t('common.totalPages', { total: Math.ceil(total / pageSize) })}</Text>
+              <Pagination
+                currentPage={page}
+                pageSize={pageSize}
+                total={total}
+                showSizeChanger
+                pageSizeOpts={[10, 20, 50, 100]}
+                onPageChange={setPage}
+                onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 审批确认弹窗 */}

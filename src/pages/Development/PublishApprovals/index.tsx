@@ -7,7 +7,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Typography, Table, Tag, Input, Button, Dropdown, Tabs, TabPane,
-  Row, Col, Space, Modal, Form, Toast,
+  Row, Col, Space, Modal, Form, Toast, Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { CheckCircle, XCircle, Eye, Ellipsis } from 'lucide-react';
@@ -68,6 +68,10 @@ const PublishApprovalsPage = () => {
   const [rejectVisible, setRejectVisible] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
   const [acting, setActing] = useState(false);
+
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  useEffect(() => { setPage(1); }, [activeTab, keyword, statusFilter]);
 
   const load = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -296,6 +300,12 @@ const PublishApprovalsPage = () => {
     </Space>
   ) : null;
 
+  const pagedData = useMemo(
+    () => filteredData.slice((page - 1) * pageSize, page * pageSize),
+    [filteredData, page, pageSize],
+  );
+  const total = filteredData.length;
+
   const renderTable = (emptyText: string) => (
     isInitialLoad ? (
       <TableSkeleton rows={6} columns={10} />
@@ -303,7 +313,7 @@ const PublishApprovalsPage = () => {
       <Table
         size="small"
         columns={columns}
-        dataSource={filteredData}
+        dataSource={pagedData}
         loading={loading}
         rowKey="release_id"
         empty={<EmptyState variant="noData" description={emptyText} />}
@@ -387,6 +397,25 @@ const PublishApprovalsPage = () => {
           <TabPane tab="我审批过的" itemKey="reviewed">{renderTable('暂无审批过的发布单')}</TabPane>
           <TabPane tab="全部" itemKey="all">{renderTable('暂无发布单')}</TabPane>
         </Tabs>
+        {total > 0 && (
+          <div className="list-pagination">
+            <Text type="tertiary">
+              {`显示第 ${(page - 1) * pageSize + 1} 条-第 ${Math.min(page * pageSize, total)} 条,共 ${total} 条`}
+            </Text>
+            <div className="list-pagination-right">
+              <Text type="tertiary">{`总页数:${Math.ceil(total / pageSize)}`}</Text>
+              <Pagination
+                currentPage={page}
+                pageSize={pageSize}
+                total={total}
+                showSizeChanger
+                pageSizeOpts={[10, 20, 50, 100]}
+                onPageChange={setPage}
+                onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       <ReleaseDetailDrawer
