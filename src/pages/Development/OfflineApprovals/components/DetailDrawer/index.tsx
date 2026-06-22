@@ -183,8 +183,6 @@ const OfflineApprovalDetailDrawer = ({
   const drawerTitle = (
     <div className="detail-drawer-title">
       <Text strong style={{ fontSize: 16 }}>{data.id}</Text>
-      <Tag color="grey" type="light" size="small">流程：{data.process_name}</Tag>
-      <StatusDot color={statusColorMap[tag.color] || 'grey'} label={tag.text} />
     </div>
   );
 
@@ -226,20 +224,11 @@ const OfflineApprovalDetailDrawer = ({
                   <div className="detail-snapshot-card">
                     <Title heading={6} className="detail-card-title">停用申请快照</Title>
                     <div className="detail-snapshot-grid">
-                      <Text type="tertiary" className="detail-snapshot-label">申请编号</Text>
-                      <Text>{data.id}</Text>
-
                       <Text type="tertiary" className="detail-snapshot-label">流程名称</Text>
                       <Text>{data.process_name}</Text>
 
                       <Text type="tertiary" className="detail-snapshot-label">流程版本</Text>
                       <Text>{data.process_version}</Text>
-
-                      <Text type="tertiary" className="detail-snapshot-label">申请状态</Text>
-                      <div><StatusDot color={statusColorMap[tag.color] || 'grey'} label={tag.text} /></div>
-
-                      <Text type="tertiary" className="detail-snapshot-label">提交时间</Text>
-                      <Text>{fmtTime(data.submitted_at)}</Text>
 
                       <Text type="tertiary" className="detail-snapshot-label">停用原因</Text>
                       <div><ExpandableText text={data.reason || '-'} maxLines={6} /></div>
