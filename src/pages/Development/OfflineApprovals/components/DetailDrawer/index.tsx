@@ -183,8 +183,6 @@ const OfflineApprovalDetailDrawer = ({
   const drawerTitle = (
     <div className="detail-drawer-title">
       <Text strong style={{ fontSize: 16 }}>{data.id}</Text>
-      <Tag color="grey" type="light" size="small">流程：{data.process_name}</Tag>
-      <StatusDot color={statusColorMap[tag.color] || 'grey'} label={tag.text} />
     </div>
   );
 
