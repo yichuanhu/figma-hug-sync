@@ -1,23 +1,5 @@
-// 停用审批详情抽屉样式（与 RequirementDetailDrawer 版式统一）
-@import "../../../../Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/index.less";
-
+// 停用审批详情抽屉样式（卡片化布局，复用 ReleaseDetailDrawer 卡片样式）
 .offline-approval-detail-drawer {
-  .offline-approval-detail-drawer-tab-content {
-    padding: 16px 16px 24px 24px;
-  }
-
-  .offline-approval-detail-drawer-section {
-    margin-top: 0;
-
-    & + & {
-      margin-top: 24px;
-    }
-  }
-
-  .offline-approval-detail-drawer-section-title {
-    margin: 0 0 8px 0;
-  }
-
   .offline-approval-detail-drawer-dependencies {
     .dependency-group {
       margin-bottom: 12px;
@@ -31,16 +13,5 @@
         margin-bottom: 0;
       }
     }
-  }
-
-  .offline-approval-detail-drawer-approve-actions {
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid var(--semi-color-border);
-  }
-
-  .offline-approval-detail-drawer-approve-buttons {
-    display: flex;
-    gap: 8px;
   }
 }

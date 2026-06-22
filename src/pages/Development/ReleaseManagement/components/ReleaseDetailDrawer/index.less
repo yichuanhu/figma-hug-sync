@@ -1,98 +1,119 @@
-// ReleaseDetailDrawer 发布详情抽屉样式（与 RequirementDetailDrawer 版式统一）
+// 发布单详情抽屉样式（卡片化布局）
 @import "../../../../Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/index.less";
 
+// ============= 抽屉标题 =============
+.detail-drawer-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+// ============= 卡片容器 =============
+.detail-cards-container {
+  padding: 16px 16px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// ============= 卡片 =============
+.detail-snapshot-card {
+  background: var(--semi-color-bg-0);
+  border: 1px solid var(--semi-color-border);
+  border-radius: 8px;
+  padding: 16px 20px 18px;
+}
+
+.detail-card-title {
+  margin: 0 0 14px 0 !important;
+}
+
+.detail-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+// ============= 快照网格 =============
+.detail-snapshot-grid {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  row-gap: 12px;
+  column-gap: 16px;
+  align-items: start;
+}
+
+.detail-snapshot-label {
+  padding-top: 1px;
+}
+
+// ============= 卡片内的 Table =============
+.detail-card-table {
+  .semi-table {
+    background: transparent;
+  }
+  .semi-table-thead > .semi-table-row > .semi-table-row-head {
+    background: var(--semi-color-fill-0);
+    color: var(--semi-color-text-2);
+    font-weight: normal;
+  }
+  .semi-table-tbody > .semi-table-row > .semi-table-row-cell {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}
+
+// ============= 右侧属性面板（堆叠样式） =============
+.detail-property-stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-property-stacked-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-property-stacked-label {
+  display: block;
+}
+
+.detail-property-stacked-value {
+  font-size: 14px;
+}
+
+// ============= 审批 Timeline =============
+.detail-timeline-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.detail-timeline-dot-pending {
+  background: var(--semi-color-primary);
+}
+
+// ============= 审批操作 =============
+.detail-approve-actions {
+  background: var(--semi-color-bg-0);
+  border: 1px solid var(--semi-color-border);
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+.detail-approve-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+// 保留旧抽屉外壳类（其它处样式继承自需求详情）
 .release-detail-drawer {
-  // 内容区域
   .release-detail-drawer-content {
     padding: 0;
     height: 100%;
-  }
-
-  .release-detail-drawer-tab-content {
-    padding: 16px 16px 24px 24px;
-  }
-
-  // 分组区域
-  .release-detail-drawer-section {
-    margin-top: 24px;
-  }
-
-  .release-detail-drawer-section-title {
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .release-detail-drawer-process-list,
-  .release-detail-drawer-resource-list {
-    margin-top: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .release-detail-drawer-process-name,
-  .release-detail-drawer-resource-name {
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    min-width: 0;
-    max-width: 70%;
-    overflow: hidden;
-    transition: color 0.2s;
-
-    &:hover {
-      color: var(--semi-color-primary);
-
-      .release-detail-drawer-link-icon {
-        color: var(--semi-color-primary);
-      }
-    }
-  }
-
-  .release-detail-drawer-resource-tag {
-    flex-shrink: 0;
-  }
-
-  .release-detail-drawer-link-icon {
-    font-size: 12px;
-    margin-left: 4px;
-    color: var(--semi-color-tertiary);
-    transition: color 0.2s;
-  }
-
-  .release-detail-drawer-process-card,
-  .release-detail-drawer-resource-card {
-    padding: 12px 16px;
-    background: var(--semi-color-fill-0);
-    border-radius: 8px;
-  }
-
-  .release-detail-drawer-process-card-header,
-  .release-detail-drawer-resource-card-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-
-  .release-detail-drawer-resource-card-body {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  // 「审批流程」Tab 底部审批操作区
-  .release-detail-drawer-approve-actions {
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid var(--semi-color-border);
-  }
-
-  .release-detail-drawer-approve-buttons {
-    display: flex;
-    gap: 8px;
   }
 }
