@@ -1,36 +1,25 @@
 ## 目标
-为以下三个列表页面补充统一规范的翻页栏（参考图二样式），保持其它逻辑不变。
+让「流程下线」页面（`src/pages/Development/OfflineRequests/index.tsx`）的表格区域与「发布列表」（图二）保持一致。
 
-- 发布审批：`src/pages/Development/PublishApprovals/index.tsx`
-- 停用审批：`src/pages/Development/OfflineApprovals/index.tsx`
-- 需求评审：`src/pages/Requirements/RequirementsReview/index.tsx`
+## 改动点
 
-## 规范要点（与 MyShared / OfflineRequests 一致）
-- `pageSize = 10`，`Table` 自身 `pagination={false}`。
-- 表格外包裹 `.list-pagination` 容器，使用 Semi `Pagination`，左侧显示「显示第 X 条-第 Y 条，共 Z 条」，右侧显示「总页数」+ `Pagination`。
-- 切换 Tab / 改变筛选/搜索时 `page` 重置为 1。
-- 仅当 `total > 0` 时渲染分页条；空状态保持现有 emptyText / 骨架屏逻辑。
+### 1. 页面布局对齐 ReleaseListPage
+- 标题行只保留标题与副标题，**移除** 右侧的「发起下线申请」按钮。
+- 改用 `release-list-page-header-toolbar` 同款工具栏行：左侧 = 搜索框 + 筛选；右侧 = 主操作按钮「+ 发起下线申请」。
+- `index.less` 同步：去掉 header 的 `justify-content: space-between` 等，改成与 `.release-list-page` 一致的「标题区 + toolbar 行」结构。
 
-## 改动细节
+### 2. 表格新增「操作」列
+- 末列追加 `操作`，宽度 60，渲染 `Dropdown` + `Ellipsis` 图标，菜单项「查看详情」（点击调用现有 `openDetail`）。
+- `TableSkeleton` 的 `columns`/`columnWidths` 同步加一列；保持原有列宽比例。
 
-### 1. PublishApprovals
-- 在组件内新增 `const [page, setPage] = useState(1)`；在 Tab 切换、搜索、筛选变化的副作用里 `setPage(1)`。
-- `renderTable` 接收 `dataSource = filteredData`，内部计算 `pagedData = filteredData.slice((page-1)*10, page*10)` 喂给 `Table`。
-- 在 `Table` 之后渲染 `.list-pagination`（与 MyShared 写法一致），使用统一的 `t('common.showingRecords')`、`t('common.totalPages')` 文案。
-
-### 2. OfflineApprovals
-- 同样的 `page` state + 重置时机；
-- `renderTable` 中切片数据、追加 `.list-pagination` 栏。
-- 列宽与现有 `columnWidths` 不变。
-
-### 3. RequirementsReview
-- 该页面三个 Tab 都共享 `filteredData`，新增 `page` state，并在 Tab/筛选/搜索变化时重置；
-- 三处 `<Table dataSource={filteredData}>` 改为分页切片数据；
-- 三个 Tab 容器底部统一追加 `.list-pagination` 栏（与表格同级，受 `.app-layout-content-card` 滚动结构约束）。
+### 3. 与发布列表一致的视觉细节
+- 表格容器套一层 `.offline-requests-table`（`flex: 1; min-height: 0; overflow: hidden`），与 `.release-list-page-table` 对齐。
+- 行选中类名沿用现有 `offline-requests-row-selected`，视觉效果与发布列表一致（`var(--semi-color-fill-1)`）。
+- 翻页栏（`.list-pagination`）保持不变。
 
 ## 不改动
-- 业务逻辑、列定义、筛选、详情抽屉、空态文案、骨架屏。
-- OfflineRequests（下线申请）已具备同款分页，本次无需改动。
+- 列数据、筛选、详情抽屉、深链行为、Mock 数据。
+- 「发起下线申请」的交互逻辑（仍触发同一个 `setCreateVisible(true)`）。
 
 ## 验证
-- 构建通过后，肉眼确认三页底部出现「显示 1-10 条，共 N 条 | 总页数：M ‹ 1 2 › 每页 10」分页栏，且 Tab 切换会重置到第 1 页。
+- 视觉对照：标题下方出现「搜索框 + 筛选 ←→ + 发起下线申请」工具栏；表格末列出现 `…` 操作按钮，点击展开「查看详情」；行间距、字号与发布列表一致。

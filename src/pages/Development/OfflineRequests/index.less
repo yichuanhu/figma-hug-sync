@@ -1,4 +1,4 @@
-// 流程下线 - 申请人页面样式（对齐 OfflineApprovals 风格）
+// 流程下线 - 申请人页面样式（对齐 ReleaseListPage 风格）
 .offline-requests {
   display: flex;
   flex-direction: column;
@@ -6,13 +6,16 @@
 
   &-header {
     flex-shrink: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
+    padding-top: 0;
 
     &-title {
-      .title { margin-bottom: 8px; }
+      margin-bottom: 24px;
+
+      .title { margin-bottom: 0; }
+    }
+
+    &-toolbar {
+      margin-bottom: 16px;
     }
   }
 
@@ -22,14 +25,6 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-  }
-
-  &-toolbar {
-    margin-bottom: 12px;
-    flex-shrink: 0;
-    display: flex;
-    gap: 12px;
-    align-items: center;
   }
 
   &-search-input {

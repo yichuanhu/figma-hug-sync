@@ -12,7 +12,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import { Plus } from 'lucide-react';
+import { Plus, Eye, Ellipsis } from 'lucide-react';
+import { Dropdown } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
@@ -153,6 +154,23 @@ const OfflineRequestsPage = () => {
       ),
     },
     { title: '提交时间', dataIndex: 'submitted_at', width: 180, render: (v: string) => fmtTime(v) },
+    {
+      title: '操作', dataIndex: 'actions', width: 60,
+      render: (_: unknown, r: ProcessOfflineRequest) => (
+        <Dropdown
+          trigger="click" clickToHide position="bottomRight"
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); openDetail(r); }}>
+                查看详情
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          }
+        >
+          <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+        </Dropdown>
+      ),
+    },
   ], []);
 
   // 搜索/筛选变化时重置到第 1 页
