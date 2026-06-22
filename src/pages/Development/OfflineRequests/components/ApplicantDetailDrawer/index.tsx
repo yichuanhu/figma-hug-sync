@@ -12,6 +12,7 @@ import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import ExpandableText from '@/components/ExpandableText';
 import {
   type ProcessOfflineRequest,
+  type DependencyCheckSnapshot,
   OFFLINE_STATUS_TAG,
 } from '@/mocks/processOfflineApproval';
 import './index.less';
