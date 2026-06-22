@@ -1,75 +1,44 @@
 
-## 目标
+## 问题
 
-参考图重做「发布审批详情」和「停用审批详情」抽屉，使其视觉与需求审批一致且更精致：内容用卡片包裹、关键信息以"标签—值"行展示、流程与资源用紧凑表格、右侧属性面板字段顺序与参考图一致；标题区显示编号 + 流程数 tag + 状态点。
+`ReleaseDetailDrawer` 同时被「流程发布列表」(ReleaseListPage) 和「发布审批」(PublishApprovals) 复用，上一轮按发布审批参考图改造后，列表页详情也被一起改动了。两个场景诉求不同：
 
-## 视觉变更（仅 UI / 样式，不改业务逻辑）
+- **发布审批详情**：只有 2 个 Tab（发布申请 / 审批进度），重审批视角，使用卡片化「申请快照」+「审批流」（已完成）。
+- **流程发布列表详情**：有 3 个 Tab（基本信息 / 审批流程 / 发布内容），重发布执行视角，沿用原有详细展示（流程卡片 + 资源分组卡片 + 链接跳转 + 失败/拒绝 Banner + 时间线）。
 
-### 抽屉标题
-- 标题改为：`RLS-20260622-019`（强）+ `共 N 个流程` 灰色 Tag + `● 待审批` StatusDot
-- 停用单：`OFL-xxx` + `流程：xxx` Tag + 状态点
+## 方案
 
-### 左侧 Tab1「发布申请」/「停用申请」
-内容由当前的"分组 + 标题"改为 **卡片堆叠**：
-1. **卡片：发布申请快照 / 停用申请快照**
-   - `.detail-snapshot-card`：白底、`1px solid var(--semi-color-border)`、`border-radius: 8px`、`padding: 16px 20px`
-   - 卡片标题 `Title heading=6`，下方为两列 grid（label 80px tertiary 文字 + value）行间距 12px
-   - 字段（发布）：发布编号 / 发布类型 / 发布状态（StatusDot）/ 流程数量 / 资源数量 / 提交时间 / 描述（ExpandableText 占整行）
-   - 字段（停用）：申请编号 / 流程名称 / 状态 / 申请人 / 提交时间 / 停用原因
-2. **卡片：流程与版本 (N)**
-   - Semi `Table size="small"` 列：流程名称 / 版本 / 描述；行高紧凑、无外边框
-3. **卡片：资源 (N)**（发布单专用）
-   - Semi `Table size="small"` 列：资源名称 / 类型 / 来源流程 / 手动添加（是/否）
-4. **卡片：依赖检查快照**（停用单专用）
-   - 内部保留现有 dependency 渲染
+**拆分为两个独立组件**，互不耦合。
 
-错误/拒绝/失败 Banner 保留在卡片之上。
+1. 新建 `ReleaseManagement/components/ReleaseListDetailDrawer/`（`index.tsx` + `index.less`）
+   - 恢复原始 3 个 Tab：
+     - **基本信息**：发布编号、类型、状态、发布人、所属部门、提交时间、描述等（沿用上一版样式，左侧分组展示）
+     - **审批流程**：Timeline 形式展示审批记录（无内联审批操作）
+     - **发布内容**：流程列表（可点击跳转）+ 按类型分组的资源列表（PARAMETER/CREDENTIAL/QUEUE/FILE，含手动添加 Tag、被使用流程、跳转图标）
+   - 头部仍使用文本标题（如 `[RLS-xxx] 发布单详情`），无右侧属性面板（全宽内容）
+   - 不带 `approvalContext`，仅查看用途
 
-### 左侧 Tab2「审批进度」
-内容同样改为卡片：
-1. **卡片：审批流**
-   - 右上角显示「当前第 X / Y 级」
-   - Timeline：未审批级别用蓝色待审样式（`type="default"` + 蓝点）+ `● 待审批` 文字；已审批保持现有 success/error 样式；显示审批人列表 + 第 N 级
-2. **卡片：审批记录**
-   - 有记录：展示 records timeline
-   - 无记录：使用 EmptyState（图标 + 「暂无审批记录」）
-3. **审批操作区**（保留现状：TextArea + 通过/拒绝按钮，放在卡片下方）
+2. 修改 `ReleaseListPage/index.tsx`：
+   - 引用从 `ReleaseDetailDrawer` 切换为 `ReleaseListDetailDrawer`
+   - 其余 props（visible/release/releaseList/onClose/onNavigate/extraActions）保持
 
-### 右侧属性面板字段顺序（按参考图）
-发布：审批状态 / 开发者 / 所属部门 / 当前级别 / 提交时间 / 发布编号
-停用：审批状态 / 申请人 / 所属部门 / 当前级别 / 提交时间 / 申请编号
-- 字段排版改为上下结构（label 在上 tertiary small，value 在下，无 divider 分组），与参考图一致
-- 复用 `requirement-detail-property-panel` 但新增/覆写 `.detail-property-stacked` 类，去掉 divider，每项 `margin-bottom: 20px`
+3. **保留** `ReleaseDetailDrawer`（卡片化 2 Tab 版本）专供 `PublishApprovals` 使用，不再回退；接口、类型、`approvalContext` 协议不变。
+
+4. `OfflineApprovals/components/DetailDrawer` 不变（与发布审批同款卡片化，已完成）。
 
 ## 涉及文件
 
-1. `src/pages/Development/ReleaseManagement/components/ReleaseDetailDrawer/index.tsx`
-   - 重写 `renderOverviewTab`：拆为 SnapshotCard + ProcessTable + ResourceTable
-   - 重写 `renderApprovalTab`：拆为审批流 Card + 审批记录 Card
-   - 重写 `ReleasePropertyPanel`：去 divider、堆叠样式、字段顺序对齐参考图
-   - 抽屉 title 改为 ReactNode（编号 + Tag + StatusDot）
-
-2. `src/pages/Development/ReleaseManagement/components/ReleaseDetailDrawer/index.less`
-   - 新增 `.detail-snapshot-card` / `.detail-snapshot-grid` / `.detail-snapshot-row`
-   - 新增 `.detail-table-card`（Table 包裹卡片，去掉 Table 自身边框，使用卡片边框）
-   - 新增 `.detail-property-stacked`（覆写 requirement-detail-property-* 的 divider/排版）
-   - 新增 `.detail-approval-card` + `.detail-approval-card-header`（带"当前第 X/Y 级"右上角）
-
-3. `src/pages/Development/OfflineApprovals/components/DetailDrawer/index.tsx`
-   - 同上结构：SnapshotCard（编号/流程/状态/申请人/提交时间/停用原因）+ 依赖检查 Card
-   - 审批 Tab 拆卡片
-   - PropertyPanel 改堆叠
-   - 抽屉 title 改 ReactNode
-
-4. `src/pages/Development/OfflineApprovals/components/DetailDrawer/index.less`
-   - 复用上述类（通过 `@import` ReleaseDetailDrawer 的样式或独立定义同名类）；保留依赖列表样式
+- 新增 `src/pages/Development/ReleaseManagement/components/ReleaseListDetailDrawer/index.tsx`
+- 新增 `src/pages/Development/ReleaseManagement/components/ReleaseListDetailDrawer/index.less`
+- 编辑 `src/pages/Development/ReleaseManagement/ReleaseListPage/index.tsx`（仅替换 import 与 JSX 标签）
 
 ## 不改动
 
-- 业务逻辑：approve/reject/retry API、Mock、列表页、`DetailDrawerWrapper`、`UserNameWithCard`、`StatusDot`、`ExpandableText`、i18n key 一律不动
-- 当前的 `approvalContext` prop 协议保持不变
-- 需求审批抽屉 (`RequirementDetailDrawer`) 不动
+- `ReleaseDetailDrawer`（发布审批专用，已完成卡片化）
+- `PublishApprovals/index.tsx`
+- `OfflineApprovals/components/DetailDrawer`
+- 业务逻辑/API/Mock/i18n
 
-## 验证
+## 实现来源
 
-通过浏览器预览 `/dev-center/publish-approvals` 与 `/dev-center/offline-approvals`，对比参考图核对：标题构成、卡片边框/留白、字段顺序、Timeline 待审样式、空状态、右侧属性面板顺序。
+新组件内容以「卡片化重构前」的旧版 `ReleaseDetailDrawer`（3 Tab：基本信息 / 发布内容 / 审批流程，含 process 卡片、resource 分组、跳转图标、Banner）为模板，去除 `approvalContext` 相关代码，保留只读展示。
