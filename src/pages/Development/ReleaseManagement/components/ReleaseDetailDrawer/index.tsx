@@ -59,11 +59,11 @@ const ReleasePropertyPanel: React.FC<{ release: LYReleaseResponse }> = ({ releas
 
   const items: { label: string; value: React.ReactNode }[] = [
     {
-      label: '审批状态',
+      label: '状态',
       value: <StatusDot color={status.color as StatusDotColor} label={status.text} />,
     },
     {
-      label: '发布者',
+      label: '发布人',
       value: release.publisher_name ? (
         <UserNameWithCard
           name={release.publisher_name}
