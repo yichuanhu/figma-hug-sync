@@ -88,7 +88,14 @@ const AnnouncementSection = () => {
                   style={img ? undefined : { background: banner.bannerGradient ?? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
                   onClick={() => setDetail(banner)}
                 >
-                  {index === 0 && <div className="banner-slide-badge">最新</div>}
+                  {index === 0 && (
+                    <div
+                      className="banner-slide-badge"
+                      title={defaultBadgeText.length > MAX_BADGE_TEXT_LENGTH ? defaultBadgeText : undefined}
+                    >
+                      {badgeText}
+                    </div>
+                  )}
                   {img ? (
                     <img src={img} alt={banner.title} className="banner-slide-image" />
                   ) : (
