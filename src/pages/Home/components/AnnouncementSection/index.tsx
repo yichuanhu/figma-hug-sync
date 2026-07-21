@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Tag, Modal, Typography } from '@douyinfe/semi-ui';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import type { PlatformAnnouncement } from '@/pages/Operations/PlatformOperations/mockData';
 import {
   getBannerAnnouncements,
@@ -17,15 +17,24 @@ const bannerImageMap: Record<string, string> = {
   'apa-worker-release': apaWorkerBanner,
 };
 
-const priorityConfig: Record<string, { color: 'red' | 'orange' | 'blue'; label: string }> = {
-  urgent: { color: 'red', label: 'Urgent' },
-  important: { color: 'orange', label: 'Important' },
-  normal: { color: 'blue', label: 'Normal' },
+const priorityConfig: Record<string, { color: 'red' | 'orange' | 'blue'; label: string; weight: number }> = {
+  urgent: { color: 'red', label: 'Urgent', weight: 3 },
+  important: { color: 'orange', label: 'Important', weight: 2 },
+  normal: { color: 'blue', label: 'Normal', weight: 1 },
 };
 
 const MAX_BADGE_TEXT_LENGTH = 4;
+const DEFAULT_VISIBLE = 4;
+const LOAD_MORE_STEP = 4;
 
 const formatBadgeText = (text: string) => text.slice(0, MAX_BADGE_TEXT_LENGTH);
+
+const sortByImportanceAndTime = (a: PlatformAnnouncement, b: PlatformAnnouncement) => {
+  const wa = priorityConfig[a.priority]?.weight ?? 0;
+  const wb = priorityConfig[b.priority]?.weight ?? 0;
+  if (wb !== wa) return wb - wa;
+  return (b.publishedAt ?? '').localeCompare(a.publishedAt ?? '');
+};
 
 const AnnouncementSection = () => {
   const { t } = useTranslation();
@@ -33,6 +42,8 @@ const AnnouncementSection = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [detail, setDetail] = useState<PlatformAnnouncement | null>(null);
+  const [visibleCount, setVisibleCount] = useState(DEFAULT_VISIBLE);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const resolveBannerImage = (b: PlatformAnnouncement) => {
     if (b.bannerImageUrl) return b.bannerImageUrl;
@@ -40,10 +51,25 @@ const AnnouncementSection = () => {
     return undefined;
   };
 
-  // 方案 A：Banner 位只展示配置了图片的公告；无图公告一律走右侧列表
-  const banners = getBannerAnnouncements().filter((b) => !!resolveBannerImage(b));
+  // Banner 排序：重要级别高 + 发布时间新 + 有图，最优的排在最前
+  const banners = useMemo(
+    () =>
+      getBannerAnnouncements()
+        .filter((b) => !!resolveBannerImage(b))
+        .sort(sortByImportanceAndTime),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
   const hasBanners = banners.length > 0;
-  const announcements = getPublishedAnnouncements(hasBanners ? 3 : 6);
+
+  // 全量已发布公告（按重要级别 + 时间排序），支持滚动加载历史
+  const allAnnouncements = useMemo(
+    () => getPublishedAnnouncements(999).slice().sort(sortByImportanceAndTime),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+  const announcements = allAnnouncements.slice(0, visibleCount);
+  const hasMore = visibleCount < allAnnouncements.length;
 
   const defaultBadgeText = t('homepage.announcements.badge.new');
   const badgeText = formatBadgeText(defaultBadgeText);
@@ -63,6 +89,14 @@ const AnnouncementSection = () => {
       emblaApi.off('select', onSelect);
     };
   }, [emblaApi, onSelect]);
+
+  const handleListScroll = useCallback(() => {
+    const el = listRef.current;
+    if (!el) return;
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 24) {
+      setVisibleCount((c) => Math.min(c + LOAD_MORE_STEP, allAnnouncements.length));
+    }
+  }, [allAnnouncements.length]);
 
 
 
@@ -112,7 +146,7 @@ const AnnouncementSection = () => {
           </div>
         )}
 
-        <div className="announcement-list">
+        <div className="announcement-list" ref={listRef} onScroll={handleListScroll}>
           {announcements.map((item) => {
             const config = priorityConfig[item.priority];
             return (
@@ -130,6 +164,9 @@ const AnnouncementSection = () => {
               </div>
             );
           })}
+          {!hasMore && announcements.length > DEFAULT_VISIBLE && (
+            <div className="announcement-list-end">{t('homepage.announcements.noMore', '没有更多了')}</div>
+          )}
         </div>
       </div>
 
