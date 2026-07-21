@@ -146,7 +146,7 @@ const AnnouncementSection = () => {
           </div>
         )}
 
-        <div className="announcement-list">
+        <div className="announcement-list" ref={listRef} onScroll={handleListScroll}>
           {announcements.map((item) => {
             const config = priorityConfig[item.priority];
             return (
@@ -164,6 +164,9 @@ const AnnouncementSection = () => {
               </div>
             );
           })}
+          {!hasMore && announcements.length > DEFAULT_VISIBLE && (
+            <div className="announcement-list-end">{t('homepage.announcements.noMore', '没有更多了')}</div>
+          )}
         </div>
       </div>
 
