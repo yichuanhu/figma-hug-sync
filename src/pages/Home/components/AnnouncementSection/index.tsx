@@ -41,8 +41,16 @@ const AnnouncementSection = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [detail, setDetail] = useState<PlatformAnnouncement | null>(null);
 
-  const banners = getBannerAnnouncements();
-  const announcements = getPublishedAnnouncements(5);
+  const resolveBannerImage = (b: PlatformAnnouncement) => {
+    if (b.bannerImageUrl) return b.bannerImageUrl;
+    if (b.bannerImageKey && bannerImageMap[b.bannerImageKey]) return bannerImageMap[b.bannerImageKey];
+    return undefined;
+  };
+
+  // 方案 A：Banner 位只展示配置了图片的公告；无图公告一律走右侧列表
+  const banners = getBannerAnnouncements().filter((b) => !!resolveBannerImage(b));
+  const hasBanners = banners.length > 0;
+  const announcements = getPublishedAnnouncements(hasBanners ? 3 : 6);
 
   const defaultBadgeText = t('homepage.announcements.badge.new');
   const badgeText = formatBadgeText(defaultBadgeText);
