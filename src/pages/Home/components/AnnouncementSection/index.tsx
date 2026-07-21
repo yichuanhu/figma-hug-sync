@@ -71,7 +71,7 @@ const AnnouncementSection = () => {
       <div className="announcement-body">
         <div className="banner-carousel" ref={emblaRef}>
           <div className="banner-carousel-container">
-            {banners.map((banner) => {
+            {banners.map((banner, index) => {
               const img = resolveBannerImage(banner);
               const IconComp = banner.bannerIcon ? bannerIconMap[banner.bannerIcon] : undefined;
               return (
@@ -81,6 +81,7 @@ const AnnouncementSection = () => {
                   style={img ? undefined : { background: banner.bannerGradient ?? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
                   onClick={() => setDetail(banner)}
                 >
+                  {index === 0 && <div className="banner-slide-badge">最新</div>}
                   {img ? (
                     <img src={img} alt={banner.title} className="banner-slide-image" />
                   ) : (
