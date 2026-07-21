@@ -71,11 +71,8 @@ const AnnouncementSection = () => {
     };
   }, [emblaApi, onSelect]);
 
-  const resolveBannerImage = (b: ReturnType<typeof getBannerAnnouncements>[number]) => {
-    if (b.bannerImageUrl) return b.bannerImageUrl;
-    if (b.bannerImageKey && bannerImageMap[b.bannerImageKey]) return bannerImageMap[b.bannerImageKey];
-    return undefined;
-  };
+
+
 
   return (
     <div className="home-card announcement-section">
