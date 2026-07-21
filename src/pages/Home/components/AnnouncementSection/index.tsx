@@ -30,6 +30,10 @@ const priorityConfig: Record<string, { color: 'red' | 'orange' | 'blue'; label: 
   normal: { color: 'blue', label: 'Normal' },
 };
 
+const MAX_BADGE_TEXT_LENGTH = 4;
+
+const formatBadgeText = (text: string) => text.slice(0, MAX_BADGE_TEXT_LENGTH);
+
 const AnnouncementSection = () => {
   const { t } = useTranslation();
   usePlatformOpsData();
@@ -39,6 +43,9 @@ const AnnouncementSection = () => {
 
   const banners = getBannerAnnouncements();
   const announcements = getPublishedAnnouncements(5);
+
+  const defaultBadgeText = t('homepage.announcements.badge.new');
+  const badgeText = formatBadgeText(defaultBadgeText);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -81,7 +88,14 @@ const AnnouncementSection = () => {
                   style={img ? undefined : { background: banner.bannerGradient ?? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
                   onClick={() => setDetail(banner)}
                 >
-                  {index === 0 && <div className="banner-slide-badge">最新</div>}
+                  {index === 0 && (
+                    <div
+                      className="banner-slide-badge"
+                      title={defaultBadgeText.length > MAX_BADGE_TEXT_LENGTH ? defaultBadgeText : undefined}
+                    >
+                      {badgeText}
+                    </div>
+                  )}
                   {img ? (
                     <img src={img} alt={banner.title} className="banner-slide-image" />
                   ) : (

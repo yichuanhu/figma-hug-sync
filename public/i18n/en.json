@@ -4079,7 +4079,10 @@
     },
     "announcements": {
       "title": "Platform Announcements",
-      "viewAll": "All"
+      "viewAll": "All",
+      "badge": {
+        "new": "NEW"
+      }
     },
     "resources": {
       "title": "Resources"
