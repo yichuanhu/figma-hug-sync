@@ -30,6 +30,10 @@ const priorityConfig: Record<string, { color: 'red' | 'orange' | 'blue'; label: 
   normal: { color: 'blue', label: 'Normal' },
 };
 
+const MAX_BADGE_TEXT_LENGTH = 4;
+
+const formatBadgeText = (text: string) => text.slice(0, MAX_BADGE_TEXT_LENGTH);
+
 const AnnouncementSection = () => {
   const { t } = useTranslation();
   usePlatformOpsData();
