@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { Tag, Modal, Typography } from '@douyinfe/semi-ui';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useState, useEffect, useCallback } from 'react';
-import { Palette, Cpu, Megaphone } from 'lucide-react';
 import type { PlatformAnnouncement } from '@/pages/Operations/PlatformOperations/mockData';
 import {
   getBannerAnnouncements,
@@ -16,12 +15,6 @@ import './index.less';
 const bannerImageMap: Record<string, string> = {
   'apa-creator-release': apaCreatorBanner,
   'apa-worker-release': apaWorkerBanner,
-};
-
-const bannerIconMap: Record<string, React.ComponentType<any>> = {
-  Palette,
-  Cpu,
-  Megaphone,
 };
 
 const priorityConfig: Record<string, { color: 'red' | 'orange' | 'blue'; label: string }> = {
@@ -41,8 +34,16 @@ const AnnouncementSection = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [detail, setDetail] = useState<PlatformAnnouncement | null>(null);
 
-  const banners = getBannerAnnouncements();
-  const announcements = getPublishedAnnouncements(5);
+  const resolveBannerImage = (b: PlatformAnnouncement) => {
+    if (b.bannerImageUrl) return b.bannerImageUrl;
+    if (b.bannerImageKey && bannerImageMap[b.bannerImageKey]) return bannerImageMap[b.bannerImageKey];
+    return undefined;
+  };
+
+  // 方案 A：Banner 位只展示配置了图片的公告；无图公告一律走右侧列表
+  const banners = getBannerAnnouncements().filter((b) => !!resolveBannerImage(b));
+  const hasBanners = banners.length > 0;
+  const announcements = getPublishedAnnouncements(hasBanners ? 3 : 6);
 
   const defaultBadgeText = t('homepage.announcements.badge.new');
   const badgeText = formatBadgeText(defaultBadgeText);
@@ -63,11 +64,8 @@ const AnnouncementSection = () => {
     };
   }, [emblaApi, onSelect]);
 
-  const resolveBannerImage = (b: ReturnType<typeof getBannerAnnouncements>[number]) => {
-    if (b.bannerImageUrl) return b.bannerImageUrl;
-    if (b.bannerImageKey && bannerImageMap[b.bannerImageKey]) return bannerImageMap[b.bannerImageKey];
-    return undefined;
-  };
+
+
 
   return (
     <div className="home-card announcement-section">
@@ -75,62 +73,47 @@ const AnnouncementSection = () => {
         <span className="home-card-title">{t('homepage.announcements.title')}</span>
       </div>
 
-      <div className="announcement-body">
-        <div className="banner-carousel" ref={emblaRef}>
-          <div className="banner-carousel-container">
-            {banners.map((banner, index) => {
-              const img = resolveBannerImage(banner);
-              const IconComp = banner.bannerIcon ? bannerIconMap[banner.bannerIcon] : undefined;
-              return (
-                <div
-                  key={banner.id}
-                  className={`banner-slide${img ? ' has-image' : ''}`}
-                  style={img ? undefined : { background: banner.bannerGradient ?? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
-                  onClick={() => setDetail(banner)}
-                >
-                  {index === 0 && (
-                    <div
-                      className="banner-slide-badge"
-                      title={defaultBadgeText.length > MAX_BADGE_TEXT_LENGTH ? defaultBadgeText : undefined}
-                    >
-                      {badgeText}
-                    </div>
-                  )}
-                  {img ? (
+      <div className={`announcement-body${hasBanners ? '' : ' no-banner'}`}>
+        {hasBanners && (
+          <div className="banner-carousel" ref={emblaRef}>
+            <div className="banner-carousel-container">
+              {banners.map((banner, index) => {
+                const img = resolveBannerImage(banner)!;
+                return (
+                  <div
+                    key={banner.id}
+                    className="banner-slide has-image"
+                    onClick={() => setDetail(banner)}
+                  >
+                    {index === 0 && (
+                      <div
+                        className="banner-slide-badge"
+                        title={defaultBadgeText.length > MAX_BADGE_TEXT_LENGTH ? defaultBadgeText : undefined}
+                      >
+                        {badgeText}
+                      </div>
+                    )}
                     <img src={img} alt={banner.title} className="banner-slide-image" />
-                  ) : (
-                    <>
-                      <div className="banner-slide-content">
-                        <div className="banner-slide-title">{banner.title}</div>
-                        <div className="banner-slide-subtitle">{banner.summary}</div>
-                        {banner.bannerVersion && (
-                          <div className="banner-slide-version">{banner.bannerVersion}</div>
-                        )}
-                      </div>
-                      <div className="banner-slide-icon">
-                        {IconComp ? <IconComp size={48} strokeWidth={1.5} /> : <Megaphone size={48} strokeWidth={1.5} />}
-                      </div>
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-          {banners.length > 1 && (
-            <div className="banner-dots">
-              {banners.map((_, index) => (
-                <button
-                  key={index}
-                  className={`banner-dot ${index === selectedIndex ? 'active' : ''}`}
-                  onClick={() => emblaApi?.scrollTo(index)}
-                />
-              ))}
+                  </div>
+                );
+              })}
             </div>
-          )}
-        </div>
+            {banners.length > 1 && (
+              <div className="banner-dots">
+                {banners.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`banner-dot ${index === selectedIndex ? 'active' : ''}`}
+                    onClick={() => emblaApi?.scrollTo(index)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="announcement-list">
-          {announcements.slice(0, 3).map((item) => {
+          {announcements.map((item) => {
             const config = priorityConfig[item.priority];
             return (
               <div key={item.id} className="announcement-item" onClick={() => setDetail(item)}>
