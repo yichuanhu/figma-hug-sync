@@ -44,6 +44,9 @@ const AnnouncementSection = () => {
   const banners = getBannerAnnouncements();
   const announcements = getPublishedAnnouncements(5);
 
+  const defaultBadgeText = t('homepage.announcements.badge.new');
+  const badgeText = formatBadgeText(defaultBadgeText);
+
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setSelectedIndex(emblaApi.selectedScrollSnap());
