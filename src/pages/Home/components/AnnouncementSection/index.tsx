@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { Tag, Modal, Typography } from '@douyinfe/semi-ui';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useState, useEffect, useCallback } from 'react';
-import { Palette, Cpu, Megaphone } from 'lucide-react';
 import type { PlatformAnnouncement } from '@/pages/Operations/PlatformOperations/mockData';
 import {
   getBannerAnnouncements,
@@ -16,12 +15,6 @@ import './index.less';
 const bannerImageMap: Record<string, string> = {
   'apa-creator-release': apaCreatorBanner,
   'apa-worker-release': apaWorkerBanner,
-};
-
-const bannerIconMap: Record<string, React.ComponentType<any>> = {
-  Palette,
-  Cpu,
-  Megaphone,
 };
 
 const priorityConfig: Record<string, { color: 'red' | 'orange' | 'blue'; label: string }> = {
