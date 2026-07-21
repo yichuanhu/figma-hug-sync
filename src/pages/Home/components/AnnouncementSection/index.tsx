@@ -88,7 +88,7 @@ const AnnouncementSection = () => {
                     <>
                       <div className="banner-slide-content">
                         <div className="banner-slide-title">{banner.title}</div>
-                        < <div className="banner-slide-subtitle">{banner.summary}</div>
+                        <div className="banner-slide-subtitle">{banner.summary}</div>
                         {banner.bannerVersion && (
                           <div className="banner-slide-version">{banner.bannerVersion}</div>
                         )}
