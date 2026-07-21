@@ -3477,7 +3477,10 @@
       "expand": "展开"
     },
     "announcements": {
-      "title": "平台公告"
+      "title": "平台公告",
+      "badge": {
+        "new": "最新"
+      }
     },
     "resources": {
       "title": "资源获取"
