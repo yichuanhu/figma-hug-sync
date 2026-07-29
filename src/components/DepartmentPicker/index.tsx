@@ -10,11 +10,12 @@
  * Props 兼容多选 DepartmentSelect：value / onChange / disabledOptions / placeholder / disabled。
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Modal, Input, Checkbox, Typography, Tooltip } from '@douyinfe/semi-ui';
+import { Modal, Input, Checkbox, Typography, Tooltip, Switch, Button } from '@douyinfe/semi-ui';
 import { Building2, ChevronRight, X, ChevronDown, Search, Lock } from 'lucide-react';
 import {
   departmentTree,
   getDepartmentName,
+  getDepartmentSubtreeIds,
   type DeptTreeNode,
 } from '@/mocks/departmentData';
 import './index.less';
