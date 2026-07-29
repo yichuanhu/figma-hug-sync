@@ -103,6 +103,8 @@ const DepartmentPicker = ({
   // 弹窗内的暂存选择
   const [draft, setDraft] = useState<string[]>(value);
   const [keyword, setKeyword] = useState('');
+  // 是否把所选部门的下级部门一并纳入
+  const [includeChildren, setIncludeChildren] = useState(true);
 
   useEffect(() => {
     if (open) {
@@ -111,6 +113,7 @@ const DepartmentPicker = ({
       setKeyword('');
     }
   }, [open]);
+
 
   const currentLevel: DeptTreeNode[] = useMemo(() => {
     if (pathStack.length === 0) return departmentTree;
