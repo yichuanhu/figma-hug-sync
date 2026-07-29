@@ -144,10 +144,26 @@ const DepartmentPicker = ({
     setDraft(draft.filter((x) => x !== id));
   };
 
+  /** 展开后的最终结果：开启「包含下级部门」时把每个所选部门的子孙一并纳入 */
+  const expandedDraft = useMemo(() => {
+    if (!includeChildren) return draft;
+    const set = new Set<string>();
+    draft.forEach((id) => {
+      set.add(id);
+      getDepartmentSubtreeIds(id).forEach((sub) => {
+        if (!disabledOptions?.[sub]) set.add(sub);
+      });
+    });
+    return Array.from(set);
+  }, [draft, includeChildren, disabledOptions]);
+
+  const extraChildrenCount = expandedDraft.length - draft.length;
+
   const handleConfirm = () => {
-    onChange?.(draft);
+    onChange?.(expandedDraft);
     setOpen(false);
   };
+
 
   const handleCancel = () => {
     setOpen(false);
