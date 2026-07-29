@@ -10,11 +10,12 @@
  * Props 兼容多选 DepartmentSelect：value / onChange / disabledOptions / placeholder / disabled。
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Modal, Input, Checkbox, Typography, Tooltip } from '@douyinfe/semi-ui';
+import { Modal, Input, Checkbox, Typography, Tooltip, Switch, Button } from '@douyinfe/semi-ui';
 import { Building2, ChevronRight, X, ChevronDown, Search, Lock } from 'lucide-react';
 import {
   departmentTree,
   getDepartmentName,
+  getDepartmentSubtreeIds,
   type DeptTreeNode,
 } from '@/mocks/departmentData';
 import './index.less';
@@ -102,6 +103,8 @@ const DepartmentPicker = ({
   // 弹窗内的暂存选择
   const [draft, setDraft] = useState<string[]>(value);
   const [keyword, setKeyword] = useState('');
+  // 是否把所选部门的下级部门一并纳入
+  const [includeChildren, setIncludeChildren] = useState(true);
 
   useEffect(() => {
     if (open) {
@@ -110,6 +113,7 @@ const DepartmentPicker = ({
       setKeyword('');
     }
   }, [open]);
+
 
   const currentLevel: DeptTreeNode[] = useMemo(() => {
     if (pathStack.length === 0) return departmentTree;
@@ -140,10 +144,26 @@ const DepartmentPicker = ({
     setDraft(draft.filter((x) => x !== id));
   };
 
+  /** 展开后的最终结果：开启「包含下级部门」时把每个所选部门的子孙一并纳入 */
+  const expandedDraft = useMemo(() => {
+    if (!includeChildren) return draft;
+    const set = new Set<string>();
+    draft.forEach((id) => {
+      set.add(id);
+      getDepartmentSubtreeIds(id).forEach((sub) => {
+        if (!disabledOptions?.[sub]) set.add(sub);
+      });
+    });
+    return Array.from(set);
+  }, [draft, includeChildren, disabledOptions]);
+
+  const extraChildrenCount = expandedDraft.length - draft.length;
+
   const handleConfirm = () => {
-    onChange?.(draft);
+    onChange?.(expandedDraft);
     setOpen(false);
   };
+
 
   const handleCancel = () => {
     setOpen(false);
@@ -251,12 +271,39 @@ const DepartmentPicker = ({
         title="选择适用部门"
         visible={open}
         onCancel={handleCancel}
-        onOk={handleConfirm}
-        okText="确认"
-        cancelText="取消"
         width={760}
         centered
         maskClosable={false}
+        footer={
+          <div className="dept-picker-footer">
+            <label className="dept-picker-footer-switch">
+              <Switch
+                checked={includeChildren}
+                onChange={setIncludeChildren}
+                size="small"
+                aria-label="包含下级部门"
+              />
+              <span className="dept-picker-footer-switch-text">
+                <span className="title">包含下级部门</span>
+                <span className="desc">
+                  {includeChildren
+                    ? extraChildrenCount > 0
+                      ? `开启后，所选部门及其下级部门均生效（额外包含 ${extraChildrenCount} 个下级）`
+                      : '开启后，所选部门及其下级部门均生效'
+                    : '关闭后，仅所选部门本身生效'}
+                </span>
+              </span>
+            </label>
+            <div className="dept-picker-footer-actions">
+              <Button theme="light" onClick={handleCancel}>
+                取消
+              </Button>
+              <Button theme="solid" type="primary" onClick={handleConfirm}>
+                确定
+              </Button>
+            </div>
+          </div>
+        }
       >
         <div className="dept-picker">
           <div className="dept-picker-left">
@@ -267,9 +314,7 @@ const DepartmentPicker = ({
               onChange={setKeyword}
               showClear
             />
-            <Typography.Text type="tertiary" size="small" style={{ display: 'block', marginTop: 8 }}>
-              激活方案时，所选部门的下级部门将自动包含在生效绑定中
-            </Typography.Text>
+
             {!searchResults && (
               <div className="dept-picker-breadcrumb">
                 <span

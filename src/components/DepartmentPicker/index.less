@@ -316,3 +316,53 @@
   display: inline-flex;
   align-items: center;
 }
+
+// 弹窗底部：左侧「包含下级部门」开关 + 右侧操作按钮
+.dept-picker-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--semi-color-border);
+  text-align: left;
+
+  &-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--semi-color-fill-0);
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: var(--semi-color-fill-1);
+    }
+
+    &-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.4;
+
+      .title {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--semi-color-text-0);
+      }
+      .desc {
+        font-size: 12px;
+        color: var(--semi-color-text-2);
+      }
+    }
+  }
+
+  &-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+}
