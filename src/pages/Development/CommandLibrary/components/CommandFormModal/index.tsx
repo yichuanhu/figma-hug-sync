@@ -83,7 +83,7 @@ const CommandFormModal = ({ visible, command, onCancel, onSubmit }: CommandFormM
           rules={[{ required: true, message: '请输入命令名称' }]}
         />
 
-        <Form.Slot label={{ text: '所属部门', required: true }} error={deptError ? { content: deptError } : undefined}>
+        <Form.Slot label={{ text: '所属部门', required: true }} error={deptError ? { error: deptError } : undefined}>
           <DepartmentSelect
             value={departmentId}
             onChange={(val) => {
