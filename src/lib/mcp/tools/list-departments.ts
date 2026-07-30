@@ -3,16 +3,16 @@ import { z } from "zod";
 import { departmentTree } from "../../../mocks/departmentData";
 
 interface DeptNode {
-  id: string;
-  name: string;
+  value: string;
+  label: string;
   children?: DeptNode[];
 }
 
 const flatten = (nodes: DeptNode[], path: string[] = []): Array<{ id: string; name: string; path: string }> =>
   nodes.flatMap((node) => {
-    const nextPath = [...path, node.name];
+    const nextPath = [...path, node.label];
     return [
-      { id: node.id, name: node.name, path: nextPath.join(" / ") },
+      { id: node.value, name: node.label, path: nextPath.join(" / ") },
       ...flatten((node.children ?? []) as DeptNode[], nextPath),
     ];
   });

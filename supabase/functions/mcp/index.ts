@@ -83,9 +83,9 @@ var departmentPathCache = /* @__PURE__ */ new Map();
 
 // src/lib/mcp/tools/list-departments.ts
 var flatten = (nodes, path = []) => nodes.flatMap((node) => {
-  const nextPath = [...path, node.name];
+  const nextPath = [...path, node.label];
   return [
-    { id: node.id, name: node.name, path: nextPath.join(" / ") },
+    { id: node.value, name: node.label, path: nextPath.join(" / ") },
     ...flatten(node.children ?? [], nextPath)
   ];
 });
