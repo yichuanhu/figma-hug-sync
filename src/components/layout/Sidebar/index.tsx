@@ -41,9 +41,10 @@ interface SidebarProps {
 // 根据路径获取需要展开的菜单组
 const getExpandedKeysByPath = (pathname: string): string[] => {
   // 开发任务管理下的路由
-  if (pathname === '/process-development' || pathname.startsWith('/process-detail/')) {
+  if (pathname === '/process-development' || pathname.startsWith('/process-detail/') || pathname.startsWith('/dev-center/command-library')) {
     return ['developmentTaskManagement'];
   }
+
   // 业务资产配置下的路由
   if (pathname.startsWith('/dev-center/business-assets/') || pathname.startsWith('/scheduling-center/business-assets/')) {
     return ['businessAssetConfig', 'schedulingBusinessAssetConfig'];
