@@ -28,19 +28,31 @@ export interface CommandVersion {
   outputs: CommandParam[];
 }
 
+export interface CommandEntry {
+  name: string;
+  usage: string;
+  inputs: CommandParam[];
+  outputs: CommandParam[];
+}
+
 export interface CommandItem {
   id: string;
   name: string;
   description: string;
   status: CommandStatus;
   platforms: CommandPlatform[];
+  compatible_systems: string[];
+  install_count: number;
   current_version: string | null;
   owning_department_id: string;
   owning_department_name: string;
   owner_id: string;
   owner_name: string;
+  publisher_id: string;
+  publisher_name: string;
   created_at: string;
   updated_at: string;
+  commands: CommandEntry[];
   versions: CommandVersion[];
 }
 
