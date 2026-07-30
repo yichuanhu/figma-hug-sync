@@ -352,6 +352,10 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/process-development') {
       return 'automationProcess';
     }
+    if (pathname.startsWith('/dev-center/command-library')) {
+      return 'commandLibrary';
+    }
+
     if (pathname === '/') {
       return 'home';
     }
