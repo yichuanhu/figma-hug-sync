@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "sdk_version": "0.25.0",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "apa-commander",
+      "version": "0.1.0",
+      "title": "APA Commander"
+    },
+    "tools": [
+      {
+        "name": "get_platform_overview",
+        "title": "获取平台概览",
+        "description": "获取 APA Commander 首页概览：核心运营指标、最新平台公告与待处理通知。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "include_announcements": {
+              "type": "boolean",
+              "description": "是否包含平台公告，默认包含。"
+            },
+            "include_notifications": {
+              "type": "boolean",
+              "description": "是否包含通知，默认包含。"
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_departments",
+        "title": "查询部门列表",
+        "description": "列出 APA Commander 平台的组织部门（含层级路径），可按名称关键字过滤。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "keyword": {
+              "type": "string",
+              "description": "按部门名称过滤的关键字，可省略。"
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_business_metrics",
+        "title": "查询业务指标",
+        "description": "列出运营中心配置的业务指标（编码、名称、类型、单位、说明），可按关键字过滤。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "keyword": {
+              "type": "string",
+              "description": "按指标编码或名称过滤的关键字，可省略。"
+            },
+            "visible_only": {
+              "type": "boolean",
+              "description": "是否仅返回可见指标，默认返回全部。"
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
