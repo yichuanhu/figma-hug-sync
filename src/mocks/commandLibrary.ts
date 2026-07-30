@@ -188,10 +188,39 @@ const buildVersions = (commandId: string, index: number, owner: { id: string; na
   });
 };
 
+const SYSTEM_SETS: string[][] = [
+  ['Windows x64', 'Windows x86'],
+  ['Windows x64'],
+  ['Windows x64', 'Linux x64'],
+  ['Windows x64', 'macOS arm64'],
+  ['Linux x64'],
+];
+
+const COMMAND_ENTRY_POOL: { name: string; usage: string }[] = [
+  { name: '返回输入的任意字符', usage: '请输入任意字符串' },
+  { name: '两数求和', usage: '得出 2 个数相加的结果' },
+  { name: '获取标准格式的当前时间', usage: '返回 yyyy-mm-dd hh:mm:ss 字符串格式的当前时间' },
+  { name: '字符串截取', usage: '按起止下标截取子字符串并返回' },
+  { name: '判断文件是否存在', usage: '传入绝对路径，返回布尔值' },
+];
+
+const buildEntries = (index: number): CommandEntry[] => {
+  const count = 2 + (index % 3);
+  return Array.from({ length: count }, (_, i) => {
+    const base = COMMAND_ENTRY_POOL[(index + i) % COMMAND_ENTRY_POOL.length];
+    return {
+      ...base,
+      inputs: INPUT_POOL[(index + i) % INPUT_POOL.length],
+      outputs: OUTPUT_POOL[(index + i) % OUTPUT_POOL.length],
+    };
+  });
+};
+
 const buildCommand = (index: number): CommandItem => {
   const id = `command-${index + 1}`;
   const dept = DEPARTMENTS[index % DEPARTMENTS.length];
   const owner = OWNERS[index % OWNERS.length];
+  const publisher = OWNERS[(index + 2) % OWNERS.length];
   const status = STATUSES[index % STATUSES.length];
   const versions = buildVersions(id, index, owner);
   const created = new Date(2025, 1, 1 + (index % 25), 10, (index * 11) % 60, 0);
@@ -203,13 +232,18 @@ const buildCommand = (index: number): CommandItem => {
     description: DESCRIPTIONS[index % DESCRIPTIONS.length],
     status,
     platforms: PLATFORM_SETS[index % PLATFORM_SETS.length],
+    compatible_systems: SYSTEM_SETS[index % SYSTEM_SETS.length],
+    install_count: (index * 37) % 480,
     current_version: status === 'DEVELOPING' ? null : activeVersions[activeVersions.length - 1]?.version || null,
     owning_department_id: dept.id,
     owning_department_name: dept.name,
     owner_id: owner.id,
     owner_name: owner.name,
+    publisher_id: publisher.id,
+    publisher_name: publisher.name,
     created_at: fmt(created),
     updated_at: fmt(updated),
+    commands: buildEntries(index),
     versions,
   };
 };
