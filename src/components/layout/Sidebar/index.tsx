@@ -245,6 +245,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     // 开发任务管理 - 分组标题
     { key: 'developmentTaskManagement', labelKey: 'sidebar.developmentTaskManagement', isGroupLabel: true },
     { key: 'automationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={18} strokeWidth={2} />, path: '/process-development' },
+    { key: 'commandLibrary', labelKey: 'sidebar.commandLibrary', icon: <TerminalSquare size={18} strokeWidth={2} />, path: '/dev-center/command-library' },
+
     // 业务资产配置 - 分组标题
     { key: 'businessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
     { key: 'devQueue', labelKey: 'sidebar.queue', icon: <ListStart size={18} strokeWidth={2} />, path: '/dev-center/business-assets/queues' },
