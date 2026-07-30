@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Typography, Tabs, TabPane, Descriptions, Tag, Button, Table, Tooltip, Modal, Toast } from '@douyinfe/semi-ui';
-import { Trash2, Upload, Pencil } from 'lucide-react';
+import { Typography, Tabs, TabPane, Descriptions, Tag, Button, Table, Tooltip, Modal, Toast, Select } from '@douyinfe/semi-ui';
+import { Trash2, Upload, Pencil, Download } from 'lucide-react';
 import DetailDrawerWrapper, { type PaginationInfo } from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
