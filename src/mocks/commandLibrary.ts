@@ -20,6 +20,8 @@ export interface CommandVersion {
   version_note: string;
   file_name: string;
   file_size: string;
+  source_file_name: string;
+  source_file_size: string;
   uploader_id: string;
   uploader_name: string;
   created_at: string;
@@ -176,8 +178,10 @@ const buildVersions = (commandId: string, index: number, owner: { id: string; na
       version: spec.version,
       is_active: spec.active,
       version_note: spec.note,
-      file_name: `command_${index + 1}_v${spec.version}.zip`,
+      file_name: `command_${index + 1}_v${spec.version}.plg`,
       file_size: `${(120 + index * 7 + i * 33) % 900}KB`,
+      source_file_name: `command_${index + 1}_v${spec.version}_source.zip`,
+      source_file_size: `${(220 + index * 11 + i * 41) % 900}KB`,
       uploader_id: owner.id,
       uploader_name: owner.name,
       created_at: fmt(created),

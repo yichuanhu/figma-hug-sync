@@ -162,6 +162,8 @@ const CommandLibrary = () => {
       version_note: payload.note,
       file_name: payload.fileName,
       file_size: payload.fileSize,
+      source_file_name: payload.fileName.replace(/\.[^.]+$/, '') + '_source.zip',
+      source_file_size: payload.fileSize,
       uploader_id: uploadTarget.owner_id,
       uploader_name: uploadTarget.owner_name,
       created_at: now,
