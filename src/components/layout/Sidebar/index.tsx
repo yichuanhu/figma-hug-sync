@@ -7,7 +7,7 @@ import { UserInfoDropdown } from '../UserInfoDropdown';
 import NotificationDrawer from '../NotificationDrawer';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
 import { useApprovalPendingCount } from '@/pages/SharingCenter/shared/useApprovalPendingCount';
-import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, Building2, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardCheck, ClipboardList, Cloud, CodeXml, Columns3Cog, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, Gauge, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, NotepadTextDashed, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, Users, Wallet, Workflow, Wrench } from 'lucide-react';
+import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, Building2, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardCheck, ClipboardList, Cloud, CodeXml, Columns3Cog, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, Gauge, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, NotepadTextDashed, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, TerminalSquare, Users, Wallet, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -41,9 +41,10 @@ interface SidebarProps {
 // 根据路径获取需要展开的菜单组
 const getExpandedKeysByPath = (pathname: string): string[] => {
   // 开发任务管理下的路由
-  if (pathname === '/process-development' || pathname.startsWith('/process-detail/')) {
+  if (pathname === '/process-development' || pathname.startsWith('/process-detail/') || pathname.startsWith('/dev-center/command-library')) {
     return ['developmentTaskManagement'];
   }
+
   // 业务资产配置下的路由
   if (pathname.startsWith('/dev-center/business-assets/') || pathname.startsWith('/scheduling-center/business-assets/')) {
     return ['businessAssetConfig', 'schedulingBusinessAssetConfig'];
@@ -245,6 +246,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     // 开发任务管理 - 分组标题
     { key: 'developmentTaskManagement', labelKey: 'sidebar.developmentTaskManagement', isGroupLabel: true },
     { key: 'automationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={18} strokeWidth={2} />, path: '/process-development' },
+    { key: 'commandLibrary', labelKey: 'sidebar.commandLibrary', icon: <TerminalSquare size={18} strokeWidth={2} />, path: '/dev-center/command-library' },
+
     // 业务资产配置 - 分组标题
     { key: 'businessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
     { key: 'devQueue', labelKey: 'sidebar.queue', icon: <ListStart size={18} strokeWidth={2} />, path: '/dev-center/business-assets/queues' },
@@ -350,6 +353,10 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/process-development') {
       return 'automationProcess';
     }
+    if (pathname.startsWith('/dev-center/command-library')) {
+      return 'commandLibrary';
+    }
+
     if (pathname === '/') {
       return 'home';
     }

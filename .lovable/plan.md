@@ -1,44 +1,52 @@
+## 目标
 
-## 问题
+在「开发中心 > 开发任务管理」分组下，新增与「自动化流程」并列的菜单「命令库」。命令是完全独立的实体（不关联需求、不接入发布单与停用审批），列表与详情整体参考自动化流程的视觉与交互，详情仅保留两个 Tab：基本信息、版本。
 
-`ReleaseDetailDrawer` 同时被「流程发布列表」(ReleaseListPage) 和「发布审批」(PublishApprovals) 复用，上一轮按发布审批参考图改造后，列表页详情也被一起改动了。两个场景诉求不同：
+## 一、导航与路由
 
-- **发布审批详情**：只有 2 个 Tab（发布申请 / 审批进度），重审批视角，使用卡片化「申请快照」+「审批流」（已完成）。
-- **流程发布列表详情**：有 3 个 Tab（基本信息 / 审批流程 / 发布内容），重发布执行视角，沿用原有详细展示（流程卡片 + 资源分组卡片 + 链接跳转 + 失败/拒绝 Banner + 时间线）。
+- 侧边栏 `developmentCenterMenu` 在 `automationProcess` 之后新增 `commandLibrary`，路径 `/dev-center/command-library`，图标使用 Lucide `Terminal`（stroke 2）。
+- 同步更新 Sidebar 中开发中心的路径判定逻辑（`pathname.startsWith('/dev-center/command-library')` 时保持开发中心侧栏展开并高亮）。
+- `App.tsx` 注册路由，指向新页面 `src/pages/Development/CommandLibrary`。
+- i18n：在 `public/i18n/zh-CN.json` / `en.json` 增加 `sidebar.commandLibrary` 与 `development.commandLibrary.*` 文案（中文为主）。
 
-## 方案
+## 二、列表页（参考自动化流程列表）
 
-**拆分为两个独立组件**，互不耦合。
+页面结构沿用流程列表标准：`Typography.Title heading=3` 标题 → 工具栏（左：320px 搜索框 + 部门筛选 + FilterPopover；右：新建命令按钮）→ `Table size="small"` → 独立 `.list-pagination` 分页条（native=false，支持切换每页条数）。
 
-1. 新建 `ReleaseManagement/components/ReleaseListDetailDrawer/`（`index.tsx` + `index.less`）
-   - 恢复原始 3 个 Tab：
-     - **基本信息**：发布编号、类型、状态、发布人、所属部门、提交时间、描述等（沿用上一版样式，左侧分组展示）
-     - **审批流程**：Timeline 形式展示审批记录（无内联审批操作）
-     - **发布内容**：流程列表（可点击跳转）+ 按类型分组的资源列表（PARAMETER/CREDENTIAL/QUEUE/FILE，含手动添加 Tag、被使用流程、跳转图标）
-   - 头部仍使用文本标题（如 `[RLS-xxx] 发布单详情`），无右侧属性面板（全宽内容）
-   - 不带 `approvalContext`，仅查看用途
+列顺序：
 
-2. 修改 `ReleaseListPage/index.tsx`：
-   - 引用从 `ReleaseDetailDrawer` 切换为 `ReleaseListDetailDrawer`
-   - 其余 props（visible/release/releaseList/onClose/onNavigate/extraActions）保持
 
-3. **保留** `ReleaseDetailDrawer`（卡片化 2 Tab 版本）专供 `PublishApprovals` 使用，不再回退；接口、类型、`approvalContext` 协议不变。
+| 列      | 说明                                                 |
+| ------ | -------------------------------------------------- |
+| 命令名称   | 点击打开详情抽屉，单行省略 + smart tooltip                      |
+| 描述     | 单行省略                                               |
+| 状态     | StatusDot：开发中 / 已发布                                |
+| 当前版本   | 最新激活版本号                                            |
+| 所属部门   | DepartmentPath                                     |
+| 创建者    | UserNameWithCard                                   |
+| &nbsp; | &nbsp;                                             |
+| 更新时间   | &nbsp;                                             |
+| 操作     | 编辑 / 上传版本 / 删除（Ellipsis 下拉，行内 stopPropagation）/协作者 |
 
-4. `OfflineApprovals/components/DetailDrawer` 不变（与发布审批同款卡片化，已完成）。
 
-## 涉及文件
+行为：搜索 500ms 防抖、筛选与搜索变更后页码重置为 1、空态使用标准 EmptyState 插画、加载态使用 TableSkeleton。
 
-- 新增 `src/pages/Development/ReleaseManagement/components/ReleaseListDetailDrawer/index.tsx`
-- 新增 `src/pages/Development/ReleaseManagement/components/ReleaseListDetailDrawer/index.less`
-- 编辑 `src/pages/Development/ReleaseManagement/ReleaseListPage/index.tsx`（仅替换 import 与 JSX 标签）
+## 三、详情抽屉（仅 2 个 Tab）
 
-## 不改动
+沿用 `DetailDrawerWrapper`（900px、maskless），头部为命令名称 + 状态标签，头部操作区顺序：协作者 → 编辑 → 删除 → 上下条导航 → 全屏。
 
-- `ReleaseDetailDrawer`（发布审批专用，已完成卡片化）
-- `PublishApprovals/index.tsx`
-- `OfflineApprovals/components/DetailDrawer`
-- 业务逻辑/API/Mock/i18n
+**Tab 1 基本信息**：命令名称、所属部门、负责人、适用平台、状态、当前版本、描述（ExpandableText，3 行截断）；下方两张卡片展示「入参定义」「出参定义」表格（参数名、类型、必填、默认值、说明）。
 
-## 实现来源
+**Tab 2 版本**：与流程版本 Tab 一致的版本列表——按版本号降序，展示版本号、状态（激活/未激活）、上传人、上传时间、版本说明、包文件名，行操作支持删除（激活版本禁止删除）。
 
-新组件内容以「卡片化重构前」的旧版 `ReleaseDetailDrawer`（3 Tab：基本信息 / 发布内容 / 审批流程，含 process 卡片、resource 分组、跳转图标、Banner）为模板，去除 `approvalContext` 相关代码，保留只读展示。
+## 四、新建 / 编辑 / 上传版本
+
+- 新建、编辑复用 `FormModal`（520px），字段顺序：名称 → 所属部门 → 负责人 → 适用平台 → 描述；Semi UI 原生校验（blur/change）。
+- 上传版本弹窗复用现有 UploadVersionModal 的视觉规范（Lucide Inbox 图标、隐藏原生列表、自定义文件信息）。
+
+## 技术细节
+
+- 目录结构遵循「组件即文件夹」：`src/pages/Development/CommandLibrary/{index.tsx,index.less}`，子组件放 `components/CommandDetailDrawer`、`components/CommandFormModal`、`components/UploadCommandVersionModal`。
+- 类型定义与 Mock 数据新增 `src/mocks/commandLibrary.ts`，生成约 30 条命令（`command-1` … `command-30`）与各自版本、入参/出参定义，字段命名沿用英文 mock 字段风格。
+- 复用现有 `StatusDot`、`FilterPopover`、`DepartmentSearchSelect`、`OwnerSelect`、`UserNameWithCard`、`ExpandableText`、`TableSkeleton`、`EmptyState`，不新增第三方依赖。
+- 纯前端原型，不涉及任何后端/数据库改动。
