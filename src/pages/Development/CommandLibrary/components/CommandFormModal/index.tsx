@@ -96,8 +96,8 @@ const CommandFormModal = ({ visible, command, onCancel, onSubmit }: CommandFormM
           />
         </Form.Slot>
 
-        <Form.Slot label={{ text: '负责人' }}>
-          <OwnerSelect value={ownerId} onChange={setOwnerId} placeholder="请选择负责人" style={{ width: '100%' }} />
+        <Form.Slot label={{ text: '创建者' }}>
+          <OwnerSelect value={ownerId} onChange={setOwnerId} placeholder="请选择创建者" style={{ width: '100%' }} />
         </Form.Slot>
 
         <Form.Select
