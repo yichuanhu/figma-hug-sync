@@ -26,6 +26,7 @@ import CreateReleasePage from "@/pages/Development/ReleaseManagement/CreateRelea
 import PublishApprovalsPage from "@/pages/Development/PublishApprovals";
 import OfflineApprovalsPage from "@/pages/Development/OfflineApprovals";
 import OfflineRequestsPage from "@/pages/Development/OfflineRequests";
+import CommandLibraryPage from "@/pages/Development/CommandLibrary";
 // Scheduling - Worker Management
 import WorkerManagementPage from "@/pages/Scheduling/WorkerManagement/WorkerManagementPage";
 // Scheduling - Credential Management
@@ -152,6 +153,8 @@ const App = () => {
           <Route path="/dev-center/business-assets/files" element={<DevFileManagementPage />} />
           <Route path="/scheduling-center/business-assets/files" element={<SchedulingFileManagementPage />} />
           
+          <Route path="/dev-center/command-library" element={<CommandLibraryPage />} />
+
           {/* 发布管理 */}
           <Route path="/dev-center/release-management" element={<ReleaseListPage />} />
           <Route path="/dev-center/release-management/create" element={<CreateReleasePage />} />
