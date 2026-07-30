@@ -20,6 +20,8 @@ export interface CommandVersion {
   version_note: string;
   file_name: string;
   file_size: string;
+  source_file_name: string;
+  source_file_size: string;
   uploader_id: string;
   uploader_name: string;
   created_at: string;
