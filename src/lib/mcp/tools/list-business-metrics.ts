@@ -1,6 +1,6 @@
 import { defineTool } from "@lovable.dev/mcp-js";
 import { z } from "zod";
-import { SEED_METRICS } from "@/mocks/operationsMetrics/mockData";
+import { SEED_METRICS } from "../../../mocks/operationsMetrics/mockData";
 
 export default defineTool({
   name: "list_business_metrics",

@@ -1,6 +1,6 @@
 import { defineTool } from "@lovable.dev/mcp-js";
 import { z } from "zod";
-import { departmentTree } from "@/mocks/departmentData";
+import { departmentTree } from "../../../mocks/departmentData";
 
 interface DeptNode {
   id: string;

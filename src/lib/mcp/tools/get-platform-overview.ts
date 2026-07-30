@@ -1,6 +1,6 @@
 import { defineTool } from "@lovable.dev/mcp-js";
 import { z } from "zod";
-import { metrics, announcements, notifications } from "@/pages/Home/mockData";
+import { metrics, announcements, notifications } from "../../../pages/Home/mockData";
 
 export default defineTool({
   name: "get_platform_overview",

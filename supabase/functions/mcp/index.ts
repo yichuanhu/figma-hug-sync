@@ -8,7 +8,80 @@ import { defineMcp } from "npm:@lovable.dev/mcp-js@0.25.0";
 // src/lib/mcp/tools/list-departments.ts
 import { defineTool } from "npm:@lovable.dev/mcp-js@0.25.0";
 import { z } from "npm:zod@^3.25.76";
-import { departmentTree } from "npm:@/mocks/departmentData";
+
+// src/mocks/departmentData.ts
+var departmentTree = [
+  {
+    value: "laiye",
+    label: "Laiye Technology",
+    children: [
+      {
+        value: "dept-ceo",
+        label: "CEO Office"
+      },
+      {
+        value: "dept-enterprise",
+        label: "Enterprise Business Center",
+        children: [
+          {
+            value: "dept-north",
+            label: "North China Regional Business Division",
+            children: [
+              { value: "dept-north-solution", label: "North China Regional Solution and Delivery Team" }
+            ]
+          },
+          { value: "dept-east", label: "East China Regional Business Division" },
+          { value: "dept-south", label: "South and Southwest China Regional Business Division" },
+          { value: "dept-expert", label: "Expert Enablement Group" },
+          { value: "dept-prof-service", label: "Professional Services and Customer Success Management Center" }
+        ]
+      },
+      {
+        value: "dept-rd",
+        label: "R&D Center",
+        children: [
+          {
+            value: "dept-apa-product",
+            label: "APA Product Division",
+            children: [
+              { value: "dept-fe", label: "Frontend Development Team" },
+              { value: "dept-be", label: "Backend Development Team" },
+              { value: "dept-ai", label: "AI Platform and Large Language Model Application R&D Team" },
+              { value: "dept-qa", label: "Quality Assurance Team" },
+              { value: "dept-product", label: "Product Team" }
+            ]
+          },
+          {
+            value: "dept-dw",
+            label: "Digital Worker Division",
+            children: [
+              { value: "dept-rpa-product", label: "RPA Product Team" },
+              { value: "dept-idp-product", label: "IDP Product Team" }
+            ]
+          },
+          { value: "dept-platform", label: "Platform Engineering Division" }
+        ]
+      },
+      { value: "dept-finance", label: "Finance Department" },
+      { value: "dept-hr", label: "Human Resources Department" },
+      { value: "dept-legal", label: "Legal Department" },
+      { value: "dept-marketing", label: "Marketing Department" }
+    ]
+  }
+];
+var departmentPathCache = /* @__PURE__ */ new Map();
+(function buildDepartmentPathCache() {
+  const walk = (nodes, trail) => {
+    for (const n of nodes) {
+      const next = [...trail, n.label];
+      departmentPathCache.set(n.value, next);
+      if (n.children) walk(n.children, next);
+    }
+  };
+  walk(departmentTree, []);
+})();
+
+// src/lib/mcp/tools/list-departments.ts
 var flatten = (nodes, path = []) => nodes.flatMap((node) => {
   const nextPath = [...path, node.name];
   return [
@@ -37,7 +110,101 @@ var list_departments_default = defineTool({
 // src/lib/mcp/tools/list-business-metrics.ts
 import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.25.0";
 import { z as z2 } from "npm:zod@^3.25.76";
-import { SEED_METRICS } from "npm:@/mocks/operationsMetrics/mockData";
+
+// src/mocks/operationsMetrics/mockData.ts
+var SEED_METRICS = [
+  {
+    id: "metric-order-count",
+    code: "ORDER_COUNT",
+    displayName: "\u5904\u7406\u8BA2\u5355\u6570",
+    metricType: "COUNTER",
+    stepValue: 1,
+    unit: "\u7B14",
+    description: "\u7EDF\u8BA1\u5904\u7406\u5B8C\u6210\u7684\u8BA2\u5355\u6570",
+    visible: true,
+    createdAt: "2026-04-01T08:00:00Z",
+    updatedAt: "2026-05-19T10:30:00Z",
+    hasRecords: true
+  },
+  {
+    id: "metric-invoice-amt",
+    code: "INVOICE_AMT",
+    displayName: "\u53D1\u7968\u91D1\u989D",
+    metricType: "ACCUMULATOR",
+    unit: "\u5143",
+    description: "\u672C\u671F\u5F00\u5177\u53D1\u7968\u7D2F\u8BA1\u91D1\u989D",
+    visible: true,
+    createdAt: "2026-04-02T08:00:00Z",
+    updatedAt: "2026-05-19T09:50:00Z",
+    hasRecords: true
+  },
+  {
+    id: "metric-refund-count",
+    code: "REFUND_COUNT",
+    displayName: "\u9000\u6B3E\u5355\u6570",
+    metricType: "COUNTER",
+    stepValue: 1,
+    unit: "\u7B14",
+    description: "\u7EDF\u8BA1\u9000\u6B3E\u5904\u7406\u5B8C\u6210\u7684\u5355\u6570",
+    visible: true,
+    createdAt: "2026-04-08T08:00:00Z",
+    updatedAt: "2026-05-19T08:20:00Z",
+    hasRecords: true
+  },
+  {
+    id: "metric-cost-saved",
+    code: "COST_SAVED",
+    displayName: "\u8282\u7EA6\u6210\u672C",
+    metricType: "ACCUMULATOR",
+    unit: "\u5143",
+    description: "\u6D41\u7A0B\u81EA\u52A8\u5316\u8282\u7EA6\u6210\u672C",
+    visible: true,
+    createdAt: "2026-04-10T08:00:00Z",
+    updatedAt: "2026-05-19T11:10:00Z",
+    hasRecords: true
+  },
+  {
+    id: "metric-curr-status",
+    code: "CURR_STATUS",
+    displayName: "\u5F53\u524D\u6279\u6B21\u72B6\u6001",
+    metricType: "LATEST",
+    valueType: "STRING",
+    unit: "",
+    description: "\u6700\u65B0\u6279\u6B21\u5904\u7406\u72B6\u6001",
+    visible: true,
+    createdAt: "2026-04-15T08:00:00Z",
+    updatedAt: "2026-05-19T11:30:00Z",
+    hasRecords: true
+  },
+  {
+    id: "metric-last-batch",
+    code: "LAST_BATCH",
+    displayName: "\u6700\u8FD1\u6279\u6B21\u7F16\u53F7",
+    metricType: "LATEST",
+    valueType: "STRING",
+    unit: "",
+    description: "\u6700\u8FD1\u4E00\u6B21\u53D1\u8D77\u7684\u6279\u6B21\u7F16\u53F7",
+    visible: false,
+    createdAt: "2026-04-20T08:00:00Z",
+    updatedAt: "2026-05-19T07:00:00Z",
+    hasRecords: true
+  },
+  {
+    id: "metric-last-duration",
+    code: "LAST_DURATION",
+    displayName: "\u6700\u8FD1\u6279\u6B21\u8017\u65F6",
+    metricType: "LATEST",
+    valueType: "DECIMAL",
+    unit: "\u5206\u949F",
+    description: "\u6700\u8FD1\u4E00\u6B21\u6279\u6B21\u5904\u7406\u603B\u8017\u65F6",
+    visible: true,
+    createdAt: "2026-04-22T08:00:00Z",
+    updatedAt: "2026-05-19T11:00:00Z",
+    hasRecords: true
+  }
+];
+
+// src/lib/mcp/tools/list-business-metrics.ts
 var list_business_metrics_default = defineTool2({
   name: "list_business_metrics",
   title: "\u67E5\u8BE2\u4E1A\u52A1\u6307\u6807",
@@ -70,7 +237,31 @@ var list_business_metrics_default = defineTool2({
 // src/lib/mcp/tools/get-platform-overview.ts
 import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.25.0";
 import { z as z3 } from "npm:zod@^3.25.76";
-import { metrics, announcements, notifications } from "npm:@/pages/Home/mockData";
+
+// src/pages/Home/mockData.ts
+var metrics = [
+  { key: "robots", labelKey: "homepage.metrics.robots", value: 25, trend: "up", trendValue: "+3", icon: "Bot", iconColor: "#3370FF", iconBgColor: "#F5F8FF", borderColor: "#E0EAFF" },
+  { key: "processes", labelKey: "homepage.metrics.processes", value: 120, trend: "up", trendValue: "+8", icon: "Workflow", iconColor: "#7C3AED", iconBgColor: "#F8F5FF", borderColor: "#EDE5FA" },
+  { key: "todayTasks", labelKey: "homepage.metrics.todayTasks", value: 345, trend: "up", trendValue: "+12%", icon: "Play", iconColor: "#FF7D00", iconBgColor: "#FFF9F5", borderColor: "#FAEADB" },
+  { key: "successRate", labelKey: "homepage.metrics.successRate", value: "98.5", unit: "%", trend: "up", trendValue: "+0.3%", icon: "CheckCircle", iconColor: "#00B365", iconBgColor: "#F3FBF7", borderColor: "#D5F0E3" },
+  { key: "weeklyNew", labelKey: "homepage.metrics.weeklyNew", value: 12, trend: "down", trendValue: "-3", icon: "FolderPlus", iconColor: "#3370FF", iconBgColor: "#F5F8FF", borderColor: "#E0EAFF" }
+];
+var notifications = [
+  { id: "notif-001", titleKey: "", title: '\u4EFB\u52A1"\u6BCF\u65E5\u8D22\u52A1\u5BF9\u8D26"\u6267\u884C\u5931\u8D25', time: "8 \u5206\u949F\u524D", read: false, type: "error", priority: "URGENT", category: "task" },
+  { id: "notif-002", titleKey: "", title: "\u673A\u5668\u4EBA robot-fin-02 \u5DF2\u79BB\u7EBF", time: "28 \u5206\u949F\u524D", read: false, type: "error", priority: "URGENT", category: "robot" },
+  { id: "notif-003", titleKey: "", title: '\u4EFB\u52A1"\u5BA2\u6237\u6570\u636E\u540C\u6B65"\u6267\u884C\u8D85\u65F6', time: "45 \u5206\u949F\u524D", read: false, type: "warning", priority: "IMPORTANT", category: "task" },
+  { id: "notif-004", titleKey: "", title: "\u6388\u6743\u5C06\u4E8E 15 \u5929\u540E\u8FC7\u671F", time: "2 \u5C0F\u65F6\u524D", read: false, type: "warning", priority: "IMPORTANT", category: "license" },
+  { id: "notif-005", titleKey: "", title: '\u4EFB\u52A1"\u6708\u5EA6\u62A5\u8868\u751F\u6210"\u5DF2\u6C38\u4E45\u5931\u8D25', time: "3 \u5C0F\u65F6\u524D", read: false, type: "error", priority: "URGENT", category: "task" },
+  { id: "notif-006", titleKey: "", title: '\u65F6\u95F4\u89E6\u53D1\u5668"\u6BCF\u65E5 9 \u70B9\u62A5\u8868"\u89E6\u53D1\u5931\u8D25', time: "4 \u5C0F\u65F6\u524D", read: false, type: "warning", priority: "IMPORTANT", category: "trigger" }
+];
+var announcements = [
+  { id: "1", title: "System Maintenance: Mar 15 02:00-06:00", subtitle: "Platform will be down for maintenance, please plan ahead", time: "2026-03-12", priority: "urgent" },
+  { id: "2", title: "2026 Developer Contest Registration Open", subtitle: "Win prizes and showcase your automation solutions", time: "2026-03-10", priority: "important" },
+  { id: "3", title: "WEP Platform v4.5 Release Notes", subtitle: "Multiple feature improvements and bug fixes", time: "2026-03-08", priority: "normal" },
+  { id: "4", title: "Security Policy Update: Password Complexity Requirements", subtitle: "Please update your password to comply with new policies", time: "2026-03-05", priority: "important" }
+];
+
+// src/lib/mcp/tools/get-platform-overview.ts
 var get_platform_overview_default = defineTool3({
   name: "get_platform_overview",
   title: "\u83B7\u53D6\u5E73\u53F0\u6982\u89C8",
