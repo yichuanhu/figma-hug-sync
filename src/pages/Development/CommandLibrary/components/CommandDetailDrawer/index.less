@@ -28,6 +28,55 @@
     }
   }
 
+  &-hero {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    &-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-color: var(--semi-color-primary);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    &-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--semi-color-text-0);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &-version-picker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &-entry-params {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .command-detail-drawer-card {
+      margin-bottom: 0;
+      padding: 12px 16px;
+      background-color: var(--semi-color-fill-0);
+      border: none;
+    }
+  }
+
   &-version-empty {
     display: flex;
     flex-direction: column;
