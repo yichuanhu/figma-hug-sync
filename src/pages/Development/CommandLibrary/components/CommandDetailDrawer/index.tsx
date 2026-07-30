@@ -220,11 +220,48 @@ const CommandDetailDrawer = ({
         <TabPane tab="基本信息" itemKey="basic">
           <div className="command-detail-drawer-tab-content">
             <div className="command-detail-drawer-card">
-              <Text className="command-detail-drawer-card-title">基础信息</Text>
+              <div className="command-detail-drawer-hero">
+                <div className="command-detail-drawer-hero-icon">{command.name.slice(0, 1)}</div>
+                <div className="command-detail-drawer-hero-name">{command.name}</div>
+              </div>
               <Descriptions data={basicData} align="left" />
             </div>
-            <ParamTable title="入参定义" data={selectedVersion?.inputs || sortedVersions[0]?.inputs || []} />
-            <ParamTable title="出参定义" data={selectedVersion?.outputs || sortedVersions[0]?.outputs || []} />
+            <div className="command-detail-drawer-card">
+              <Text className="command-detail-drawer-card-title">包含命令</Text>
+              {(command.commands || []).length === 0 ? (
+                <Text type="tertiary">暂无命令</Text>
+              ) : (
+                <Table
+                  size="small"
+                  rowKey="name"
+                  pagination={false}
+                  dataSource={command.commands}
+                  columns={[
+                    {
+                      title: '命令名称',
+                      dataIndex: 'name',
+                      key: 'name',
+                      width: 240,
+                      ellipsis: { showTitle: false },
+                      render: (v: string) => <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 220 }}>{v}</Text>,
+                    },
+                    {
+                      title: '使用说明',
+                      dataIndex: 'usage',
+                      key: 'usage',
+                      ellipsis: { showTitle: false },
+                      render: (v: string) => <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 380 }}>{v || '-'}</Text>,
+                    },
+                  ]}
+                  expandedRowRender={(record) => (
+                    <div className="command-detail-drawer-entry-params">
+                      <ParamTable title="入参定义" data={record?.inputs || []} />
+                      <ParamTable title="出参定义" data={record?.outputs || []} />
+                    </div>
+                  )}
+                />
+              )}
+            </div>
           </div>
         </TabPane>
 
