@@ -230,7 +230,7 @@ const CommandLibrary = () => {
       render: (v: string) => v || '-',
     },
     {
-      title: '负责人',
+      title: '创建者',
       dataIndex: 'owner_name',
       key: 'owner_name',
       width: 120,
