@@ -106,28 +106,58 @@ const CommandDetailDrawer = ({
 
   const statusCfg = COMMAND_STATUS_CONFIG[command.status];
 
+  const latestVersion = command.current_version || sortedVersions[0]?.version || '-';
+
   const basicData = [
-    { key: '命令名称', value: command.name },
-    { key: '所属部门', value: command.owning_department_name || '-' },
     {
-      key: '负责人',
-      value: <UserNameWithCard name={command.owner_name} userId={command.owner_id} department={command.owning_department_name} />,
+      key: '发布者',
+      value: <UserNameWithCard name={command.publisher_name} userId={command.publisher_id} department={command.owning_department_name} />,
     },
     {
-      key: '适用平台',
+      key: '创建者',
+      value: <UserNameWithCard name={command.owner_name} userId={command.owner_id} department={command.owning_department_name} />,
+    },
+    { key: '所属部门', value: command.owning_department_name || '-' },
+    { key: '状态', value: <StatusDot color={statusCfg.color} label={statusCfg.label} /> },
+    { key: '安装次数', value: command.install_count ?? 0 },
+    { key: '最新版本', value: latestVersion },
+    {
+      key: '选择命令库版本',
       value: (
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {command.platforms.map((p) => (
-            <Tag key={p} size="small" color="blue" type="light">{p}</Tag>
-          ))}
+        <div className="command-detail-drawer-version-picker">
+          <Select
+            value={selectedVersionId || undefined}
+            onChange={(v) => setSelectedVersionId(v as string)}
+            placeholder="请选择版本"
+            style={{ width: 180 }}
+            optionList={sortedVersions.map((v) => ({ value: v.id, label: v.version }))}
+            disabled={sortedVersions.length === 0}
+          />
+          <Button
+            theme="solid"
+            icon={<Download size={16} strokeWidth={2} />}
+            disabled={sortedVersions.length === 0}
+            onClick={() => Toast.info('原型演示，暂不支持下载')}
+          >
+            下载离线版本
+          </Button>
         </div>
       ),
     },
-    { key: '状态', value: <StatusDot color={statusCfg.color} label={statusCfg.label} /> },
-    { key: '当前版本', value: command.current_version || '-' },
-    { key: '创建时间', value: command.created_at },
-    { key: '更新时间', value: command.updated_at },
-    { key: '描述', value: <ExpandableText text={command.description || '-'} /> },
+    { key: '命令库介绍', value: <ExpandableText text={command.description || '-'} /> },
+    { key: '更新说明', value: <ExpandableText text={selectedVersion?.version_note || '-'} /> },
+    {
+      key: '兼容系统',
+      value: (command.compatible_systems || []).length ? (
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {command.compatible_systems.map((s) => (
+            <Tag key={s} size="small" color="blue" type="light">{s}</Tag>
+          ))}
+        </div>
+      ) : (
+        '-'
+      ),
+    },
   ];
 
   const handleDeleteVersion = (version: CommandVersion) => {
