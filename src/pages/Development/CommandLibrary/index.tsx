@@ -27,7 +27,7 @@ const { Title, Text } = Typography;
 
 const flattenDepts = (nodes: DeptTreeNode[], acc: Record<string, string> = {}): Record<string, string> => {
   nodes.forEach((node) => {
-    acc[node.value ?? node.key] = node.label as string;
+    acc[node.value] = node.label;
     if (node.children?.length) flattenDepts(node.children, acc);
   });
   return acc;
