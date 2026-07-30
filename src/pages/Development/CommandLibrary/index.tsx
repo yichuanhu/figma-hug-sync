@@ -130,13 +130,18 @@ const CommandLibrary = () => {
         description: values.description || '',
         status: 'DEVELOPING',
         platforms: values.platforms,
+        compatible_systems: ['Windows x64', 'Windows x86'],
+        install_count: 0,
         current_version: null,
         owning_department_id: values.owning_department_id,
         owning_department_name: deptName,
         owner_id: values.owner_id || 'user-001',
         owner_name: owner?.name || '张伟',
+        publisher_id: values.owner_id || 'user-001',
+        publisher_name: owner?.name || '张伟',
         created_at: now,
         updated_at: now,
+        commands: [],
         versions: [],
       };
       setCommands((prev) => [created, ...prev]);
