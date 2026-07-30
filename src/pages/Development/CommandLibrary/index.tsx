@@ -354,9 +354,9 @@ const CommandLibrary = () => {
                 },
                 {
                   key: 'owner',
-                  label: '负责人',
+                  label: '创建者',
                   type: 'multiSelect' as const,
-                  placeholder: '请选择负责人',
+                  placeholder: '请选择创建者',
                   options: COMMAND_OWNER_POOL.map((o) => ({ value: o.id, label: o.name })),
                   value: ownerFilter,
                 },
