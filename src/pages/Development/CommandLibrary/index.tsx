@@ -263,8 +263,8 @@ const CommandLibrary = () => {
               >
                 编辑
               </Dropdown.Item>
-              <Dropdown.Item icon={<Upload size={16} strokeWidth={2} />} onClick={() => setUploadTarget(record)}>
-                上传版本
+              <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={() => openCollaborator(record.id)}>
+                协作者
               </Dropdown.Item>
               <Dropdown.Item icon={<Trash2 size={16} strokeWidth={2} />} type="danger" onClick={() => handleDelete(record)}>
                 删除
