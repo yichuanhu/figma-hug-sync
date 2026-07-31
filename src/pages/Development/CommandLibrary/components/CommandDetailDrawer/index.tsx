@@ -291,17 +291,7 @@ const CommandDetailDrawer = ({
     <DetailDrawerWrapper<CommandItem>
       visible={visible}
       onClose={onClose}
-      title={
-        <div className="command-detail-drawer-title">
-          <div className="command-detail-drawer-title-main">
-            <div className="command-detail-drawer-title-icon">{command.name.slice(0, 1)}</div>
-            <span className="command-detail-drawer-title-name">{command.name}</span>
-            <Tag size="small" color={statusCfg.color} type="light">
-              {statusCfg.label}
-            </Tag>
-          </div>
-        </div>
-      }
+      title={command.name}
       dataList={dataList}
       currentId={command.id}
       onNavigate={onNavigate}
