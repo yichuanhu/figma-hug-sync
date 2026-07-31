@@ -452,7 +452,7 @@ const CommandLibrary = () => {
                 },
                 {
                   key: 'platform',
-                  label: '适用平台',
+                  label: '适用操作系统',
                   type: 'checkbox' as const,
                   options: COMMAND_PLATFORM_OPTIONS.map((p) => ({ value: p, label: p })),
                   value: platformFilter,
