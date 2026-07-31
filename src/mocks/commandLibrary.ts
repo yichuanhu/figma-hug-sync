@@ -1,7 +1,7 @@
 // 命令库 Mock 数据（纯前端原型）
 // 命令是独立实体：不关联需求、不接入发布单与停用审批
 
-export type CommandStatus = 'DEVELOPING' | 'PUBLISHED' | 'ARCHIVED';
+export type CommandStatus = 'NOT_SHARED' | 'SHARED';
 export type CommandPlatform = 'Windows' | 'Linux' | 'macOS' | 'Web';
 
 export interface CommandParam {
@@ -131,7 +131,7 @@ const PLATFORM_SETS: CommandPlatform[][] = [
   ['Web'],
 ];
 
-const STATUSES: CommandStatus[] = ['DEVELOPING', 'PUBLISHED', 'PUBLISHED', 'ARCHIVED'];
+const STATUSES: CommandStatus[] = ['NOT_SHARED', 'SHARED', 'SHARED', 'NOT_SHARED'];
 
 const INPUT_POOL: CommandParam[][] = [
   [
@@ -240,7 +240,7 @@ const buildCommand = (index: number): CommandItem => {
     platforms: PLATFORM_SETS[index % PLATFORM_SETS.length],
     compatible_systems: SYSTEM_SETS[index % SYSTEM_SETS.length],
     install_count: (index * 37) % 480,
-    current_version: status === 'DEVELOPING' ? null : latestActiveVersion?.version || null,
+    current_version: status === 'NOT_SHARED' ? null : latestActiveVersion?.version || null,
     owning_department_id: dept.id,
     owning_department_name: dept.name,
     owner_id: owner.id,
@@ -249,7 +249,7 @@ const buildCommand = (index: number): CommandItem => {
     publisher_name: publisher.name,
     created_at: fmt(created),
     updated_at: fmt(updated),
-    publish_time: status === 'DEVELOPING' ? null : latestActiveVersion?.publish_time || null,
+    publish_time: status === 'NOT_SHARED' ? null : latestActiveVersion?.publish_time || null,
     commands: buildEntries(index),
     versions,
   };
@@ -258,9 +258,8 @@ const buildCommand = (index: number): CommandItem => {
 export const mockCommandList: CommandItem[] = Array.from({ length: 30 }, (_, i) => buildCommand(i));
 
 export const COMMAND_STATUS_CONFIG: Record<CommandStatus, { label: string; color: 'blue' | 'green' | 'grey' }> = {
-  DEVELOPING: { label: '开发中', color: 'blue' },
-  PUBLISHED: { label: '已发布', color: 'green' },
-  ARCHIVED: { label: '已归档', color: 'grey' },
+  NOT_SHARED: { label: '未协同', color: 'grey' },
+  SHARED: { label: '已协同', color: 'green' },
 };
 
 export const COMMAND_PLATFORM_OPTIONS: CommandPlatform[] = ['Windows', 'Linux', 'macOS', 'Web'];
