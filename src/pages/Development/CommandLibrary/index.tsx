@@ -205,7 +205,7 @@ const CommandLibrary = () => {
 
 
 
-  const handleUploadSuccess = (payload: { version: string; note: string; fileName: string; fileSize: string }) => {
+  const handleUploadSuccess = (payload: UploadCommandVersionPayload) => {
     if (!uploadTarget) return;
     const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
     const newVersion: CommandVersion = {
@@ -216,8 +216,8 @@ const CommandLibrary = () => {
       version_note: payload.note,
       file_name: payload.fileName,
       file_size: payload.fileSize,
-      source_file_name: payload.fileName.replace(/\.[^.]+$/, '') + '_source.zip',
-      source_file_size: payload.fileSize,
+      source_file_name: payload.sourceFileName,
+      source_file_size: payload.sourceFileSize,
       uploader_id: uploadTarget.owner_id,
       uploader_name: uploadTarget.owner_name,
       created_at: now,
