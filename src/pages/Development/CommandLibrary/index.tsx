@@ -141,6 +141,7 @@ const CommandLibrary = () => {
         publisher_name: owner?.name || '张伟',
         created_at: now,
         updated_at: now,
+        publish_time: null,
         commands: [],
         versions: [],
       };

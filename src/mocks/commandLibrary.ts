@@ -54,6 +54,8 @@ export interface CommandItem {
   publisher_name: string;
   created_at: string;
   updated_at: string;
+  /** 命令库整体发布时间（取最新已发布版本的发布时间） */
+  publish_time: string | null;
   commands: CommandEntry[];
   versions: CommandVersion[];
 }
@@ -229,6 +231,7 @@ const buildCommand = (index: number): CommandItem => {
   const created = new Date(2025, 1, 1 + (index % 25), 10, (index * 11) % 60, 0);
   const updated = new Date(created.getTime() + ((index % 9) + 1) * 24 * 3600 * 1000);
   const activeVersions = versions.filter((v) => v.is_active);
+  const latestActiveVersion = activeVersions[activeVersions.length - 1] || null;
   return {
     id,
     name: NAMES[index % NAMES.length],
@@ -237,7 +240,7 @@ const buildCommand = (index: number): CommandItem => {
     platforms: PLATFORM_SETS[index % PLATFORM_SETS.length],
     compatible_systems: SYSTEM_SETS[index % SYSTEM_SETS.length],
     install_count: (index * 37) % 480,
-    current_version: status === 'DEVELOPING' ? null : activeVersions[activeVersions.length - 1]?.version || null,
+    current_version: status === 'DEVELOPING' ? null : latestActiveVersion?.version || null,
     owning_department_id: dept.id,
     owning_department_name: dept.name,
     owner_id: owner.id,
@@ -246,6 +249,7 @@ const buildCommand = (index: number): CommandItem => {
     publisher_name: publisher.name,
     created_at: fmt(created),
     updated_at: fmt(updated),
+    publish_time: status === 'DEVELOPING' ? null : latestActiveVersion?.publish_time || null,
     commands: buildEntries(index),
     versions,
   };

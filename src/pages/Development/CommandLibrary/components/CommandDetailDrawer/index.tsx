@@ -259,8 +259,7 @@ const CommandDetailDrawer = ({
     { key: '最新发布版本', value: command.current_version || '-' },
     { key: '发布人', value: command.publisher_name || '-' },
     { key: '安装次数', value: command.install_count ?? 0 },
-    { key: '创建时间', value: command.created_at },
-    { key: '更新时间', value: command.updated_at },
+    { key: '发布时间', value: command.publish_time || '-' },
   ];
 
   const getVersionDescriptionData = (version: CommandVersion) => [
