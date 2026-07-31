@@ -258,7 +258,7 @@ const CommandLibrary = () => {
       ),
     },
     {
-      title: '默认共享版本',
+      title: '默认版本',
       dataIndex: 'current_version',
       key: 'current_version',
       width: 120,
