@@ -135,7 +135,7 @@ const CommandEntryTable = ({ data }: { data: CommandEntry[] }) => (
   />
 );
 
-
+const FileLine = ({ name, size }: { name: string; size?: string }) => (
   <div className="command-detail-drawer-file">
     <FileArchive size={16} strokeWidth={2} color="var(--semi-color-primary)" />
     <Text ellipsis={{ showTooltip: true }} className="command-detail-drawer-file-name">
