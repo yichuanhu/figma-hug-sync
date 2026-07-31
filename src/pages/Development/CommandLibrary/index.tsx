@@ -12,7 +12,7 @@ import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import CommandDetailDrawer from './components/CommandDetailDrawer';
 import CommandFormModal, { type CommandFormValues } from './components/CommandFormModal';
 import ImportCommandModal, { type ImportCommandPayload } from './components/ImportCommandModal';
-import UploadCommandVersionModal from './components/UploadCommandVersionModal';
+import UploadCommandVersionModal, { type UploadCommandVersionPayload } from './components/UploadCommandVersionModal';
 import {
   mockCommandList,
   COMMAND_STATUS_CONFIG,
