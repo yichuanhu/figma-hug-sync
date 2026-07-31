@@ -3589,7 +3589,8 @@ export type CollaboratorAssetType =
   | 'WORKER_GROUP'
   | 'TRIGGER'
   | 'TASK_TEMPLATE'
-  | 'TASK';
+  | 'TASK'
+  | 'COMMAND';
 
 /** 权限来源分类 */
 export type CollaboratorSourceType =
