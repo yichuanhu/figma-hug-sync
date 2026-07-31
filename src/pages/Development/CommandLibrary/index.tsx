@@ -364,7 +364,7 @@ const CommandLibrary = () => {
               setFormVisible(true);
             }}
           >
-            新建命令
+            导入命令库
           </Button>
         </div>
       </div>
