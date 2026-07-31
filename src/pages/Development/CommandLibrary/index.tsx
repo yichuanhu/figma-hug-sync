@@ -52,6 +52,7 @@ const CommandLibrary = () => {
   const [formVisible, setFormVisible] = useState(false);
   const [editing, setEditing] = useState<CommandItem | null>(null);
   const [uploadTarget, setUploadTarget] = useState<CommandItem | null>(null);
+  const [importVisible, setImportVisible] = useState(false);
 
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
