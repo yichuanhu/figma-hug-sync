@@ -46,7 +46,7 @@ const UploadCommandVersionModal = ({ visible, commandName, onCancel, onSuccess }
       Toast.warning('请输入版本号');
       return;
     }
-    if (!pkgFile || !sourceFile) return;
+    if (!pkgFile) return;
     setUploading(true);
     await new Promise((r) => setTimeout(r, 600));
     onSuccess({
@@ -54,8 +54,8 @@ const UploadCommandVersionModal = ({ visible, commandName, onCancel, onSuccess }
       note: note.trim(),
       fileName: pkgFile.name || 'command.plg',
       fileSize: formatSize(pkgFile.fileInstance?.size),
-      sourceFileName: sourceFile.name || 'command_source.zip',
-      sourceFileSize: formatSize(sourceFile.fileInstance?.size),
+      sourceFileName: sourceFile?.name || '',
+      sourceFileSize: sourceFile ? formatSize(sourceFile.fileInstance?.size) : '-',
     });
     setUploading(false);
     reset();
@@ -70,7 +70,7 @@ const UploadCommandVersionModal = ({ visible, commandName, onCancel, onSuccess }
       onOk={handleOk}
       okText="上传"
       cancelText="取消"
-      okButtonProps={{ disabled: !version.trim() || !pkgFile || !sourceFile, loading: uploading }}
+      okButtonProps={{ disabled: !version.trim() || !pkgFile, loading: uploading }}
       width={520}
       centered
     >
