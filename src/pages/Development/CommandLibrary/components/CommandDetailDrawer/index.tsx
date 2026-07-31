@@ -21,6 +21,7 @@ import DepartmentPath from '@/components/DepartmentPath';
 import EmptyState from '@/components/EmptyState';
 import {
   COMMAND_STATUS_CONFIG,
+  type CommandEntry,
   type CommandItem,
   type CommandParam,
   type CommandVersion,
@@ -92,6 +93,47 @@ const ParamCardList = ({ data }: { data: CommandParam[] }) => (
       </div>
     ))}
   </div>
+);
+
+/** 命令清单表格（行展开显示该命令的入参 / 出参） */
+const CommandEntryTable = ({ data }: { data: CommandEntry[] }) => (
+  <Table
+    size="small"
+    pagination={false}
+    dataSource={data.map((c, i) => ({ ...c, key: `${c.name}-${i}` }))}
+    empty={<EmptyState description="暂无命令" size={100} />}
+    expandedRowRender={(record) =>
+      record ? (
+        <div className="command-detail-drawer-command-expand">
+          <div className="command-detail-drawer-command-expand-block">
+            <Text type="tertiary" size="small">
+              入参
+            </Text>
+            {record.inputs?.length ? <ParamCardList data={record.inputs} /> : <Text>-</Text>}
+          </div>
+          <div className="command-detail-drawer-command-expand-block">
+            <Text type="tertiary" size="small">
+              出参
+            </Text>
+            {record.outputs?.length ? <ParamCardList data={record.outputs} /> : <Text>-</Text>}
+          </div>
+        </div>
+      ) : null
+    }
+    columns={[
+      {
+        title: '命令名称',
+        dataIndex: 'name',
+        width: 220,
+        render: (text: string) => <Text ellipsis={{ showTooltip: true }}>{text}</Text>,
+      },
+      {
+        title: '使用说明',
+        dataIndex: 'usage',
+        render: (text: string) => <Text ellipsis={{ showTooltip: true }}>{text || '-'}</Text>,
+      },
+    ]}
+  />
 );
 
 const FileLine = ({ name, size }: { name: string; size?: string }) => (
@@ -214,7 +256,7 @@ const CommandDetailDrawer = ({
   ];
 
   const publishGroupData = [
-    { key: '当前版本', value: command.current_version || '-' },
+    { key: '最新发布版本', value: command.current_version || '-' },
     { key: '发布人', value: command.publisher_name || '-' },
     { key: '安装次数', value: command.install_count ?? 0 },
     { key: '创建时间', value: command.created_at },
@@ -308,47 +350,6 @@ const CommandDetailDrawer = ({
             </Title>
             <Descriptions data={publishGroupData} align="left" />
 
-            <Divider margin="20px" />
-            <Title heading={6} style={{ margin: '0 0 12px' }}>
-              包含命令
-            </Title>
-            <Table
-              size="small"
-              pagination={false}
-              dataSource={(command.commands || []).map((c, i) => ({ ...c, key: `${c.name}-${i}` }))}
-              empty={<EmptyState description="暂无命令" size={100} />}
-              expandedRowRender={(record) =>
-                record ? (
-                  <div className="command-detail-drawer-command-expand">
-                    <div className="command-detail-drawer-command-expand-block">
-                      <Text type="tertiary" size="small">
-                        入参
-                      </Text>
-                      {record.inputs?.length ? <ParamCardList data={record.inputs} /> : <Text>-</Text>}
-                    </div>
-                    <div className="command-detail-drawer-command-expand-block">
-                      <Text type="tertiary" size="small">
-                        出参
-                      </Text>
-                      {record.outputs?.length ? <ParamCardList data={record.outputs} /> : <Text>-</Text>}
-                    </div>
-                  </div>
-                ) : null
-              }
-              columns={[
-                {
-                  title: '命令名称',
-                  dataIndex: 'name',
-                  width: 220,
-                  render: (text: string) => <Text ellipsis={{ showTooltip: true }}>{text}</Text>,
-                },
-                {
-                  title: '使用说明',
-                  dataIndex: 'usage',
-                  render: (text: string) => <Text ellipsis={{ showTooltip: true }}>{text || '-'}</Text>,
-                },
-              ]}
-            />
           </div>
         </TabPane>
 
@@ -438,19 +439,10 @@ const CommandDetailDrawer = ({
                       )}
                     </div>
 
-                    {selectedVersion.inputs?.length > 0 && (
-                      <div className="command-detail-drawer-version-detail-section">
-                        <Text className="command-detail-drawer-version-detail-section-title">入参</Text>
-                        <ParamCardList data={selectedVersion.inputs} />
-                      </div>
-                    )}
-
-                    {selectedVersion.outputs?.length > 0 && (
-                      <div className="command-detail-drawer-version-detail-section">
-                        <Text className="command-detail-drawer-version-detail-section-title">出参</Text>
-                        <ParamCardList data={selectedVersion.outputs} />
-                      </div>
-                    )}
+                    <div className="command-detail-drawer-version-detail-section">
+                      <Text className="command-detail-drawer-version-detail-section-title">本版本包含命令</Text>
+                      <CommandEntryTable data={selectedVersion.commands || []} />
+                    </div>
                   </>
                 ) : (
                   <div className="command-detail-drawer-version-detail-empty">

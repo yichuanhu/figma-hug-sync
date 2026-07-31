@@ -168,8 +168,7 @@ const CommandLibrary = () => {
       uploader_name: uploadTarget.owner_name,
       created_at: now,
       publish_time: null,
-      inputs: [],
-      outputs: [],
+      commands: [],
     };
     setCommands((prev) =>
       prev.map((c) => (c.id === uploadTarget.id ? { ...c, versions: [...c.versions, newVersion], updated_at: now } : c)),
