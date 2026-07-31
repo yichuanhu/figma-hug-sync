@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { debounce } from 'lodash';
 import { Typography, Input, Button, Table, Dropdown, Pagination, Modal, Toast } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Pencil, Plus, Trash2, Users } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Send, Trash2, Users } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
