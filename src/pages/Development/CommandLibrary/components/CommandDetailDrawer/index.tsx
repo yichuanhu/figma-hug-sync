@@ -356,14 +356,15 @@ const CommandDetailDrawer = ({
                       onClick={() => setSelectedVersionId(version.id)}
                     >
                       <div className="command-detail-drawer-version-sidebar-item-left">
-                        <Switch
-                          size="small"
-                          checked={isActive(version)}
-                          onChange={(checked) =>
-                            setActiveMap((prev) => ({ ...prev, [version.id]: checked }))
-                          }
-                          onClick={(_v, e) => e?.stopPropagation?.()}
-                        />
+                        <span onClick={(e) => e.stopPropagation()}>
+                          <Switch
+                            size="small"
+                            checked={isActive(version)}
+                            onChange={(checked) =>
+                              setActiveMap((prev) => ({ ...prev, [version.id]: checked }))
+                            }
+                          />
+                        </span>
                         <Text strong className="command-detail-drawer-version-sidebar-item-version">
                           {version.version}
                         </Text>
