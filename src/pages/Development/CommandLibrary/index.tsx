@@ -409,10 +409,7 @@ const CommandLibrary = () => {
             icon={<Plus size={16} strokeWidth={2} />}
             theme="solid"
             type="primary"
-            onClick={() => {
-              setEditing(null);
-              setFormVisible(true);
-            }}
+            onClick={() => setImportVisible(true)}
           >
             导入命令库
           </Button>
