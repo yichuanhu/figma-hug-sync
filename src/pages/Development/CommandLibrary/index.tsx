@@ -1,13 +1,14 @@
 import { useState, useMemo, useCallback } from 'react';
 import { debounce } from 'lodash';
-import { Typography, Input, Button, Table, Tag, Dropdown, Pagination, Modal, Toast } from '@douyinfe/semi-ui';
+import { Typography, Input, Button, Table, Dropdown, Pagination, Modal, Toast } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Pencil, Plus, Trash2, Upload } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Trash2, Users } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import StatusDot from '@/components/StatusDot';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import CommandDetailDrawer from './components/CommandDetailDrawer';
 import CommandFormModal, { type CommandFormValues } from './components/CommandFormModal';
 import UploadCommandVersionModal from './components/UploadCommandVersionModal';
@@ -50,6 +51,8 @@ const CommandLibrary = () => {
   const [formVisible, setFormVisible] = useState(false);
   const [editing, setEditing] = useState<CommandItem | null>(null);
   const [uploadTarget, setUploadTarget] = useState<CommandItem | null>(null);
+
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   const deptNameMap = useMemo(() => flattenDepts(departmentTree), []);
 
@@ -195,19 +198,6 @@ const CommandLibrary = () => {
       render: (name: string) => <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 180 }}>{name}</Text>,
     },
     {
-      title: '适用平台',
-      dataIndex: 'platforms',
-      key: 'platforms',
-      width: 200,
-      render: (platforms: string[]) => (
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'nowrap', overflow: 'hidden' }}>
-          {platforms.map((p) => (
-            <Tag key={p} size="small" color="blue" type="light">{p}</Tag>
-          ))}
-        </div>
-      ),
-    },
-    {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
@@ -217,10 +207,10 @@ const CommandLibrary = () => {
       ),
     },
     {
-      title: '当前版本',
+      title: '默认共享版本',
       dataIndex: 'current_version',
       key: 'current_version',
-      width: 100,
+      width: 120,
       render: (v: string | null) => v || '-',
     },
     {
@@ -241,7 +231,7 @@ const CommandLibrary = () => {
       ),
     },
     {
-      title: '描述',
+      title: '命令库介绍',
       dataIndex: 'description',
       key: 'description',
       width: 260,
@@ -276,8 +266,8 @@ const CommandLibrary = () => {
               >
                 编辑
               </Dropdown.Item>
-              <Dropdown.Item icon={<Upload size={16} strokeWidth={2} />} onClick={() => setUploadTarget(record)}>
-                上传版本
+              <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={() => openCollaborator(record.id)}>
+                协作者
               </Dropdown.Item>
               <Dropdown.Item icon={<Trash2 size={16} strokeWidth={2} />} type="danger" onClick={() => handleDelete(record)}>
                 删除
@@ -451,6 +441,8 @@ const CommandLibrary = () => {
         onCancel={() => setUploadTarget(null)}
         onSuccess={handleUploadSuccess}
       />
+
+      {renderCollaboratorPanel('COMMAND', 'development')}
     </div>
   );
 };
