@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Modal, Toast, Typography, Input } from '@douyinfe/semi-ui';
+import { Modal, Typography } from '@douyinfe/semi-ui';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import UploadField, { formatSize } from '../UploadField';
 import './index.less';
@@ -7,8 +7,6 @@ import './index.less';
 const { Text } = Typography;
 
 export interface UploadCommandVersionPayload {
-  version: string;
-  note: string;
   fileName: string;
   fileSize: string;
   sourceFileName: string;
@@ -25,15 +23,11 @@ interface UploadCommandVersionModalProps {
 const UploadCommandVersionModal = ({ visible, commandName, onCancel, onSuccess }: UploadCommandVersionModalProps) => {
   const [pkgFile, setPkgFile] = useState<FileItem | null>(null);
   const [sourceFile, setSourceFile] = useState<FileItem | null>(null);
-  const [version, setVersion] = useState('');
-  const [note, setNote] = useState('');
   const [uploading, setUploading] = useState(false);
 
   const reset = useCallback(() => {
     setPkgFile(null);
     setSourceFile(null);
-    setVersion('');
-    setNote('');
   }, []);
 
   const handleCancel = () => {
@@ -42,16 +36,10 @@ const UploadCommandVersionModal = ({ visible, commandName, onCancel, onSuccess }
   };
 
   const handleOk = async () => {
-    if (!version.trim()) {
-      Toast.warning('请输入版本号');
-      return;
-    }
     if (!pkgFile) return;
     setUploading(true);
     await new Promise((r) => setTimeout(r, 600));
     onSuccess({
-      version: version.trim(),
-      note: note.trim(),
       fileName: pkgFile.name || 'command.plg',
       fileSize: formatSize(pkgFile.fileInstance?.size),
       sourceFileName: sourceFile?.name || '',
@@ -70,27 +58,12 @@ const UploadCommandVersionModal = ({ visible, commandName, onCancel, onSuccess }
       onOk={handleOk}
       okText="上传"
       cancelText="取消"
-      okButtonProps={{ disabled: !version.trim() || !pkgFile, loading: uploading }}
+      okButtonProps={{ disabled: !pkgFile, loading: uploading }}
       width={520}
       centered
     >
       <div className="upload-command-version-modal">
         {commandName && <Text type="tertiary">命令库：{commandName}</Text>}
-
-        <div className="upload-command-version-modal-field">
-          <div className="upload-command-version-modal-label">
-            <span className="upload-command-version-modal-required">*</span>
-            <Text>版本号</Text>
-          </div>
-          <Input value={version} onChange={setVersion} placeholder="例如 1.2.0" maxLength={20} showClear />
-        </div>
-
-        <div className="upload-command-version-modal-field">
-          <div className="upload-command-version-modal-label">
-            <Text>更新说明</Text>
-          </div>
-          <Input value={note} onChange={setNote} placeholder="请输入更新说明" maxLength={200} showClear />
-        </div>
 
         <UploadField
           label="命令库文件"
