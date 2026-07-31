@@ -345,6 +345,11 @@ const CommandLibrary = () => {
               >
                 编辑
               </Dropdown.Item>
+              {record.status === 'NOT_SHARED' && (
+                <Dropdown.Item icon={<Send size={16} strokeWidth={2} />} onClick={() => handlePublish(record)}>
+                  发布
+                </Dropdown.Item>
+              )}
               <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={() => openCollaborator(record.id)}>
                 协作者
               </Dropdown.Item>
