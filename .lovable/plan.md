@@ -1,24 +1,39 @@
 ## 目标
+优化命令库列表的发布与取消发布交互：
+1. 发布确认提示更友好，并明确权限限制；
+2. 已发布命令库的操作菜单增加「取消发布」，并给出明确后果提示。
 
-把命令库详情抽屉里的「新增版本」弹窗（UploadCommandVersionModal）的上传交互，改成与「导入命令库」弹窗（ImportCommandModal）完全一致的样式与规则。
+## 改动范围
+- `src/pages/Development/CommandLibrary/index.tsx`
 
-## 交互改动
+## 具体步骤
 
-1. 移除现有的虚线拖拽区（Inbox 图标 + 拖拽文案）。
-2. 改为与导入弹窗一致的上传字段结构：
-   - 标签行：红色 `*` + 字段名 + 问号 Tooltip 说明
-   - 控制行：「上传」按钮（Upload 图标）+ 灰色格式提示文案
-   - 已选文件行：文件图标 + 文件名（超长省略并 Tooltip）+ 文件大小 + 关闭图标可移除
-3. 两个上传项，与导入命令库保持一致：
-   - 命令库文件：仅支持 .plg，不超过 100M
-   - 命令库源码：仅支持 .zip，不超过 100M
-4. 校验规则一致：扩展名不符 / 超过 100M 时 Toast 提示并拒绝上传。
-5. 弹窗仍保留版本相关表单字段：版本号（必填）、更新说明；字段顺序为 版本号 → 更新说明 → 命令库文件 → 命令库源码。
-6. 底部按钮：两个文件与版本号齐全前，主按钮置灰不可点（与导入弹窗一致）。
+### 1. 优化发布提示
+将当前 `handlePublish` 中 `Modal.confirm` 的 `content` 修改为：
+> 「发布后的命令库可以在客户端下载使用，仅授权客户可见。」
+保持确认/取消按钮不变。
 
-## 技术细节
+### 2. 新增取消发布功能
+- 在操作列 Dropdown 中，为 `PUBLISHED` 状态增加「取消发布」菜单项（使用 Lucide `EyeOff` 或 `CircleX` 图标）。
+- 新增 `handleUnpublish(record)` 方法，弹出 `Modal.confirm`：
+  - 标题：取消发布命令库
+  - 内容：取消发布后，客户端无法下载该命令
+  - 按钮：取消 / 取消发布
+- 确认后：
+  - 将命令库状态改为 `UNPUBLISHED`；
+  - 清空 `publish_time`；
+  - `current_version` 保持当前值或同步清空（按现有未发布状态约定处理为 `null`）；
+  - 更新列表与当前选中项；
+  - `Toast.success('命令库已取消发布')`。
 
-- 将 ImportCommandModal 中的 `UploadField` 子组件与 `formatSize` 提取为共享文件（`components/UploadField/`，含 index.tsx 与 index.less），供两个弹窗复用，避免样式漂移。
-- ImportCommandModal 改为引用共享组件，视觉与行为不变。
-- UploadCommandVersionModal 的 `onSuccess` 回调载荷扩展为 `{ version, note, fileName, fileSize, sourceFileName, sourceFileSize }`，详情抽屉新增版本时同时写入 `file_name` 与 `source_file_name`，使版本详情右侧的「命令库文件 / 命令库源代码文件」两行都有真实值。
-- 相应更新 CommandLibrary 列表页/抽屉中处理新增版本的回调，接收新增字段。
+### 3. 操作菜单显示规则
+- `UNPUBLISHED`：显示「发布」。
+- `PUBLISHED`：显示「取消发布」。
+- 「编辑」「协作者」「删除」保持常驻。
+
+## 验收标准
+- 未发布命令库点击「发布」时，弹窗文案包含权限说明。
+- 已发布命令库操作菜单出现「取消发布」。
+- 取消发布确认弹窗提示客户端无法下载。
+- 取消发布后列表状态即时刷新为「未发布」。
+- 类型检查通过。
