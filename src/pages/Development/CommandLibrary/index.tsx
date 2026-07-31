@@ -110,6 +110,34 @@ const CommandLibrary = () => {
     });
   }, []);
 
+  const handlePublish = useCallback((record: CommandItem) => {
+    Modal.confirm({
+      title: '发布命令库',
+      content: '发布后的命令库可以在客户端下载使用',
+      okText: '发布',
+      cancelText: '取消',
+      centered: true,
+      onOk: () => {
+        const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+        const activeVersions = record.versions.filter((v) => v.is_active);
+        const latestActiveVersion = activeVersions[activeVersions.length - 1] || null;
+        const updated: CommandItem = {
+          ...record,
+          status: 'SHARED',
+          current_version: latestActiveVersion?.version || null,
+          publish_time: now,
+          updated_at: now,
+          versions: record.versions.map((v) =>
+            v.id === latestActiveVersion?.id ? { ...v, publish_time: now } : v,
+          ),
+        };
+        setCommands((prev) => prev.map((c) => (c.id === record.id ? updated : c)));
+        setSelected((prev) => (prev?.id === record.id ? updated : prev));
+        Toast.success('命令库已发布');
+      },
+    });
+  }, []);
+
   const handleSubmitForm = (values: CommandFormValues) => {
     const deptName = deptNameMap[values.owning_department_id] || values.owning_department_id;
     const owner = COMMAND_OWNER_POOL.find((o) => o.id === values.owner_id);
