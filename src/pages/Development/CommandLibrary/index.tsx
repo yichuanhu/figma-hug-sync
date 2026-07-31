@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { debounce } from 'lodash';
 import { Typography, Input, Button, Table, Dropdown, Pagination, Modal, Toast } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Pencil, Plus, Trash2, Users } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Send, Trash2, Users } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
@@ -106,6 +106,34 @@ const CommandLibrary = () => {
         setDetailVisible(false);
         setSelected(null);
         Toast.success('命令已删除');
+      },
+    });
+  }, []);
+
+  const handlePublish = useCallback((record: CommandItem) => {
+    Modal.confirm({
+      title: '发布命令库',
+      content: '发布后的命令库可以在客户端下载使用',
+      okText: '发布',
+      cancelText: '取消',
+      centered: true,
+      onOk: () => {
+        const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+        const activeVersions = record.versions.filter((v) => v.is_active);
+        const latestActiveVersion = activeVersions[activeVersions.length - 1] || null;
+        const updated: CommandItem = {
+          ...record,
+          status: 'SHARED',
+          current_version: latestActiveVersion?.version || null,
+          publish_time: now,
+          updated_at: now,
+          versions: record.versions.map((v) =>
+            v.id === latestActiveVersion?.id ? { ...v, publish_time: now } : v,
+          ),
+        };
+        setCommands((prev) => prev.map((c) => (c.id === record.id ? updated : c)));
+        setSelected((prev) => (prev?.id === record.id ? updated : prev));
+        Toast.success('命令库已发布');
       },
     });
   }, []);
@@ -317,6 +345,11 @@ const CommandLibrary = () => {
               >
                 编辑
               </Dropdown.Item>
+              {record.status === 'NOT_SHARED' && (
+                <Dropdown.Item icon={<Send size={16} strokeWidth={2} />} onClick={() => handlePublish(record)}>
+                  发布
+                </Dropdown.Item>
+              )}
               <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={() => openCollaborator(record.id)}>
                 协作者
               </Dropdown.Item>
