@@ -195,19 +195,6 @@ const CommandLibrary = () => {
       render: (name: string) => <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 180 }}>{name}</Text>,
     },
     {
-      title: '适用平台',
-      dataIndex: 'platforms',
-      key: 'platforms',
-      width: 200,
-      render: (platforms: string[]) => (
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'nowrap', overflow: 'hidden' }}>
-          {platforms.map((p) => (
-            <Tag key={p} size="small" color="blue" type="light">{p}</Tag>
-          ))}
-        </div>
-      ),
-    },
-    {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
@@ -217,10 +204,10 @@ const CommandLibrary = () => {
       ),
     },
     {
-      title: '当前版本',
+      title: '默认共享版本',
       dataIndex: 'current_version',
       key: 'current_version',
-      width: 100,
+      width: 120,
       render: (v: string | null) => v || '-',
     },
     {
@@ -241,7 +228,7 @@ const CommandLibrary = () => {
       ),
     },
     {
-      title: '描述',
+      title: '命令库介绍',
       dataIndex: 'description',
       key: 'description',
       width: 260,
