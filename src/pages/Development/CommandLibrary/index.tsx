@@ -11,6 +11,7 @@ import StatusDot from '@/components/StatusDot';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import CommandDetailDrawer from './components/CommandDetailDrawer';
 import CommandFormModal, { type CommandFormValues } from './components/CommandFormModal';
+import ImportCommandModal, { type ImportCommandPayload } from './components/ImportCommandModal';
 import UploadCommandVersionModal from './components/UploadCommandVersionModal';
 import {
   mockCommandList,
@@ -51,6 +52,7 @@ const CommandLibrary = () => {
   const [formVisible, setFormVisible] = useState(false);
   const [editing, setEditing] = useState<CommandItem | null>(null);
   const [uploadTarget, setUploadTarget] = useState<CommandItem | null>(null);
+  const [importVisible, setImportVisible] = useState(false);
 
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
@@ -154,6 +156,54 @@ const CommandLibrary = () => {
       setCurrentPage(1);
     }
   };
+
+  const handleImport = (payload: ImportCommandPayload) => {
+    const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    const id = `command-${Date.now()}`;
+    const name = payload.fileName.replace(/\.[^.]+$/, '');
+    const version: CommandVersion = {
+      id: `${id}-v1`,
+      command_id: id,
+      version: '1.0.0',
+      is_active: true,
+      version_note: '首次导入',
+      file_name: payload.fileName,
+      file_size: payload.fileSize,
+      source_file_name: payload.sourceFileName,
+      source_file_size: payload.sourceFileSize,
+      uploader_id: 'user-001',
+      uploader_name: '张伟',
+      created_at: now,
+      publish_time: null,
+      commands: [],
+    };
+    const created: CommandItem = {
+      id,
+      name,
+      description: '',
+      status: 'NOT_SHARED',
+      platforms: [],
+      compatible_systems: ['Windows x64', 'Windows x86'],
+      install_count: 0,
+      current_version: version.version,
+      owning_department_id: '',
+      owning_department_name: '',
+      owner_id: 'user-001',
+      owner_name: '张伟',
+      publisher_id: 'user-001',
+      publisher_name: '张伟',
+      created_at: now,
+      updated_at: now,
+      publish_time: null,
+      commands: [],
+      versions: [version],
+    };
+    setCommands((prev) => [created, ...prev]);
+    setCurrentPage(1);
+    Toast.success('命令库导入成功');
+  };
+
+
 
   const handleUploadSuccess = (payload: { version: string; note: string; fileName: string; fileSize: string }) => {
     if (!uploadTarget) return;
@@ -359,10 +409,7 @@ const CommandLibrary = () => {
             icon={<Plus size={16} strokeWidth={2} />}
             theme="solid"
             type="primary"
-            onClick={() => {
-              setEditing(null);
-              setFormVisible(true);
-            }}
+            onClick={() => setImportVisible(true)}
           >
             导入命令库
           </Button>
@@ -434,6 +481,13 @@ const CommandLibrary = () => {
         onCancel={() => setFormVisible(false)}
         onSubmit={handleSubmitForm}
       />
+
+      <ImportCommandModal
+        visible={importVisible}
+        onCancel={() => setImportVisible(false)}
+        onSubmit={handleImport}
+      />
+
 
       <UploadCommandVersionModal
         visible={!!uploadTarget}
