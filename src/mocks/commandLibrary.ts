@@ -186,8 +186,7 @@ const buildVersions = (commandId: string, index: number, owner: { id: string; na
       uploader_name: owner.name,
       created_at: fmt(created),
       publish_time: spec.active ? fmt(new Date(created.getTime() + 3600 * 1000)) : null,
-      inputs: INPUT_POOL[(index + i) % INPUT_POOL.length],
-      outputs: OUTPUT_POOL[(index + i) % OUTPUT_POOL.length],
+      commands: buildEntries(index + i),
     };
   });
 };
