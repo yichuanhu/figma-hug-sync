@@ -21,6 +21,7 @@ import DepartmentPath from '@/components/DepartmentPath';
 import EmptyState from '@/components/EmptyState';
 import {
   COMMAND_STATUS_CONFIG,
+  type CommandEntry,
   type CommandItem,
   type CommandParam,
   type CommandVersion,
