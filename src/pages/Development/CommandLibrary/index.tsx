@@ -52,6 +52,8 @@ const CommandLibrary = () => {
   const [editing, setEditing] = useState<CommandItem | null>(null);
   const [uploadTarget, setUploadTarget] = useState<CommandItem | null>(null);
 
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
+
   const deptNameMap = useMemo(() => flattenDepts(departmentTree), []);
 
   const debouncedSearch = useMemo(
