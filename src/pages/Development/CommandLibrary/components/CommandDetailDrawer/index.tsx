@@ -438,19 +438,10 @@ const CommandDetailDrawer = ({
                       )}
                     </div>
 
-                    {selectedVersion.inputs?.length > 0 && (
-                      <div className="command-detail-drawer-version-detail-section">
-                        <Text className="command-detail-drawer-version-detail-section-title">入参</Text>
-                        <ParamCardList data={selectedVersion.inputs} />
-                      </div>
-                    )}
-
-                    {selectedVersion.outputs?.length > 0 && (
-                      <div className="command-detail-drawer-version-detail-section">
-                        <Text className="command-detail-drawer-version-detail-section-title">出参</Text>
-                        <ParamCardList data={selectedVersion.outputs} />
-                      </div>
-                    )}
+                    <div className="command-detail-drawer-version-detail-section">
+                      <Text className="command-detail-drawer-version-detail-section-title">本版本包含命令</Text>
+                      <CommandEntryTable data={selectedVersion.commands || []} />
+                    </div>
                   </>
                 ) : (
                   <div className="command-detail-drawer-version-detail-empty">
