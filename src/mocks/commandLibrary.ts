@@ -54,6 +54,8 @@ export interface CommandItem {
   publisher_name: string;
   created_at: string;
   updated_at: string;
+  /** 命令库整体发布时间（取最新已发布版本的发布时间） */
+  publish_time: string | null;
   commands: CommandEntry[];
   versions: CommandVersion[];
 }
