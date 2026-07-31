@@ -128,7 +128,7 @@ const CommandLibrary = () => {
         id: `command-${Date.now()}`,
         name: values.name,
         description: values.description || '',
-        status: 'DEVELOPING',
+        status: 'NOT_SHARED',
         platforms: values.platforms,
         compatible_systems: ['Windows x64', 'Windows x86'],
         install_count: 0,
