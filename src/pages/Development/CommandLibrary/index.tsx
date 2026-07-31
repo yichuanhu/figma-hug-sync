@@ -208,12 +208,13 @@ const CommandLibrary = () => {
   const handleUploadSuccess = (payload: UploadCommandVersionPayload) => {
     if (!uploadTarget) return;
     const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    const nextVersion = `1.0.${uploadTarget.versions.length}`;
     const newVersion: CommandVersion = {
       id: `${uploadTarget.id}-v${Date.now()}`,
       command_id: uploadTarget.id,
-      version: payload.version,
+      version: nextVersion,
       is_active: false,
-      version_note: payload.note,
+      version_note: '',
       file_name: payload.fileName,
       file_size: payload.fileSize,
       source_file_name: payload.sourceFileName,
