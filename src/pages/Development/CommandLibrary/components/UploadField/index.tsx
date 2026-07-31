@@ -21,10 +21,12 @@ export interface UploadFieldProps {
   extension: string;
   file: FileItem | null;
   onChange: (file: FileItem | null) => void;
+  /** 是否必填，默认 true */
+  required?: boolean;
 }
 
 /** 命令库通用上传字段（标签 + 上传按钮 + 已选文件行） */
-const UploadField = ({ label, tip, hint, accept, extension, file, onChange }: UploadFieldProps) => {
+const UploadField = ({ label, tip, hint, accept, extension, file, onChange, required = true }: UploadFieldProps) => {
   const beforeUpload = ({ file: uploadFile }: BeforeUploadProps): BeforeUploadObjectResult => {
     const name = uploadFile.name || '';
     if (!name.toLowerCase().endsWith(extension)) {
@@ -41,7 +43,7 @@ const UploadField = ({ label, tip, hint, accept, extension, file, onChange }: Up
   return (
     <div className="command-upload-field">
       <div className="command-upload-field-label">
-        <span className="command-upload-field-required">*</span>
+        {required && <span className="command-upload-field-required">*</span>}
         <Text>{label}</Text>
         <Tooltip content={tip} position="top">
           <HelpCircle size={14} strokeWidth={2} className="command-upload-field-help" />

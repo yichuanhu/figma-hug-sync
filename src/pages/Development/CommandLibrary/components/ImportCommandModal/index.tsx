@@ -33,14 +33,14 @@ const ImportCommandModal = ({ visible, onCancel, onSubmit }: ImportCommandModalP
   };
 
   const handleOk = async () => {
-    if (!pkgFile || !sourceFile) return;
+    if (!pkgFile) return;
     setLoading(true);
     await new Promise((r) => setTimeout(r, 600));
     onSubmit({
       fileName: pkgFile.name || 'command.plg',
       fileSize: formatSize(pkgFile.fileInstance?.size),
-      sourceFileName: sourceFile.name || 'command_source.zip',
-      sourceFileSize: formatSize(sourceFile.fileInstance?.size),
+      sourceFileName: sourceFile?.name || '',
+      sourceFileSize: sourceFile ? formatSize(sourceFile.fileInstance?.size) : '-',
     });
     setLoading(false);
     reset();
@@ -55,7 +55,7 @@ const ImportCommandModal = ({ visible, onCancel, onSubmit }: ImportCommandModalP
       onOk={handleOk}
       okText="导入"
       cancelText="取消"
-      okButtonProps={{ disabled: !pkgFile || !sourceFile, loading }}
+      okButtonProps={{ disabled: !pkgFile, loading }}
       width={520}
       centered
     >
@@ -75,6 +75,7 @@ const ImportCommandModal = ({ visible, onCancel, onSubmit }: ImportCommandModalP
           hint="（仅支持.zip格式，不超过100M）"
           accept=".zip"
           extension=".zip"
+          required={false}
           file={sourceFile}
           onChange={setSourceFile}
         />

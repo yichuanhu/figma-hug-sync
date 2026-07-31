@@ -417,7 +417,11 @@ const CommandDetailDrawer = ({
                         <FileLine name={selectedVersion.file_name} />
                       </StackField>
                       <StackField label="命令库源代码文件">
-                        <FileLine name={selectedVersion.source_file_name} />
+                        {selectedVersion.source_file_name ? (
+                          <FileLine name={selectedVersion.source_file_name} />
+                        ) : (
+                          '-'
+                        )}
                       </StackField>
                     </div>
 
