@@ -482,6 +482,13 @@ const CommandLibrary = () => {
         onSubmit={handleSubmitForm}
       />
 
+      <ImportCommandModal
+        visible={importVisible}
+        onCancel={() => setImportVisible(false)}
+        onSubmit={handleImport}
+      />
+
+
       <UploadCommandVersionModal
         visible={!!uploadTarget}
         commandName={uploadTarget?.name}
