@@ -123,7 +123,7 @@ const CommandLibrary = () => {
         const latestActiveVersion = activeVersions[activeVersions.length - 1] || null;
         const updated: CommandItem = {
           ...record,
-          status: 'SHARED',
+          status: 'PUBLISHED',
           current_version: latestActiveVersion?.version || null,
           publish_time: now,
           updated_at: now,
@@ -161,7 +161,7 @@ const CommandLibrary = () => {
         id: `command-${Date.now()}`,
         name: values.name,
         description: values.description || '',
-        status: 'NOT_SHARED',
+      status: 'UNPUBLISHED',
         platforms: values.platforms,
         compatible_systems: ['Windows x64', 'Windows x86'],
         install_count: 0,
@@ -209,7 +209,7 @@ const CommandLibrary = () => {
       id,
       name,
       description: '',
-      status: 'NOT_SHARED',
+      status: 'UNPUBLISHED',
       platforms: [],
       compatible_systems: ['Windows x64', 'Windows x86'],
       install_count: 0,
@@ -345,7 +345,7 @@ const CommandLibrary = () => {
               >
                 编辑
               </Dropdown.Item>
-              {record.status === 'NOT_SHARED' && (
+              {record.status === 'UNPUBLISHED' && (
                 <Dropdown.Item icon={<Send size={16} strokeWidth={2} />} onClick={() => handlePublish(record)}>
                   发布
                 </Dropdown.Item>
