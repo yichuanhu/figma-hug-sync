@@ -75,6 +75,7 @@ const ImportCommandModal = ({ visible, onCancel, onSubmit }: ImportCommandModalP
           hint="（仅支持.zip格式，不超过100M）"
           accept=".zip"
           extension=".zip"
+          required={false}
           file={sourceFile}
           onChange={setSourceFile}
         />

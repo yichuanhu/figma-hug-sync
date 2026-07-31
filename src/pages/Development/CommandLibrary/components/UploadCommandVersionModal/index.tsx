@@ -107,6 +107,7 @@ const UploadCommandVersionModal = ({ visible, commandName, onCancel, onSuccess }
           hint="（仅支持.zip格式，不超过100M）"
           accept=".zip"
           extension=".zip"
+          required={false}
           file={sourceFile}
           onChange={setSourceFile}
         />
