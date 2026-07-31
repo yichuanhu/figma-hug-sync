@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { debounce } from 'lodash';
 import { Typography, Input, Button, Table, Dropdown, Pagination, Modal, Toast } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Pencil, Plus, Send, Trash2, Users } from 'lucide-react';
+import { Ellipsis, EyeOff, Pencil, Plus, Send, Trash2, Users } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
@@ -113,7 +113,7 @@ const CommandLibrary = () => {
   const handlePublish = useCallback((record: CommandItem) => {
     Modal.confirm({
       title: '发布命令库',
-      content: '发布后的命令库可以在客户端下载使用',
+      content: '发布后的命令库可以在客户端下载使用，仅授权客户可见',
       okText: '发布',
       cancelText: '取消',
       centered: true,
@@ -134,6 +134,30 @@ const CommandLibrary = () => {
         setCommands((prev) => prev.map((c) => (c.id === record.id ? updated : c)));
         setSelected((prev) => (prev?.id === record.id ? updated : prev));
         Toast.success('命令库已发布');
+      },
+    });
+  }, []);
+
+  const handleUnpublish = useCallback((record: CommandItem) => {
+    Modal.confirm({
+      title: '取消发布命令库',
+      content: '取消发布后，客户端无法下载该命令',
+      okText: '取消发布',
+      cancelText: '取消',
+      okButtonProps: { type: 'danger' },
+      centered: true,
+      onOk: () => {
+        const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+        const updated: CommandItem = {
+          ...record,
+          status: 'UNPUBLISHED',
+          publish_time: null,
+          current_version: null,
+          updated_at: now,
+        };
+        setCommands((prev) => prev.map((c) => (c.id === record.id ? updated : c)));
+        setSelected((prev) => (prev?.id === record.id ? updated : prev));
+        Toast.success('命令库已取消发布');
       },
     });
   }, []);
