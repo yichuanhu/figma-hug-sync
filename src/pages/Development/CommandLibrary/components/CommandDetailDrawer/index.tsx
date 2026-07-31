@@ -300,16 +300,6 @@ const CommandDetailDrawer = ({
               {statusCfg.label}
             </Tag>
           </div>
-          <div className="command-detail-drawer-title-sub">
-            <Text type="tertiary" size="small">
-              所有者：
-            </Text>
-            <UserNameWithCard
-              name={command.owner_name}
-              userId={command.owner_id}
-              department={command.owning_department_name}
-            />
-          </div>
         </div>
       }
       dataList={dataList}
