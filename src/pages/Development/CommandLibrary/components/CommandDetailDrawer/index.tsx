@@ -94,7 +94,48 @@ const ParamCardList = ({ data }: { data: CommandParam[] }) => (
   </div>
 );
 
-const FileLine = ({ name, size }: { name: string; size?: string }) => (
+/** 命令清单表格（行展开显示该命令的入参 / 出参） */
+const CommandEntryTable = ({ data }: { data: CommandEntry[] }) => (
+  <Table
+    size="small"
+    pagination={false}
+    dataSource={data.map((c, i) => ({ ...c, key: `${c.name}-${i}` }))}
+    empty={<EmptyState description="暂无命令" size={100} />}
+    expandedRowRender={(record) =>
+      record ? (
+        <div className="command-detail-drawer-command-expand">
+          <div className="command-detail-drawer-command-expand-block">
+            <Text type="tertiary" size="small">
+              入参
+            </Text>
+            {record.inputs?.length ? <ParamCardList data={record.inputs} /> : <Text>-</Text>}
+          </div>
+          <div className="command-detail-drawer-command-expand-block">
+            <Text type="tertiary" size="small">
+              出参
+            </Text>
+            {record.outputs?.length ? <ParamCardList data={record.outputs} /> : <Text>-</Text>}
+          </div>
+        </div>
+      ) : null
+    }
+    columns={[
+      {
+        title: '命令名称',
+        dataIndex: 'name',
+        width: 220,
+        render: (text: string) => <Text ellipsis={{ showTooltip: true }}>{text}</Text>,
+      },
+      {
+        title: '使用说明',
+        dataIndex: 'usage',
+        render: (text: string) => <Text ellipsis={{ showTooltip: true }}>{text || '-'}</Text>,
+      },
+    ]}
+  />
+);
+
+
   <div className="command-detail-drawer-file">
     <FileArchive size={16} strokeWidth={2} color="var(--semi-color-primary)" />
     <Text ellipsis={{ showTooltip: true }} className="command-detail-drawer-file-name">
