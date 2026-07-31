@@ -102,12 +102,12 @@ const CommandFormModal = ({ visible, command, onCancel, onSubmit }: CommandFormM
 
         <Form.Select
           field="platforms"
-          label="适用平台"
-          placeholder="请选择适用平台"
+          label="适用操作系统"
+          placeholder="请选择适用操作系统"
           multiple
           style={{ width: '100%' }}
           trigger={['blur', 'change']}
-          rules={[{ required: true, message: '请选择适用平台' }]}
+          rules={[{ required: true, message: '请选择适用操作系统' }]}
           optionList={COMMAND_PLATFORM_OPTIONS.map((p) => ({ value: p, label: p }))}
         />
 

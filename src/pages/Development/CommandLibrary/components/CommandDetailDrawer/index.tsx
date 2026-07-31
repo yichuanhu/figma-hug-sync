@@ -249,7 +249,7 @@ const CommandDetailDrawer = ({
       ),
     },
     {
-      key: '适用平台',
+      key: '适用操作系统',
       value: (command.platforms || []).length ? (
         <Space spacing={4} wrap>
           {command.platforms.map((p) => (
