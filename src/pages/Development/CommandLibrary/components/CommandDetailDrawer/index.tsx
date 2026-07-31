@@ -9,11 +9,11 @@ import {
   Tabs,
   TabPane,
   Descriptions,
-  Divider,
   Space,
+  Switch,
   Table,
 } from '@douyinfe/semi-ui';
-import { Trash2, Upload, Pencil, Download, FileArchive, HelpCircle } from 'lucide-react';
+import { Trash2, Plus, Pencil, Download, FileArchive } from 'lucide-react';
 import DetailDrawerWrapper, { type PaginationInfo } from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
@@ -136,17 +136,12 @@ const CommandEntryTable = ({ data }: { data: CommandEntry[] }) => (
   />
 );
 
-const FileLine = ({ name, size }: { name: string; size?: string }) => (
+const FileLine = ({ name }: { name: string }) => (
   <div className="command-detail-drawer-file">
     <FileArchive size={16} strokeWidth={2} color="var(--semi-color-primary)" />
     <Text ellipsis={{ showTooltip: true }} className="command-detail-drawer-file-name">
       {name}
     </Text>
-    {size && (
-      <Text type="tertiary" size="small">
-        {size}
-      </Text>
-    )}
     <Button
       icon={<Download size={16} strokeWidth={2} />}
       theme="borderless"
@@ -154,6 +149,16 @@ const FileLine = ({ name, size }: { name: string; size?: string }) => (
       size="small"
       onClick={() => Toast.info('原型演示，暂不支持下载')}
     />
+  </div>
+);
+
+/** 纵向字段（标签在上，值在下） */
+const StackField = ({ label, children }: { label: string; children: React.ReactNode }) => (
+  <div className="command-detail-drawer-field">
+    <Text type="tertiary" className="command-detail-drawer-field-label">
+      {label}
+    </Text>
+    <div className="command-detail-drawer-field-value">{children}</div>
   </div>
 );
 
@@ -172,6 +177,8 @@ const CommandDetailDrawer = ({
 }: CommandDetailDrawerProps) => {
   const [activeTab, setActiveTab] = useState('basic');
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
+  /** 原型内存态：版本启用开关 */
+  const [activeMap, setActiveMap] = useState<Record<string, boolean>>({});
 
   const sortedVersions = useMemo(() => {
     const list = [...(command?.versions || [])];
@@ -189,14 +196,21 @@ const CommandDetailDrawer = ({
 
   useEffect(() => {
     setSelectedVersionId(sortedVersions[0]?.id || null);
+    setActiveMap(
+      sortedVersions.reduce<Record<string, boolean>>((acc, v) => {
+        acc[v.id] = v.is_active;
+        return acc;
+      }, {}),
+    );
   }, [sortedVersions]);
 
   const selectedVersion = sortedVersions.find((v) => v.id === selectedVersionId) || null;
-  const latestActiveVersionId = sortedVersions.find((v) => v.is_active)?.id || null;
 
   if (!command) return null;
 
   const statusCfg = COMMAND_STATUS_CONFIG[command.status];
+
+  const isActive = (version: CommandVersion) => activeMap[version.id] ?? version.is_active;
 
   const handleDeleteVersion = (version: CommandVersion) => {
     Modal.warning({
@@ -255,37 +269,6 @@ const CommandDetailDrawer = ({
     { key: '命令库介绍', value: <ExpandableText text={command.description} /> },
   ];
 
-  const publishGroupData = [
-    { key: '最新发布版本', value: command.current_version || '-' },
-    { key: '发布人', value: command.publisher_name || '-' },
-    { key: '安装次数', value: command.install_count ?? 0 },
-    { key: '发布时间', value: command.publish_time || '-' },
-  ];
-
-  const getVersionDescriptionData = (version: CommandVersion) => [
-    { key: '版本号', value: version.version },
-    {
-      key: '状态',
-      value: (
-        <Tag size="small" color={version.is_active ? 'green' : 'grey'} type="light">
-          {version.is_active ? '已发布' : '未发布'}
-        </Tag>
-      ),
-    },
-    {
-      key: '上传人',
-      value: <UserNameWithCard name={version.uploader_name} userId={version.uploader_id} />,
-    },
-    { key: '创建时间', value: version.created_at },
-    { key: '发布时间', value: version.publish_time || '-' },
-    { key: '更新说明', value: <ExpandableText text={version.version_note} /> },
-    { key: '命令库文件', value: <FileLine name={version.file_name} size={version.file_size} /> },
-    {
-      key: '源码文件',
-      value: <FileLine name={version.source_file_name} size={version.source_file_size} />,
-    },
-  ];
-
   return (
     <DetailDrawerWrapper<CommandItem>
       visible={visible}
@@ -322,13 +305,6 @@ const CommandDetailDrawer = ({
               基础信息
             </Title>
             <Descriptions data={basicGroupData} align="left" />
-
-            <Divider margin="20px" />
-            <Title heading={6} style={{ margin: '0 0 12px' }}>
-              发布信息
-            </Title>
-            <Descriptions data={publishGroupData} align="left" />
-
           </div>
         </TabPane>
 
@@ -337,31 +313,37 @@ const CommandDetailDrawer = ({
             <div className="command-detail-drawer-version-empty">
               <EmptyState description="暂无版本" size={120} />
               <Button
-                icon={<Upload size={16} strokeWidth={2} />}
+                icon={<Plus size={16} strokeWidth={2} />}
                 theme="solid"
                 className="command-detail-drawer-version-empty-upload-btn"
                 onClick={onUploadVersion}
               >
-                上传版本
+                新增版本
               </Button>
             </div>
           ) : (
             <div className="command-detail-drawer-version-layout">
               <div className="command-detail-drawer-version-sidebar">
                 <div className="command-detail-drawer-version-sidebar-header">
-                  <Text className="command-detail-drawer-version-sidebar-title">历史版本</Text>
-                  <Tooltip content="展示该命令库的全部历史版本，绿点为当前启用版本">
-                    <HelpCircle size={16} strokeWidth={2} />
-                  </Tooltip>
+                  <Text strong className="command-detail-drawer-version-sidebar-title">
+                    历史版本
+                  </Text>
+                  <Button
+                    icon={<Plus size={16} strokeWidth={2} />}
+                    theme="solid"
+                    size="small"
+                    onClick={onUploadVersion}
+                  >
+                    新增版本
+                  </Button>
                 </div>
-                <Button
-                  icon={<Upload size={16} strokeWidth={2} />}
-                  theme="solid"
-                  className="command-detail-drawer-version-sidebar-upload-btn"
-                  onClick={onUploadVersion}
+                <Text
+                  link
+                  className="command-detail-drawer-version-sidebar-deleted-link"
+                  onClick={() => Toast.info('暂无已删除版本')}
                 >
-                  上传版本
-                </Button>
+                  查看已删除版本
+                </Text>
                 <div className="command-detail-drawer-version-sidebar-list">
                   {sortedVersions.map((version) => (
                     <div
@@ -373,17 +355,42 @@ const CommandDetailDrawer = ({
                       }`}
                       onClick={() => setSelectedVersionId(version.id)}
                     >
-                      <Space spacing={6} align="center">
-                        <Text className="command-detail-drawer-version-sidebar-item-version">{version.version}</Text>
-                        {version.id === latestActiveVersionId && (
-                          <Tooltip content="当前启用版本">
-                            <span className="command-detail-drawer-version-sidebar-item-active-dot" />
-                          </Tooltip>
-                        )}
-                      </Space>
-                      <Tag color={version.is_active ? 'green' : 'grey'} type="light" size="small">
-                        {version.is_active ? '已发布' : '未发布'}
-                      </Tag>
+                      <div className="command-detail-drawer-version-sidebar-item-left">
+                        <span onClick={(e) => e.stopPropagation()}>
+                          <Switch
+                            size="small"
+                            checked={isActive(version)}
+                            onChange={(checked) =>
+                              setActiveMap((prev) => ({ ...prev, [version.id]: checked }))
+                            }
+                          />
+                        </span>
+                        <Text strong className="command-detail-drawer-version-sidebar-item-version">
+                          {version.version}
+                        </Text>
+                      </div>
+                      {isActive(version) ? (
+                        <Tooltip content="已启用版本不可删除">
+                          <Button
+                            icon={<Trash2 size={16} strokeWidth={2} />}
+                            theme="borderless"
+                            type="tertiary"
+                            size="small"
+                            disabled
+                          />
+                        </Tooltip>
+                      ) : (
+                        <Button
+                          icon={<Trash2 size={16} strokeWidth={2} />}
+                          theme="borderless"
+                          type="tertiary"
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteVersion(version);
+                          }}
+                        />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -392,30 +399,26 @@ const CommandDetailDrawer = ({
               <div className="command-detail-drawer-version-detail">
                 {selectedVersion ? (
                   <>
-                    <div className="command-detail-drawer-version-detail-section">
-                      <Text className="command-detail-drawer-version-detail-section-title">版本信息</Text>
-                      <Descriptions data={getVersionDescriptionData(selectedVersion)} align="left" />
-                      {selectedVersion.is_active ? (
-                        <Tooltip content="已发布版本不可删除">
-                          <Button
-                            icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
-                            type="tertiary"
-                            className="command-detail-drawer-version-detail-delete-btn"
-                            disabled
-                          >
-                            删除版本
-                          </Button>
-                        </Tooltip>
-                      ) : (
-                        <Button
-                          icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
-                          type="tertiary"
-                          className="command-detail-drawer-version-detail-delete-btn"
-                          onClick={() => handleDeleteVersion(selectedVersion)}
-                        >
-                          删除版本
-                        </Button>
-                      )}
+                    <div className="command-detail-drawer-field-list">
+                      <StackField label="版本号">{selectedVersion.version}</StackField>
+                      <StackField label="创建时间">{selectedVersion.created_at}</StackField>
+                      <StackField label="命令库介绍">
+                        <ExpandableText text={command.description} />
+                      </StackField>
+                      <StackField label="更新说明">
+                        <ExpandableText text={selectedVersion.version_note} />
+                      </StackField>
+                      <StackField label="兼容系统">
+                        {(command.compatible_systems || []).length
+                          ? command.compatible_systems.join(', ')
+                          : '-'}
+                      </StackField>
+                      <StackField label="命令库文件">
+                        <FileLine name={selectedVersion.file_name} />
+                      </StackField>
+                      <StackField label="命令库源代码文件">
+                        <FileLine name={selectedVersion.source_file_name} />
+                      </StackField>
                     </div>
 
                     <div className="command-detail-drawer-version-detail-section">
