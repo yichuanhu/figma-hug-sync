@@ -256,7 +256,7 @@ const CommandDetailDrawer = ({
   ];
 
   const publishGroupData = [
-    { key: '当前版本', value: command.current_version || '-' },
+    { key: '最新发布版本', value: command.current_version || '-' },
     { key: '发布人', value: command.publisher_name || '-' },
     { key: '安装次数', value: command.install_count ?? 0 },
     { key: '创建时间', value: command.created_at },
