@@ -12,6 +12,13 @@ export interface CommandParam {
   description?: string;
 }
 
+export interface CommandEntry {
+  name: string;
+  usage: string;
+  inputs: CommandParam[];
+  outputs: CommandParam[];
+}
+
 export interface CommandVersion {
   id: string;
   command_id: string;
@@ -26,15 +33,8 @@ export interface CommandVersion {
   uploader_name: string;
   created_at: string;
   publish_time: string | null;
-  inputs: CommandParam[];
-  outputs: CommandParam[];
-}
-
-export interface CommandEntry {
-  name: string;
-  usage: string;
-  inputs: CommandParam[];
-  outputs: CommandParam[];
+  /** 该版本包含的命令清单（参数归属命令这一级） */
+  commands: CommandEntry[];
 }
 
 export interface CommandItem {
