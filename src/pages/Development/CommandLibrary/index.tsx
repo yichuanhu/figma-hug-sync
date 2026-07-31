@@ -374,6 +374,11 @@ const CommandLibrary = () => {
                   发布
                 </Dropdown.Item>
               )}
+              {record.status === 'PUBLISHED' && (
+                <Dropdown.Item icon={<EyeOff size={16} strokeWidth={2} />} onClick={() => handleUnpublish(record)}>
+                  取消发布
+                </Dropdown.Item>
+              )}
               <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={() => openCollaborator(record.id)}>
                 协作者
               </Dropdown.Item>
