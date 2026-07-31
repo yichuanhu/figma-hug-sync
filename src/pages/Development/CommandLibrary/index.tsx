@@ -441,6 +441,8 @@ const CommandLibrary = () => {
         onCancel={() => setUploadTarget(null)}
         onSuccess={handleUploadSuccess}
       />
+
+      {renderCollaboratorPanel('COMMAND', 'development')}
     </div>
   );
 };
