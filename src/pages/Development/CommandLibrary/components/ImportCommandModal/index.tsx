@@ -1,12 +1,8 @@
 import { useState, useCallback } from 'react';
-import { Modal, Upload, Toast, Typography, Button, Tooltip } from '@douyinfe/semi-ui';
-import type { FileItem, BeforeUploadProps, BeforeUploadObjectResult } from '@douyinfe/semi-ui/lib/es/upload';
-import { Upload as UploadIcon, File as FileIcon, X, HelpCircle } from 'lucide-react';
+import { Modal } from '@douyinfe/semi-ui';
+import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
+import UploadField, { formatSize } from '../UploadField';
 import './index.less';
-
-const { Text } = Typography;
-
-const MAX_SIZE = 100 * 1024 * 1024;
 
 export interface ImportCommandPayload {
   fileName: string;
@@ -20,83 +16,6 @@ interface ImportCommandModalProps {
   onCancel: () => void;
   onSubmit: (payload: ImportCommandPayload) => void;
 }
-
-const formatSize = (size?: number) => {
-  if (!size) return '-';
-  if (size < 1024 * 1024) return `${Math.max(1, Math.round(size / 1024))}KB`;
-  return `${(size / 1024 / 1024).toFixed(1)}MB`;
-};
-
-interface UploadFieldProps {
-  label: string;
-  tip: string;
-  hint: string;
-  accept: string;
-  extension: string;
-  file: FileItem | null;
-  onChange: (file: FileItem | null) => void;
-}
-
-const UploadField = ({ label, tip, hint, accept, extension, file, onChange }: UploadFieldProps) => {
-  const beforeUpload = ({ file: uploadFile }: BeforeUploadProps): BeforeUploadObjectResult => {
-    const name = uploadFile.name || '';
-    if (!name.toLowerCase().endsWith(extension)) {
-      Toast.warning(`仅支持 ${extension} 格式文件`);
-      return { status: 'validateFail', validateMessage: '格式不支持', shouldUpload: false };
-    }
-    if ((uploadFile.fileInstance?.size || 0) > MAX_SIZE) {
-      Toast.warning('文件大小不能超过 100M');
-      return { status: 'validateFail', validateMessage: '文件过大', shouldUpload: false };
-    }
-    return { status: 'success', shouldUpload: true };
-  };
-
-  return (
-    <div className="import-command-modal-field">
-      <div className="import-command-modal-field-label">
-        <span className="import-command-modal-field-required">*</span>
-        <Text>{label}</Text>
-        <Tooltip content={tip} position="top">
-          <HelpCircle size={14} strokeWidth={2} className="import-command-modal-field-help" />
-        </Tooltip>
-      </div>
-
-      <div className="import-command-modal-field-control">
-        <Upload
-          action=""
-          limit={1}
-          accept={accept}
-          fileList={file ? [file] : []}
-          beforeUpload={beforeUpload}
-          onChange={(info) => onChange(info.fileList[0] || null)}
-          customRequest={({ onSuccess }) => onSuccess?.({}, undefined as never)}
-          className="import-command-modal-upload"
-        >
-          <Button icon={<UploadIcon size={16} strokeWidth={2} />}>上传</Button>
-        </Upload>
-        <Text type="tertiary">{hint}</Text>
-      </div>
-
-      {file && (
-        <div className="import-command-modal-file">
-          <FileIcon size={16} strokeWidth={2} />
-          <Text ellipsis={{ showTooltip: true }} className="import-command-modal-file-name">
-            {file.name}
-          </Text>
-          <Text type="tertiary" size="small">
-            {formatSize(file.fileInstance?.size)}
-          </Text>
-          <X
-            size={16}
-            strokeWidth={2}
-            className="import-command-modal-file-remove"
-            onClick={() => onChange(null)}
-          />
-        </div>
-      )}
-    </div>
-  );
-};
 
 const ImportCommandModal = ({ visible, onCancel, onSubmit }: ImportCommandModalProps) => {
   const [pkgFile, setPkgFile] = useState<FileItem | null>(null);
