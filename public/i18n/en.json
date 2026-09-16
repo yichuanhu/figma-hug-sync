@@ -4054,22 +4054,6 @@
       "createTaskDesc": "Quickly create instant task",
       "agentAPA": "Agent uses APA",
       "agentAPADesc": "APA CLI integration guide",
-      "agentAPAGuide": {
-        "title": "Agent uses APA",
-        "subtitle": "APA CLI Integration Guide",
-        "intro": "This guide explains how to integrate an Agent with the APA Commander platform via APA CLI for automated workflow orchestration and scheduling.",
-        "section1": "1. Environment Preparation",
-        "section1Content": "Make sure Node.js 18+ is installed and APA Commander access credentials are configured.",
-        "section2": "2. Install APA CLI",
-        "section2Content": "Run npm install -g @apa/cli to install the latest CLI tool.",
-        "section3": "3. Login and Initialize",
-        "section3Content": "Execute apa login to authenticate, then run apa init in your project directory to initialize an Agent project.",
-        "section4": "4. Connect the Agent",
-        "section4Content": "Follow the generated apa.config.yaml to register the Agent capabilities with APA Commander.",
-        "section5": "5. Publish and Verify",
-        "section5Content": "Run apa publish to publish the Agent, then monitor status and logs in the console.",
-        "close": "Close"
-      },
       "queueManagement": "Queue Management",
       "queueManagementDesc": "Manage message queues easily"
     },
