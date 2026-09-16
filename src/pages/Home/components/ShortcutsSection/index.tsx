@@ -193,31 +193,30 @@ const ShortcutsSection = () => {
   };
 
   return (
-      <div className="home-card shortcuts-section">
-        <div className="home-card-header">
-          <span className="home-card-title">{t('homepage.shortcuts.title')}</span>
-        </div>
-        <div className="shortcuts-grid">
-          {shortcuts.map((item) => {
-            const IconComp = iconMap[item.icon];
-            return (
-              <div
-                key={item.key}
-                className="shortcut-card"
-                style={{ backgroundColor: item.bgColor, borderColor: item.borderColor || item.bgColor }}
-                onClick={() => handleShortcutClick(item)}
-              >
-                <div className="shortcut-card-info">
-                  <div className="shortcut-card-title">{t(item.titleKey)}</div>
-                  <div className="shortcut-card-desc">{t(item.descKey)}</div>
-                </div>
-                <div className="shortcut-card-icon">
-                  {IconComp && <IconComp />}
-                </div>
+    <div className="home-card shortcuts-section">
+      <div className="home-card-header">
+        <span className="home-card-title">{t('homepage.shortcuts.title')}</span>
+      </div>
+      <div className="shortcuts-grid">
+        {shortcuts.map((item) => {
+          const IconComp = iconMap[item.icon];
+          return (
+            <div
+              key={item.key}
+              className="shortcut-card"
+              style={{ backgroundColor: item.bgColor, borderColor: item.borderColor || item.bgColor }}
+              onClick={() => handleShortcutClick(item)}
+            >
+              <div className="shortcut-card-info">
+                <div className="shortcut-card-title">{t(item.titleKey)}</div>
+                <div className="shortcut-card-desc">{t(item.descKey)}</div>
               </div>
-            );
-          })}
-        </div>
+              <div className="shortcut-card-icon">
+                {IconComp && <IconComp />}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
