@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Modal } from '@douyinfe/semi-ui';
 import { shortcuts } from '../../mockData';
 import type { ShortcutItem } from '../../types';
 import './index.less';
@@ -184,80 +182,43 @@ const iconMap: Record<string, React.FC> = {
 const ShortcutsSection = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [guideVisible, setGuideVisible] = useState(false);
 
   const handleShortcutClick = (item: ShortcutItem) => {
-    if (item.key === 'agentAPA') {
-      setGuideVisible(true);
-      return;
-    }
-    if (item.path) {
+    if (!item.path) return;
+    if (item.path.endsWith('.html')) {
+      window.location.href = item.path;
+    } else {
       navigate(item.path, { state: { openCreate: true } });
     }
   };
 
   return (
-    <>
-      <div className="home-card shortcuts-section">
-        <div className="home-card-header">
-          <span className="home-card-title">{t('homepage.shortcuts.title')}</span>
-        </div>
-        <div className="shortcuts-grid">
-          {shortcuts.map((item) => {
-            const IconComp = iconMap[item.icon];
-            return (
-              <div
-                key={item.key}
-                className="shortcut-card"
-                style={{ backgroundColor: item.bgColor, borderColor: item.borderColor || item.bgColor }}
-                onClick={() => handleShortcutClick(item)}
-              >
-                <div className="shortcut-card-info">
-                  <div className="shortcut-card-title">{t(item.titleKey)}</div>
-                  <div className="shortcut-card-desc">{t(item.descKey)}</div>
-                </div>
-                <div className="shortcut-card-icon">
-                  {IconComp && <IconComp />}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+    <div className="home-card shortcuts-section">
+      <div className="home-card-header">
+        <span className="home-card-title">{t('homepage.shortcuts.title')}</span>
       </div>
-      <Modal
-        title={t('homepage.shortcuts.agentAPAGuide.title')}
-        visible={guideVisible}
-        onCancel={() => setGuideVisible(false)}
-        footer={null}
-        width={600}
-        centered
-      >
-        <div className="agent-apa-guide">
-          <p className="agent-apa-guide-subtitle">{t('homepage.shortcuts.agentAPAGuide.subtitle')}</p>
-          <p className="agent-apa-guide-intro">{t('homepage.shortcuts.agentAPAGuide.intro')}</p>
-          <div className="agent-apa-guide-section">
-            <h4>{t('homepage.shortcuts.agentAPAGuide.section1')}</h4>
-            <p>{t('homepage.shortcuts.agentAPAGuide.section1Content')}</p>
-          </div>
-          <div className="agent-apa-guide-section">
-            <h4>{t('homepage.shortcuts.agentAPAGuide.section2')}</h4>
-            <p>{t('homepage.shortcuts.agentAPAGuide.section2Content')}</p>
-          </div>
-          <div className="agent-apa-guide-section">
-            <h4>{t('homepage.shortcuts.agentAPAGuide.section3')}</h4>
-            <p>{t('homepage.shortcuts.agentAPAGuide.section3Content')}</p>
-          </div>
-          <div className="agent-apa-guide-section">
-            <h4>{t('homepage.shortcuts.agentAPAGuide.section4')}</h4>
-            <p>{t('homepage.shortcuts.agentAPAGuide.section4Content')}</p>
-          </div>
-          <div className="agent-apa-guide-section">
-            <h4>{t('homepage.shortcuts.agentAPAGuide.section5')}</h4>
-            <p>{t('homepage.shortcuts.agentAPAGuide.section5Content')}</p>
-          </div>
-        </div>
-      </Modal>
-    </>
+      <div className="shortcuts-grid">
+        {shortcuts.map((item) => {
+          const IconComp = iconMap[item.icon];
+          return (
+            <div
+              key={item.key}
+              className="shortcut-card"
+              style={{ backgroundColor: item.bgColor, borderColor: item.borderColor || item.bgColor }}
+              onClick={() => handleShortcutClick(item)}
+            >
+              <div className="shortcut-card-info">
+                <div className="shortcut-card-title">{t(item.titleKey)}</div>
+                <div className="shortcut-card-desc">{t(item.descKey)}</div>
+              </div>
+              <div className="shortcut-card-icon">
+                {IconComp && <IconComp />}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 

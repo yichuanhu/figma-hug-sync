@@ -3456,23 +3456,7 @@
       "createTask": "创建任务",
       "createTaskDesc": "快速创建即时任务",
       "agentAPA": "智能体使用 APA",
-      "agentAPADesc": "APA CLI 接入指南",
-      "agentAPAGuide": {
-        "title": "智能体使用 APA",
-        "subtitle": "APA CLI 接入指南",
-        "intro": "本文档介绍如何通过 APA CLI 将智能体（Agent）接入到 APA Commander 平台，实现自动化流程的编排与调度。",
-        "section1": "1. 环境准备",
-        "section1Content": "确保本地已安装 Node.js 18+ 并配置好 APA Commander 访问凭证。",
-        "section2": "2. 安装 APA CLI",
-        "section2Content": "运行 npm install -g @apa/cli 安装最新版本 CLI 工具。",
-        "section3": "3. 登录与初始化",
-        "section3Content": "执行 apa login 完成身份验证，并在项目目录运行 apa init 初始化智能体项目。",
-        "section4": "4. 接入智能体",
-        "section4Content": "按照生成的 apa.config.yaml 配置文件，将智能体能力注册到 APA Commander。",
-        "section5": "5. 发布与验证",
-        "section5Content": "运行 apa publish 发布智能体，并在控制台查看运行状态与日志。",
-        "close": "关闭"
-      }
+      "agentAPADesc": "APA CLI 接入指南"
     },
     "metrics": {
       "title": "核心指标",

@@ -39,6 +39,7 @@ export const shortcuts: ShortcutItem[] = [
     color: '#14C0A4',
     bgColor: '#F0FDFB',
     borderColor: '#C6F3EA',
+    path: '/apa/static/apa-cli/guide/index.html',
   },
 ];
 
