@@ -31,6 +31,15 @@ export const shortcuts: ShortcutItem[] = [
     borderColor: '#FAE0C8',
     path: '/scheduling-center/task-execution/task-list',
   },
+  {
+    key: 'agentAPA',
+    titleKey: 'homepage.shortcuts.agentAPA',
+    descKey: 'homepage.shortcuts.agentAPADesc',
+    icon: 'DocumentGuide',
+    color: '#14C0A4',
+    bgColor: '#F0FDFB',
+    borderColor: '#C6F3EA',
+  },
 ];
 
 export const metrics: MetricItem[] = [
