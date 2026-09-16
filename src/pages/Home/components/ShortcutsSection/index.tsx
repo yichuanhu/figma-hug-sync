@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Modal } from '@douyinfe/semi-ui';
 import { shortcuts } from '../../mockData';
+import type { ShortcutItem } from '../../types';
 import './index.less';
 
 const ProcessIcon = () => (
@@ -147,43 +150,114 @@ const TaskIcon = () => (
   </svg>
 );
 
+const DocumentGuideIcon = () => (
+  <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="6" y="5" width="30" height="32" rx="7" fill="url(#paint0_doc)" fillOpacity="0.18" />
+    <path d="M12 11C12 9.34315 13.3431 8 15 8H21L30 17V31C30 32.6569 28.6569 34 27 34H15C13.3431 34 12 32.6569 12 31V11Z" fill="url(#paint1_doc)" fillOpacity="0.85" />
+    <path d="M21 8L30 17H24C22.3431 17 21 15.6569 21 14V8Z" fill="url(#paint2_doc)" />
+    <path d="M16 20H26M16 24H23M16 28H20" stroke="white" strokeWidth="2" strokeLinecap="round" />
+    <path d="M26 28L28 30L32 26" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <defs>
+      <linearGradient id="paint0_doc" x1="21" y1="5" x2="21" y2="37" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#14C0A4" />
+        <stop offset="1" stopColor="#0A9B84" />
+      </linearGradient>
+      <linearGradient id="paint1_doc" x1="21" y1="8" x2="21" y2="34" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#2CE5C6" />
+        <stop offset="1" stopColor="#14C0A4" />
+      </linearGradient>
+      <linearGradient id="paint2_doc" x1="25.5" y1="8" x2="25.5" y2="17" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#6CF2DB" />
+        <stop offset="1" stopColor="#2CE5C6" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
 const iconMap: Record<string, React.FC> = {
   Workflow: ProcessIcon,
   Bot: RobotIcon,
   Play: TaskIcon,
+  DocumentGuide: DocumentGuideIcon,
 };
 
 const ShortcutsSection = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [guideVisible, setGuideVisible] = useState(false);
+
+  const handleShortcutClick = (item: ShortcutItem) => {
+    if (item.key === 'agentAPA') {
+      setGuideVisible(true);
+      return;
+    }
+    if (item.path) {
+      navigate(item.path, { state: { openCreate: true } });
+    }
+  };
 
   return (
-    <div className="home-card shortcuts-section">
-      <div className="home-card-header">
-        <span className="home-card-title">{t('homepage.shortcuts.title')}</span>
-      </div>
-      <div className="shortcuts-grid">
-        {shortcuts.map((item) => {
-          const IconComp = iconMap[item.icon];
-          return (
-            <div
-              key={item.key}
-              className="shortcut-card"
-              style={{ backgroundColor: item.bgColor, borderColor: item.borderColor || item.bgColor }}
-              onClick={() => item.path && navigate(item.path, { state: { openCreate: true } })}
-            >
-              <div className="shortcut-card-info">
-                <div className="shortcut-card-title">{t(item.titleKey)}</div>
-                <div className="shortcut-card-desc">{t(item.descKey)}</div>
+    <>
+      <div className="home-card shortcuts-section">
+        <div className="home-card-header">
+          <span className="home-card-title">{t('homepage.shortcuts.title')}</span>
+        </div>
+        <div className="shortcuts-grid">
+          {shortcuts.map((item) => {
+            const IconComp = iconMap[item.icon];
+            return (
+              <div
+                key={item.key}
+                className="shortcut-card"
+                style={{ backgroundColor: item.bgColor, borderColor: item.borderColor || item.bgColor }}
+                onClick={() => handleShortcutClick(item)}
+              >
+                <div className="shortcut-card-info">
+                  <div className="shortcut-card-title">{t(item.titleKey)}</div>
+                  <div className="shortcut-card-desc">{t(item.descKey)}</div>
+                </div>
+                <div className="shortcut-card-icon">
+                  {IconComp && <IconComp />}
+                </div>
               </div>
-              <div className="shortcut-card-icon">
-                {IconComp && <IconComp />}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-    </div>
+      <Modal
+        title={t('homepage.shortcuts.agentAPAGuide.title')}
+        visible={guideVisible}
+        onCancel={() => setGuideVisible(false)}
+        footer={null}
+        width={600}
+        centered
+      >
+        <div className="agent-apa-guide">
+          <p className="agent-apa-guide-subtitle">{t('homepage.shortcuts.agentAPAGuide.subtitle')}</p>
+          <p className="agent-apa-guide-intro">{t('homepage.shortcuts.agentAPAGuide.intro')}</p>
+          <div className="agent-apa-guide-section">
+            <h4>{t('homepage.shortcuts.agentAPAGuide.section1')}</h4>
+            <p>{t('homepage.shortcuts.agentAPAGuide.section1Content')}</p>
+          </div>
+          <div className="agent-apa-guide-section">
+            <h4>{t('homepage.shortcuts.agentAPAGuide.section2')}</h4>
+            <p>{t('homepage.shortcuts.agentAPAGuide.section2Content')}</p>
+          </div>
+          <div className="agent-apa-guide-section">
+            <h4>{t('homepage.shortcuts.agentAPAGuide.section3')}</h4>
+            <p>{t('homepage.shortcuts.agentAPAGuide.section3Content')}</p>
+          </div>
+          <div className="agent-apa-guide-section">
+            <h4>{t('homepage.shortcuts.agentAPAGuide.section4')}</h4>
+            <p>{t('homepage.shortcuts.agentAPAGuide.section4Content')}</p>
+          </div>
+          <div className="agent-apa-guide-section">
+            <h4>{t('homepage.shortcuts.agentAPAGuide.section5')}</h4>
+            <p>{t('homepage.shortcuts.agentAPAGuide.section5Content')}</p>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 
