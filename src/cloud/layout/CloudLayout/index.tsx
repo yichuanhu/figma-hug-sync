@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Home, Users, Wallet } from 'lucide-react';
 import { Avatar, Popover } from '@douyinfe/semi-ui';
 import { UserInfoDropdown } from '@/components/layout/UserInfoDropdown';
@@ -14,7 +14,6 @@ const NAV_ITEMS = [
 
 const CloudLayout = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const current = NAV_ITEMS.find((item) => location.pathname.startsWith(item.path)) || NAV_ITEMS[0];
 
   return (
@@ -47,6 +46,7 @@ const CloudLayout = () => {
                 name={cloudUser.name}
                 username={cloudUser.email}
                 companyName={cloudUser.workspaceName}
+                hideAbout
                 actions={[
                   {
                     key: 'logout',
