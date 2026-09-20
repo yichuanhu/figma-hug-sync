@@ -13,6 +13,8 @@ import AppLayout from "@/components/layout/AppLayout";
 import { LicenseProvider } from "@/contexts/LicenseContext";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
+// 公有云板块入口
+import CloudApp from "@/cloud";
 // Development
 import ProcessDevelopment from "@/pages/Development/ProcessDevelopment";
 import CredentialManagementPage from "@/pages/Development/CredentialManagement/CredentialManagementPage";
@@ -290,8 +292,12 @@ const App = () => {
           <Route path="/notification-center" element={<NotificationCenter />} />
         </Route>
 
+        {/* 公有云板块（与私有部署完全隔离，独立布局） */}
+        <Route path="/cloud/*" element={<CloudApp />} />
+
         {/* 无布局页面 */}
         <Route path="*" element={<NotFound />} />
+
       </Routes>
       
     </BrowserRouter>
