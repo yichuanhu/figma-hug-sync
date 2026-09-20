@@ -16,10 +16,7 @@ const Billing = () => {
   return (
     <div className="cloud-billing">
       <div className="billing-head">
-        <div>
-          <div className="billing-title">费用与资源</div>
-          <div className="billing-desc">管理积分、专项资源包以及套餐订阅。</div>
-        </div>
+        <div />
         <div className="account-switch">
           <span className="dot" />
           <span className="k">当前账户</span>
