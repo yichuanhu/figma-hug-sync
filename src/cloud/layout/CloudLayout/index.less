@@ -55,9 +55,18 @@
       &.active { background: var(--semi-color-bg-0); font-weight: 600; }
       span { display: block; width: 64px; text-align: center; white-space: nowrap; }
     }
+
+    &-footer {
+      display: flex;
+      width: 100%;
+      height: 56px;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
-  .cloud-user-avatar { background: var(--semi-color-black); color: var(--semi-color-white); }
+  .cloud-user-avatar { background: var(--semi-color-black) !important; color: var(--semi-color-white) !important; cursor: pointer; }
 
   .cloud-main { min-width: 0; flex: 1; padding: 8px 8px 8px 0; }
 

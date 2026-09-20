@@ -1,6 +1,10 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Home, Users, Wallet } from 'lucide-react';
+import { Avatar, Popover } from '@douyinfe/semi-ui';
+import { UserInfoDropdown } from '@/components/layout/UserInfoDropdown';
 import laiyeLogo from '@/assets/laiye-logo.png';
+import { cloudUser } from '@/cloud/mock';
 import './index.less';
 
 const NAV_ITEMS = [
@@ -11,6 +15,8 @@ const NAV_ITEMS = [
 
 const CloudLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const current = NAV_ITEMS.find((item) => location.pathname.startsWith(item.path)) || NAV_ITEMS[0];
 
   return (
@@ -30,6 +36,38 @@ const CloudLayout = () => {
             );
           })}
         </nav>
+        <div className="cloud-sidebar-footer">
+          <Popover
+            trigger="hover"
+            position="rightBottom"
+            showArrow={false}
+            spacing={4}
+            mouseLeaveDelay={300}
+            mouseEnterDelay={0}
+            content={
+              <UserInfoDropdown
+                name={cloudUser.name}
+                username={cloudUser.email}
+                companyName={cloudUser.workspaceName}
+                actions={[
+                  {
+                    key: 'settings',
+                    label: t('sidebar.userMenu.personalCenter'),
+                    onClick: () => navigate('/personal-center/personal-credentials'),
+                  },
+                  {
+                    key: 'logout',
+                    label: t('sidebar.userMenu.logout'),
+                  },
+                ]}
+              />
+            }
+          >
+            <Avatar size="small" className="cloud-user-avatar">
+              {cloudUser.initials}
+            </Avatar>
+          </Popover>
+        </div>
       </aside>
 
       <div className="cloud-main">
