@@ -1,154 +1,118 @@
 .cloud-home {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 
-  &-welcome {
+  &-overview {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    padding: 8px 0 4px;
-
-    .greeting {
-      font-size: 24px;
-      font-weight: 600;
-      line-height: 32px;
-    }
-
-    .sub {
-      margin-top: 6px;
-      font-size: 14px;
-      color: var(--semi-color-text-2);
-    }
-
-  }
-
-  &-profile {
-    display: grid;
-    grid-template-columns: minmax(320px, 0.95fr) minmax(0, 2.05fr);
-    overflow: hidden;
+    gap: 40px;
+    min-height: 116px;
+    padding: 22px 24px;
     border: 1px solid var(--semi-color-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--semi-color-bg-0);
-    box-shadow: 0 1px 3px var(--semi-color-shadow);
+
+    .overview-copy { min-width: 260px; }
+    .overview-eyebrow {
+      color: var(--semi-color-primary);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .overview-title {
+      margin-top: 5px;
+      color: var(--semi-color-text-0);
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 30px;
+    }
+    .overview-desc {
+      margin-top: 4px;
+      color: var(--semi-color-text-2);
+      font-size: 13px;
+    }
   }
 
-  .profile-identity {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    min-width: 0;
-    padding: 24px;
-    border-right: 1px solid var(--semi-color-border);
-    background: var(--semi-color-fill-0);
-  }
-
-  .profile-copy { min-width: 0; }
-  .profile-kicker {
-    color: var(--semi-color-text-2);
-    font-size: 12px;
-  }
-  .profile-name {
-    margin-top: 3px;
-    color: var(--semi-color-text-0);
-    font-size: 20px;
-    font-weight: 600;
-  }
-  .profile-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-    margin-top: 6px;
-    color: var(--semi-color-text-2);
-    font-size: 12px;
-
-    span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    i { width: 3px; height: 3px; flex-shrink: 0; border-radius: 50%; background: var(--semi-color-text-3); }
-  }
-
-  .profile-assets {
+  .overview-metrics {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(132px, 1fr));
+    width: min(55%, 540px);
     min-width: 0;
   }
 
-  .profile-asset {
-    display: grid;
-    grid-template-columns: 34px minmax(0, 1fr) 16px;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-    padding: 20px;
-    border: 0;
-    border-right: 1px solid var(--semi-color-border);
-    background: transparent;
+  .overview-metric.semi-button {
+    height: 68px;
+    padding: 0 18px;
+    border-left: 1px solid var(--semi-color-border);
+    border-radius: 0;
     color: var(--semi-color-text-0);
-    cursor: pointer;
-    text-align: left;
-    transition: background-color 0.2s ease;
 
-    &:last-child { border-right: 0; }
-    &:hover { background: var(--semi-color-fill-0); }
-
-    .asset-icon {
+    .semi-button-content {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+    }
+    .metric-icon {
       display: flex;
       width: 34px;
       height: 34px;
+      flex-shrink: 0;
       align-items: center;
       justify-content: center;
       border-radius: 8px;
       background: var(--semi-color-primary-light-default);
       color: var(--semi-color-primary);
     }
-
-    .asset-copy { display: flex; min-width: 0; flex-direction: column; }
-    .asset-label,
-    .asset-desc {
-      overflow: hidden;
-      color: var(--semi-color-text-2);
-      font-size: 12px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    strong { margin: 2px 0; font-size: 24px; font-weight: 600; line-height: 28px; }
+    .metric-copy { display: flex; flex-direction: column; }
+    .metric-label { color: var(--semi-color-text-2); font-size: 12px; font-weight: 400; }
+    .metric-value { margin-top: 3px; font-size: 22px; font-weight: 600; line-height: 26px; }
+    small { margin-left: 3px; color: var(--semi-color-text-2); font-size: 12px; font-weight: 400; }
   }
 
-  .metric-resources,
-  .product-service {
+  .overview-metric.metric-resources .metric-icon {
     background: var(--semi-color-warning-light-default);
     color: var(--semi-color-warning);
   }
-
-  .metric-teams,
-  .product-meeting {
+  .overview-metric.metric-teams .metric-icon {
     background: var(--semi-color-success-light-default);
     color: var(--semi-color-success);
   }
 
-  .chevron { color: var(--semi-color-text-3); }
-
   .section-heading { margin-bottom: 12px; }
+  .section-heading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .product-count {
+    color: var(--semi-color-text-2);
+    font-size: 12px;
+  }
+
   &-products {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    overflow: hidden;
-    border: 1px solid var(--semi-color-border);
-    border-radius: 10px;
-    background: var(--semi-color-bg-0);
+    gap: 12px;
   }
 
   &-product {
-    display: grid;
-    grid-template-columns: 40px minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 14px;
+    display: flex;
+    min-height: 188px;
     min-width: 0;
-    padding: 20px;
-    border-right: 1px solid var(--semi-color-border);
+    flex-direction: column;
+    padding: 18px;
+    border: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    background: var(--semi-color-bg-0);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    &:hover { border-color: var(--semi-color-primary-light-active); box-shadow: 0 2px 8px var(--semi-color-shadow); }
 
-    &:last-child { border-right: 0; }
+    .product-topline { display: flex; align-items: center; justify-content: space-between; }
+    &.product-meeting .cloud-icon-box { background: var(--semi-color-success-light-default); color: var(--semi-color-success); }
+    &.product-service .cloud-icon-box { background: var(--semi-color-warning-light-default); color: var(--semi-color-warning); }
 
     .code {
       font-size: 11px;
@@ -156,17 +120,19 @@
     }
 
     .p-name {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
     }
 
     .p-desc {
+      display: -webkit-box;
       overflow: hidden;
-      margin-top: 4px;
+      margin-top: 8px;
       color: var(--semi-color-text-2);
       font-size: 13px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      line-height: 20px;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
     }
 
     .product-title-line {
@@ -176,11 +142,32 @@
     }
 
     .last-used {
-      margin-top: 8px;
+      color: var(--semi-color-text-2);
+      font-size: 12px;
+    }
+    .product-copy { margin-top: 16px; }
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid var(--semi-color-border);
+    }
+    .last-used {
       color: var(--semi-color-text-2);
       font-size: 12px;
     }
   }
+
+  &-secondary {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 20px;
+    border-top: 1px solid var(--semi-color-border);
+    padding-top: 24px;
+  }
+  .home-panel { min-width: 0; }
 
   &-ledger-row {
     display: flex;
@@ -250,18 +237,13 @@
   }
 
   @media (max-width: 1180px) {
-    &-profile { grid-template-columns: minmax(280px, 0.85fr) minmax(0, 2.15fr); }
-    .profile-asset { grid-template-columns: minmax(0, 1fr) 16px; }
-    .profile-asset .asset-icon { display: none; }
-    &-product { grid-template-columns: 40px minmax(0, 1fr); }
-    &-product .semi-button { grid-column: 1 / -1; justify-self: end; }
+    &-overview { align-items: flex-start; flex-direction: column; gap: 20px; }
+    .overview-metrics { width: 100%; }
+    .overview-metric.semi-button:first-child { border-left: 0; }
   }
 
   @media (max-width: 900px) {
-    &-profile { grid-template-columns: minmax(0, 1fr); }
-    .profile-identity { border-right: 0; border-bottom: 1px solid var(--semi-color-border); }
     &-products { grid-template-columns: minmax(0, 1fr); }
-    &-product { border-right: 0; border-bottom: 1px solid var(--semi-color-border); }
-    &-product:last-child { border-bottom: 0; }
+    &-secondary { grid-template-columns: minmax(0, 1fr); }
   }
 }

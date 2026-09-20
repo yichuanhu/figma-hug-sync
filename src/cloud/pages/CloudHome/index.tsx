@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Avatar, Button, Tag } from '@douyinfe/semi-ui';
-import { Wallet, Package, Users, ChevronRight, ArrowRight, FileText, Sparkles, Headphones } from 'lucide-react';
-import { cloudUser, cloudProducts, cloudLedger, cloudOwnedTeams, cloudJoinedTeams } from '@/cloud/mock';
+import { Wallet, Package, Users, ArrowRight, FileText, Sparkles, Headphones } from 'lucide-react';
+import { cloudProducts, cloudLedger, cloudOwnedTeams, cloudJoinedTeams } from '@/cloud/mock';
 import './index.less';
 
 const PRODUCT_ICONS: Record<string, typeof FileText> = {
@@ -11,9 +11,9 @@ const PRODUCT_ICONS: Record<string, typeof FileText> = {
 };
 
 const METRICS = [
-  { key: 'credits', icon: Wallet, label: '可用通用积分', value: '80', desc: '张明的个人空间', path: '/cloud/billing/credits' },
-  { key: 'resources', icon: Package, label: '专项资源', value: '0', desc: '暂无可用资源', path: '/cloud/billing/packs' },
-  { key: 'teams', icon: Users, label: '我的团队', value: '3', desc: '1 个拥有 · 2 个加入', path: '/cloud/teams' },
+  { key: 'credits', icon: Wallet, label: '可用通用积分', value: '80', unit: '分', path: '/cloud/billing/credits' },
+  { key: 'resources', icon: Package, label: '专项资源', value: '0', unit: '项', path: '/cloud/billing/packs' },
+  { key: 'teams', icon: Users, label: '团队空间', value: '3', unit: '个', path: '/cloud/teams' },
 ];
 
 const CloudHome = () => {
@@ -22,77 +22,67 @@ const CloudHome = () => {
 
   return (
     <div className="cloud-home">
-      <section className="cloud-home-welcome">
-        <div>
-          <div className="greeting">下午好，{cloudUser.name}</div>
-          <div className="sub">从这里进入你的产品，或管理个人资产与团队。</div>
+      <section className="cloud-home-overview">
+        <div className="overview-copy">
+          <div className="overview-eyebrow">工作台</div>
+          <div className="overview-title">开始今天的工作</div>
+          <div className="overview-desc">进入产品继续任务，或查看当前资源使用情况。</div>
         </div>
-      </section>
-
-      <section className="cloud-home-profile">
-        <div className="profile-identity">
-          <Avatar size="large" className="cloud-user-avatar">{cloudUser.initials}</Avatar>
-          <div className="profile-copy">
-            <div className="profile-kicker">个人空间</div>
-            <div className="profile-name">{cloudUser.name}</div>
-            <div className="profile-meta">
-              <span>{cloudUser.email}</span>
-              <i />
-              <span>{cloudUser.workspaceName}</span>
-            </div>
-          </div>
-        </div>
-        <div className="profile-assets">
+        <div className="overview-metrics">
           {METRICS.map((m) => {
             const Icon = m.icon;
             return (
-              <button key={m.key} className="profile-asset" type="button" onClick={() => navigate(m.path)}>
-                <span className={`asset-icon metric-${m.key}`}><Icon size={18} strokeWidth={2} /></span>
-                <span className="asset-copy">
-                  <span className="asset-label">{m.label}</span>
-                  <strong>{m.value}</strong>
-                  <span className="asset-desc">{m.desc}</span>
+              <Button key={m.key} className={`overview-metric metric-${m.key}`} theme="borderless" onClick={() => navigate(m.path)}>
+                <span className="metric-icon"><Icon size={17} strokeWidth={2} /></span>
+                <span className="metric-copy">
+                  <span className="metric-label">{m.label}</span>
+                  <span className="metric-value">{m.value}<small>{m.unit}</small></span>
                 </span>
-                <ChevronRight size={16} className="chevron" />
-              </button>
+              </Button>
             );
           })}
         </div>
       </section>
 
       <section className="cloud-home-products-section">
-        <div className="section-heading">
+        <div className="section-heading section-heading-row">
           <div>
             <div className="cloud-section-title">我的产品</div>
-            <div className="cloud-section-desc">选择一个产品，继续你的工作。</div>
+            <div className="cloud-section-desc">选择产品，继续最近的工作</div>
           </div>
+          <span className="product-count">3 个产品</span>
         </div>
         <div className="cloud-home-products">
           {cloudProducts.map((p) => {
             const Icon = PRODUCT_ICONS[p.code] || FileText;
             return (
-              <div key={p.id} className="cloud-home-product">
-                <div className={`cloud-icon-box product-${p.code.toLowerCase()}`}>
+              <div key={p.id} className={`cloud-home-product product-${p.code.toLowerCase()}`}>
+                <div className="product-topline">
+                  <div className="cloud-icon-box">
                   <Icon size={20} strokeWidth={2} />
+                  </div>
+                  <span className="code">{p.code}</span>
                 </div>
                 <div className="product-copy">
-                  <div className="product-title-line"><span className="p-name">{p.name}</span><span className="code">{p.code}</span></div>
+                  <div className="product-title-line"><span className="p-name">{p.name}</span></div>
                   <div className="p-desc">{p.description}</div>
-                  <div className="last-used">最近使用：{p.lastUsed}</div>
-              </div>
-                <Button theme="light" type="tertiary" icon={<ArrowRight size={14} />} iconPosition="right">进入应用</Button>
+                </div>
+                <div className="product-footer">
+                  <span className="last-used">最近使用：{p.lastUsed}</span>
+                  <Button theme="borderless" type="primary" icon={<ArrowRight size={14} />} iconPosition="right">进入应用</Button>
+                </div>
               </div>
             );
           })}
         </div>
       </section>
 
-      <div className="cloud-grid cols-2">
-        <div className="cloud-card">
+      <div className="cloud-home-secondary">
+        <section className="home-panel">
           <div className="card-head">
             <div>
               <div className="cloud-section-title">最近收支</div>
-              <div className="cloud-section-desc">个人空间的资产变动</div>
+              <div className="cloud-section-desc">最近的积分与资源变动</div>
             </div>
             <Button
               theme="borderless"
@@ -118,9 +108,9 @@ const CloudHome = () => {
               </div>
             </div>
           ))}
-        </div>
+        </section>
 
-        <div className="cloud-card">
+        <section className="home-panel">
           <div className="card-head">
             <div>
               <div className="cloud-section-title">团队空间</div>
@@ -150,7 +140,7 @@ const CloudHome = () => {
               </Tag>
             </div>
           ))}
-        </div>
+        </section>
       </div>
     </div>
   );
