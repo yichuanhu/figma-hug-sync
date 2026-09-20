@@ -15,15 +15,6 @@ const Billing = () => {
 
   return (
     <div className="cloud-billing">
-      <div className="billing-head">
-        <div />
-        <div className="account-switch">
-          <span className="dot" />
-          <span className="k">当前账户</span>
-          <span>张明的个人空间</span>
-        </div>
-      </div>
-
       <Tabs
         activeKey={activeKey}
         type="line"
@@ -31,6 +22,7 @@ const Billing = () => {
         onChange={(key) => navigate(`/cloud/billing/${key}`)}
       >
         <TabPane tab="积分中心" itemKey="credits">
+          <div className="billing-context"><span>当前账户</span><strong>张明的个人空间</strong></div>
           <div className="credit-overview billing-grid-tight">
             <div className="credit-balance-card">
               <div className="c-name">{cloudCreditAccounts[0].name}</div>
@@ -70,6 +62,7 @@ const Billing = () => {
         </TabPane>
 
         <TabPane tab="资源包" itemKey="packs">
+          <div className="billing-context"><span>当前账户</span><strong>张明的个人空间</strong></div>
           <div className="cloud-grid cols-2 billing-grid-tight">
             {cloudResourcePacks.map((p) => {
               const percent = p.total > 0 ? Math.round((p.used / p.total) * 100) : 0;
@@ -105,6 +98,7 @@ const Billing = () => {
         </TabPane>
 
         <TabPane tab="套餐与订阅" itemKey="plans">
+          <div className="billing-context"><span>当前账户</span><strong>张明的个人空间</strong></div>
           <div className="cloud-grid cols-3 billing-grid-plans">
             {cloudPlans.map((p) => (
               <div key={p.id} className={`cloud-card plan-card${p.recommended ? ' recommended' : ''}`}>
