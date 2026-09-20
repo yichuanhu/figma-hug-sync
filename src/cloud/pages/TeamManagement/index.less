@@ -1,0 +1,154 @@
+.cloud-team {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .section-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  &-summary {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 16px;
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--cloud-text-2);
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      margin: 6px 0 4px;
+    }
+
+    .stat-desc {
+      font-size: 12px;
+      color: var(--cloud-text-2);
+    }
+  }
+
+  @media (max-width: 1280px) {
+    &-summary {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  &-identity {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .t-label {
+      font-size: 12px;
+      color: var(--cloud-text-2);
+    }
+
+    .t-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 4px 0;
+    }
+
+    .t-desc {
+      font-size: 12px;
+      color: var(--cloud-text-2);
+    }
+  }
+
+  &-main {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  @media (max-width: 1100px) {
+    &-main {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &-member-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--cloud-border);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .m-name {
+      font-size: 14px;
+    }
+
+    .m-mail {
+      font-size: 12px;
+      color: var(--cloud-text-2);
+      margin-top: 2px;
+    }
+  }
+
+  &-invite-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 12px;
+
+    .i-mail {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .i-exp {
+      font-size: 12px;
+      color: var(--cloud-text-2);
+      margin-top: 2px;
+    }
+  }
+
+  &-joined-card {
+    .j-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .j-name {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .j-desc {
+      font-size: 12px;
+      color: var(--cloud-text-2);
+      margin-top: 2px;
+    }
+
+    .j-meta {
+      display: flex;
+      gap: 40px;
+      border-top: 1px solid var(--cloud-border);
+      padding-top: 14px;
+
+      .k {
+        font-size: 12px;
+        color: var(--cloud-text-2);
+      }
+
+      .v {
+        font-size: 13px;
+        margin-top: 4px;
+      }
+    }
+  }
+}
