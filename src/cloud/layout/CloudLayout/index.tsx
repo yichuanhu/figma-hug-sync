@@ -1,7 +1,5 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { Avatar } from '@douyinfe/semi-ui';
-import { Home, Users, Wallet, MoreHorizontal } from 'lucide-react';
-import { cloudUser } from '@/cloud/mock';
+import { Home, Users, Wallet } from 'lucide-react';
 import laiyeLogo from '@/assets/laiye-logo.png';
 import './index.less';
 
@@ -39,17 +37,6 @@ const CloudLayout = () => {
             );
           })}
         </nav>
-
-        <div className="cloud-sidebar-footer">
-          <Avatar size="small" className="cloud-user-avatar">
-            {cloudUser.initials}
-          </Avatar>
-          <div className="info">
-            <div className="info-name">{cloudUser.name}</div>
-            <div className="info-desc">{cloudUser.workspaceName}</div>
-          </div>
-          <MoreHorizontal size={18} />
-        </div>
       </aside>
 
       <div className="cloud-main">

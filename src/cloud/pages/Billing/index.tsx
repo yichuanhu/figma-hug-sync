@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Tabs, TabPane, Tag, Button, Progress, Switch, Toast } from '@douyinfe/semi-ui';
-import { Check } from 'lucide-react';
+import { Tabs, TabPane, Tag, Button, Progress, Switch, Toast, Select, Table } from '@douyinfe/semi-ui';
+import { Check, FileText, Sparkles } from 'lucide-react';
 import { cloudCreditAccounts, cloudLedger, cloudResourcePacks, cloudPlans, cloudSubscription } from '@/cloud/mock';
 import './index.less';
 
@@ -31,43 +31,41 @@ const Billing = () => {
         onChange={(key) => navigate(`/cloud/billing/${key}`)}
       >
         <TabPane tab="积分中心" itemKey="credits">
-          <div className="cloud-grid cols-2 billing-grid-tight">
-            {cloudCreditAccounts.map((a) => (
-              <div key={a.id} className="cloud-card credit-card">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="c-name">{a.name}</span>
-                  <Tag color={a.type === 'PERSONAL' ? 'blue' : 'green'} size="small">
-                    {a.type === 'PERSONAL' ? '个人' : '团队共享'}
-                  </Tag>
-                </div>
-                <div className="c-balance">{a.balance}</div>
-                <div className="c-sub">当前可用积分</div>
-                <div className="c-meta">
-                  <div>每月发放<b>{a.monthlyGrant}</b></div>
-                  <div>本月已用<b>{a.usedThisMonth}</b></div>
-                  <div>有效期<b>{a.expireDesc}</b></div>
-                </div>
-              </div>
-            ))}
+          <div className="credit-overview billing-grid-tight">
+            <div className="credit-balance-card">
+              <div className="c-name">{cloudCreditAccounts[0].name}</div>
+              <div className="c-sub">可用积分</div>
+              <div className="c-balance">{cloudCreditAccounts[0].balance}</div>
+              <div className="c-foot"><span>账户状态正常</span><span>可用于全部已接入产品</span></div>
+            </div>
+            <div className="cloud-card credit-source-card">
+              <div className="card-head"><div><div className="cloud-section-title">积分组成</div><div className="cloud-section-desc">优先使用即将到期的积分</div></div><span>1 个来源</span></div>
+              <div className="credit-source-row"><span><i />平台注册赠送<small>长期有效</small></span><b>80</b></div>
+            </div>
+          </div>
+
+          <div className="credit-insights">
+            <div className="cloud-card usage-card">
+              <div className="card-head"><div><div className="cloud-section-title">近 7 天积分使用</div><div className="cloud-section-desc">已完成 AI 任务的实际结算量</div></div><b className="total">累计 0</b></div>
+              <div className="usage-bars">{['四', '五', '六', '日', '一', '二', '三'].map((day, index) => <div key={day}><span className={index === 6 ? 'active' : ''} /><small>{day}</small></div>)}</div>
+            </div>
+            <div className="cloud-card expiry-card">
+              <div className="cloud-section-title">有效期提醒</div>
+              <div className="cloud-section-desc">优先使用即将到期的积分</div>
+              <div className="expiry-status"><Check size={18} /><div><b>近期没有积分到期</b><small>当前积分均为长期积分</small></div></div>
+            </div>
           </div>
 
           <div className="cloud-card billing-ledger-card">
-            <div className="cloud-section-title">收支明细</div>
-            <div className="cloud-section-desc ledger-desc">记录积分的获取与消耗</div>
-            {cloudLedger.map((r) => (
-              <div key={r.id} className="ledger-row">
-                <div>
-                  <div className="t">{r.title}</div>
-                  <div className="s">{r.scene}</div>
-                </div>
-                <div>
-                  <div className={`a${r.type === 'INCOME' ? ' income' : ''}`}>
-                    {r.type === 'INCOME' ? '+' : '-'}{r.amount}
-                  </div>
-                  <div className="time">{r.time}</div>
-                </div>
-              </div>
-            ))}
+            <div className="card-head"><div><div className="cloud-section-title">积分明细</div><div className="cloud-section-desc ledger-desc">所有到账、使用和套餐调整记录</div></div><Select size="small" defaultValue="all" optionList={[{ value: 'all', label: '全部' }, { value: 'income', label: '到账' }, { value: 'expense', label: '使用' }]} /></div>
+            <Table size="small" pagination={false} dataSource={cloudLedger} rowKey="id" columns={[
+              { title: '时间', dataIndex: 'time' },
+              { title: '说明', dataIndex: 'title', render: (value, record) => <div><div>{value}</div><div className="table-sub">{record.scene}</div></div> },
+              { title: '类型', dataIndex: 'type', render: (value) => <Tag color={value === 'INCOME' ? 'green' : 'grey'} size="small">{value === 'INCOME' ? '到账' : '使用'}</Tag> },
+              { title: '积分变动', dataIndex: 'amount', render: (value, record) => <span className={record.type === 'INCOME' ? 'income' : ''}>{record.type === 'INCOME' ? '+' : '-'}{value}</span> },
+              { title: '结果', render: () => <Tag color="green" size="small">已完成</Tag> },
+              { title: '操作', render: () => <Button theme="borderless" type="primary" size="small">详情</Button> },
+            ]} />
           </div>
         </TabPane>
 
@@ -95,6 +93,15 @@ const Billing = () => {
               );
             })}
           </div>
+
+          <section className="purchase-section">
+            <div className="cloud-section-title">购买资源包</div>
+            <div className="cloud-section-desc">按需补充不同产品的专项额度，购买后立即到账。</div>
+            <div className="cloud-grid cols-2 purchase-grid">
+              <div className="cloud-card purchase-card"><div className="cloud-icon-box"><FileText size={18} /></div><Tag size="small" color="blue">文档智能</Tag><div className="purchase-main"><div><b>高精度解析加量包</b><p>适用于合同、票据和复杂格式文档的高精度解析</p></div><strong>1,000 <small>页</small></strong></div><div className="purchase-foot"><div><b>¥49</b><small>长期有效</small></div><Button theme="solid" type="primary" onClick={() => Toast.success('已进入购买流程')}>立即购买</Button></div></div>
+              <div className="cloud-card purchase-card"><div className="cloud-icon-box resource-meeting"><Sparkles size={18} /></div><Tag size="small" color="green">会议助手</Tag><div className="purchase-main"><div><b>会议转写 600 分钟包</b><p>适用于实时字幕、会议转写和会后纪要生成</p></div><strong>600 <small>分钟</small></strong></div><div className="purchase-foot"><div><b>¥39</b><small>90 天有效</small></div><Button theme="solid" type="primary" onClick={() => Toast.success('已进入购买流程')}>立即购买</Button></div></div>
+            </div>
+          </section>
         </TabPane>
 
         <TabPane tab="套餐与订阅" itemKey="plans">

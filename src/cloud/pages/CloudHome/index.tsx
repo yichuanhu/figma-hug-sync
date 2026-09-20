@@ -28,11 +28,12 @@ const CloudHome = () => {
           <div className="greeting">下午好，{cloudUser.name}</div>
           <div className="sub">从这里进入你的产品，或管理个人资产与团队。</div>
         </div>
-        <div className="user-card">
+        <div className="cloud-card user-card">
           <Avatar size="default" className="cloud-user-avatar">{cloudUser.initials}</Avatar>
           <div>
             <div className="u-name">{cloudUser.name}</div>
             <div className="u-mail">{cloudUser.email}</div>
+            <div className="u-workspace">{cloudUser.workspaceName}</div>
           </div>
         </div>
       </section>
