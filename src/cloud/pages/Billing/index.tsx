@@ -99,6 +99,30 @@ const Billing = () => {
 
         <TabPane tab="套餐与订阅" itemKey="plans">
           <div className="billing-context"><span>当前账户</span><strong>张明的个人空间</strong></div>
+          <div className="cloud-card subscription-bar">
+            <div>
+              <div className="s-label">当前订阅</div>
+              <div className="s-plan">{cloudSubscription.planName}</div>
+              <div className="s-next">下次扣费时间：{cloudSubscription.nextBillingDate}</div>
+            </div>
+            <div className="s-metas">
+              <div>
+                <div className="s-label">扣费账户</div>
+                <div className="v">{cloudSubscription.accountName}</div>
+              </div>
+              <div>
+                <div className="s-label">自动续费</div>
+                <div className="v renew-control">
+                  <Switch checked={autoRenew} onChange={setAutoRenew} size="small" />
+                  <span>{autoRenew ? '已开启' : '已关闭'}</span>
+                </div>
+              </div>
+              <Button theme="light" type="tertiary" onClick={() => Toast.info('已打开账单记录')}>
+                查看账单
+              </Button>
+            </div>
+          </div>
+
           <div className="cloud-grid cols-3 billing-grid-plans">
             {cloudPlans.map((p) => (
               <div key={p.id} className={`cloud-card plan-card${p.recommended ? ' recommended' : ''}`}>
@@ -136,30 +160,6 @@ const Billing = () => {
                 </Button>
               </div>
             ))}
-          </div>
-
-          <div className="cloud-card subscription-bar">
-            <div>
-              <div className="s-label">当前订阅</div>
-              <div className="s-plan">{cloudSubscription.planName}</div>
-              <div className="s-next">下次扣费时间：{cloudSubscription.nextBillingDate}</div>
-            </div>
-            <div className="s-metas">
-              <div>
-                <div className="s-label">扣费账户</div>
-                <div className="v">{cloudSubscription.accountName}</div>
-              </div>
-              <div>
-                <div className="s-label">自动续费</div>
-                <div className="v renew-control">
-                  <Switch checked={autoRenew} onChange={setAutoRenew} size="small" />
-                  <span>{autoRenew ? '已开启' : '已关闭'}</span>
-                </div>
-              </div>
-              <Button theme="light" type="tertiary" onClick={() => Toast.info('已打开账单记录')}>
-                查看账单
-              </Button>
-            </div>
           </div>
         </TabPane>
       </Tabs>

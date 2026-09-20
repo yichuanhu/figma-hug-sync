@@ -23,6 +23,18 @@ const CloudHome = () => {
 
   return (
     <div className="cloud-home">
+      <section className="cloud-card cloud-home-metrics">
+        <div className="cloud-section-title">资源概览</div>
+        <div className="overview-metrics">
+          {METRICS.map((m) => (
+            <Button key={m.key} className="overview-metric" theme="borderless" onClick={() => navigate(m.path)}>
+              <img className="metric-icon" src={m.icon} alt="" />
+              <span className="metric-copy"><span className="metric-label">{m.label}</span><span className="metric-value">{m.value}<small>{m.unit}</small></span></span>
+            </Button>
+          ))}
+        </div>
+      </section>
+
       <section className="cloud-card cloud-home-products-section">
         <div className="card-head"><div className="cloud-section-title">我的产品</div><span className="product-count">3 个产品</span></div>
         <div className="cloud-home-products">
@@ -36,18 +48,6 @@ const CloudHome = () => {
               <img className="product-icon" src={PRODUCT_ICONS[p.code] || documentIcon} alt="" />
               <Button className="product-entry" theme="borderless" type="primary" icon={<ArrowRight size={14} />} iconPosition="right">进入应用</Button>
             </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="cloud-card cloud-home-metrics">
-        <div className="cloud-section-title">资源概览</div>
-        <div className="overview-metrics">
-          {METRICS.map((m) => (
-            <Button key={m.key} className="overview-metric" theme="borderless" onClick={() => navigate(m.path)}>
-              <img className="metric-icon" src={m.icon} alt="" />
-              <span className="metric-copy"><span className="metric-label">{m.label}</span><span className="metric-value">{m.value}<small>{m.unit}</small></span></span>
-            </Button>
           ))}
         </div>
       </section>
