@@ -2,48 +2,19 @@
   display: flex;
   flex-direction: column;
 
-  .billing-head {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .billing-title {
-    font-size: 24px;
-    font-weight: 700;
-  }
-
-  .billing-desc {
-    font-size: 13px;
-    color: var(--semi-color-text-2);
-    margin-top: 6px;
-  }
-
-  .account-switch {
+  .billing-context {
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: var(--semi-color-bg-0);
-    border: 1px solid var(--semi-color-border);
-    border-radius: 10px;
-    padding: 6px 12px;
+    gap: 8px;
+    margin: 6px 0 12px;
+    color: var(--semi-color-text-2);
+    font-size: 12px;
 
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--semi-color-success);
-    }
-
-    .k {
-      font-size: 12px;
-      color: var(--semi-color-text-2);
-    }
+    strong { color: var(--semi-color-text-0); font-size: 13px; font-weight: 500; }
   }
 
   .semi-tabs {
-    margin-top: 12px;
+    margin-top: 0;
   }
 
   .billing-grid-tight { margin-top: 8px; }
@@ -69,17 +40,18 @@
     min-height: 178px;
     flex-direction: column;
     padding: 20px;
+    border: 1px solid var(--semi-color-primary-light-default);
     border-radius: 10px;
-    background: var(--semi-color-text-0);
-    color: var(--semi-color-bg-0);
+    background: var(--semi-color-primary-light-default);
+    color: var(--semi-color-text-0);
 
     .c-name,
     .c-sub,
-    .c-foot { color: var(--semi-color-text-3); }
+    .c-foot { color: var(--semi-color-text-2); }
 
     .c-sub { margin-top: 24px; }
     .c-balance { margin: 4px 0; font-size: 36px; font-weight: 700; }
-    .c-foot { display: flex; justify-content: space-between; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--semi-color-border); font-size: 12px; }
+    .c-foot { display: flex; justify-content: space-between; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--semi-color-primary-light-active); font-size: 12px; }
   }
 
   .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }

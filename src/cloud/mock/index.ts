@@ -48,7 +48,7 @@ export const cloudProducts: CloudProduct[] = [
 
 export const cloudLedger: CloudLedgerRecord[] = [
   { id: 'l-1', title: '文档智能 · 合同解析', scene: '个人空间', type: 'EXPENSE', amount: 12, time: '今天 10:08' },
-  { id: 'l-2', title: '月度套餐赠送积分', scene: 'Basic 套餐', type: 'INCOME', amount: 500, time: '09-11 00:00' },
+  { id: 'l-2', title: '月度套餐赠送积分', scene: '个人版套餐', type: 'INCOME', amount: 500, time: '09-11 00:00' },
   { id: 'l-3', title: '会议助手 · 实时转写', scene: '个人空间', type: 'EXPENSE', amount: 36, time: '今天 09:10' },
   { id: 'l-4', title: '智能客服 · 知识问答', scene: '文档智能小队', type: 'EXPENSE', amount: 8, time: '昨天 16:24' },
   { id: 'l-5', title: '积分充值', scene: '在线支付', type: 'INCOME', amount: 200, time: '09-05 14:32' },
@@ -60,7 +60,7 @@ export const cloudOwnedTeams: CloudTeam[] = [
     name: '文档智能小队',
     initials: 'TI',
     ownerName: '张明',
-    planName: 'Basic 套餐',
+    planName: '个人版套餐',
     memberCount: 3,
     sharedCredits: 496,
     myRole: 'OWNER',
@@ -154,7 +154,7 @@ export const cloudResourcePacks: CloudResourcePack[] = [
 export const cloudPlans: CloudPlan[] = [
   {
     id: 'basic',
-    name: 'Basic',
+    name: '个人版',
     price: '¥99',
     priceSuffix: '/ 月',
     description: '适合个人和小型协作团队',
@@ -188,7 +188,7 @@ export const cloudPlans: CloudPlan[] = [
 ];
 
 export const cloudSubscription: CloudSubscription = {
-  planName: 'Basic 月度版',
+  planName: '个人版月度订阅',
   accountName: '张明的个人空间',
   autoRenew: true,
   nextBillingDate: '2026 年 9 月 11 日',
