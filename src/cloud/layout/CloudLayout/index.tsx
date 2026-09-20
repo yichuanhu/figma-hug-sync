@@ -18,19 +18,12 @@ const CloudLayout = () => {
       <aside className="cloud-sidebar">
         <div className="cloud-sidebar-brand">
           <img src={laiyeLogo} alt="Laiye" />
-          <span>APA 公有云</span>
         </div>
-
-        <div className="cloud-sidebar-group-title">工作空间</div>
         <nav className="cloud-sidebar-nav">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={({ isActive }) => `cloud-sidebar-item${isActive ? ' active' : ''}`}
-              >
+              <NavLink key={item.path} to={item.path} className={({ isActive }) => `cloud-sidebar-item${isActive ? ' active' : ''}`}>
                 <Icon size={18} strokeWidth={2} />
                 <span>{item.label}</span>
               </NavLink>
@@ -45,9 +38,7 @@ const CloudLayout = () => {
             <div className="cloud-header-title">{current.title}</div>
             <div className="cloud-header-desc">{current.desc}</div>
           </header>
-          <div className="cloud-content">
-            <Outlet />
-          </div>
+          <div className="cloud-content"><Outlet /></div>
         </div>
       </div>
     </div>
