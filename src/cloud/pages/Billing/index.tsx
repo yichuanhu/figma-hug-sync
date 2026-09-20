@@ -31,7 +31,7 @@ const Billing = () => {
         onChange={(key) => navigate(`/cloud/billing/${key}`)}
       >
         <TabPane tab="积分中心" itemKey="credits">
-          <div className="cloud-grid cols-2" style={{ marginTop: 8 }}>
+          <div className="cloud-grid cols-2 billing-grid-tight">
             {cloudCreditAccounts.map((a) => (
               <div key={a.id} className="cloud-card credit-card">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -51,9 +51,9 @@ const Billing = () => {
             ))}
           </div>
 
-          <div className="cloud-card" style={{ marginTop: 16 }}>
+          <div className="cloud-card billing-ledger-card">
             <div className="cloud-section-title">收支明细</div>
-            <div className="cloud-section-desc" style={{ marginBottom: 8 }}>记录积分的获取与消耗</div>
+            <div className="cloud-section-desc ledger-desc">记录积分的获取与消耗</div>
             {cloudLedger.map((r) => (
               <div key={r.id} className="ledger-row">
                 <div>
@@ -72,7 +72,7 @@ const Billing = () => {
         </TabPane>
 
         <TabPane tab="资源包" itemKey="packs">
-          <div className="cloud-grid cols-2" style={{ marginTop: 8 }}>
+          <div className="cloud-grid cols-2 billing-grid-tight">
             {cloudResourcePacks.map((p) => {
               const percent = p.total > 0 ? Math.round((p.used / p.total) * 100) : 0;
               const expired = p.status === 'EXPIRED';
@@ -89,7 +89,7 @@ const Billing = () => {
                     <span>已使用 {p.used} {p.unit}</span>
                     <span>共 {p.total} {p.unit}</span>
                   </div>
-                  <Progress percent={percent} stroke={expired ? '#c9cdd8' : '#4a55e8'} />
+                  <Progress percent={percent} stroke={expired ? 'var(--semi-color-disabled-border)' : 'var(--semi-color-primary)'} />
                   <div className="p-exp">{expired ? '过期时间' : '有效期至'}：{p.expiresAt}</div>
                 </div>
               );
@@ -98,7 +98,7 @@ const Billing = () => {
         </TabPane>
 
         <TabPane tab="套餐与订阅" itemKey="plans">
-          <div className="cloud-grid cols-3" style={{ marginTop: 16 }}>
+          <div className="cloud-grid cols-3 billing-grid-plans">
             {cloudPlans.map((p) => (
               <div key={p.id} className={`cloud-card plan-card${p.recommended ? ' recommended' : ''}`}>
                 {p.recommended && (
@@ -118,7 +118,7 @@ const Billing = () => {
                 <ul className="pl-features">
                   {p.features.map((f) => (
                     <li key={f}>
-                      <Check size={16} color="#17B26A" strokeWidth={2.5} />
+                      <Check size={16} className="feature-check" strokeWidth={2.5} />
                       <span>{f}</span>
                     </li>
                   ))}
@@ -150,7 +150,7 @@ const Billing = () => {
               </div>
               <div>
                 <div className="s-label">自动续费</div>
-                <div className="v" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div className="v renew-control">
                   <Switch checked={autoRenew} onChange={setAutoRenew} size="small" />
                   <span>{autoRenew ? '已开启' : '已关闭'}</span>
                 </div>

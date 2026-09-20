@@ -36,12 +36,11 @@ const TeamManagement = () => {
             <div className="cloud-section-title">我拥有的团队</div>
             <div className="cloud-section-desc">你可以管理成员、套餐和团队资源。</div>
           </div>
-          <Button theme="solid" type="primary" onClick={handleInvite}>邀请成员</Button>
         </div>
 
         <div className="cloud-team-summary">
           <div className="cloud-card cloud-team-identity">
-            <Avatar size="large" style={{ background: '#17B26A' }}>{team.initials}</Avatar>
+            <Avatar size="large" className="cloud-avatar-team">{team.initials}</Avatar>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div className="t-label">团队空间</div>
               <div className="t-name">{team.name}</div>
@@ -74,11 +73,11 @@ const TeamManagement = () => {
               <div className="cloud-section-title">成员</div>
               <div className="cloud-section-desc">管理访问团队空间的人员</div>
             </div>
-            <span style={{ fontSize: 13, color: 'var(--cloud-text-2)' }}>{team.members.length} 位成员</span>
+            <span className="member-count">{team.members.length} 位成员</span>
           </div>
           {team.members.map((m) => (
             <div key={m.id} className="cloud-team-member-row">
-              <Avatar size="small" style={{ background: '#2b3350' }}>{m.name}</Avatar>
+              <Avatar size="small" className="cloud-user-avatar">{m.name}</Avatar>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div className="m-name">{m.name}</div>
                 <div className="m-mail">{m.email}</div>
@@ -112,7 +111,7 @@ const TeamManagement = () => {
         <div className="cloud-card">
           <div className="cloud-section-title">邀请新成员</div>
           <div className="cloud-section-desc" style={{ marginBottom: 12 }}>对方接受后即可共享团队套餐</div>
-          <div style={{ fontSize: 12, color: 'var(--cloud-text-2)', marginBottom: 6 }}>成员邮箱</div>
+          <div className="field-label">成员邮箱</div>
           <Input
             value={email}
             onChange={setEmail}
@@ -130,9 +129,9 @@ const TeamManagement = () => {
             发送邀请
           </Button>
 
-          <div style={{ fontSize: 13, fontWeight: 600, marginTop: 24 }}>待接受邀请</div>
+          <div className="invite-title">待接受邀请</div>
           {invitations.length === 0 && (
-            <div style={{ fontSize: 13, color: 'var(--cloud-text-2)', marginTop: 12 }}>暂无待接受的邀请</div>
+            <div className="invite-empty">暂无待接受的邀请</div>
           )}
           {invitations.map((i) => (
             <div key={i.id} className="cloud-team-invite-row">
@@ -162,7 +161,7 @@ const TeamManagement = () => {
           {cloudJoinedTeams.map((t) => (
             <div key={t.id} className="cloud-card cloud-team-joined-card">
               <div className="j-head">
-                <Avatar size="default" style={{ background: '#17B26A' }}>{t.initials}</Avatar>
+                <Avatar size="default" className="cloud-avatar-team">{t.initials}</Avatar>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className="j-name">{t.name}</div>
                   <div className="j-desc">{t.memberCount} 位成员 · {t.planName}</div>

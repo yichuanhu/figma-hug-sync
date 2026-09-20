@@ -1,8 +1,9 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Avatar } from '@douyinfe/semi-ui';
-import { Home, Users, Wallet, AlignLeft, MoreHorizontal } from 'lucide-react';
+import { Home, Users, Wallet, MoreHorizontal } from 'lucide-react';
 import { cloudUser } from '@/cloud/mock';
-import '@/cloud/styles/cloud.less';
+import laiyeLogo from '@/assets/laiye-logo.png';
+import './index.less';
 
 const NAV_ITEMS = [
   { path: '/cloud/home', label: '首页', icon: Home, title: '首页', desc: '欢迎回到你的智能工作空间' },
@@ -18,13 +19,8 @@ const CloudLayout = () => {
     <div className="cloud-root">
       <aside className="cloud-sidebar">
         <div className="cloud-sidebar-brand">
-          <div className="logo">
-            <AlignLeft size={20} strokeWidth={2} />
-          </div>
-          <div>
-            <div className="name">UCI Cloud</div>
-            <div className="slogan">AI WORKSPACE</div>
-          </div>
+          <img src={laiyeLogo} alt="Laiye" />
+          <span>APA 公有云</span>
         </div>
 
         <div className="cloud-sidebar-group-title">工作空间</div>
@@ -45,24 +41,26 @@ const CloudLayout = () => {
         </nav>
 
         <div className="cloud-sidebar-footer">
-          <Avatar size="small" style={{ background: '#5b6cf9', flexShrink: 0 }}>
+          <Avatar size="small" className="cloud-user-avatar">
             {cloudUser.initials}
           </Avatar>
           <div className="info">
             <div className="info-name">{cloudUser.name}</div>
             <div className="info-desc">{cloudUser.workspaceName}</div>
           </div>
-          <MoreHorizontal size={18} color="rgba(255,255,255,0.5)" />
+          <MoreHorizontal size={18} />
         </div>
       </aside>
 
       <div className="cloud-main">
-        <header className="cloud-header">
-          <div className="cloud-header-title">{current.title}</div>
-          <div className="cloud-header-desc">{current.desc}</div>
-        </header>
-        <div className="cloud-content">
-          <Outlet />
+        <div className="cloud-surface">
+          <header className="cloud-header">
+            <div className="cloud-header-title">{current.title}</div>
+            <div className="cloud-header-desc">{current.desc}</div>
+          </header>
+          <div className="cloud-content">
+            <Outlet />
+          </div>
         </div>
       </div>
     </div>
