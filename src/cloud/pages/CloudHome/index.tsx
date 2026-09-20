@@ -23,38 +23,37 @@ const CloudHome = () => {
 
   return (
     <div className="cloud-home">
-      <div className="cloud-home-columns">
-        <div className="cloud-home-primary">
-          <section className="cloud-card cloud-home-products-section">
-            <div className="card-head"><div className="cloud-section-title">我的产品</div><span className="product-count">3 个产品</span></div>
-            <div className="cloud-home-products">
-              {cloudProducts.map((p) => (
-                <div key={p.id} className={`cloud-home-product product-${p.code.toLowerCase()}`}>
-                  <div className="product-copy">
-                    <div className="p-name">{p.name}</div>
-                    <div className="p-desc">{p.description}</div>
-                    <div className="last-used">最近使用：{p.lastUsed}</div>
-                  </div>
-                  <img className="product-icon" src={PRODUCT_ICONS[p.code] || documentIcon} alt="" />
-                  <Button className="product-entry" theme="borderless" type="primary" icon={<ArrowRight size={14} />} iconPosition="right">进入应用</Button>
-                </div>
-              ))}
+      <section className="cloud-card cloud-home-products-section">
+        <div className="card-head"><div className="cloud-section-title">我的产品</div><span className="product-count">3 个产品</span></div>
+        <div className="cloud-home-products">
+          {cloudProducts.map((p) => (
+            <div key={p.id} className={`cloud-home-product product-${p.code.toLowerCase()}`}>
+              <div className="product-copy">
+                <div className="p-name">{p.name}</div>
+                <div className="p-desc">{p.description}</div>
+                <div className="last-used">最近使用：{p.lastUsed}</div>
+              </div>
+              <img className="product-icon" src={PRODUCT_ICONS[p.code] || documentIcon} alt="" />
+              <Button className="product-entry" theme="borderless" type="primary" icon={<ArrowRight size={14} />} iconPosition="right">进入应用</Button>
             </div>
-          </section>
+          ))}
+        </div>
+      </section>
 
-          <section className="cloud-card cloud-home-metrics">
-            <div className="cloud-section-title">资源概览</div>
-            <div className="overview-metrics">
-              {METRICS.map((m) => (
-                <Button key={m.key} className="overview-metric" theme="borderless" onClick={() => navigate(m.path)}>
-                  <img className="metric-icon" src={m.icon} alt="" />
-                  <span className="metric-copy"><span className="metric-label">{m.label}</span><span className="metric-value">{m.value}<small>{m.unit}</small></span></span>
-                </Button>
-              ))}
-            </div>
-          </section>
+      <section className="cloud-card cloud-home-metrics">
+        <div className="cloud-section-title">资源概览</div>
+        <div className="overview-metrics">
+          {METRICS.map((m) => (
+            <Button key={m.key} className="overview-metric" theme="borderless" onClick={() => navigate(m.path)}>
+              <img className="metric-icon" src={m.icon} alt="" />
+              <span className="metric-copy"><span className="metric-label">{m.label}</span><span className="metric-value">{m.value}<small>{m.unit}</small></span></span>
+            </Button>
+          ))}
+        </div>
+      </section>
 
-          <section className="cloud-card home-panel">
+      <div className="cloud-home-bottom">
+        <section className="home-panel">
             <div className="card-head"><div className="cloud-section-title">最近收支</div><Button theme="borderless" type="tertiary" icon={<ArrowRight size={14} />} iconPosition="right" onClick={() => navigate('/cloud/billing/credits')}>查看全部</Button></div>
             {cloudLedger.map((r) => (
               <div key={r.id} className="cloud-home-ledger-row">
@@ -62,21 +61,18 @@ const CloudHome = () => {
                 <div><div className={`amount${r.type === 'INCOME' ? ' income' : ''}`}>{r.type === 'INCOME' ? '+' : '-'}{r.amount}</div><div className="time">{r.time}</div></div>
               </div>
             ))}
-          </section>
-        </div>
+        </section>
 
-        <div className="cloud-home-secondary">
-          <section className="home-panel">
-            <div className="card-head"><div className="cloud-section-title">团队空间</div><Button theme="borderless" type="tertiary" icon={<ArrowRight size={14} />} iconPosition="right" onClick={() => navigate('/cloud/teams')}>团队管理</Button></div>
-            {allTeams.map((t) => (
-              <div key={t.id} className="cloud-home-team-row">
-                <Avatar size="small" className={t.myRole === 'OWNER' ? 'cloud-avatar-team' : 'cloud-user-avatar'}>{t.initials}</Avatar>
-                <div className="team-copy"><div className="n">{t.name}</div><div className="m">{t.memberCount} 位成员</div></div>
-                <Tag color={t.myRole === 'OWNER' ? 'green' : 'blue'} size="small">{t.myRole === 'OWNER' ? '团队所有者' : '成员'}</Tag>
-              </div>
-            ))}
-          </section>
-        </div>
+        <section className="home-panel">
+          <div className="card-head"><div className="cloud-section-title">团队空间</div><Button theme="borderless" type="tertiary" icon={<ArrowRight size={14} />} iconPosition="right" onClick={() => navigate('/cloud/teams')}>团队管理</Button></div>
+          {allTeams.map((t) => (
+            <div key={t.id} className="cloud-home-team-row">
+              <Avatar size="small" className={t.myRole === 'OWNER' ? 'cloud-avatar-team' : 'cloud-user-avatar'}>{t.initials}</Avatar>
+              <div className="team-copy"><div className="n">{t.name}</div><div className="m">{t.memberCount} 位成员</div></div>
+              <Tag color={t.myRole === 'OWNER' ? 'green' : 'blue'} size="small">{t.myRole === 'OWNER' ? '团队所有者' : '成员'}</Tag>
+            </div>
+          ))}
+        </section>
       </div>
     </div>
   );
