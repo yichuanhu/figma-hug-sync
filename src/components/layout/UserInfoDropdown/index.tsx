@@ -200,7 +200,6 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
           />
         ))}
       </div>
-      {!hideAbout && <AboutModal visible={aboutVisible} onCancel={() => setAboutVisible(false)} />}
     </div>
   );
 };
