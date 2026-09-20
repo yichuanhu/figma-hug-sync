@@ -1,6 +1,10 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Home, Users, Wallet } from 'lucide-react';
+import { Avatar, Popover } from '@douyinfe/semi-ui';
+import { UserInfoDropdown } from '@/components/layout/UserInfoDropdown';
 import laiyeLogo from '@/assets/laiye-logo.png';
+import { cloudUser } from '@/cloud/mock';
 import './index.less';
 
 const NAV_ITEMS = [
