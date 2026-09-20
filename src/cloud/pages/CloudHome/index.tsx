@@ -98,7 +98,7 @@ const CloudHome = () => {
             <div key={r.id} className="cloud-home-ledger-row">
               <div>
                 <div className="t">{r.title}</div>
-                <div className="s">{r.scene}</div>
+                <div className="s">{r.scene === '个人空间' ? '产品使用' : r.scene}</div>
               </div>
               <div>
                 <div className={`amount${r.type === 'INCOME' ? ' income' : ''}`}>
