@@ -16,6 +16,8 @@
     grid-template-columns: 1.6fr 1fr 1fr 1fr;
     gap: 16px;
 
+    > .cloud-card:hover { box-shadow: 0 2px 8px var(--semi-color-shadow); }
+
     .stat-label {
       font-size: 12px;
       color: var(--semi-color-text-2);
@@ -116,6 +118,10 @@
   }
 
   &-joined-card {
+    transition: box-shadow 0.2s ease;
+
+    &:hover { box-shadow: 0 2px 8px var(--semi-color-shadow); }
+
     .j-head {
       display: flex;
       align-items: center;

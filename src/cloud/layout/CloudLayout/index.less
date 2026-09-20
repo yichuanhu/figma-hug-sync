@@ -2,84 +2,63 @@
   display: flex;
   height: 100vh;
   overflow: hidden;
-  background: var(--semi-color-fill-0);
+  background: var(--semi-color-default);
   color: var(--semi-color-text-0);
 
   .cloud-sidebar {
-    width: 180px;
-    flex-shrink: 0;
     display: flex;
+    width: 64px;
+    flex-shrink: 0;
     flex-direction: column;
-    padding: 0 8px 12px;
-    background: var(--semi-color-fill-0);
+    align-items: center;
+    padding: 0 4px 12px;
+    background: var(--semi-color-default);
 
     &-brand {
-      height: 56px;
       display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0 12px;
+      width: 64px;
+      height: 56px;
       flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
 
-      img {
-        width: auto;
-        height: 16px;
-      }
-
-      span {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--semi-color-text-0);
-        white-space: nowrap;
-      }
-    }
-
-    &-group-title {
-      padding: 12px 8px 8px;
-      color: var(--semi-color-text-2);
-      font-size: 12px;
+      img { width: auto; height: 16px; }
     }
 
     &-nav {
       display: flex;
+      width: 100%;
       flex: 1;
       flex-direction: column;
+      align-items: center;
       gap: 2px;
     }
 
     &-item {
       display: flex;
+      width: 56px;
+      height: 56px;
+      min-height: 56px;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
-      min-height: 36px;
-      padding: 8px;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px 4px 4px;
       border-radius: 8px;
       color: var(--semi-color-text-0);
-      font-size: 14px;
+      font-size: 11px;
+      line-height: 14px;
       transition: background-color 0.2s ease;
 
-      &:hover {
-        background: var(--semi-color-fill-1);
-      }
-
-      &.active {
-        background: var(--semi-color-bg-0);
-        font-weight: 600;
-      }
+      &:hover { background: var(--semi-color-fill-0); }
+      &.active { background: var(--semi-color-bg-0); font-weight: 600; }
+      span { overflow: hidden; max-width: 52px; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
     }
-
   }
 
-  .cloud-user-avatar {
-    background: var(--semi-color-black);
-    color: var(--semi-color-white);
-  }
+  .cloud-user-avatar { background: var(--semi-color-black); color: var(--semi-color-white); }
 
-  .cloud-main {
-    min-width: 0;
-    flex: 1;
-    padding: 8px 8px 8px 0;
-  }
+  .cloud-main { min-width: 0; flex: 1; padding: 8px 8px 8px 0; }
 
   .cloud-surface {
     position: relative;
@@ -89,43 +68,31 @@
     flex-direction: column;
     overflow: hidden;
     border-radius: 8px;
-    background: var(--semi-color-bg-0);
+    background: var(--semi-color-default);
 
     &::before {
       position: absolute;
       z-index: 0;
       top: 0;
-      left: 25%;
-      width: 50%;
-      height: 160px;
-      background: radial-gradient(ellipse at top, var(--semi-color-primary-light-default), transparent 70%);
+      left: 4%;
+      width: 92%;
+      height: 68%;
+      background: radial-gradient(ellipse at center top, var(--semi-color-primary-light-default), transparent 86%);
       content: '';
-      opacity: 0.35;
+      opacity: 0.42;
       pointer-events: none;
     }
   }
 
   .cloud-header,
-  .cloud-content {
-    position: relative;
-    z-index: 1;
-  }
+  .cloud-content { position: relative; z-index: 1; }
 
   .cloud-header {
-    padding: 20px 24px 12px;
     flex-shrink: 0;
+    padding: 20px 24px 8px;
 
-    &-title {
-      font-size: 20px;
-      font-weight: 600;
-      line-height: 28px;
-    }
-
-    &-desc {
-      margin-top: 4px;
-      color: var(--semi-color-text-2);
-      font-size: 13px;
-    }
+    &-title { font-size: 20px; font-weight: 600; line-height: 28px; }
+    &-desc { margin-top: 4px; color: var(--semi-color-text-2); font-size: 13px; }
   }
 
   .cloud-content {
@@ -138,28 +105,19 @@
 
   .cloud-card {
     padding: 20px;
-    border: 1px solid var(--semi-color-border);
+    border: none;
     border-radius: 10px;
     background: var(--semi-color-bg-0);
     box-shadow: 0 1px 3px var(--semi-color-shadow);
+    transition: box-shadow 0.2s ease;
   }
 
-  .cloud-section-title {
-    color: var(--semi-color-text-0);
-    font-size: 15px;
-    font-weight: 600;
-  }
-
-  .cloud-section-desc {
-    margin-top: 4px;
-    color: var(--semi-color-text-2);
-    font-size: 13px;
-  }
+  .cloud-section-title { color: var(--semi-color-text-0); font-size: 15px; font-weight: 600; line-height: 22px; }
+  .cloud-section-desc { margin-top: 4px; color: var(--semi-color-text-2); font-size: 13px; }
 
   .cloud-grid {
     display: grid;
     gap: 16px;
-
     &.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     &.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     &.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -172,23 +130,18 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 10px;
     background: var(--semi-color-primary-light-default);
     color: var(--semi-color-primary);
   }
 
-  .cloud-avatar-team {
-    background: var(--semi-color-success-light-default);
-    color: var(--semi-color-success);
-  }
+  .cloud-avatar-team { background: var(--semi-color-success-light-default); color: var(--semi-color-success); }
 
   @media (max-width: 1280px) {
     .cloud-grid.cols-4,
     .cloud-grid.cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-
   @media (max-width: 900px) {
-    .cloud-sidebar { width: 152px; }
     .cloud-grid.cols-4,
     .cloud-grid.cols-3,
     .cloud-grid.cols-2 { grid-template-columns: minmax(0, 1fr); }

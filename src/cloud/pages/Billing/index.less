@@ -40,9 +40,10 @@
     min-height: 178px;
     flex-direction: column;
     padding: 20px;
-    border: 1px solid var(--semi-color-primary-light-default);
+    border: none;
     border-radius: 10px;
-    background: var(--semi-color-primary-light-default);
+    background: var(--semi-color-bg-0);
+    box-shadow: 0 1px 3px var(--semi-color-shadow);
     color: var(--semi-color-text-0);
 
     .c-name,
@@ -51,7 +52,7 @@
 
     .c-sub { margin-top: 24px; }
     .c-balance { margin: 4px 0; font-size: 36px; font-weight: 700; }
-    .c-foot { display: flex; justify-content: space-between; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--semi-color-primary-light-active); font-size: 12px; }
+    .c-foot { display: flex; justify-content: space-between; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--semi-color-border); font-size: 12px; }
   }
 
   .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
@@ -209,7 +210,7 @@
 
     &.recommended {
       border-color: var(--semi-color-primary);
-      box-shadow: 0 4px 12px var(--semi-color-shadow);
+      box-shadow: 0 2px 8px var(--semi-color-shadow);
     }
 
     .pl-head {
