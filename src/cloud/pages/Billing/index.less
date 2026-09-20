@@ -52,6 +52,62 @@
   .ledger-desc { margin-bottom: 8px; }
 
   /* 积分中心 */
+  .credit-overview,
+  .credit-insights {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    gap: 16px;
+  }
+
+  .credit-insights {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    margin-top: 16px;
+  }
+
+  .credit-balance-card {
+    display: flex;
+    min-height: 178px;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 10px;
+    background: var(--semi-color-text-0);
+    color: var(--semi-color-bg-0);
+
+    .c-name,
+    .c-sub,
+    .c-foot { color: var(--semi-color-text-3); }
+
+    .c-sub { margin-top: 24px; }
+    .c-balance { margin: 4px 0; font-size: 36px; font-weight: 700; }
+    .c-foot { display: flex; justify-content: space-between; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--semi-color-border); font-size: 12px; }
+  }
+
+  .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+
+  .credit-source-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--semi-color-border);
+
+    span { display: grid; grid-template-columns: 8px auto; align-items: center; gap: 8px; }
+    i { width: 6px; height: 6px; border-radius: 50%; background: var(--semi-color-primary); }
+    small { grid-column: 2; color: var(--semi-color-text-2); }
+  }
+
+  .usage-card,
+  .expiry-card { min-height: 180px; }
+  .total { color: var(--semi-color-success); font-size: 13px; }
+  .usage-bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 28px; margin-top: 74px; }
+  .usage-bars div { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--semi-color-text-2); }
+  .usage-bars span { width: 100%; height: 7px; border-radius: 4px; background: var(--semi-color-primary-light-default); }
+  .usage-bars span.active { background: var(--semi-color-primary); }
+  .expiry-status { display: flex; align-items: center; gap: 12px; margin-top: 62px; color: var(--semi-color-success); }
+  .expiry-status div { display: flex; flex-direction: column; }
+  .expiry-status small { margin-top: 2px; color: var(--semi-color-text-2); }
+
   .credit-card {
     .c-name {
       font-size: 15px;
@@ -126,6 +182,9 @@
     }
   }
 
+  .table-sub { margin-top: 2px; color: var(--semi-color-text-2); font-size: 12px; }
+  .income { color: var(--semi-color-success); font-weight: 600; }
+
   /* 资源包 */
   .pack-card {
     .p-name {
@@ -153,6 +212,21 @@
       margin-top: 14px;
     }
   }
+
+  .purchase-section { margin-top: 24px; }
+  .purchase-grid { margin-top: 16px; }
+  .purchase-card { position: relative; }
+  .purchase-card > .cloud-icon-box { position: absolute; top: 16px; right: 16px; }
+  .resource-meeting { background: var(--semi-color-success-light-default); color: var(--semi-color-success); }
+  .purchase-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-top: 18px; }
+  .purchase-main b { font-size: 17px; }
+  .purchase-main p { margin: 8px 0 0; color: var(--semi-color-text-2); font-size: 12px; }
+  .purchase-main strong { white-space: nowrap; font-size: 28px; }
+  .purchase-main strong small { color: var(--semi-color-text-2); font-size: 12px; font-weight: 400; }
+  .purchase-foot { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--semi-color-border); }
+  .purchase-foot div { display: flex; flex-direction: column; }
+  .purchase-foot b { font-size: 20px; }
+  .purchase-foot small { margin-top: 3px; color: var(--semi-color-text-2); }
 
   /* 套餐 */
   .plan-card {
@@ -262,6 +336,9 @@
   }
 
   @media (max-width: 900px) {
+    .credit-overview,
+    .credit-insights { grid-template-columns: minmax(0, 1fr); }
+
     .subscription-bar {
       flex-direction: column;
       align-items: flex-start;
