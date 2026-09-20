@@ -3,43 +3,33 @@
   flex-direction: column;
   gap: 24px;
 
-  &-banner {
-    position: relative;
-    overflow: hidden;
-    border-radius: 16px;
-    padding: 32px;
-    background: linear-gradient(120deg, #1b2450 0%, #26307a 55%, #3b47b8 100%);
-    color: #fff;
+  &-welcome {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-
-    .date {
-      font-size: 12px;
-      letter-spacing: 2px;
-      color: rgba(255, 255, 255, 0.6);
-    }
+    padding: 8px 0 4px;
 
     .greeting {
-      font-size: 30px;
-      font-weight: 700;
-      margin: 12px 0 10px;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 32px;
     }
 
     .sub {
+      margin-top: 6px;
       font-size: 14px;
-      color: rgba(255, 255, 255, 0.72);
+      color: var(--semi-color-text-2);
     }
 
     .user-card {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 16px 20px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 10px 14px;
+      border: 1px solid var(--semi-color-border);
+      border-radius: 8px;
+      background: var(--semi-color-bg-0);
       flex-shrink: 0;
 
       .u-name {
@@ -49,7 +39,7 @@
 
       .u-mail {
         font-size: 12px;
-        color: rgba(255, 255, 255, 0.65);
+        color: var(--semi-color-text-2);
         margin-top: 2px;
       }
     }
@@ -63,12 +53,12 @@
     transition: box-shadow 0.2s ease, transform 0.2s ease;
 
     &:hover {
-      box-shadow: 0 2px 8px rgba(27, 35, 56, 0.08);
+      box-shadow: 0 2px 8px var(--semi-color-shadow);
     }
 
     .label {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
     }
 
     .value {
@@ -79,7 +69,7 @@
 
     .desc {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
     }
 
     .body {
@@ -87,6 +77,25 @@
       min-width: 0;
     }
   }
+
+  .metric-resources,
+  .product-service {
+    background: var(--semi-color-warning-light-default);
+    color: var(--semi-color-warning);
+  }
+
+  .metric-teams,
+  .product-meeting {
+    background: var(--semi-color-success-light-default);
+    color: var(--semi-color-success);
+  }
+
+  .metric-plan {
+    background: var(--semi-color-tertiary-light-default);
+    color: var(--semi-color-tertiary);
+  }
+
+  .chevron { color: var(--semi-color-text-3); }
 
   &-product {
     position: relative;
@@ -97,7 +106,7 @@
     .code {
       font-size: 11px;
       letter-spacing: 1px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
       margin-top: 22px;
     }
 
@@ -109,7 +118,7 @@
 
     .p-desc {
       font-size: 13px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
       min-height: 38px;
     }
 
@@ -117,22 +126,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-top: 1px solid var(--cloud-border);
+      border-top: 1px solid var(--semi-color-border);
       margin-top: 20px;
       padding-top: 16px;
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
     }
 
-    .blob {
-      position: absolute;
-      top: -40px;
-      right: -30px;
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      opacity: 0.12;
-    }
   }
 
   &-ledger-row {
@@ -140,7 +140,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 0;
-    border-bottom: 1px solid var(--cloud-border);
+    border-bottom: 1px solid var(--semi-color-border);
 
     &:last-child {
       border-bottom: none;
@@ -152,7 +152,7 @@
 
     .s {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
       margin-top: 2px;
     }
 
@@ -167,7 +167,7 @@
 
     .time {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
       text-align: right;
       margin-top: 2px;
     }
@@ -178,7 +178,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 0;
-    border-bottom: 1px solid var(--cloud-border);
+    border-bottom: 1px solid var(--semi-color-border);
 
     &:last-child {
       border-bottom: none;
@@ -190,7 +190,7 @@
 
     .m {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
       margin-top: 2px;
     }
   }

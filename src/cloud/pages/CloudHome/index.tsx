@@ -11,10 +11,10 @@ const PRODUCT_ICONS: Record<string, typeof FileText> = {
 };
 
 const METRICS = [
-  { key: 'credits', icon: Wallet, color: '#5b6cf9', bg: '#EEF0FE', label: '可用通用积分', value: '80', desc: '张明的个人空间', path: '/cloud/billing/credits' },
-  { key: 'resources', icon: Package, color: '#F79009', bg: '#FEF4E6', label: '专项资源', value: '0', desc: '暂无可用资源', path: '/cloud/billing/packs' },
-  { key: 'teams', icon: Users, color: '#17B26A', bg: '#E9F8F0', label: '我的团队', value: '3', desc: '1 个拥有 · 2 个加入', path: '/cloud/teams' },
-  { key: 'plan', icon: CreditCard, color: '#8B5CF6', bg: '#F4EEFE', label: '当前套餐', value: 'Basic', desc: '按月订阅', path: '/cloud/billing/plans' },
+  { key: 'credits', icon: Wallet, label: '可用通用积分', value: '80', desc: '张明的个人空间', path: '/cloud/billing/credits' },
+  { key: 'resources', icon: Package, label: '专项资源', value: '0', desc: '暂无可用资源', path: '/cloud/billing/packs' },
+  { key: 'teams', icon: Users, label: '我的团队', value: '3', desc: '1 个拥有 · 2 个加入', path: '/cloud/teams' },
+  { key: 'plan', icon: CreditCard, label: '当前套餐', value: 'Basic', desc: '按月订阅', path: '/cloud/billing/plans' },
 ];
 
 const CloudHome = () => {
@@ -23,14 +23,13 @@ const CloudHome = () => {
 
   return (
     <div className="cloud-home">
-      <section className="cloud-home-banner">
+      <section className="cloud-home-welcome">
         <div>
-          <div className="date">星期五 · 9 月 18 日</div>
           <div className="greeting">下午好，{cloudUser.name}</div>
           <div className="sub">从这里进入你的产品，或管理个人资产与团队。</div>
         </div>
         <div className="user-card">
-          <Avatar size="default" style={{ background: 'rgba(255,255,255,0.18)' }}>{cloudUser.initials}</Avatar>
+          <Avatar size="default" className="cloud-user-avatar">{cloudUser.initials}</Avatar>
           <div>
             <div className="u-name">{cloudUser.name}</div>
             <div className="u-mail">{cloudUser.email}</div>
@@ -43,7 +42,7 @@ const CloudHome = () => {
           const Icon = m.icon;
           return (
             <div key={m.key} className="cloud-card cloud-home-metric" onClick={() => navigate(m.path)}>
-              <div className="cloud-icon-box" style={{ background: m.bg, color: m.color }}>
+               <div className={`cloud-icon-box metric-${m.key}`}>
                 <Icon size={20} strokeWidth={2} />
               </div>
               <div className="body">
@@ -51,7 +50,7 @@ const CloudHome = () => {
                 <div className="value">{m.value}</div>
                 <div className="desc">{m.desc}</div>
               </div>
-              <ChevronRight size={18} color="#b7bdcb" />
+               <ChevronRight size={18} className="chevron" />
             </div>
           );
         })}
@@ -65,8 +64,7 @@ const CloudHome = () => {
             const Icon = PRODUCT_ICONS[p.code] || FileText;
             return (
               <div key={p.id} className="cloud-card cloud-home-product">
-                <div className="blob" style={{ background: p.accent }} />
-                <div className="cloud-icon-box" style={{ background: `${p.accent}1A`, color: p.accent }}>
+                 <div className={`cloud-icon-box product-${p.code.toLowerCase()}`}>
                   <Icon size={20} strokeWidth={2} />
                 </div>
                 <div className="code">{p.code}</div>
@@ -135,7 +133,7 @@ const CloudHome = () => {
           </div>
           {allTeams.map((t) => (
             <div key={t.id} className="cloud-home-team-row">
-              <Avatar size="small" style={{ background: t.myRole === 'OWNER' ? '#17B26A' : '#5b6cf9' }}>
+               <Avatar size="small" className={t.myRole === 'OWNER' ? 'cloud-avatar-team' : 'cloud-user-avatar'}>
                 {t.initials}
               </Avatar>
               <div style={{ flex: 1, minWidth: 0 }}>

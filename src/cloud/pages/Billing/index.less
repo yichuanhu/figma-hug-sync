@@ -16,7 +16,7 @@
 
   .billing-desc {
     font-size: 13px;
-    color: var(--cloud-text-2);
+    color: var(--semi-color-text-2);
     margin-top: 6px;
   }
 
@@ -24,8 +24,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: var(--cloud-card-bg);
-    border: 1px solid var(--cloud-border);
+    background: var(--semi-color-bg-0);
+    border: 1px solid var(--semi-color-border);
     border-radius: 10px;
     padding: 6px 12px;
 
@@ -38,13 +38,18 @@
 
     .k {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
     }
   }
 
   .semi-tabs {
     margin-top: 12px;
   }
+
+  .billing-grid-tight { margin-top: 8px; }
+  .billing-grid-plans,
+  .billing-ledger-card { margin-top: 16px; }
+  .ledger-desc { margin-bottom: 8px; }
 
   /* 积分中心 */
   .credit-card {
@@ -61,21 +66,21 @@
 
     .c-sub {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
     }
 
     .c-meta {
       display: flex;
       justify-content: space-between;
       margin-top: 16px;
-      border-top: 1px solid var(--cloud-border);
+      border-top: 1px solid var(--semi-color-border);
       padding-top: 14px;
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
 
       b {
         display: block;
-        color: var(--cloud-text);
+        color: var(--semi-color-text-0);
         font-size: 14px;
         margin-top: 4px;
       }
@@ -87,7 +92,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 14px 0;
-    border-bottom: 1px solid var(--cloud-border);
+    border-bottom: 1px solid var(--semi-color-border);
 
     &:last-child {
       border-bottom: none;
@@ -99,7 +104,7 @@
 
     .s {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
       margin-top: 2px;
     }
 
@@ -115,7 +120,7 @@
 
     .time {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
       text-align: right;
       margin-top: 2px;
     }
@@ -130,7 +135,7 @@
 
     .p-product {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
       margin-top: 2px;
     }
 
@@ -138,13 +143,13 @@
       display: flex;
       justify-content: space-between;
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
       margin: 18px 0 8px;
     }
 
     .p-exp {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
       margin-top: 14px;
     }
   }
@@ -157,8 +162,8 @@
     padding: 24px;
 
     &.recommended {
-      border-color: var(--cloud-primary);
-      box-shadow: 0 8px 24px rgba(74, 85, 232, 0.12);
+      border-color: var(--semi-color-primary);
+      box-shadow: 0 4px 12px var(--semi-color-shadow);
     }
 
     .pl-head {
@@ -180,14 +185,14 @@
       span {
         font-size: 14px;
         font-weight: 400;
-        color: var(--cloud-text-2);
+        color: var(--semi-color-text-2);
         margin-left: 4px;
       }
     }
 
     .pl-desc {
       font-size: 13px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
     }
 
     .pl-features {
@@ -213,6 +218,8 @@
     }
   }
 
+  .feature-check { color: var(--semi-color-success); }
+
   .subscription-bar {
     display: flex;
     align-items: center;
@@ -222,7 +229,7 @@
 
     .s-label {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
     }
 
     .s-plan {
@@ -233,7 +240,7 @@
 
     .s-next {
       font-size: 12px;
-      color: var(--cloud-text-2);
+      color: var(--semi-color-text-2);
     }
 
     .s-metas {
@@ -244,6 +251,12 @@
       .v {
         font-size: 14px;
         margin-top: 4px;
+      }
+
+      .renew-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
     }
   }
