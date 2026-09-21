@@ -114,3 +114,19 @@ export interface CloudSubscription {
   autoRenew: boolean;
   nextBillingDate: string;
 }
+
+/** 计费账户（个人空间 / 团队空间），用于费用与资源页切换 */
+export interface CloudBillingAccount {
+  id: string;
+  name: string;
+  type: 'PERSONAL' | 'TEAM';
+  roleLabel?: string;
+  balance: number;
+  sources: { label: string; desc: string; amount: number }[];
+  weeklyUsage: number[];
+  ledger: CloudLedgerRecord[];
+  packs: CloudResourcePack[];
+  subscription: CloudSubscription;
+  /** 非所有者只读，不能变更套餐 */
+  manageable: boolean;
+}
