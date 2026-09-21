@@ -158,7 +158,7 @@ const Billing = () => {
             <div className="cloud-section-desc">按需补充通用积分或专项额度，购买后立即到账。</div>
             <div className="cloud-grid cols-3 purchase-grid">
               <div className="cloud-card purchase-card">
-                <div className="cloud-icon-box"><Wallet size={18} /></div>
+                <div className="cloud-icon-box resource-credits"><Wallet size={18} /></div>
                 <Tag size="small" color="green">通用积分</Tag>
                 <div className="purchase-main">
                   <div>
