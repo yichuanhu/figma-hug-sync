@@ -86,15 +86,6 @@ const Billing = () => {
               );
             })}
           </div>
-
-          <section className="purchase-section">
-            <div className="cloud-section-title">购买资源包</div>
-            <div className="cloud-section-desc">按需补充不同产品的专项额度，购买后立即到账。</div>
-            <div className="cloud-grid cols-2 purchase-grid">
-              <div className="cloud-card purchase-card"><div className="cloud-icon-box"><FileText size={18} /></div><Tag size="small" color="blue">文档智能</Tag><div className="purchase-main"><div><b>高精度解析加量包</b><p>适用于合同、票据和复杂格式文档的高精度解析</p></div><strong>1,000 <small>页</small></strong></div><div className="purchase-foot"><div><b>¥49</b><small>长期有效</small></div><Button theme="solid" type="primary" onClick={() => Toast.success('已进入购买流程')}>立即购买</Button></div></div>
-              <div className="cloud-card purchase-card"><div className="cloud-icon-box resource-meeting"><Sparkles size={18} /></div><Tag size="small" color="green">会议助手</Tag><div className="purchase-main"><div><b>会议转写 600 分钟包</b><p>适用于实时字幕、会议转写和会后纪要生成</p></div><strong>600 <small>分钟</small></strong></div><div className="purchase-foot"><div><b>¥39</b><small>90 天有效</small></div><Button theme="solid" type="primary" onClick={() => Toast.success('已进入购买流程')}>立即购买</Button></div></div>
-            </div>
-          </section>
         </TabPane>
 
         <TabPane tab="套餐与订阅" itemKey="plans">
@@ -161,6 +152,58 @@ const Billing = () => {
               </div>
             ))}
           </div>
+
+          <section className="purchase-section">
+            <div className="cloud-section-title">购买附加资源</div>
+            <div className="cloud-section-desc">按需补充通用积分或专项额度，购买后立即到账。</div>
+            <div className="cloud-grid cols-3 purchase-grid">
+              <div className="cloud-card purchase-card">
+                <div className="cloud-icon-box"><Wallet size={18} /></div>
+                <Tag size="small" color="green">通用积分</Tag>
+                <div className="purchase-main">
+                  <div>
+                    <b>通用积分充值</b>
+                    <p>补充账户通用积分，可用于全部已接入产品</p>
+                  </div>
+                  <strong>¥10 <small>起</small></strong>
+                </div>
+                <div className="purchase-foot">
+                  <div><b>按量计费</b><small>长期有效</small></div>
+                  <Button theme="solid" type="primary" onClick={() => Toast.success('已进入充值流程')}>立即充值</Button>
+                </div>
+              </div>
+              <div className="cloud-card purchase-card">
+                <div className="cloud-icon-box"><FileText size={18} /></div>
+                <Tag size="small" color="blue">文档智能</Tag>
+                <div className="purchase-main">
+                  <div>
+                    <b>高精度解析加量包</b>
+                    <p>适用于合同、票据和复杂格式文档的高精度解析</p>
+                  </div>
+                  <strong>1,000 <small>页</small></strong>
+                </div>
+                <div className="purchase-foot">
+                  <div><b>¥49</b><small>长期有效</small></div>
+                  <Button theme="solid" type="primary" onClick={() => Toast.success('已进入购买流程')}>立即购买</Button>
+                </div>
+              </div>
+              <div className="cloud-card purchase-card">
+                <div className="cloud-icon-box resource-meeting"><Sparkles size={18} /></div>
+                <Tag size="small" color="green">会议助手</Tag>
+                <div className="purchase-main">
+                  <div>
+                    <b>会议转写 600 分钟包</b>
+                    <p>适用于实时字幕、会议转写和会后纪要生成</p>
+                  </div>
+                  <strong>600 <small>分钟</small></strong>
+                </div>
+                <div className="purchase-foot">
+                  <div><b>¥39</b><small>90 天有效</small></div>
+                  <Button theme="solid" type="primary" onClick={() => Toast.success('已进入购买流程')}>立即购买</Button>
+                </div>
+              </div>
+            </div>
+          </section>
         </TabPane>
       </Tabs>
     </div>
