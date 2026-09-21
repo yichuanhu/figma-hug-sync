@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Tabs, TabPane, Tag, Button, Progress, Switch, Toast, Select, Table, Avatar } from '@douyinfe/semi-ui';
 import { Check, FileText, Sparkles, Wallet } from 'lucide-react';
 import { cloudBillingAccounts, cloudPlans } from '@/cloud/mock';
-import { EmptyState } from '@/components/EmptyState';
+import EmptyState from '@/components/EmptyState';
 import './index.less';
 
 const TAB_KEYS = ['credits', 'packs', 'plans'];
@@ -133,7 +133,7 @@ const Billing = () => {
 
         <TabPane tab="资源包" itemKey="packs">
           {account.packs.length === 0 ? (
-            <EmptyState type="no-data" description="该账户暂无专项资源包，可在「套餐与订阅」中购买" />
+            <EmptyState variant="noData" description="该账户暂无专项资源包，可在「套餐与订阅」中购买" />
           ) : (
             <div className="cloud-grid cols-2 billing-grid-tight">
               {account.packs.map((p) => {
