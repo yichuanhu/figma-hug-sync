@@ -9,6 +9,7 @@ import type {
   CloudResourcePack,
   CloudPlan,
   CloudSubscription,
+  CloudBillingAccount,
 } from '../types';
 
 export const cloudUser: CloudUser = {
@@ -193,3 +194,78 @@ export const cloudSubscription: CloudSubscription = {
   autoRenew: true,
   nextBillingDate: '2026 年 9 月 11 日',
 };
+
+/** 费用与资源页可切换的计费账户：个人空间 + 我所在的团队空间 */
+export const cloudBillingAccounts: CloudBillingAccount[] = [
+  {
+    id: 'acc-personal',
+    name: '张明的个人空间',
+    type: 'PERSONAL',
+    roleLabel: '个人',
+    balance: 80,
+    sources: [{ label: '平台注册赠送', desc: '长期有效', amount: 80 }],
+    weeklyUsage: [0, 0, 0, 0, 0, 0, 0],
+    ledger: [
+      { id: 'pl-1', title: '文档智能 · 合同解析', scene: '个人空间', type: 'EXPENSE', amount: 12, time: '今天 10:08' },
+      { id: 'pl-2', title: '会议助手 · 实时转写', scene: '个人空间', type: 'EXPENSE', amount: 36, time: '今天 09:10' },
+      { id: 'pl-3', title: '积分充值', scene: '在线支付', type: 'INCOME', amount: 200, time: '09-05 14:32' },
+    ],
+    packs: cloudResourcePacks,
+    subscription: cloudSubscription,
+    manageable: true,
+  },
+  {
+    id: 't-1',
+    name: '文档智能小队',
+    type: 'TEAM',
+    roleLabel: '团队所有者',
+    balance: 496,
+    sources: [
+      { label: '个人版套餐每月赠送', desc: '每月 11 日重置', amount: 400 },
+      { label: '团队积分充值', desc: '长期有效', amount: 96 },
+    ],
+    weeklyUsage: [12, 4, 0, 0, 24, 8, 4],
+    ledger: [
+      { id: 'tl-1', title: '智能客服 · 知识问答', scene: '陈婷', type: 'EXPENSE', amount: 8, time: '昨天 16:24' },
+      { id: 'tl-2', title: '文档智能 · 批量解析', scene: '林琪', type: 'EXPENSE', amount: 24, time: '09-18 11:02' },
+      { id: 'tl-3', title: '月度套餐赠送积分', scene: '个人版套餐', type: 'INCOME', amount: 500, time: '09-11 00:00' },
+    ],
+    packs: [cloudResourcePacks[1]],
+    subscription: { planName: '个人版月度订阅', accountName: '文档智能小队', autoRenew: true, nextBillingDate: '2026 年 9 月 11 日' },
+    manageable: true,
+  },
+  {
+    id: 't-2',
+    name: '市场增长组',
+    type: 'TEAM',
+    roleLabel: '成员',
+    balance: 1280,
+    sources: [{ label: 'Pro 套餐每月赠送', desc: '每月 2 日重置', amount: 1280 }],
+    weeklyUsage: [36, 48, 12, 0, 60, 42, 30],
+    ledger: [
+      { id: 'ml-1', title: '会议助手 · 会议纪要', scene: '王磊', type: 'EXPENSE', amount: 42, time: '今天 08:30' },
+      { id: 'ml-2', title: '文档智能 · 合同解析', scene: '李然', type: 'EXPENSE', amount: 30, time: '昨天 14:12' },
+      { id: 'ml-3', title: '月度套餐赠送积分', scene: 'Pro 套餐', type: 'INCOME', amount: 1000, time: '09-02 00:00' },
+    ],
+    packs: [],
+    subscription: { planName: 'Pro 月度订阅', accountName: '市场增长组', autoRenew: true, nextBillingDate: '2026 年 10 月 2 日' },
+    manageable: false,
+  },
+  {
+    id: 't-3',
+    name: '客户成功中心',
+    type: 'TEAM',
+    roleLabel: '成员',
+    balance: 5200,
+    sources: [{ label: 'Enterprise 套餐额度', desc: '按合同周期发放', amount: 5200 }],
+    weeklyUsage: [120, 96, 30, 12, 140, 110, 86],
+    ledger: [
+      { id: 'cl-1', title: '智能客服 · 知识问答', scene: '刘芳', type: 'EXPENSE', amount: 86, time: '今天 09:40' },
+      { id: 'cl-2', title: '文档智能 · 票据识别', scene: '周航', type: 'EXPENSE', amount: 110, time: '昨天 17:05' },
+      { id: 'cl-3', title: '企业额度发放', scene: 'Enterprise 套餐', type: 'INCOME', amount: 5000, time: '09-01 00:00' },
+    ],
+    packs: [cloudResourcePacks[0]],
+    subscription: { planName: 'Enterprise 年度订阅', accountName: '客户成功中心', autoRenew: false, nextBillingDate: '2027 年 2 月 20 日' },
+    manageable: false,
+  },
+];
