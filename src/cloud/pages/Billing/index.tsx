@@ -122,8 +122,7 @@ const Billing = () => {
             </div>
             <Table size="small" pagination={false} dataSource={ledger} rowKey="id" columns={[
               { title: '时间', dataIndex: 'time' },
-              { title: '说明', dataIndex: 'title', render: (value, record) => <div><div>{value}</div><div className="table-sub">{record.scene}</div></div> },
-              { title: account.type === 'TEAM' ? '使用人 / 来源' : '场景', dataIndex: 'scene' },
+              { title: '说明', dataIndex: 'title', render: (value, record) => <div><div>{value}</div><div className="table-sub">{account.type === 'TEAM' ? `使用人 / 来源：${record.scene}` : record.scene}</div></div> },
               { title: '类型', dataIndex: 'type', render: (value) => <Tag color={value === 'INCOME' ? 'green' : 'grey'} size="small">{value === 'INCOME' ? '到账' : '使用'}</Tag> },
               { title: '积分变动', dataIndex: 'amount', render: (value, record) => <span className={record.type === 'INCOME' ? 'income' : ''}>{record.type === 'INCOME' ? '+' : '-'}{value}</span> },
               { title: '操作', render: () => <Button theme="borderless" type="primary" size="small">详情</Button> },
