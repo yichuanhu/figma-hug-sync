@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Tabs, TabPane, Tag, Button, Progress, Switch, Toast, Select, Table } from '@douyinfe/semi-ui';
-import { Check, FileText, Sparkles } from 'lucide-react';
+import { Check, FileText, Sparkles, Wallet } from 'lucide-react';
 import { cloudCreditAccounts, cloudLedger, cloudResourcePacks, cloudPlans, cloudSubscription } from '@/cloud/mock';
 import './index.less';
 
