@@ -1,20 +1,73 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Tabs, TabPane, Tag, Button, Progress, Switch, Toast, Select, Table } from '@douyinfe/semi-ui';
+import { Tabs, TabPane, Tag, Button, Progress, Switch, Toast, Select, Table, Avatar } from '@douyinfe/semi-ui';
 import { Check, FileText, Sparkles, Wallet } from 'lucide-react';
-import { cloudCreditAccounts, cloudLedger, cloudResourcePacks, cloudPlans, cloudSubscription } from '@/cloud/mock';
+import { cloudBillingAccounts, cloudPlans } from '@/cloud/mock';
+import { EmptyState } from '@/components/EmptyState';
 import './index.less';
 
 const TAB_KEYS = ['credits', 'packs', 'plans'];
+const WEEK_LABELS = ['四', '五', '六', '日', '一', '二', '三'];
 
 const Billing = () => {
   const { tab } = useParams();
   const navigate = useNavigate();
   const activeKey = tab && TAB_KEYS.includes(tab) ? tab : 'credits';
-  const [autoRenew, setAutoRenew] = useState(cloudSubscription.autoRenew);
+
+  const [accountId, setAccountId] = useState(cloudBillingAccounts[0].id);
+  const account = useMemo(
+    () => cloudBillingAccounts.find((a) => a.id === accountId) || cloudBillingAccounts[0],
+    [accountId],
+  );
+  const [autoRenew, setAutoRenew] = useState(account.subscription.autoRenew);
+  const [ledgerFilter, setLedgerFilter] = useState<'all' | 'income' | 'expense'>('all');
+
+  const ledger = account.ledger.filter((r) =>
+    ledgerFilter === 'all' ? true : ledgerFilter === 'income' ? r.type === 'INCOME' : r.type === 'EXPENSE',
+  );
+  const maxUsage = Math.max(...account.weeklyUsage, 1);
+  const weekTotal = account.weeklyUsage.reduce((sum, v) => sum + v, 0);
+
+  const handleAccountChange = (value: string) => {
+    setAccountId(value);
+    const next = cloudBillingAccounts.find((a) => a.id === value);
+    if (next) setAutoRenew(next.subscription.autoRenew);
+  };
 
   return (
     <div className="cloud-billing">
+      <div className="billing-account-switch">
+        <span className="label">账户</span>
+        <Select
+          value={accountId}
+          onChange={(value) => handleAccountChange(value as string)}
+          style={{ width: 260 }}
+          renderSelectedItem={(item) => (
+            <div className="account-option">
+              <Avatar size="extra-small" className={account.type === 'TEAM' ? 'cloud-avatar-team' : 'cloud-user-avatar'}>
+                {account.name.slice(0, 1)}
+              </Avatar>
+              <span className="n">{item.label as string}</span>
+            </div>
+          )}
+        >
+          {cloudBillingAccounts.map((a) => (
+            <Select.Option key={a.id} value={a.id} label={a.name}>
+              <div className="account-option">
+                <Avatar size="extra-small" className={a.type === 'TEAM' ? 'cloud-avatar-team' : 'cloud-user-avatar'}>
+                  {a.name.slice(0, 1)}
+                </Avatar>
+                <span className="n">{a.name}</span>
+                <Tag size="small" color={a.type === 'TEAM' ? 'blue' : 'grey'}>{a.roleLabel}</Tag>
+              </div>
+            </Select.Option>
+          ))}
+        </Select>
+        <span className="hint">
+          {account.type === 'TEAM' ? '团队空间的积分与资源由全部活跃成员共用' : '个人空间的积分与资源仅本人可用'}
+        </span>
+      </div>
+
       <Tabs
         activeKey={activeKey}
         type="line"
@@ -22,24 +75,38 @@ const Billing = () => {
         onChange={(key) => navigate(`/cloud/billing/${key}`)}
       >
         <TabPane tab="积分中心" itemKey="credits">
-          <div className="billing-context"><span>当前账户</span><strong>张明的个人空间</strong></div>
           <div className="credit-overview billing-grid-tight">
             <div className="credit-balance-card">
-              <div className="c-name">{cloudCreditAccounts[0].name}</div>
+              <div className="c-name">{account.name}</div>
               <div className="c-sub">可用积分</div>
-              <div className="c-balance">{cloudCreditAccounts[0].balance}</div>
+              <div className="c-balance">{account.balance}</div>
               <div className="c-foot"><span>账户状态正常</span><span>可用于全部已接入产品</span></div>
             </div>
             <div className="cloud-card credit-source-card">
-              <div className="card-head"><div><div className="cloud-section-title">积分组成</div><div className="cloud-section-desc">优先使用即将到期的积分</div></div><span>1 个来源</span></div>
-              <div className="credit-source-row"><span><i />平台注册赠送<small>长期有效</small></span><b>80</b></div>
+              <div className="card-head">
+                <div><div className="cloud-section-title">积分组成</div><div className="cloud-section-desc">优先使用即将到期的积分</div></div>
+                <span>{account.sources.length} 个来源</span>
+              </div>
+              {account.sources.map((s) => (
+                <div key={s.label} className="credit-source-row"><span><i />{s.label}<small>{s.desc}</small></span><b>{s.amount}</b></div>
+              ))}
             </div>
           </div>
 
           <div className="credit-insights">
             <div className="cloud-card usage-card">
-              <div className="card-head"><div><div className="cloud-section-title">近 7 天积分使用</div><div className="cloud-section-desc">已完成 AI 任务的实际结算量</div></div><b className="total">累计 0</b></div>
-              <div className="usage-bars">{['四', '五', '六', '日', '一', '二', '三'].map((day, index) => <div key={day}><span className={index === 6 ? 'active' : ''} /><small>{day}</small></div>)}</div>
+              <div className="card-head"><div><div className="cloud-section-title">近 7 天积分使用</div><div className="cloud-section-desc">已完成 AI 任务的实际结算量</div></div><b className="total">累计 {weekTotal}</b></div>
+              <div className="usage-bars">
+                {WEEK_LABELS.map((day, index) => (
+                  <div key={day}>
+                    <span
+                      className={index === 6 ? 'active' : ''}
+                      style={{ height: `${Math.max(4, Math.round((account.weeklyUsage[index] / maxUsage) * 56))}px` }}
+                    />
+                    <small>{day}</small>
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="cloud-card expiry-card">
               <div className="cloud-section-title">有效期提醒</div>
@@ -49,62 +116,67 @@ const Billing = () => {
           </div>
 
           <div className="cloud-card billing-ledger-card">
-            <div className="card-head"><div><div className="cloud-section-title">积分明细</div><div className="cloud-section-desc ledger-desc">所有到账、使用和套餐调整记录</div></div><Select size="small" defaultValue="all" optionList={[{ value: 'all', label: '全部' }, { value: 'income', label: '到账' }, { value: 'expense', label: '使用' }]} /></div>
-            <Table size="small" pagination={false} dataSource={cloudLedger} rowKey="id" columns={[
+            <div className="card-head">
+              <div><div className="cloud-section-title">积分明细</div><div className="cloud-section-desc ledger-desc">{account.type === 'TEAM' ? '团队成员的到账与使用记录' : '所有到账、使用和套餐调整记录'}</div></div>
+              <Select size="small" value={ledgerFilter} onChange={(v) => setLedgerFilter(v as 'all')} optionList={[{ value: 'all', label: '全部' }, { value: 'income', label: '到账' }, { value: 'expense', label: '使用' }]} />
+            </div>
+            <Table size="small" pagination={false} dataSource={ledger} rowKey="id" columns={[
               { title: '时间', dataIndex: 'time' },
               { title: '说明', dataIndex: 'title', render: (value, record) => <div><div>{value}</div><div className="table-sub">{record.scene}</div></div> },
+              { title: account.type === 'TEAM' ? '使用人 / 来源' : '场景', dataIndex: 'scene' },
               { title: '类型', dataIndex: 'type', render: (value) => <Tag color={value === 'INCOME' ? 'green' : 'grey'} size="small">{value === 'INCOME' ? '到账' : '使用'}</Tag> },
               { title: '积分变动', dataIndex: 'amount', render: (value, record) => <span className={record.type === 'INCOME' ? 'income' : ''}>{record.type === 'INCOME' ? '+' : '-'}{value}</span> },
-              { title: '结果', render: () => <Tag color="green" size="small">已完成</Tag> },
               { title: '操作', render: () => <Button theme="borderless" type="primary" size="small">详情</Button> },
             ]} />
           </div>
         </TabPane>
 
         <TabPane tab="资源包" itemKey="packs">
-          <div className="billing-context"><span>当前账户</span><strong>张明的个人空间</strong></div>
-          <div className="cloud-grid cols-2 billing-grid-tight">
-            {cloudResourcePacks.map((p) => {
-              const percent = p.total > 0 ? Math.round((p.used / p.total) * 100) : 0;
-              const expired = p.status === 'EXPIRED';
-              return (
-                <div key={p.id} className="cloud-card pack-card">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div>
-                      <div className="p-name">{p.name}</div>
-                      <div className="p-product">适用产品：{p.productName}</div>
+          {account.packs.length === 0 ? (
+            <EmptyState type="no-data" description="该账户暂无专项资源包，可在「套餐与订阅」中购买" />
+          ) : (
+            <div className="cloud-grid cols-2 billing-grid-tight">
+              {account.packs.map((p) => {
+                const percent = p.total > 0 ? Math.round((p.used / p.total) * 100) : 0;
+                const expired = p.status === 'EXPIRED';
+                return (
+                  <div key={p.id} className="cloud-card pack-card">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div>
+                        <div className="p-name">{p.name}</div>
+                        <div className="p-product">适用产品：{p.productName}</div>
+                      </div>
+                      <Tag color={expired ? 'grey' : 'green'} size="small">{expired ? '已过期' : '生效中'}</Tag>
                     </div>
-                    <Tag color={expired ? 'grey' : 'green'} size="small">{expired ? '已过期' : '生效中'}</Tag>
+                    <div className="p-usage">
+                      <span>已使用 {p.used} {p.unit}</span>
+                      <span>共 {p.total} {p.unit}</span>
+                    </div>
+                    <Progress percent={percent} stroke={expired ? 'var(--semi-color-disabled-border)' : 'var(--semi-color-primary)'} />
+                    <div className="p-exp">{expired ? '过期时间' : '有效期至'}：{p.expiresAt}</div>
                   </div>
-                  <div className="p-usage">
-                    <span>已使用 {p.used} {p.unit}</span>
-                    <span>共 {p.total} {p.unit}</span>
-                  </div>
-                  <Progress percent={percent} stroke={expired ? 'var(--semi-color-disabled-border)' : 'var(--semi-color-primary)'} />
-                  <div className="p-exp">{expired ? '过期时间' : '有效期至'}：{p.expiresAt}</div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </TabPane>
 
         <TabPane tab="套餐与订阅" itemKey="plans">
-          <div className="billing-context"><span>当前账户</span><strong>张明的个人空间</strong></div>
           <div className="cloud-card subscription-bar">
             <div>
               <div className="s-label">当前订阅</div>
-              <div className="s-plan">{cloudSubscription.planName}</div>
-              <div className="s-next">下次扣费时间：{cloudSubscription.nextBillingDate}</div>
+              <div className="s-plan">{account.subscription.planName}</div>
+              <div className="s-next">下次扣费时间：{account.subscription.nextBillingDate}</div>
             </div>
             <div className="s-metas">
               <div>
                 <div className="s-label">扣费账户</div>
-                <div className="v">{cloudSubscription.accountName}</div>
+                <div className="v">{account.subscription.accountName}</div>
               </div>
               <div>
                 <div className="s-label">自动续费</div>
                 <div className="v renew-control">
-                  <Switch checked={autoRenew} onChange={setAutoRenew} size="small" />
+                  <Switch checked={autoRenew} onChange={setAutoRenew} size="small" disabled={!account.manageable} />
                   <span>{autoRenew ? '已开启' : '已关闭'}</span>
                 </div>
               </div>
@@ -113,6 +185,10 @@ const Billing = () => {
               </Button>
             </div>
           </div>
+
+          {!account.manageable && (
+            <div className="billing-readonly-tip">你在该团队中是成员，套餐变更与购买由团队所有者操作。</div>
+          )}
 
           <div className="cloud-grid cols-3 billing-grid-plans">
             {cloudPlans.map((p) => (
@@ -144,7 +220,7 @@ const Billing = () => {
                   size="large"
                   theme={p.current ? 'light' : 'solid'}
                   type={p.current ? 'tertiary' : 'primary'}
-                  disabled={p.current}
+                  disabled={p.current || !account.manageable}
                   onClick={() => Toast.info(p.customized ? '我们会尽快与你联系' : '已发起套餐变更')}
                 >
                   {p.current ? '当前使用中' : p.customized ? '联系我们' : '升级到该套餐'}
@@ -155,7 +231,7 @@ const Billing = () => {
 
           <section className="purchase-section">
             <div className="cloud-section-title">购买附加资源</div>
-            <div className="cloud-section-desc">按需补充通用积分或专项额度，购买后立即到账。</div>
+            <div className="cloud-section-desc">按需补充通用积分或专项额度，购买后立即到账至「{account.name}」。</div>
             <div className="cloud-grid cols-3 purchase-grid">
               <div className="cloud-card purchase-card">
                 <div className="cloud-icon-box resource-credits"><Wallet size={18} /></div>
@@ -169,7 +245,7 @@ const Billing = () => {
                 </div>
                 <div className="purchase-foot">
                   <div><b>按量计费</b><small>长期有效</small></div>
-                  <Button theme="solid" type="primary" onClick={() => Toast.success('已进入充值流程')}>立即充值</Button>
+                  <Button theme="solid" type="primary" disabled={!account.manageable} onClick={() => Toast.success('已进入充值流程')}>立即充值</Button>
                 </div>
               </div>
               <div className="cloud-card purchase-card">
@@ -184,7 +260,7 @@ const Billing = () => {
                 </div>
                 <div className="purchase-foot">
                   <div><b>¥49</b><small>长期有效</small></div>
-                  <Button theme="solid" type="primary" onClick={() => Toast.success('已进入购买流程')}>立即购买</Button>
+                  <Button theme="solid" type="primary" disabled={!account.manageable} onClick={() => Toast.success('已进入购买流程')}>立即购买</Button>
                 </div>
               </div>
               <div className="cloud-card purchase-card">
@@ -199,7 +275,7 @@ const Billing = () => {
                 </div>
                 <div className="purchase-foot">
                   <div><b>¥39</b><small>90 天有效</small></div>
-                  <Button theme="solid" type="primary" onClick={() => Toast.success('已进入购买流程')}>立即购买</Button>
+                  <Button theme="solid" type="primary" disabled={!account.manageable} onClick={() => Toast.success('已进入购买流程')}>立即购买</Button>
                 </div>
               </div>
             </div>
